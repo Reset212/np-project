@@ -1,0 +1,656 @@
+/* VideoBackground.css */
+
+:root {
+  --base-width: 1440px;
+  --scale-factor: 1;
+}
+
+.video-background-container {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  margin: 0 auto;
+}
+
+.video-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -1;
+}
+
+/* Автоматическое вычисление масштаба для больших экранов */
+@media (min-width: 1441px) {
+  :root {
+    --scale-factor: min(1.5, calc(100vw / var(--base-width)));
+    /* Ограничиваем максимальное увеличение до 1.5x */
+  }
+}
+
+/* НАВИГАЦИЯ - ПК ВЕРСИЯ (КОРРЕКТНАЯ) */
+.navigation {
+  position: absolute;
+  top: 20px;
+  width: 100%;
+  max-width: 1440px;
+  z-index: 1;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-sizing: border-box;
+  padding: 0 40px;
+}
+
+/* Масштабирование навигации для больших экранов */
+@media (min-width: 1441px) {
+  .navigation {
+    top: calc(20px * var(--scale-factor));
+    padding: 0 calc(40px * var(--scale-factor));
+    max-width: calc(1440px * var(--scale-factor));
+  }
+}
+
+/* ЛЕВАЯ ЧАСТЬ НАВИГАЦИИ */
+.nav-left {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 220px;
+  width: calc(50% - 52.5px);
+}
+
+@media (min-width: 1441px) {
+  .nav-left {
+    width: calc(50% - calc(52.5px * var(--scale-factor)));
+    gap: calc(220px * var(--scale-factor));
+  }
+}
+
+/* ПРАВАЯ ЧАСТЬ НАВИГАЦИИ */
+.nav-right {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 179px;
+  width: calc(50% - 52.5px);
+}
+
+@media (min-width: 1441px) {
+  .nav-right {
+    width: calc(50% - calc(52.5px * var(--scale-factor)));
+    gap: calc(179px * var(--scale-factor));
+  }
+}
+
+.nav-item {
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+  text-align: center;
+  white-space: nowrap;
+  transition: opacity 0.3s ease;
+}
+
+@media (min-width: 1441px) {
+  .nav-item {
+    font-size: calc(14px * var(--scale-factor));
+  }
+}
+
+.nav-item:hover {
+  opacity: 0.8;
+}
+
+/* Отступы для элементов навигации */
+.nav-left .nav-item.directions {
+  margin-right: 48px;
+}
+
+@media (min-width: 1441px) {
+  .nav-left .nav-item.directions {
+    margin-right: calc(48px * var(--scale-factor));
+  }
+}
+
+/* Логотип в центре */
+.logo {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.logo-image {
+  width: 105px;
+  height: 40px;
+  object-fit: contain;
+}
+
+@media (min-width: 1441px) {
+  .logo-image {
+    width: calc(105px * var(--scale-factor));
+    height: calc(40px * var(--scale-factor));
+  }
+}
+
+/* Кнопка CHAT WITH US - ПК версия */
+.chat-button {
+  background-color: rgba(255, 255, 255, 0.2);
+  width: 176px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 0;
+  font-size: 14px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(5px);
+  white-space: nowrap;
+}
+
+@media (min-width: 1441px) {
+  .chat-button {
+    width: calc(176px * var(--scale-factor));
+    height: calc(60px * var(--scale-factor));
+    border-radius: calc(30px * var(--scale-factor));
+    font-size: calc(14px * var(--scale-factor));
+  }
+}
+
+.chat-button:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+/* КОНТЕНТ СНИЗУ - ПК ВЕРСИЯ */
+.content-wrapper {
+  position: absolute;
+  bottom: 50px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 1440px;
+  z-index: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding: 0 40px;
+  box-sizing: border-box;
+}
+
+/* Масштабирование контента для больших экранов */
+@media (min-width: 1441px) {
+  .content-wrapper {
+    bottom: calc(50px * var(--scale-factor));
+    padding: 0 calc(40px * var(--scale-factor));
+    max-width: calc(1440px * var(--scale-factor));
+  }
+}
+
+/* НАГРАДЫ - ПК ВЕРСИЯ */
+.awards-row {
+  display: flex;
+  gap: 60px;
+  align-items: flex-end;
+}
+
+@media (min-width: 1441px) {
+  .awards-row {
+    gap: calc(60px * var(--scale-factor));
+  }
+}
+
+.award-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  flex-shrink: 0;
+}
+
+/* Контейнеры для иконок с точными размерами */
+.award-icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.icon-1 {
+  width: 65px;
+  height: 27px;
+}
+
+.icon-2 {
+  width: 100px;
+  height: 28px;
+}
+
+.icon-3 {
+  width: 77px;
+  height: 28px;
+}
+
+.icon-4 {
+  width: 119px;
+  height: 30px;
+}
+
+@media (min-width: 1441px) {
+  .award-icon-container {
+    margin-bottom: calc(10px * var(--scale-factor));
+  }
+  
+  .icon-1 {
+    height: calc(27px * var(--scale-factor));
+  }
+  
+  .icon-2 {
+    height: calc(28px * var(--scale-factor));
+  }
+  
+  .icon-3 {
+    height: calc(28px * var(--scale-factor));
+  }
+  
+  .icon-4 {
+    height: calc(30px * var(--scale-factor));
+  }
+}
+
+.award-icon {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+.award-text {
+  color: white;
+  font-size: 14px;
+  line-height: 1.4;
+  margin: 0;
+  text-align: left;
+  white-space: nowrap;
+}
+
+@media (min-width: 1441px) {
+  .award-text {
+    font-size: calc(14px * var(--scale-factor));
+    line-height: calc(1.4 * var(--scale-factor));
+  }
+}
+
+/* Кнопка VIEW PROJECT - ПК версия */
+.view-project-button {
+  background-color: white;
+  color: black;
+  border: none;
+  padding: 15px 30px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+  margin-left: 40px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+@media (min-width: 1441px) {
+  .view-project-button {
+    padding: calc(15px * var(--scale-factor)) calc(30px * var(--scale-factor));
+    font-size: calc(16px * var(--scale-factor));
+    border-radius: calc(25px * var(--scale-factor));
+    margin-left: calc(40px * var(--scale-factor));
+  }
+}
+
+.view-project-button:hover {
+  background-color: #f0f0f0;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* ============================================= */
+/* ЭЛЕМЕНТЫ МОБИЛЬНОЙ ВЕРСИИ - СКРЫТЫ ДЛЯ ПК */
+/* ============================================= */
+.burger-menu,
+.mobile-chat-button,
+.mobile-dropdown {
+  display: none;
+}
+
+/* ============================================= */
+/* МОБИЛЬНАЯ ВЕРСИЯ (768px и меньше) */
+/* ============================================= */
+@media (max-width: 768px) {
+  /* НАВИГАЦИЯ - МОБИЛЬНАЯ */
+  .navigation {
+    top: 16px;
+    padding: 0 16px;
+    height: 48px;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  /* Скрываем десктопную навигацию в мобильной версии */
+  .nav-left, 
+  .nav-right,
+  .chat-button {
+    display: none !important;
+  }
+  
+  /* Показываем элементы мобильной версии */
+  .burger-menu,
+  .mobile-chat-button {
+    display: flex;
+  }
+  
+  /* Логотип в центре */
+  .logo {
+    position: static;
+    left: auto;
+    transform: none;
+    order: 2;
+  }
+  
+  .logo-image {
+    width: 80px;
+    height: 30px;
+  }
+  
+  /* БУРГЕР-МЕНЮ С ЭФФЕКТОМ СТЕКЛА */
+  .burger-menu {
+    width: 48px;
+    height: 48px;
+    background: rgba(185, 185, 185, 0.32);
+    backdrop-filter: blur(8px);
+    border-radius: 12px; /* Более мягкие углы как у кнопок */
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 101; /* Выше чем меню */
+    border: 1px solid rgba(255, 255, 255, 0.3); /* Граница как у кнопки CHAT WITH US */
+    order: 1;
+    transition: all 0.3s ease; /* Плавный переход */
+  }
+  
+  .burger-menu:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px); /* Эффект подъема как у кнопок */
+  }
+  
+  .burger-menu svg {
+    width: 18px;
+    height: 12px;
+    transition: transform 0.3s ease;
+  }
+  
+  /* КНОПКА ЧАТА СПРАВА (ЭФФЕКТ СТЕКЛА) */
+  .mobile-chat-button {
+    width: 48px;
+    height: 48px;
+    background: rgba(185, 185, 185, 0.32);
+    backdrop-filter: blur(8px);
+    border-radius: 12px;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    order: 3;
+    transition: all 0.3s ease;
+    z-index: 101; /* Выше чем меню */
+  }
+  
+  .mobile-chat-button:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+  }
+  
+  .mobile-chat-button svg {
+    width: 18px;
+    height: 18px;
+  }
+  
+  /* ВЫПАДАЮЩЕЕ МЕНЮ С ЭФФЕКТОМ СТЕКЛА - ИСПРАВЛЕНО */
+  .mobile-dropdown {
+    display: flex !important; /* Важно: принудительно показываем когда active */
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.85); /* Полупрозрачный черный фон */
+    backdrop-filter: blur(20px); /* Сильный эффект стекла */
+    -webkit-backdrop-filter: blur(20px);
+    z-index: 100; /* Ниже кнопок бургера/чата */
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    padding: 80px 20px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-20px);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .mobile-dropdown.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+  
+  /* ЭЛЕМЕНТЫ МЕНЮ С ЭФФЕКТОМ СТЕКЛА */
+  .mobile-nav-item {
+    color: white;
+    font-size: 18px;
+    font-weight: 500;
+    text-decoration: none;
+    padding: 16px 32px;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.15); /* Полупрозрачный белый фон */
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 12px;
+    width: 250px;
+    max-width: 80%;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.2); /* Легкая граница */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* Тень для объема */
+    cursor: pointer;
+  }
+  
+  .mobile-nav-item:hover {
+    color: rgba(255, 255, 255, 0.95);
+    background: rgba(255, 255, 255, 0.25);
+    transform: translateY(-3px); /* Эффект подъема */
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.3);
+  }
+  
+  /* КРЕСТИК ДЛЯ ЗАКРЫТИЯ */
+  .close-menu {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+    z-index: 102;
+  }
+  
+  .close-menu:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: translateY(-2px);
+  }
+  
+  .close-menu svg {
+    width: 20px;
+    height: 20px;
+  }
+  
+  /* КОНТЕНТ СНИЗУ - МОБИЛЬНАЯ ВЕРСИЯ */
+  .content-wrapper {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    padding: 0 16px;
+    flex-direction: column;
+    align-items: center;
+    gap: 32px;
+    max-width: 100%;
+    z-index: 1; /* Над видео, но под меню */
+  }
+  
+  /* Награды в 2 колонки */
+  .awards-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px 20px;
+    width: 100%;
+    order: 1; /* Награды сверху */
+  }
+  
+  .award-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    flex: 1;
+  }
+  
+  .award-icon-container {
+    margin-bottom: 8px;
+  }
+  
+  .award-text {
+    font-size: 12px;
+    line-height: 1.3;
+    white-space: normal;
+    text-align: center;
+  }
+  
+  /* Кнопка VIEW PROJECT под наградами */
+  .view-project-button {
+    margin-left: 0;
+    width: 100%;
+    max-width: 280px;
+    font-size: 14px;
+    padding: 12px 24px;
+    order: 2; /* Кнопка снизу */
+  }
+}
+
+/* ДЛЯ ПЛАНШЕТОВ (769px - 1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .navigation {
+    padding: 0 24px;
+  }
+  
+  .nav-left, .nav-right {
+    width: auto;
+  }
+  
+  .nav-left {
+    gap: 100px;
+  }
+  
+  .nav-right {
+    gap: 80px;
+  }
+  
+  .content-wrapper {
+    padding: 0 24px;
+    bottom: 40px;
+  }
+  
+  .awards-row {
+    gap: 40px;
+  }
+}
+
+/* ДЛЯ ОЧЕНЬ БОЛЬШИХ ЭКРАНОВ */
+@media (min-width: 2000px) {
+  :root {
+    --scale-factor: 1.2;
+  }
+}
+
+@media (min-width: 2500px) {
+  :root {
+    --scale-factor: 1.3;
+  }
+}
+
+@media (min-width: 3000px) {
+  :root {
+    --scale-factor: 1.4;
+  }
+}
+
+@media (min-width: 3500px) {
+  :root {
+    --scale-factor: 1.5;
+  }
+}
+
+/* ДЛЯ ОЧЕНЬ МАЛЕНЬКИХ ТЕЛЕФОНОВ */
+@media (max-width: 360px) {
+  .awards-row {
+    gap: 24px 16px;
+  }
+  
+  .award-text {
+    font-size: 11px;
+  }
+  
+  .view-project-button {
+    max-width: 240px;
+    font-size: 13px;
+    padding: 10px 20px;
+  }
+  
+  .logo-image {
+    width: 70px;
+    height: 26px;
+  }
+  
+  .mobile-nav-item {
+    width: 200px;
+    padding: 14px 24px;
+    font-size: 18px;
+  }
+  
+  .burger-menu,
+  .mobile-chat-button {
+    width: 44px;
+    height: 44px;
+  }
+  
+  .mobile-dropdown {
+    padding: 60px 20px;
+    gap: 12px;
+  }
+}

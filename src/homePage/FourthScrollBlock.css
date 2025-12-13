@@ -1,0 +1,249 @@
+.fourth-section {
+  position: relative;
+  min-height: 100vh;
+  background-color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.fourth-content {
+  width: 100%;
+  max-width: 1200px;
+  padding: 0 20px;
+}
+
+.cities-container {
+  display: flex;
+  flex-direction: column;
+  gap: 60px;
+  width: 100%;
+}
+
+.city-line {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  position: relative;
+  width: 100%;
+}
+
+.city-container {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  position: relative;
+  width: auto; /* Меняем на auto чтобы контейнер подстраивался под содержимое */
+}
+
+.city-name {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 100px;
+  line-height: 100px;
+  text-align: center;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: #000000;
+  white-space: nowrap;
+  display: inline-block; /* Меняем на inline-block */
+  position: relative;
+  z-index: 1; /* Город под временем */
+}
+
+.city-time {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 16px;
+  color: #000000;
+  white-space: nowrap;
+  position: absolute;
+  left: 100%; /* Позиционируем относительно правого края города */
+  top: 12px;
+  margin-left: 24px; /* Отступ 24px от города */
+  z-index: 2; /* Время поверх города */
+}
+
+/* Альтернативный вариант с flexbox (проще и надежнее) */
+.city-container-flex {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 24px; /* Отступ между городом и временем 24px */
+}
+
+.city-name-flex {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 100px;
+  line-height: 100px;
+  text-align: center;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: #000000;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+}
+
+.city-time-flex {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 16px;
+  color: #000000;
+  white-space: nowrap;
+  padding-top: 12px;
+}
+
+/* Все города одного размера */
+.city-name,
+.city-name-flex {
+  font-size: 100px;
+  line-height: 100px;
+}
+
+/* Адаптивность для десктопов */
+@media (max-width: 1400px) {
+  .city-name,
+  .city-name-flex {
+    font-size: 85px;
+    line-height: 85px;
+  }
+  
+  .city-time,
+  .city-time-flex {
+    font-size: 15px;
+    line-height: 15px;
+    top: 10px;
+  }
+}
+
+@media (max-width: 1200px) {
+  .cities-container {
+    gap: 50px;
+  }
+  
+  .city-name,
+  .city-name-flex {
+    font-size: 75px;
+    line-height: 75px;
+  }
+  
+  .city-time,
+  .city-time-flex {
+    font-size: 14px;
+    line-height: 14px;
+    top: 8px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .cities-container {
+    gap: 40px;
+  }
+  
+  .city-name,
+  .city-name-flex {
+    font-size: 65px;
+    line-height: 65px;
+  }
+  
+  .city-time,
+  .city-time-flex {
+    font-size: 13px;
+    line-height: 13px;
+    top: 6px;
+  }
+}
+
+@media (max-width: 768px) {
+  .cities-container {
+    gap: 30px;
+  }
+  
+  .city-name,
+  .city-name-flex {
+    font-size: 50px;
+    line-height: 50px;
+  }
+  
+  .city-time,
+  .city-time-flex {
+    font-size: 12px;
+    line-height: 12px;
+    top: 4px;
+  }
+  
+  /* На мобильных переключаемся на flexbox вариант */
+  .city-container {
+    display: none;
+  }
+  
+  .city-container-flex {
+    display: flex;
+  }
+}
+
+@media (max-width: 600px) {
+  .cities-container {
+    gap: 25px;
+  }
+  
+  .city-name,
+  .city-name-flex {
+    font-size: 40px;
+    line-height: 40px;
+  }
+  
+  .city-time,
+  .city-time-flex {
+    font-size: 11px;
+    line-height: 11px;
+    top: 3px;
+  }
+  
+  .city-container-flex {
+    gap: 12px; /* Уменьшаем отступ на мобильных */
+  }
+}
+
+@media (max-width: 480px) {
+  .cities-container {
+    gap: 20px;
+  }
+  
+  .city-name,
+  .city-name-flex {
+    font-size: 32px;
+    line-height: 32px;
+  }
+  
+  .city-time,
+  .city-time-flex {
+    font-size: 10px;
+    line-height: 10px;
+    top: 2px;
+  }
+}
+
+@media (max-width: 360px) {
+  .city-name,
+  .city-name-flex {
+    font-size: 28px;
+    line-height: 28px;
+  }
+  
+  .city-time,
+  .city-time-flex {
+    font-size: 9px;
+    line-height: 9px;
+    top: 1px;
+  }
+}

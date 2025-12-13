@@ -1,0 +1,389 @@
+/* NavBar.css */
+
+:root {
+  --base-width: 1440px;
+  --scale-factor: 1;
+}
+
+/* КОНТЕЙНЕР HEADER */
+.header-wrapper {
+  position: relative;
+  width: 100%;
+  height: 150px; /* ФИКСИРОВАННАЯ ВЫСОТА 150px */
+  overflow: hidden;
+  margin: 0 auto;
+  background-color: #FFFFFF;
+}
+
+/* Автоматическое вычисление масштаба для больших экранов */
+@media (min-width: 1441px) {
+  :root {
+    --scale-factor: min(1.5, calc(100vw / var(--base-width)));
+    /* Ограничиваем максимальное увеличение до 1.5x */
+  }
+}
+
+/* ГЛАВНЫЙ HEADER - ПК ВЕРСИЯ */
+.main-header {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%); /* Центрирование по вертикали и горизонтали */
+  width: 100%;
+  max-width: 1440px;
+  z-index: 1;
+  left: 50%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-sizing: border-box;
+  padding: 0 40px;
+}
+
+/* Масштабирование навигации для больших экранов */
+@media (min-width: 1441px) {
+  .main-header {
+    top: 50%;
+    padding: 0 calc(40px * var(--scale-factor));
+    max-width: calc(1440px * var(--scale-factor));
+  }
+}
+
+/* ЛЕВАЯ ЧАСТЬ HEADER */
+.header-section--left {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 220px;
+  width: calc(50% - 52.5px);
+}
+
+@media (min-width: 1441px) {
+  .header-section--left {
+    width: calc(50% - calc(52.5px * var(--scale-factor)));
+    gap: calc(220px * var(--scale-factor));
+  }
+}
+
+/* ПРАВАЯ ЧАСТЬ HEADER */
+.header-section--right {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 179px;
+  width: calc(50% - 52.5px);
+}
+
+@media (min-width: 1441px) {
+  .header-section--right {
+    width: calc(50% - calc(52.5px * var(--scale-factor)));
+    gap: calc(179px * var(--scale-factor));
+  }
+}
+
+.nav-link {
+  color: #000000; /* Черный текст на белом фоне */
+  font-size: 14px;
+  cursor: pointer;
+  text-align: center;
+  white-space: nowrap;
+  transition: opacity 0.3s ease;
+  text-decoration: none; /* Для ссылок */
+}
+
+@media (min-width: 1441px) {
+  .nav-link {
+    font-size: calc(14px * var(--scale-factor));
+  }
+}
+
+.nav-link:hover {
+  opacity: 0.6;
+}
+
+/* Отступы для элементов навигации */
+.header-section--left .nav-link--directions {
+  margin-right: 48px;
+}
+
+@media (min-width: 1441px) {
+  .header-section--left .nav-link--directions {
+    margin-right: calc(48px * var(--scale-factor));
+  }
+}
+
+/* Логотип в центре */
+.brand-logo {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.brand-logo__image {
+  width: 105px;
+  height: 40px;
+  object-fit: contain;
+}
+
+@media (min-width: 1441px) {
+  .brand-logo__image {
+    width: calc(105px * var(--scale-factor));
+    height: calc(40px * var(--scale-factor));
+  }
+}
+
+/* Кнопка CHAT WITH US */
+.chat-action-button {
+  background-color: transparent; /* Прозрачный фон */
+  width: 176px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 30px;
+  border: 1px solid rgba(0, 0, 0, 0.3); /* Черная граница с прозрачностью */
+  padding: 0;
+  font-size: 14px;
+  color: #000000; /* Черный текст */
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  backdrop-filter: none; /* Убираем эффект стекла */
+}
+
+@media (min-width: 1441px) {
+  .chat-action-button {
+    width: calc(176px * var(--scale-factor));
+    height: calc(60px * var(--scale-factor));
+    border-radius: calc(30px * var(--scale-factor));
+    font-size: calc(14px * var(--scale-factor));
+  }
+}
+
+.chat-action-button:hover {
+  background-color: rgba(0, 0, 0, 0.05); /* Легкий черный фон при наведении */
+  transform: translateY(-2px);
+}
+
+/* ============================================= */
+/* ЭЛЕМЕНТЫ МОБИЛЬНОЙ ВЕРСИИ - СКРЫТЫ ДЛЯ ПК */
+/* ============================================= */
+.mobile-menu-toggle,
+.mobile-chat-action,
+.mobile-navigation-menu {
+  display: none;
+}
+
+/* ============================================= */
+/* МОБИЛЬНАЯ ВЕРСИЯ (768px и меньше) */
+/* ============================================= */
+@media (max-width: 768px) {
+  /* HEADER - МОБИЛЬНАЯ */
+  .main-header {
+    top: 50%;
+    transform: translate(-50%, -50%);
+    padding: 0 16px;
+    height: 48px;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  /* Скрываем десктопную навигацию в мобильной версии */
+  .header-section--left, 
+  .header-section--right,
+  .chat-action-button {
+    display: none !important;
+  }
+  
+  /* Показываем элементы мобильной версии */
+  .mobile-menu-toggle,
+  .mobile-chat-action {
+    display: flex;
+  }
+  
+  /* Логотип в центре */
+  .brand-logo {
+    position: static;
+    left: auto;
+    transform: none;
+    order: 2;
+  }
+  
+  .brand-logo__image {
+    width: 80px;
+    height: 30px;
+  }
+  
+  /* БУРГЕР-МЕНЮ */
+  .mobile-menu-toggle {
+    width: 48px;
+    height: 48px;
+    background: transparent;
+    border-radius: 12px;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 101;
+    border: 1px solid rgba(0, 0, 0, 0.3); /* Черная граница с прозрачностью */
+    order: 1;
+    transition: all 0.3s ease;
+  }
+  
+  .mobile-menu-toggle:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    transform: translateY(-2px);
+  }
+  
+  .mobile-menu-toggle svg {
+    width: 18px;
+    height: 12px;
+    transition: transform 0.3s ease;
+  }
+  
+  /* КНОПКА ЧАТА СПРАВА */
+  .mobile-chat-action {
+    width: 48px;
+    height: 48px;
+    background: transparent;
+    border-radius: 12px;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    order: 3;
+    transition: all 0.3s ease;
+    z-index: 101;
+  }
+  
+  .mobile-chat-action:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    transform: translateY(-2px);
+  }
+  
+  .mobile-chat-action svg {
+    width: 18px;
+    height: 18px;
+  }
+  
+  /* ВЫПАДАЮЩЕЕ МЕНЮ ДЛЯ МОБИЛЬНОЙ ВЕРСИИ */
+  .mobile-navigation-menu {
+    display: flex !important;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100vh;
+    background: #FFFFFF; /* Белый фон для меню */
+    z-index: 100;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    padding: 80px 20px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-20px);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .mobile-navigation-menu--active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+  
+  /* ЭЛЕМЕНТЫ МЕНЮ */
+  .mobile-nav-link {
+    color: #000000;
+    font-size: 18px;
+    font-weight: 500;
+    text-decoration: none;
+    padding: 16px 32px;
+    transition: all 0.3s ease;
+    background: #F5F5F5;
+    border-radius: 12px;
+    width: 250px;
+    max-width: 80%;
+    text-align: center;
+    border: 1px solid #E0E0E0;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+  }
+  
+  .mobile-nav-link:hover {
+    color: #000000;
+    background: #E0E0E0;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.15);
+  }
+}
+
+/* ДЛЯ ПЛАНШЕТОВ (769px - 1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .main-header {
+    padding: 0 24px;
+  }
+  
+  .header-section--left, .header-section--right {
+    width: auto;
+  }
+  
+  .header-section--left {
+    gap: 100px;
+  }
+  
+  .header-section--right {
+    gap: 80px;
+  }
+}
+
+/* ДЛЯ ОЧЕНЬ БОЛЬШИХ ЭКРАНОВ */
+@media (min-width: 2000px) {
+  :root {
+    --scale-factor: 1.2;
+  }
+}
+
+@media (min-width: 2500px) {
+  :root {
+    --scale-factor: 1.3;
+  }
+}
+
+@media (min-width: 3000px) {
+  :root {
+    --scale-factor: 1.4;
+  }
+}
+
+@media (min-width: 3500px) {
+  :root {
+    --scale-factor: 1.5;
+  }
+}
+
+/* ДЛЯ ОЧЕНЬ МАЛЕНЬКИХ ТЕЛЕФОНОВ */
+@media (max-width: 360px) {
+  .brand-logo__image {
+    width: 70px;
+    height: 26px;
+  }
+  
+  .mobile-nav-link {
+    width: 200px;
+    padding: 14px 24px;
+    font-size: 16px;
+  }
+  
+  .mobile-menu-toggle,
+  .mobile-chat-action {
+    width: 44px;
+    height: 44px;
+  }
+  
+  .mobile-navigation-menu {
+    padding: 60px 20px;
+    gap: 12px;
+  }
+}

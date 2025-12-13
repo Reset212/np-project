@@ -1,0 +1,385 @@
+.scroll-text-animation-wrapper {
+  position: relative;
+  width: 100%;
+  height: 200vh;
+  z-index: 100;
+}
+
+/* ФИКСИРОВАННЫЙ контейнер */
+.scroll-text-fixed-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 1000;
+}
+
+/* Общий контейнер для ВСЕГО текста */
+.scroll-text-content {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/* ДЕСКТОПНЫЕ СТИЛИ */
+
+/* КАЖДОЕ ПРЕДЛОЖЕНИЕ */
+.text-section {
+  position: absolute;
+  text-align: left;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+/* ПЕРВОЕ ПРЕДЛОЖЕНИЕ - СВЕРХУ СЛЕВА */
+.text-section[data-section-index="0"] {
+  top: 15%;
+  left: 10%;
+  transform: translateY(-10px);
+}
+
+/* ВТОРОЕ ПРЕДЛОЖЕНИЕ - СНИЗУ СПРАВА */
+.text-section[data-section-index="1"] {
+  bottom: 15%;
+  right: 10%;
+  text-align: right;
+  transform: translateY(10px);
+}
+
+/* Контейнер для второго текста с цифрой */
+.text-section[data-section-index="1"] .section-content-wrapper {
+  position: relative;
+  display: inline-block;
+  text-align: right;
+}
+
+/* Активное предложение */
+.text-section.active {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+/* ЦИФРЫ - ОБЩИЕ СТИЛИ */
+.text-number {
+  position: absolute;
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  color: #000000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease-out;
+  white-space: nowrap;
+}
+
+/* Цифра 01 - слева сверху над первым предложением */
+.text-number.number-1 {
+  top: calc(15% - 40px);
+  left: 10%;
+}
+
+/* Цифра 02 - В НАЧАЛЕ ТЕКСТА (слева от текста) */
+.text-number.number-2 {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  opacity: 0;
+  text-align: left;
+}
+
+/* Активная цифра */
+.text-number.active {
+  opacity: 1;
+}
+
+/* Строка внутри предложения */
+.text-line {
+  display: block;
+  width: 100%;
+  line-height: 1.1;
+  margin-bottom: 5px;
+}
+
+/* Отдельное слово */
+.text-word {
+  display: inline-block;
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  font-weight: 400;
+  font-size: 64px;
+  letter-spacing: -1px;
+  text-transform: uppercase;
+  color: #000000;
+  white-space: nowrap;
+
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Активное слово */
+.text-word.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Пробел между словами */
+.word-space {
+  display: inline-block;
+  width: 15px;
+  height: 1px;
+}
+
+/* МОБИЛЬНЫЕ СТИЛИ */
+.mobile-container {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.mobile-block {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  max-width: 360px;
+  padding: 0 20px;
+  margin: 0 auto;
+  text-align: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.mobile-block.active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.mobile-block.inactive {
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* Цифра над текстом */
+.mobile-number {
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  font-size: 18px;
+  font-weight: 400;
+  color: #000000;
+  margin-bottom: 25px;
+  opacity: 0.8;
+  letter-spacing: 1.2px;
+}
+
+/* Контейнер для текста */
+.mobile-text-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+}
+
+/* Строка текста */
+.mobile-line {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  line-height: 1.2;
+}
+
+/* Отдельное слово */
+.mobile-word {
+  display: inline-block;
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  font-weight: 400;
+  font-size: 40px;
+  letter-spacing: -0.8px;
+  text-transform: uppercase;
+  color: #000000;
+  white-space: nowrap;
+
+  opacity: 0;
+  transform: translateY(15px);
+  transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mobile-word.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Пробел */
+.mobile-word-space {
+  display: inline-block;
+  width: 6px;
+}
+
+/* АДАПТАЦИЯ ДЛЯ 1040px И МЕНЬШЕ */
+@media (max-width: 1040px) {
+  .scroll-text-animation-wrapper {
+    height: 350vh;
+  }
+
+  .scroll-text-fixed-container {
+    height: 150vh;
+  }
+
+  .text-section[data-section-index="0"] {
+    top: 15%;
+    left: 5%;
+    transform: translateY(0);
+  }
+
+  .text-section[data-section-index="1"] {
+    position: relative;
+    top: auto;
+    bottom: auto;
+    left: 5%;
+    right: auto;
+    width: 100%;
+    text-align: left;
+    margin-top: 80vh;
+    transform: none;
+  }
+
+  .text-section[data-section-index="1"] .section-content-wrapper {
+    display: block;
+    width: 100%;
+    text-align: left;
+  }
+
+  .text-number.number-1 {
+    top: calc(15% - 40px);
+    left: 5%;
+  }
+
+  .text-number.number-2 {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    right: auto;
+    transform: none !important;
+  }
+
+  .text-word {
+    font-size: 56px;
+  }
+}
+
+/* Адаптивность для ПЛАНШЕТОВ (768px) */
+@media (max-width: 768px) {
+  .text-section[data-section-index="0"] {
+    top: 15%;
+    left: 5%;
+  }
+
+  .text-section[data-section-index="1"] {
+    left: 5%;
+    margin-top: 70vh;
+  }
+
+  .text-number.number-1 {
+    top: calc(15% - 40px);
+    left: 5%;
+  }
+
+  .text-number.number-2 {
+    top: -40px;
+    left: 0;
+  }
+
+  .text-word {
+    font-size: 48px;
+  }
+
+  .scroll-text-animation-wrapper {
+    height: 300vh;
+  }
+}
+
+/* МОБИЛЬНАЯ ВЕРСИЯ (480px и меньше) */
+@media (max-width: 480px) {
+  .scroll-text-animation-wrapper {
+    height: 200vh;
+  }
+
+  .scroll-text-fixed-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+  }
+
+  /* Адаптация для маленьких экранов */
+  @media (max-width: 390px) {
+    .mobile-word {
+      font-size: 36px;
+    }
+
+    .mobile-number {
+      font-size: 17px;
+      margin-bottom: 22px;
+    }
+
+    .mobile-container {
+      max-width: 340px;
+    }
+
+    .mobile-text-content {
+      gap: 10px;
+    }
+  }
+
+  @media (max-width: 360px) {
+    .mobile-word {
+      font-size: 34px;
+    }
+
+    .mobile-number {
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
+
+    .mobile-container {
+      max-width: 320px;
+    }
+  }
+
+  @media (max-width: 320px) {
+    .mobile-word {
+      font-size: 32px;
+    }
+
+    .mobile-number {
+      font-size: 15px;
+      margin-bottom: 18px;
+    }
+
+    .mobile-container {
+      max-width: 300px;
+    }
+
+    .mobile-line {
+      gap: 5px;
+    }
+  }
+}
