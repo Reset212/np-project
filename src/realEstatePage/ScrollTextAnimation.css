@@ -43,7 +43,7 @@
 
 /* ВТОРОЕ ПРЕДЛОЖЕНИЕ - СНИЗУ СПРАВА */
 .text-section[data-section-index="1"] {
-  bottom: 15%;
+  bottom: -55%;
   right: 10%;
   text-align: right;
   transform: translateY(10px);
@@ -354,12 +354,13 @@
   .text-section[data-section-index="1"] {
     position: relative;
     top: auto;
-    bottom: auto;
+    bottom: 150px;
+    /* margin-bottom: 200px; */
     left: 5%;
     right: auto;
     width: 100%;
     text-align: left;
-    margin-top: 80vh;
+    /* margin-top: 80vh; */
     transform: none;
   }
 
@@ -396,7 +397,7 @@
 
   .text-section[data-section-index="1"] {
     left: 5%;
-    margin-top: 70vh;
+    margin-top: 40vh !important;
   }
 
   .text-number.number-1 {
