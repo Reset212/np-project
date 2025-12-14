@@ -158,14 +158,14 @@ const ScrollTextAnimation = () => {
         let newActiveSection = 0;
         let sectionProgress = 0;
         
-        if (progress < 0.5) {
+        if (progress < 0.7) {
           // Первая половина скролла - первая секция
           newActiveSection = 0;
-          sectionProgress = progress / 0.5;
+          sectionProgress = progress / 0.7;
         } else {
           // Вторая половина скролла - вторая секция
           newActiveSection = 1;
-          sectionProgress = (progress - 0.5) / 0.5;
+          sectionProgress = (progress - 0.7) / 0.1;
         }
 
         // Управляем видимостью секций в зависимости от направления скролла
@@ -247,17 +247,19 @@ const ScrollTextAnimation = () => {
 
         setWordStates(newWordStates);
       } 
-      // ЛОГИКА ДЛЯ ДЕСКТОПНОЙ ВЕРСИИ
+      // ЛОГИКА ДЛЯ ДЕСКТОПНОЙ ВЕРСИИ - ИЗМЕНЕНИЯ ЗДЕСЬ
       else {
         let newActiveSection = 0;
         let sectionProgress = 0;
 
+        // Изменение: для второй секции используем меньший диапазон прогресса
         if (progress < 0.6) {
           newActiveSection = 0;
           sectionProgress = progress / 0.6;
         } else {
           newActiveSection = 1;
-          sectionProgress = (progress - 0.6) / 0.4;
+          // Уменьшил с 0.4 до 0.3 для более быстрого скролла второй секции
+          sectionProgress = (progress - 0.6) / 0.1;
         }
 
         if (newActiveSection !== activeSection) {
@@ -278,9 +280,13 @@ const ScrollTextAnimation = () => {
 
         const activeSectionData = sections[newActiveSection];
         const totalWords = activeSectionData.lines.flat().length;
+        
+        // Увеличиваем скорость появления слов для второй секции
+        const speedMultiplier = newActiveSection === 0 ? 2.0 : 6.0;
+        
         const wordsToActivate = Math.min(
           totalWords,
-          Math.floor(sectionProgress * totalWords * 2.0)
+          Math.floor(sectionProgress * totalWords * speedMultiplier)
         );
 
         const newWordStates = { ...wordStates };

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import "./VideoBackground.css";
 import videoSrc from "../video/Brunello.mp4";
@@ -10,116 +10,8 @@ import designfestivalImg from "../image/designfestival.png";
 
 const VideoBackground = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
-  const [cursorColor, setCursorColor] = useState('light');
-  const [isCursorExpanded, setIsCursorExpanded] = useState(false);
-  const [isCursorClicked, setIsCursorClicked] = useState(false);
-  const cursorDotRef = useRef(null);
-  const cursorRingRef = useRef(null);
   const navigate = useNavigate();
   const location = useLocation();
-
-  // Обработка движения мыши
-  useEffect(() => {
-    const handleMouseMove = (e) => {
-      setCursorPosition({ x: e.clientX, y: e.clientY });
-      
-      // Обновляем позиции курсоров
-      if (cursorDotRef.current && cursorRingRef.current) {
-        cursorDotRef.current.style.left = `${e.clientX}px`;
-        cursorDotRef.current.style.top = `${e.clientY}px`;
-        cursorRingRef.current.style.left = `${e.clientX}px`;
-        cursorRingRef.current.style.top = `${e.clientY}px`;
-      }
-      
-      // Определение цвета курсора на основе позиции
-      const elementUnderCursor = document.elementFromPoint(e.clientX, e.clientY);
-      if (elementUnderCursor) {
-        // Проверяем, находится ли курсор над светлым элементом
-        const style = window.getComputedStyle(elementUnderCursor);
-        const bgColor = style.backgroundColor;
-        const isLight = isColorLight(bgColor);
-        
-        setCursorColor(isLight ? 'dark' : 'light');
-        
-        // Проверяем, находится ли курсор над интерактивным элементом
-        const isInteractive = 
-          elementUnderCursor.tagName === 'BUTTON' || 
-          elementUnderCursor.tagName === 'A' ||
-          elementUnderCursor.tagName === 'INPUT' ||
-          elementUnderCursor.tagName === 'TEXTAREA' ||
-          elementUnderCursor.closest('button') ||
-          elementUnderCursor.closest('a') ||
-          elementUnderCursor.classList.contains('nav-item') ||
-          elementUnderCursor.classList.contains('view-project-button') ||
-          elementUnderCursor.classList.contains('chat-button') ||
-          elementUnderCursor.classList.contains('burger-menu') ||
-          elementUnderCursor.classList.contains('mobile-chat-button') ||
-          elementUnderCursor.classList.contains('mobile-nav-item');
-        
-        setIsCursorExpanded(isInteractive);
-      }
-    };
-
-    const handleMouseDown = () => {
-      setIsCursorClicked(true);
-      setTimeout(() => setIsCursorClicked(false), 150);
-    };
-
-    const handleMouseUp = () => {
-      // Уже сброшено через таймаут
-    };
-
-    // Скрываем курсор при выходе за пределы окна
-    const handleMouseLeave = () => {
-      if (cursorDotRef.current && cursorRingRef.current) {
-        cursorDotRef.current.style.opacity = '0';
-        cursorRingRef.current.style.opacity = '0';
-      }
-    };
-
-    const handleMouseEnter = () => {
-      if (cursorDotRef.current && cursorRingRef.current) {
-        cursorDotRef.current.style.opacity = '1';
-        cursorRingRef.current.style.opacity = '1';
-      }
-    };
-
-    // Добавляем слушатели
-    window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('mousedown', handleMouseDown);
-    window.addEventListener('mouseup', handleMouseUp);
-    document.addEventListener('mouseleave', handleMouseLeave);
-    document.addEventListener('mouseenter', handleMouseEnter);
-
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('mousedown', handleMouseDown);
-      window.removeEventListener('mouseup', handleMouseUp);
-      document.removeEventListener('mouseleave', handleMouseLeave);
-      document.removeEventListener('mouseenter', handleMouseEnter);
-    };
-  }, []);
-
-  // Функция для определения светлоты цвета
-  const isColorLight = (color) => {
-    if (!color || color === 'transparent' || color === 'rgba(0, 0, 0, 0)') {
-      return false;
-    }
-    
-    const rgb = color.match(/\d+/g);
-    if (rgb && rgb.length >= 3) {
-      const r = parseInt(rgb[0]);
-      const g = parseInt(rgb[1]);
-      const b = parseInt(rgb[2]);
-      
-      // Формула яркости
-      const brightness = (r * 299 + g * 587 + b * 114) / 1000;
-      return brightness > 128;
-    }
-    
-    return false;
-  };
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -207,24 +99,6 @@ const VideoBackground = () => {
           Your browser does not support the video tag.
         </video>
 
-        {/* Кастомный курсор */}
-        <div 
-          ref={cursorDotRef}
-          className={`cursor-dot ${cursorColor} ${isCursorExpanded ? 'expanded' : ''} ${isCursorClicked ? 'clicked' : ''}`}
-          style={{
-            position: 'fixed',
-            transform: 'translate(-50%, -50%)'
-          }}
-        />
-        <div 
-          ref={cursorRingRef}
-          className={`cursor-ring ${cursorColor} ${isCursorExpanded ? 'expanded' : ''} ${isCursorClicked ? 'clicked' : ''}`}
-          style={{
-            position: 'fixed',
-            transform: 'translate(-50%, -50%)'
-          }}
-        />
-
         {/* НАВИГАЦИЯ */}
         <nav className="navigation">
           {/* Десктопная навигация - ЛЕВАЯ ЧАСТЬ */}
@@ -301,8 +175,6 @@ const VideoBackground = () => {
           <div className={`mobile-dropdown ${isMenuOpen ? 'active' : ''}`}>
             {isMenuOpen && (
               <>
-
-                
                 <Link 
                   to="/real-estate" 
                   className="mobile-nav-item"
@@ -338,32 +210,32 @@ const VideoBackground = () => {
         {/* КОНТЕНТ СНИЗУ */}
         <div className="content-wrapper">
           {/* НАГРАДЫ */}
-        <div className="awards-row">
-          <div className="award-item">
-            <div className="award-icon-container icon-1">
-              <img src={taglineImg} alt="Tagline" className="award-icon" />
+          <div className="awards-row">
+            <div className="award-item">
+              <div className="award-icon-container icon-1">
+                <img src={taglineImg} alt="Tagline" className="award-icon" />
+              </div>
+              <p className="award-text"><strong>GOLD 1X</strong><br />Best video</p>
             </div>
-            <p className="award-text"><strong>GOLD 1X</strong><br />Best video</p>
-          </div>
-          <div className="award-item">
-            <div className="award-icon-container icon-2">
-              <img src={awardsImg} alt="Awards" className="award-icon" />
+            <div className="award-item">
+              <div className="award-icon-container icon-2">
+                <img src={awardsImg} alt="Awards" className="award-icon" />
+              </div>
+              <p className="award-text"><strong>SILVER 3X</strong><br />Efficiency in business</p>
             </div>
-            <p className="award-text"><strong>SILVER 3X</strong><br />Efficiency in business</p>
-          </div>
-          <div className="award-item">
-            <div className="award-icon-container icon-3">
-              <img src={silverImg} alt="Mercury" className="award-icon" />
+            <div className="award-item">
+              <div className="award-icon-container icon-3">
+                <img src={silverImg} alt="Mercury" className="award-icon" />
+              </div>
+              <p className="award-text"><strong>BRONZE 2X</strong><br />Situational marketing</p>
             </div>
-            <p className="award-text"><strong>BRONZE 2X</strong><br />Situational marketing</p>
-          </div>
-          <div className="award-item">
-            <div className="award-icon-container icon-4">
-              <img src={designfestivalImg} alt="Festival" className="award-icon" />
+            <div className="award-item">
+              <div className="award-icon-container icon-4">
+                <img src={designfestivalImg} alt="Festival" className="award-icon" />
+              </div>
+              <p className="award-text"><strong>SHORTLIST 3X</strong><br />Visual solutions in video advertising</p>
             </div>
-            <p className="award-text"><strong>SHORTLIST 3X</strong><br />Visual solutions in video advertising</p>
           </div>
-        </div>
 
           {/* КНОПКА VIEW PROJECT */}
           <button 
