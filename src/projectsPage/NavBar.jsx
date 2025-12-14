@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import "./NavBar.css";
 import logoImg from "../image/logo-dark.png";
 
 const NavBar = () => {
   const [menuActive, setMenuActive] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const handleMenuToggle = () => {
     setMenuActive(!menuActive);
@@ -17,31 +19,35 @@ const NavBar = () => {
   // Функция для скролла к блоку Mens
   const scrollToMens = () => {
     handleMenuClose();
-    const mensSection = document.getElementById('mens-section');
-    if (mensSection) {
-      mensSection.scrollIntoView({ 
-        behavior: 'smooth',
-        block: 'start'
-      });
+    
+    if (location.pathname === "/home" || location.pathname === "/") {
+      const mensSection = document.getElementById('mens-section');
+      if (mensSection) {
+        mensSection.scrollIntoView({ 
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }
+    } else {
+      navigate('/home#mens-section');
     }
   };
 
   // Функция для скролла к Contact секции
   const scrollToContact = () => {
     handleMenuClose();
-    const contactSection = document.getElementById('contact-section');
-    if (contactSection) {
-      contactSection.scrollIntoView({ 
-        behavior: 'smooth',
-        block: 'start'
-      });
+    
+    if (location.pathname === "/home" || location.pathname === "/") {
+      const contactSection = document.getElementById('contact-section');
+      if (contactSection) {
+        contactSection.scrollIntoView({ 
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }
+    } else {
+      navigate('/home#contact-section');
     }
-  };
-
-  // Функция для обработки клика на ABOUT
-  const handleAboutClick = (e) => {
-    e.preventDefault();
-    scrollToMens();
   };
 
   // Закрытие меню при нажатии Escape
@@ -66,18 +72,28 @@ const NavBar = () => {
     };
   }, [menuActive]);
 
+  // Эффект для автоматического скролла при загрузке страницы с хэшем
+  useEffect(() => {
+    if (location.hash) {
+      const id = location.hash.replace('#', '');
+      const element = document.getElementById(id);
+      if (element) {
+        setTimeout(() => {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+      }
+    }
+  }, [location]);
+
   return (
     <div className="header-wrapper">
-      
       {/* НАВИГАЦИЯ */}
       <header className="main-header">
         {/* Десктопная навигация - ЛЕВАЯ ЧАСТЬ */}
         <div className="header-section header-section--left">
-          {/* Кнопка DIRECTIONS с ссылкой на real-estate страницу */}
           <Link to="/real-estate" className="nav-link nav-link--directions">
             DIRECTIONS
           </Link>
-          {/* Кнопка PROJECTS с ссылкой на projects страницу */}
           <Link to="/projects" className="nav-link nav-link--projects">
             PROJECTS
           </Link>
@@ -92,15 +108,18 @@ const NavBar = () => {
         
         {/* Десктопная навигация - ПРАВАЯ ЧАСТЬ */}
         <div className="header-section header-section--right">
-          {/* ОБНОВЛЕНО: About теперь Link как DIRECTIONS и PROJECTS */}
           <Link 
-            to="#" 
+            to="/home#mens-section" 
             className="nav-link nav-link--about"
-            onClick={handleAboutClick}
+            onClick={(e) => {
+              if (location.pathname === "/home" || location.pathname === "/") {
+                e.preventDefault();
+                scrollToMens();
+              }
+            }}
           >
             ABOUT
           </Link>
-          {/* ОБНОВЛЕНО: CHAT WITH US теперь скроллит к ContactSection */}
           <button 
             className="chat-action-button"
             onClick={scrollToContact}
@@ -109,9 +128,9 @@ const NavBar = () => {
           </button>
         </div>
         
-        {/* Мобильная навигация */}
+        {/* БУРГЕР-МЕНЮ ИЗ VideoBackground.js */}
         <button 
-          className="mobile-menu-toggle" 
+          className="burger-menu" 
           onClick={handleMenuToggle} 
           aria-label={menuActive ? "Close menu" : "Open menu"}
           aria-expanded={menuActive}
@@ -128,7 +147,7 @@ const NavBar = () => {
         </button>
         
         <button 
-          className="mobile-chat-action" 
+          className="mobile-chat-button" 
           aria-label="Chat with us"
           onClick={() => {
             handleMenuClose();
@@ -140,33 +159,33 @@ const NavBar = () => {
           </svg>
         </button>
         
-        {/* Мобильное выпадающее меню с эффектом стекла */}
-        <div className={`mobile-navigation-menu ${menuActive ? 'mobile-navigation-menu--active' : ''}`}>
+        {/* Мобильное выпадающее меню с эффектом стекла из VideoBackground.js */}
+        <div className={`mobile-dropdown ${menuActive ? 'active' : ''}`}>
           {menuActive && (
             <>
-              {/* Мобильная версия кнопки DIRECTIONS */}
               <Link 
                 to="/real-estate" 
-                className="mobile-nav-link"
+                className="mobile-nav-item"
                 onClick={handleMenuClose}
               >
                 DIRECTIONS
               </Link>
-              {/* Мобильная версия кнопки PROJECTS */}
               <Link 
                 to="/projects" 
-                className="mobile-nav-link"
+                className="mobile-nav-item"
                 onClick={handleMenuClose}
               >
                 PROJECTS
               </Link>
-              {/* ОБНОВЛЕНО: Мобильная версия ABOUT как Link */}
               <Link 
-                to="#" 
-                className="mobile-nav-link"
+                to="/home#mens-section" 
+                className="mobile-nav-item"
                 onClick={(e) => {
-                  e.preventDefault();
-                  scrollToMens();
+                  handleMenuClose();
+                  if (location.pathname === "/home" || location.pathname === "/") {
+                    e.preventDefault();
+                    scrollToMens();
+                  }
                 }}
               >
                 ABOUT
