@@ -167,6 +167,7 @@
 
 /* Подкатегории - исправленная версия с плавным открытием */
 .mobile-subcategories {
+  gap: 10px !important;
   width: 100%;
   margin: 0;
   padding: 0;

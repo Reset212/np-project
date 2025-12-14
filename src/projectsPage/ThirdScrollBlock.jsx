@@ -24,7 +24,8 @@ const ThirdScrollBlock = () => {
       const rect = section.getBoundingClientRect();
       const windowHeight = window.innerHeight;
 
-      const isInView = rect.top < windowHeight * 0.6 && rect.bottom > windowHeight * 0.4;
+      // Анимация начинается, когда блок только появляется на экране
+      const isInView = rect.top < windowHeight * 0.9 && rect.bottom > windowHeight * 0.1;
 
       if (isInView) {
         setIsVisible(true);
@@ -48,25 +49,26 @@ const ThirdScrollBlock = () => {
     };
   }, []);
 
+  // Уменьшены все задержки в 2–3 раза
   const getTitleLetterDelay = (index, isAppearing, wordIndex = 0) => {
     if (!isAppearing) return 0;
     const letterIndex = wordIndex === 0 ? index : index + 3;
-    return letterIndex * 100;
+    return letterIndex * 20; // Быстрее
   };
 
   const getItemLetterDelay = (itemIndex, letterIndex, isAppearing) => {
     if (!isAppearing) return 0;
-    return itemIndex * 200 + letterIndex * 20;
+    return itemIndex * 50 + letterIndex * 5; // Быстрее
   };
 
   const getButtonLetterDelay = (index, isAppearing) => {
     if (!isAppearing) return 0;
-    return index * 40 + 1000;
+    return index * 10 + 200; // Быстрее
   };
 
   const getItemDelay = (index, isAppearing) => {
     if (!isAppearing) return 0;
-    return index * 200 + 400;
+    return index * 50 + 100; // Быстрее
   };
 
   const getItemTransform = (isAppearing) => {
@@ -193,7 +195,7 @@ const ThirdScrollBlock = () => {
               style={{
                 opacity: isVisible ? 1 : 0,
                 transform: getButtonTransform(isVisible),
-                transitionDelay: isVisible ? "1200ms" : "0ms"
+                transitionDelay: isVisible ? "300ms" : "0ms" // Быстрее
               }}
             >
               <button className="third-button">

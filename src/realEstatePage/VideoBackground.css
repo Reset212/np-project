@@ -316,7 +316,7 @@
 }
 
 .view-project-button:hover {
-  background-color: #f0f0f0;
+  background-color: #eeee;
   transform: translateY(-3px);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
 }
@@ -375,7 +375,7 @@
     height: 48px;
     background: rgba(185, 185, 185, 0.32);
     backdrop-filter: blur(8px);
-    border-radius: 12px; /* Более мягкие углы как у кнопок */
+    border-radius: 52px; /* Более мягкие углы как у кнопок */
     align-items: center;
     justify-content: center;
     cursor: pointer;
@@ -402,7 +402,7 @@
     height: 48px;
     background: rgba(185, 185, 185, 0.32);
     backdrop-filter: blur(8px);
-    border-radius: 12px;
+    border-radius: 52px;
     align-items: center;
     justify-content: center;
     cursor: pointer;
@@ -553,10 +553,12 @@
   
   /* Кнопка VIEW PROJECT под наградами */
   .view-project-button {
+    background-color: #eeeeee;
     margin-left: 0;
-    width: 100%;
-    max-width: 280px;
-    font-size: 14px;
+    width: 180px;
+    height: 48px;
+    max-width: 180px;
+    font-size: 16px;
     padding: 12px 24px;
     order: 2; /* Кнопка снизу */
   }
@@ -621,9 +623,7 @@
     gap: 24px 16px;
   }
   
-  .award-text {
-    font-size: 11px;
-  }
+
   
   .view-project-button {
     max-width: 240px;
@@ -653,4 +653,10 @@
     width: 90% !important;
     gap: 12px;
   }
-}
+}  
+
+
+.award-text {
+    font-size: 14px;
+    width: 120px;
+  }

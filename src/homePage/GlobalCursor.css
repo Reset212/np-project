@@ -1,63 +1,27 @@
-/* GlobalCursor.css */
-
-/* ГЛОБАЛЬНЫЙ КУРСОР - ВСЕГДА ПОВЕРХ ВСЕГО */
+/* Статичный чёрный курсор */
 .global-cursor-dot {
   width: 16px;
   height: 16px;
-  background-color: white;
+  background-color: black;
   border-radius: 50%;
   position: fixed;
   pointer-events: none;
-  z-index: 2147483647; /* Максимальное значение */
-  mix-blend-mode: difference;
-  transition: transform 0.15s ease, background-color 0.3s ease;
+  z-index: 2147483647;
   transform: translate(-50%, -50%);
-  will-change: transform, opacity;
-}
-
-.global-cursor-dot.dark {
-  background-color: black;
 }
 
 .global-cursor-ring {
   width: 78px;
   height: 78px;
-  border: 1px solid white;
+  border: 1px solid black;
   border-radius: 50%;
   position: fixed;
   pointer-events: none;
-  z-index: 2147483646; /* Чуть ниже точки */
-  mix-blend-mode: difference;
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-  transition: transform 0.25s ease, border-color 0.3s ease, border-width 0.3s ease;
+  z-index: 2147483646;
   transform: translate(-50%, -50%);
-  will-change: transform, opacity;
 }
 
-.global-cursor-ring.dark {
-  border-color: black;
-}
-
-.global-cursor-ring.expanded {
-  transform: translate(-50%, -50%) scale(1.2);
-  border-width: 2px;
-}
-
-.global-cursor-dot.expanded {
-  transform: translate(-50%, -50%) scale(0.7);
-}
-
-.global-cursor-ring.clicked {
-  transform: translate(-50%, -50%) scale(0.8);
-  border-width: 2px;
-}
-
-.global-cursor-dot.clicked {
-  transform: translate(-50%, -50%) scale(1.2);
-}
-
-/* Отключаем стандартный курсор во всем приложении */
+/* Отключаем стандартный курсор */
 html, body {
   cursor: none !important;
 }
@@ -66,16 +30,16 @@ html, body {
   cursor: none !important;
 }
 
-/* Для мобильных устройств - показываем стандартный курсор */
+/* Для мобильных устройств */
 @media (max-width: 768px), (hover: none) {
   html, body {
     cursor: auto !important;
   }
-  
+
   * {
     cursor: auto !important;
   }
-  
+
   .global-cursor-dot,
   .global-cursor-ring {
     display: none !important;

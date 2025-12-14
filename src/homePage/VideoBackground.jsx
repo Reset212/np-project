@@ -338,32 +338,32 @@ const VideoBackground = () => {
         {/* КОНТЕНТ СНИЗУ */}
         <div className="content-wrapper">
           {/* НАГРАДЫ */}
-          <div className="awards-row">
-            <div className="award-item">
-              <div className="award-icon-container icon-1">
-                <img src={taglineImg} alt="Tagline" className="award-icon" />
-              </div>
-              <p className="award-text">1X GOLD<br />Best video</p>
+        <div className="awards-row">
+          <div className="award-item">
+            <div className="award-icon-container icon-1">
+              <img src={taglineImg} alt="Tagline" className="award-icon" />
             </div>
-            <div className="award-item">
-              <div className="award-icon-container icon-2">
-                <img src={awardsImg} alt="Awards" className="award-icon" />
-              </div>
-              <p className="award-text">4X SILVER<br />Efficiency in business</p>
-            </div>
-            <div className="award-item">
-              <div className="award-icon-container icon-3">
-                <img src={silverImg} alt="Mercury" className="award-icon" />
-              </div>
-              <p className="award-text">2X BRONZE<br />Situational marketing</p>
-            </div>
-            <div className="award-item">
-              <div className="award-icon-container icon-4">
-                <img src={designfestivalImg} alt="Festival" className="award-icon" />
-              </div>
-              <p className="award-text">3X SHORTLIST<br />Visual solutions in video advertising</p>
-            </div>
+            <p className="award-text"><strong>GOLD 1X</strong><br />Best video</p>
           </div>
+          <div className="award-item">
+            <div className="award-icon-container icon-2">
+              <img src={awardsImg} alt="Awards" className="award-icon" />
+            </div>
+            <p className="award-text"><strong>SILVER 3X</strong><br />Efficiency in business</p>
+          </div>
+          <div className="award-item">
+            <div className="award-icon-container icon-3">
+              <img src={silverImg} alt="Mercury" className="award-icon" />
+            </div>
+            <p className="award-text"><strong>BRONZE 2X</strong><br />Situational marketing</p>
+          </div>
+          <div className="award-item">
+            <div className="award-icon-container icon-4">
+              <img src={designfestivalImg} alt="Festival" className="award-icon" />
+            </div>
+            <p className="award-text"><strong>SHORTLIST 3X</strong><br />Visual solutions in video advertising</p>
+          </div>
+        </div>
 
           {/* КНОПКА VIEW PROJECT */}
           <button 
