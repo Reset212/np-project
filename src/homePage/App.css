@@ -25,3 +25,9 @@
 .debug-border {
   border: 1px solid red !important;
 }
+
+
+@font-face {
+  font-family: 'Neue Haas Display' !important;
+  font-display: swap !important; /* или optional для мобилок */
+}
