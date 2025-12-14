@@ -292,7 +292,7 @@
 
 /* Кнопка VIEW PROJECT - ПК версия */
 .view-project-button {
-  background-color: white;
+  background-color: #eeeeeecc;
   color: black;
   border: none;
   padding: 15px 30px;
@@ -553,7 +553,7 @@
   
   /* Кнопка VIEW PROJECT под наградами */
   .view-project-button {
-    background-color: #eeeeee;
+    background-color: #eeeeeecc ;
     margin-left: 0;
     width: 180px;
     height: 48px;

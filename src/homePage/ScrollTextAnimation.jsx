@@ -152,20 +152,21 @@ const ScrollTextAnimation = () => {
       const isScrollingDown = scrollY > lastScrollYRef.current;
       lastScrollYRef.current = scrollY;
 
-      // ЛОГИКА ДЛЯ МОБИЛЬНОЙ ВЕРСИИ
+      // ЛОГИКА ДЛЯ МОБИЛЬНОЙ ВЕРСИИ - ИЗМЕНЕНИЯ ЗДЕСЬ
       if (isMobile) {
-        // Для мобильной версии делим на 2 равные части
+        // Для мобильной версии - увеличиваем время отображения второй секции
         let newActiveSection = 0;
         let sectionProgress = 0;
         
-        if (progress < 0.7) {
-          // Первая половина скролла - первая секция
+        if (progress < 0.6) {
+          // Первая секция - 60% прогресса
           newActiveSection = 0;
-          sectionProgress = progress / 0.7;
+          sectionProgress = progress / 0.6;
         } else {
-          // Вторая половина скролла - вторая секция
+          // Вторая секция - появляется на последних 40%
           newActiveSection = 1;
-          sectionProgress = (progress - 0.7) / 0.1;
+          // Увеличиваем диапазон для второй секции - теперь 0.25 (было 0.1)
+          sectionProgress = (progress - 0.6) / 0.25;
         }
 
         // Управляем видимостью секций в зависимости от направления скролла
@@ -177,7 +178,8 @@ const ScrollTextAnimation = () => {
             setSection2Visible(false);
           } else {
             // При скролле вверх плавно скрываем вторую секцию
-            if (sectionProgress < 0.3) {
+            // Увеличиваем порог для исчезновения второй секции
+            if (sectionProgress < 0.2) {
               setSection2Visible(false);
             }
             setSection1Visible(true);
@@ -186,7 +188,8 @@ const ScrollTextAnimation = () => {
           // Показываем вторую секцию
           if (isScrollingDown) {
             // При скролле вниз плавно скрываем первую секцию
-            if (sectionProgress > 0.7) {
+            // Увеличиваем порог для исчезновения первой секции
+            if (sectionProgress > 0.8) {
               setSection1Visible(false);
             }
             setSection2Visible(true);
@@ -205,24 +208,45 @@ const ScrollTextAnimation = () => {
         if (newActiveSection === 0) {
           const firstWordKey = getWordKey(0, 0, 0);
           const isFirstWordActive = wordStates[firstWordKey] || false;
+          // Для первой цифры - обычный порог
           setNumber1Visible(isFirstWordActive && sectionProgress > 0.1);
           setNumber2Visible(false);
         } else {
           setNumber1Visible(false);
           const secondWordKey = getWordKey(1, 0, 0);
           const isSecondWordActive = wordStates[secondWordKey] || false;
-          setNumber2Visible(isSecondWordActive && sectionProgress > 0.1);
+          // Для второй цифры - увеличиваем порог исчезновения
+          setNumber2Visible(isSecondWordActive && sectionProgress < 0.9);
         }
 
         // Обновляем состояния слов для активной секции
         const activeSectionData = mobileSections[newActiveSection];
         const totalWords = activeSectionData.lines.flat().length;
         
-        // Увеличиваем скорость появления слов
-        const wordsToActivate = Math.min(
-          totalWords,
-          Math.floor(sectionProgress * totalWords * 2.5)
-        );
+        // Разная скорость для первой и второй секций
+        let wordsToActivate;
+        
+        if (newActiveSection === 0) {
+          // Первая секция - обычная скорость
+          wordsToActivate = Math.min(
+            totalWords,
+            Math.floor(sectionProgress * totalWords * 2.5)
+          );
+        } else {
+          // Вторая секция - плавное появление и плавное исчезновение
+          if (sectionProgress < 0.8) {
+            wordsToActivate = Math.min(
+              totalWords,
+              Math.floor(sectionProgress * totalWords * 3.0)
+            );
+          } else {
+            // Плавное исчезновение
+            wordsToActivate = Math.max(
+              0,
+              Math.floor((1 - sectionProgress) * totalWords * 4)
+            );
+          }
+        }
 
         const newWordStates = { ...wordStates };
 
@@ -247,7 +271,7 @@ const ScrollTextAnimation = () => {
 
         setWordStates(newWordStates);
       } 
-      // ЛОГИКА ДЛЯ ДЕСКТОПНОЙ ВЕРСИИ - ИЗМЕНЕНИЯ ЗДЕСЬ
+      // ЛОГИКА ДЛЯ ДЕСКТОПНОЙ ВЕРСИИ
       else {
         let newActiveSection = 0;
         let sectionProgress = 0;
@@ -441,12 +465,12 @@ const ScrollTextAnimation = () => {
     return (
       <div
         key={`mobile-section-${sectionIdx}`}
-        className={`mobile-section ${isActive && isVisible ? 'active' : ''} ${isVisible ? 'visible' : ''}`}
+        className={`mobile-section ${isActive && isVisible ? 'active' : ''} ${isVisible ? 'visible' : ''} ${sectionIdx === 1 ? 'mobile-section-2' : 'mobile-section-1'}`}
         data-section-index={sectionIdx}
         data-scroll-direction={sectionIdx === 0 ? 'down' : 'up'}
       >
         {/* Цифра над текстом для мобильной версии */}
-        <div className={`mobile-section-number ${sectionIdx === 0 ? 'number-1' : 'number-2'} ${(sectionIdx === 0 ? number1Visible : number2Visible) ? 'active' : ''}`}>
+        <div className={`mobile-section-number ${sectionIdx === 0 ? 'number-1' : 'number-2'} ${(sectionIdx === 0 ? number1Visible : number2Visible) ? 'active' : ''} ${sectionIdx === 1 ? 'mobile-number-2' : ''}`}>
           {section.number}
         </div>
 
@@ -460,7 +484,7 @@ const ScrollTextAnimation = () => {
                 return (
                   <React.Fragment key={`mobile-word-${key}`}>
                     <span
-                      className={`mobile-word ${isWordActive ? 'active' : ''}`}
+                      className={`mobile-word ${isWordActive ? 'active' : ''} ${sectionIdx === 1 ? 'mobile-word-2' : ''}`}
                       style={{
                         transitionDelay: `${(lineIdx * line.length + wordIdx) * 0.02}s`
                       }}

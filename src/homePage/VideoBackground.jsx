@@ -215,25 +215,25 @@ const VideoBackground = () => {
               <div className="award-icon-container icon-1">
                 <img src={taglineImg} alt="Tagline" className="award-icon" />
               </div>
-              <p className="award-text"><strong>GOLD 1X</strong><br />Best video</p>
+              <p className="award-text"><strong>1X GOLD</strong><br />Best video</p>
             </div>
             <div className="award-item">
               <div className="award-icon-container icon-2">
                 <img src={awardsImg} alt="Awards" className="award-icon" />
               </div>
-              <p className="award-text"><strong>SILVER 3X</strong><br />Efficiency in business</p>
+              <p className="award-text"><strong>3X SILVER</strong><br />Efficiency in business</p>
             </div>
             <div className="award-item">
               <div className="award-icon-container icon-3">
                 <img src={silverImg} alt="Mercury" className="award-icon" />
               </div>
-              <p className="award-text"><strong>BRONZE 2X</strong><br />Situational marketing</p>
+              <p className="award-text"><strong>2X BRONZE</strong><br />Situational marketing</p>
             </div>
             <div className="award-item">
               <div className="award-icon-container icon-4">
                 <img src={designfestivalImg} alt="Festival" className="award-icon" />
               </div>
-              <p className="award-text"><strong>SHORTLIST 3X</strong><br />Visual solutions in video advertising</p>
+              <p className="award-text"><strong>3X SHORTLIST</strong><br />Visual solutions in video advertising</p>
             </div>
           </div>
 
