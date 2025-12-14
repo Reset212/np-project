@@ -177,7 +177,7 @@ const ThirdScrollBlock = () => {
                     {item.split("").map((letter, letterIndex) => (
                       <span
                         key={letterIndex}
-                        className="item-letter"
+                        className={`item-letter ${letter === ' ' ? 'item-space' : ''}`}
                         style={{
                           opacity: isVisible ? 1 : 0,
                           transitionDelay: `${getItemLetterDelay(index, letterIndex, isVisible)}ms`,

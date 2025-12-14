@@ -117,7 +117,10 @@
   transition: opacity 0.6s ease, transform 0.6s ease;
   overflow: visible;
 }
-
+.item-space {
+  display: inline-block;
+  width: 0.5em; /* или любая нужная ширина */
+}
 .item-text {
   font-family: 'Helvetica Neue', Arial, sans-serif;
   font-style: normal;
