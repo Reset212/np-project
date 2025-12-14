@@ -220,11 +220,12 @@
     height: 30px;
   }
   
-  /* БУРГЕР-МЕНЮ */
+  /* БУРГЕР-МЕНЮ С ЭФФЕКТОМ СТЕКЛА */
   .burger-menu {
     width: 48px;
     height: 48px;
-    background: transparent;
+    background: rgba(185, 185, 185, 0.32);
+    backdrop-filter: blur(8px);
     border-radius: 52px;
     align-items: center;
     justify-content: center;
@@ -247,11 +248,12 @@
     transition: transform 0.3s ease;
   }
   
-  /* КНОПКА ЧАТА СПРАВА */
+  /* КНОПКА ЧАТА СПРАВА (ЭФФЕКТ СТЕКЛА) */
   .mobile-chat-button {
     width: 48px;
     height: 48px;
-    background: transparent;
+    background: rgba(185, 185, 185, 0.32);
+    backdrop-filter: blur(8px);
     border-radius: 52px;
     align-items: center;
     justify-content: center;
@@ -273,22 +275,21 @@
     height: 18px;
   }
   
-  /* ВЫПАДАЮЩЕЕ МЕНЮ - ФИКСИРОВАННОЕ НАД ВСЕМИ ЭЛЕМЕНТАМИ */
+  /* ВЫПАДАЮЩЕЕ МЕНЮ С ЭФФЕКТОМ СТЕКЛА - ИСПРАВЛЕНО */
   .mobile-dropdown {
-    display: block;
+    display: flex !important;
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-  width: 30vh;
+    width: 30vh;
     height: 50vh;
     z-index: 999; /* Ниже чем кнопки, но выше чем основной контент */
-    display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-   gap: 16px;
+    gap: 16px;
     padding: 80px 20px;
     opacity: 0;
     visibility: hidden;
@@ -304,31 +305,62 @@
     pointer-events: auto;
   }
   
-  /* ЭЛЕМЕНТЫ МЕНЮ */
+  /* ЭЛЕМЕНТЫ МЕНЮ С ЭФФЕКТОМ СТЕКЛА */
   .mobile-nav-item {
     color: #000000;
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 500;
     text-decoration: none;
-    padding: 20px 40px;
+    padding: 16px 32px;
     transition: all 0.3s ease;
     background: rgba(255, 255, 255, 0.8);
-    border-radius: 16px;
-    width: 280px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 12px;
+    width: 250px;
     max-width: 80%;
     text-align: center;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
     cursor: pointer;
-    backdrop-filter: blur(10px);
   }
   
   .mobile-nav-item:hover {
     color: #000000;
     background: rgba(255, 255, 255, 0.95);
     transform: translateY(-3px);
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(0, 0, 0, 0.3);
+  }
+  
+  /* КРЕСТИК ДЛЯ ЗАКРЫТИЯ */
+  .close-menu {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
     border: 1px solid rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    z-index: 1002; /* Выше чем меню */
+  }
+  
+  .close-menu:hover {
+    background: rgba(255, 255, 255, 0.95);
+    transform: translateY(-2px);
+    border: 1px solid rgba(0, 0, 0, 0.3);
+  }
+  
+  .close-menu svg {
+    width: 20px;
+    height: 20px;
   }
 }
 
@@ -384,8 +416,8 @@
   }
   
   .mobile-nav-item {
-    width: 220px;
-    padding: 16px 28px;
+    width: 200px;
+    padding: 14px 24px;
     font-size: 18px;
   }
   
@@ -396,7 +428,15 @@
   }
   
   .mobile-dropdown {
-    padding: 70px 20px;
-    gap: 16px;
+    padding: 60px 20px;
+    width: 90% !important;
+    gap: 12px;
+  }
+  
+  .close-menu {
+    top: 20px;
+    right: 20px;
+    width: 36px;
+    height: 36px;
   }
 }
