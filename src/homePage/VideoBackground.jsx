@@ -301,15 +301,7 @@ const VideoBackground = () => {
           <div className={`mobile-dropdown ${isMenuOpen ? 'active' : ''}`}>
             {isMenuOpen && (
               <>
-                <button 
-                  className="close-menu"
-                  onClick={closeMenu}
-                  aria-label="Close menu"
-                >
-                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M1 1L19 19M19 1L1 19" stroke="white" strokeWidth="2" strokeLinecap="round"/>
-                  </svg>
-                </button>
+
                 
                 <Link 
                   to="/real-estate" 
