@@ -422,35 +422,12 @@
     height: 18px;
   }
   
-  /* ВЫПАДАЮЩЕЕ МЕНЮ С ЭФФЕКТОМ СТЕКЛА - ИСПРАВЛЕНО */
-  .mobile-dropdown {
-    display: flex !important; /* Важно: принудительно показываем когда active */
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    width: 100%;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.85); /* Полупрозрачный черный фон */
-    backdrop-filter: blur(20px); /* Сильный эффект стекла */
-    -webkit-backdrop-filter: blur(20px);
-    z-index: 100; /* Ниже кнопок бургера/чата */
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 16px;
-    padding: 80px 20px;
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(-20px);
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  }
+
   
   .mobile-dropdown.active {
     opacity: 1;
     visibility: visible;
-    transform: translateY(0);
+    /* transform: translateY(0); */
   }
   
   /* ЭЛЕМЕНТЫ МЕНЮ С ЭФФЕКТОМ СТЕКЛА */
@@ -651,6 +628,7 @@
   
   .mobile-dropdown {
     padding: 60px 20px;
+    width: 90% ;
     gap: 12px;
   }
 }

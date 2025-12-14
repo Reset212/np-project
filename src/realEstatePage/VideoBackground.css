@@ -430,12 +430,10 @@
     left: 0;
     right: 0;
     bottom: 0;
-    width: 100%;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.85); /* Полупрозрачный черный фон */
-    backdrop-filter: blur(20px); /* Сильный эффект стекла */
-    -webkit-backdrop-filter: blur(20px);
-    z-index: 100; /* Ниже кнопок бургера/чата */
+    width: 30vh;
+    height: 50vh;
+
+    z-index: 100 !important; /* Ниже кнопок бургера/чата */
     flex-direction: column;
     justify-content: center;
     align-items: center;
@@ -450,7 +448,8 @@
   .mobile-dropdown.active {
     opacity: 1;
     visibility: visible;
-    transform: translateY(0);
+    z-index: 1;
+    /* transform: translateY(0); */
   }
   
   /* ЭЛЕМЕНТЫ МЕНЮ С ЭФФЕКТОМ СТЕКЛА */
@@ -651,6 +650,7 @@
   
   .mobile-dropdown {
     padding: 60px 20px;
+    width: 90% !important;
     gap: 12px;
   }
 }
