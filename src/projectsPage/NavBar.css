@@ -10,7 +10,7 @@
   position: relative;
   width: 100%;
   height: 150px; /* ФИКСИРОВАННАЯ ВЫСОТА 150px */
-  overflow: hidden;
+  overflow: visible; /* Изменено с hidden на visible */
   margin: 0 auto;
   background-color: #FFFFFF;
 }
@@ -27,10 +27,10 @@
 .main-header {
   position: absolute;
   top: 50%;
-  transform: translate(-50%, -50%); /* Центрирование по вертикали и горизонтали */
+  transform: translate(-50%, -50%);
   width: 100%;
   max-width: 1440px;
-  z-index: 1;
+  z-index: 1000; /* Увеличиваем z-index */
   left: 50%;
   display: flex;
   justify-content: space-between;
@@ -81,13 +81,13 @@
 }
 
 .nav-link {
-  color: #000000; /* Черный текст на белом фоне */
+  color: #000000;
   font-size: 14px;
   cursor: pointer;
   text-align: center;
   white-space: nowrap;
   transition: opacity 0.3s ease;
-  text-decoration: none; /* Для ссылок */
+  text-decoration: none;
 }
 
 @media (min-width: 1441px) {
@@ -133,21 +133,21 @@
 
 /* Кнопка CHAT WITH US */
 .chat-action-button {
-  background-color: transparent; /* Прозрачный фон */
+  background-color: transparent;
   width: 176px;
   height: 60px;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 30px;
-  border: 1px solid rgba(0, 0, 0, 0.3); /* Черная граница с прозрачностью */
+  border: 1px solid rgba(0, 0, 0, 0.3);
   padding: 0;
   font-size: 14px;
-  color: #000000; /* Черный текст */
+  color: #000000;
   cursor: pointer;
   transition: all 0.3s ease;
   white-space: nowrap;
-  backdrop-filter: none; /* Убираем эффект стекла */
+  backdrop-filter: none;
 }
 
 @media (min-width: 1441px) {
@@ -160,16 +160,22 @@
 }
 
 .chat-action-button:hover {
-  background-color: rgba(0, 0, 0, 0.05); /* Легкий черный фон при наведении */
+  background-color: rgba(0, 0, 0, 0.05);
   transform: translateY(-2px);
 }
 
 /* ============================================= */
-/* ЭЛЕМЕНТЫ МОБИЛЬНОЙ ВЕРСИИ - СКРЫТЫ ДЛЯ ПК */
+/* БУРГЕР-МЕНЮ И КНОПКА ЧАТА - СКРЫТЫ ДЛЯ ПК */
 /* ============================================= */
-.mobile-menu-toggle,
-.mobile-chat-action,
-.mobile-navigation-menu {
+.burger-menu,
+.mobile-chat-button {
+  display: none;
+}
+
+/* ============================================= */
+/* ВЫПАДАЮЩЕЕ МЕНЮ - СКРЫТО ДЛЯ ПК */
+/* ============================================= */
+.mobile-dropdown {
   display: none;
 }
 
@@ -194,10 +200,10 @@
     display: none !important;
   }
   
-  /* Показываем элементы мобильной версии */
-  .mobile-menu-toggle,
-  .mobile-chat-action {
-    display: flex;
+  /* Показываем бургер-меню и кнопку чата */
+  .burger-menu,
+  .mobile-chat-button {
+    display: flex !important;
   }
   
   /* Логотип в центре */
@@ -206,6 +212,7 @@
     left: auto;
     transform: none;
     order: 2;
+    z-index: 1001; /* Логотип над меню */
   }
   
   .brand-logo__image {
@@ -214,108 +221,114 @@
   }
   
   /* БУРГЕР-МЕНЮ */
-  .mobile-menu-toggle {
+  .burger-menu {
     width: 48px;
     height: 48px;
     background: transparent;
-    border-radius: 12px;
+    border-radius: 52px;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    z-index: 101;
-    border: 1px solid rgba(0, 0, 0, 0.3); /* Черная граница с прозрачностью */
+    z-index: 1001; /* Высокий z-index для бургер-меню */
+    border: 1px solid rgba(0, 0, 0, 0.3);
     order: 1;
     transition: all 0.3s ease;
+    position: relative;
   }
   
-  .mobile-menu-toggle:hover {
-    background-color: rgba(0, 0, 0, 0.05);
+  .burger-menu:hover {
+    background-color: rgba(255, 255, 255, 0.2);
     transform: translateY(-2px);
   }
   
-  .mobile-menu-toggle svg {
+  .burger-menu svg {
     width: 18px;
     height: 12px;
     transition: transform 0.3s ease;
   }
   
   /* КНОПКА ЧАТА СПРАВА */
-  .mobile-chat-action {
+  .mobile-chat-button {
     width: 48px;
     height: 48px;
     background: transparent;
-    border-radius: 12px;
+    border-radius: 52px;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     border: 1px solid rgba(0, 0, 0, 0.3);
     order: 3;
     transition: all 0.3s ease;
-    z-index: 101;
+    z-index: 1001; /* Высокий z-index для кнопки чата */
+    position: relative;
   }
   
-  .mobile-chat-action:hover {
+  .mobile-chat-button:hover {
     background-color: rgba(0, 0, 0, 0.05);
     transform: translateY(-2px);
   }
   
-  .mobile-chat-action svg {
+  .mobile-chat-button svg {
     width: 18px;
     height: 18px;
   }
   
-  /* ВЫПАДАЮЩЕЕ МЕНЮ ДЛЯ МОБИЛЬНОЙ ВЕРСИИ */
-  .mobile-navigation-menu {
-    display: flex !important;
+  /* ВЫПАДАЮЩЕЕ МЕНЮ - ФИКСИРОВАННОЕ НАД ВСЕМИ ЭЛЕМЕНТАМИ */
+  .mobile-dropdown {
+    display: block;
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    width: 100%;
-    height: 100vh;
-    background: #FFFFFF; /* Белый фон для меню */
-    z-index: 100;
+  width: 30vh;
+    height: 50vh;
+    z-index: 999; /* Ниже чем кнопки, но выше чем основной контент */
+    display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 16px;
+   gap: 16px;
     padding: 80px 20px;
     opacity: 0;
     visibility: hidden;
     transform: translateY(-20px);
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
   }
   
-  .mobile-navigation-menu--active {
+  .mobile-dropdown.active {
     opacity: 1;
     visibility: visible;
     transform: translateY(0);
+    pointer-events: auto;
   }
   
   /* ЭЛЕМЕНТЫ МЕНЮ */
-  .mobile-nav-link {
+  .mobile-nav-item {
     color: #000000;
-    font-size: 18px;
+    font-size: 20px;
     font-weight: 500;
     text-decoration: none;
-    padding: 16px 32px;
+    padding: 20px 40px;
     transition: all 0.3s ease;
-    background: #F5F5F5;
-    border-radius: 12px;
-    width: 250px;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 16px;
+    width: 280px;
     max-width: 80%;
     text-align: center;
-    border: 1px solid #E0E0E0;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
     cursor: pointer;
+    backdrop-filter: blur(10px);
   }
   
-  .mobile-nav-link:hover {
+  .mobile-nav-item:hover {
     color: #000000;
-    background: #E0E0E0;
+    background: rgba(255, 255, 255, 0.95);
     transform: translateY(-3px);
-    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(0, 0, 0, 0.2);
   }
 }
 
@@ -370,20 +383,20 @@
     height: 26px;
   }
   
-  .mobile-nav-link {
-    width: 200px;
-    padding: 14px 24px;
-    font-size: 16px;
+  .mobile-nav-item {
+    width: 220px;
+    padding: 16px 28px;
+    font-size: 18px;
   }
   
-  .mobile-menu-toggle,
-  .mobile-chat-action {
+  .burger-menu,
+  .mobile-chat-button {
     width: 44px;
     height: 44px;
   }
   
-  .mobile-navigation-menu {
-    padding: 60px 20px;
-    gap: 12px;
+  .mobile-dropdown {
+    padding: 70px 20px;
+    gap: 16px;
   }
 }
