@@ -98,11 +98,11 @@ const MensSection = () => {
 
       // Анимация ширины фото - больше промежуточных точек
       const minPhotoWidth = 20;
-      const step1Width = 30;   // Первая промежуточная точка
-      const step2Width = 40;   // Вторая промежуточная точка (центр)
+      const step1Width = 40;   // Первая промежуточная точка
+      const step2Width = 50;   // Вторая промежуточная точка (центр)
       const step3Width = 50;   // Третья промежуточная точка
-      const step4Width = 60;   // Четвертая промежуточная точка
-      const maxPhotoWidth = 70;
+      const step4Width = 50;   // Четвертая промежуточная точка
+      const maxPhotoWidth = 50;
       
       let photoWidth;
       

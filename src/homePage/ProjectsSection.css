@@ -2,7 +2,7 @@
 
 .projects-section {
   position: relative;
-  height: 400vh;
+  height: 250vh !important;
   background-color: white;
   display: flex;
   align-items: center;

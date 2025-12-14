@@ -51,19 +51,24 @@ const ProjectsSection = () => {
       setIsInView(isSectionInView);
 
       if (isMobile) {
-        const sectionTop = rect.top;
-        const sectionHeight = section.offsetHeight;
-        const totalVisibleHeight = windowHeight + sectionHeight;
-        const distanceFromTop = -sectionTop;
-
-        let progress = distanceFromTop / totalVisibleHeight;
+        // НАЧАЛО ИСПРАВЛЕНИЯ: Анимация начинается раньше
+        const viewportThreshold = windowHeight * 0.8; // 80% высоты окна
+        
+        // Расстояние от верха секции до низа окна
+        const distanceFromTop = windowHeight - rect.top;
+        
+        // Прогресс начинается, когда секция появляется внизу окна
+        let progress = distanceFromTop / (windowHeight + section.offsetHeight);
         progress = Math.max(0, Math.min(1, progress));
-
-        // Сдвигаем все зоны раньше, особенно "the world"
+        
+        // Ускоряем прогресс, чтобы анимация начиналась раньше
+        const acceleratedProgress = Math.min(1, progress * 1.5);
+        
+        // Еще больше сдвигаем зоны анимации вперед
         const wordZones = [
-          { start: 0.10, end: 0.30 },   // "We have done": 10-30%
-          { start: 0.32, end: 0.52 },   // "projects around": 32-52%
-          { start: 0.54, end: 0.74 },   // "the world": 54-74% (заканчивается на 74% вместо 85%)
+          { start: 0.0, end: 0.25 },    // "We have done": 0-25% (было 0.10-0.30)
+          { start: 0.20, end: 0.45 },   // "projects around": 20-45% (было 0.32-0.52)
+          { start: 0.40, end: 0.65 },   // "the world": 40-65% (было 0.54-0.74)
         ];
 
         const newOpacities = [];
@@ -76,43 +81,37 @@ const ProjectsSection = () => {
           let translateY = 0;
           let scale = 0.9;
           
-          if (progress >= zone.start && progress <= zone.end) {
+          if (acceleratedProgress >= zone.start && acceleratedProgress <= zone.end) {
             // В зоне видимости слова
-            wordProgress = (progress - zone.start) / (zone.end - zone.start);
+            wordProgress = (acceleratedProgress - zone.start) / (zone.end - zone.start);
             
-            // Для всех слов делаем одинаково быстрые переходы
-            if (wordProgress < 0.15) {
-              opacity = wordProgress / 0.15; // Быстро появляемся
-            } else if (wordProgress > 0.85) {
-              opacity = (1 - wordProgress) / 0.15; // Быстро исчезаем
+            // Делаем переходы более плавными
+            if (wordProgress < 0.2) {
+              opacity = wordProgress / 0.2;
+            } else if (wordProgress > 0.8) {
+              opacity = (1 - wordProgress) / 0.2;
             } else {
               opacity = 1;
             }
 
-            // Быстрая анимация движения
-            if (wordProgress < 0.5) {
-              const easeIn = wordProgress * 2;
-              translateY = 20 * (1 - easeIn); // 20px → 0px (меньше движение)
-            } else {
-              const easeOut = (wordProgress - 0.5) * 2;
-              translateY = 20 * easeOut; // 0px → 20px (меньше движение)
-            }
+            // Более плавная анимация движения
+            translateY = 15 * Math.sin(wordProgress * Math.PI); // 15px вверх-вниз
 
-            // Быстрое масштабирование
-            if (wordProgress < 0.2) {
-              scale = 0.9 + (wordProgress / 0.2) * 0.1; // 0.9 → 1.0
-            } else if (wordProgress > 0.8) {
-              scale = 1.0 - ((wordProgress - 0.8) / 0.2) * 0.1; // 1.0 → 0.9
+            // Плавное масштабирование
+            if (wordProgress < 0.3) {
+              scale = 0.9 + (wordProgress / 0.3) * 0.1;
+            } else if (wordProgress > 0.7) {
+              scale = 1.0 - ((wordProgress - 0.7) / 0.3) * 0.1;
             } else {
               scale = 1.0;
             }
           } else {
             opacity = 0;
-            if (progress < zone.start) {
-              translateY = 20;
+            if (acceleratedProgress < zone.start) {
+              translateY = 15;
               scale = 0.9;
-            } else if (progress > zone.end) {
-              translateY = -20;
+            } else if (acceleratedProgress > zone.end) {
+              translateY = -15;
               scale = 0.9;
             }
           }
@@ -129,7 +128,7 @@ const ProjectsSection = () => {
         return;
       }
 
-      // Логика для ПК и планшетов
+      // Логика для ПК и планшетов - НАЧАЛО РАНЬШЕ
       const currentScrollY = window.scrollY;
 
       if (!hasStartedRef.current) {
@@ -140,17 +139,23 @@ const ProjectsSection = () => {
 
       const sectionHeight = section.offsetHeight;
       const sectionScroll = currentScrollY - sectionTopRef.current;
-      let progress = sectionScroll / sectionHeight;
+      
+      // Начинаем анимацию сразу при входе в секцию
+      let progress = (sectionScroll + windowHeight * 0.3) / (sectionHeight * 0.8);
 
       progress = Math.max(0, Math.min(1, progress));
-      const adjustedProgress = Math.max(0, progress - 0.1) / 0.8;
+      
+      // Уменьшаем задержку перед началом анимации
+      const adjustedProgress = Math.max(0, progress - 0.05) / 0.9; // Было: -0.1 / 0.8
 
       scrollProgressRef.current = Math.max(0, Math.min(1, adjustedProgress));
 
       const baseProgress = scrollProgressRef.current;
+      
+      // Уменьшаем задержки между словами
       animationStateRef.current.word1.targetProgress = baseProgress;
-      animationStateRef.current.word2.targetProgress = Math.max(0, baseProgress - 0.15);
-      animationStateRef.current.word3.targetProgress = Math.max(0, baseProgress - 0.3);
+      animationStateRef.current.word2.targetProgress = Math.max(0, baseProgress - 0.1); // Было: 0.15
+      animationStateRef.current.word3.targetProgress = Math.max(0, baseProgress - 0.2); // Было: 0.3
     };
 
     const easeOutCubic = (t) => {
@@ -165,7 +170,7 @@ const ProjectsSection = () => {
       if (!word || isMobile) return;
 
       const currentState = animationStateRef.current[`word${index + 1}`];
-      currentState.progress = lerp(currentState.progress, targetProgress, 0.06);
+      currentState.progress = lerp(currentState.progress, targetProgress, 0.08); // Увеличили скорость
 
       const wordWidth = word.offsetWidth;
       const windowWidth = window.innerWidth;
@@ -177,30 +182,32 @@ const ProjectsSection = () => {
       const progress = currentState.progress;
 
       if (progress < 0) {
-        translateX = windowWidth * 1.5;
+        translateX = windowWidth * 1.3; // Меньше начальное смещение
         opacity = 0;
         scale = 0.9;
       } else if (progress < 1) {
         const easedProgress = easeOutCubic(progress);
-        const startX = windowWidth * 1.5;
-        const endX = -windowWidth * 1.5;
+        const startX = windowWidth * 1.3; // Меньше начальное смещение
+        const endX = -windowWidth * 1.3; // Меньше конечное смещение
         translateX = startX + easedProgress * (endX - startX);
 
-        if (progress < 0.25) {
-          opacity = progress / 0.25;
-        } else if (progress > 0.75) {
-          opacity = 1 - ((progress - 0.75) / 0.25);
+        // Более плавные переходы прозрачности
+        if (progress < 0.2) { // Было: 0.25
+          opacity = progress / 0.2;
+        } else if (progress > 0.8) { // Было: 0.75
+          opacity = 1 - ((progress - 0.8) / 0.2);
         } else {
           opacity = 1;
         }
 
-        if (progress < 0.5) {
-          scale = 0.95 + (progress / 0.5) * 0.05;
+        // Более плавное масштабирование
+        if (progress < 0.4) { // Было: 0.5
+          scale = 0.95 + (progress / 0.4) * 0.05;
         } else {
-          scale = 1 - ((progress - 0.5) / 0.5) * 0.05;
+          scale = 1 - ((progress - 0.4) / 0.6) * 0.05;
         }
       } else {
-        translateX = -windowWidth * 1.5;
+        translateX = -windowWidth * 1.3; // Меньше конечное смещение
         opacity = 0;
         scale = 0.9;
       }
@@ -244,13 +251,25 @@ const ProjectsSection = () => {
       }
     };
 
-    window.addEventListener("scroll", scrollHandler, { passive: true });
+    // Слушаем скролл с более высоким приоритетом
+    window.addEventListener("scroll", scrollHandler, { passive: true, capture: true });
     window.addEventListener("resize", handleResize, { passive: true });
 
+    // Инициализируем позицию секции
     if (sectionRef.current) {
       sectionTopRef.current = sectionRef.current.offsetTop;
+      
+      // Инициализируем анимацию сразу
+      const rect = sectionRef.current.getBoundingClientRect();
+      const windowHeight = window.innerHeight;
+      
+      // Если секция уже частично видна, запускаем анимацию
+      if (rect.top < windowHeight && rect.bottom > 0) {
+        handleScroll();
+      }
     }
 
+    // Запускаем обработчик скролла сразу
     handleScroll();
 
     if (!isMobile) {
@@ -271,7 +290,7 @@ const ProjectsSection = () => {
     <section
       className="projects-section"
       ref={sectionRef}
-      style={{ height: isMobile ? "400vh" : "400vh" }}
+      style={{ height: isMobile ? "300vh" : "300vh" }} // Уменьшили высоту для более ранней анимации
     >
       <div className="projects-content">
         <div className="words-container" ref={containerRef}>
@@ -284,13 +303,13 @@ const ProjectsSection = () => {
               !isMobile
                 ? {
                     opacity: 0,
-                    transform: `translateX(200vw)`,
+                    transform: `translateX(130vw)`, // Меньше начальное смещение
                     willChange: "transform, opacity",
                   }
                 : {
                     opacity: wordOpacities[0],
                     transform: wordTransforms[0],
-                    transition: "opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)",
+                    transition: "opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
                   }
             }
           >
@@ -305,13 +324,13 @@ const ProjectsSection = () => {
               !isMobile
                 ? {
                     opacity: 0,
-                    transform: `translateX(200vw)`,
+                    transform: `translateX(130vw)`, // Меньше начальное смещение
                     willChange: "transform, opacity",
                   }
                 : {
                     opacity: wordOpacities[1],
                     transform: wordTransforms[1],
-                    transition: "opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)",
+                    transition: "opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
                   }
             }
           >
@@ -326,13 +345,13 @@ const ProjectsSection = () => {
               !isMobile
                 ? {
                     opacity: 0,
-                    transform: `translateX(200vw)`,
+                    transform: `translateX(130vw)`, // Меньше начальное смещение
                     willChange: "transform, opacity",
                   }
                 : {
                     opacity: wordOpacities[2],
                     transform: wordTransforms[2],
-                    transition: "opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)",
+                    transition: "opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
                   }
             }
           >

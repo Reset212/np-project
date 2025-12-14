@@ -174,12 +174,12 @@ const ContactSection = () => {
 
             <div className="form-group">
               <label htmlFor="project" className="form-label">TELL US ABOUT YOUR PROJECT</label>
-              <textarea
+              <input
                 id="project"
                 name="project"
                 value={formData.project}
                 onChange={handleInputChange}
-                className="form-textarea"
+                className="form-input"
                 rows="1"
                 placeholder=""
                 required

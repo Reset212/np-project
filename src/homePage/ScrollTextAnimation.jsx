@@ -165,7 +165,7 @@ const ScrollTextAnimation = () => {
         } else {
           // Вторая половина скролла - вторая секция
           newActiveSection = 1;
-          sectionProgress = (progress - 0.7) / 0.1;
+          sectionProgress = (progress - 0.7) / 0.;
         }
 
         // Управляем видимостью секций в зависимости от направления скролла
