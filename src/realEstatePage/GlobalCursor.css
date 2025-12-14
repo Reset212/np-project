@@ -1,3 +1,5 @@
+/* GlobalCursor.css */
+
 /* Статичный чёрный курсор */
 .global-cursor-dot {
   width: 16px;
@@ -8,17 +10,52 @@
   pointer-events: none;
   z-index: 2147483647;
   transform: translate(-50%, -50%);
+  transition: width 0.1s, height 0.1s, opacity 0.1s;
 }
 
 .global-cursor-ring {
   width: 78px;
   height: 78px;
-  border: 2px solid black;
+  border: 1px solid black;
   border-radius: 50%;
   position: fixed;
   pointer-events: none;
   z-index: 2147483646;
   transform: translate(-50%, -50%);
+  transition: width 0.2s, height 0.2s, border-width 0.2s, transform 0.05s;
+}
+
+/* Анимация клика */
+@keyframes cursorClick {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(0.8);
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+.global-cursor-dot.click-animation {
+  animation: cursorClick 0.2s ease-in-out;
+}
+
+/* Анимация наведения на кнопки */
+.global-cursor-ring.hover-animation {
+  animation: ringPulse 2s infinite ease-in-out;
+}
+
+@keyframes ringPulse {
+  0%, 100% {
+    border-color: black;
+    border-width: 1px;
+  }
+  50% {
+    border-color: rgba(0, 0, 0, 0.5);
+    border-width: 2px;
+  }
 }
 
 /* Отключаем стандартный курсор */
@@ -28,6 +65,13 @@ html, body {
 
 * {
   cursor: none !important;
+}
+
+/* Автоматическое скрытие при бездействии */
+.global-cursor-dot.inactive,
+.global-cursor-ring.inactive {
+  opacity: 0;
+  transition: opacity 0.5s ease;
 }
 
 /* Для мобильных устройств */
@@ -44,4 +88,17 @@ html, body {
   .global-cursor-ring {
     display: none !important;
   }
+}
+
+/* Дополнительные стили для интерактивных элементов */
+button:hover ~ .global-cursor-ring,
+a:hover ~ .global-cursor-ring,
+[role="button"]:hover ~ .global-cursor-ring {
+  border-color: #007bff !important;
+}
+
+input:hover ~ .global-cursor-ring,
+textarea:hover ~ .global-cursor-ring,
+select:hover ~ .global-cursor-ring {
+  border-color: #28a745 !important;
 }
