@@ -376,8 +376,8 @@
     transform: none !important;
     text-align: left;
     order: 2;
-    padding-left: 0; /* Без отступа слева */
-    padding-right: 0; /* Без отступа справа */
+    padding-left: 0;
+    padding-right: 0;
     box-sizing: border-box;
   }
 
@@ -387,13 +387,10 @@
     margin: 0 !important;
     padding: 0 !important;
     white-space: normal !important;
-    /* letter-spacing: -0.02em; */
     color: #282525;
     text-transform: uppercase;
     font-weight: 500;
     text-align: left;
-    /* width: 100%; */
-    /* max-width: 100%; Занимает всю ширину фото */
     box-sizing: border-box;
   }
 
@@ -406,8 +403,8 @@
     right: auto !important;
     text-align: left;
     order: 3;
-    padding-left: 0; /* Без отступа слева по умолчанию */
-    padding-right: 0; /* Без отступа справа */
+    padding-left: 15px; /* Отступ слева на мобильных */
+    padding-right: 0;
     box-sizing: border-box;
   }
 
@@ -422,19 +419,8 @@
     font-family: 'Helvetica Neue', sans-serif;
     text-align: left;
     width: 100%;
-    max-width: 100%; /* Занимает всю ширину фото */
+    max-width: 100%;
     box-sizing: border-box;
-  }
-
-  /* Добавляем отступ слева только для мобильных экранов */
-  @media (max-width: 768px) {
-    .mens-date-container {
-      padding-left: 15px; /* Отступ слева на мобильных */
-    }
-    
-    .mens-date {
-      padding-left: 0; /* Текст без отступа, но контейнер с отступом */
-    }
   }
 
   /* 4. КНОПКА - ЧЕТВЕРТОЙ */
@@ -447,8 +433,8 @@
     right: auto !important;
     text-align: left;
     order: 4;
-    padding-left: 0; /* Без отступа слева */
-    padding-right: 0; /* Без отступа справа */
+    padding-left: 0;
+    padding-right: 0;
     box-sizing: border-box;
   }
 
@@ -474,7 +460,9 @@
     height: 250px !important;
   }
 
-
+  .mens-text-bold {
+    font-size: 18px !important;
+  }
 
   .mens-date {
     font-size: 16px !important;
@@ -485,8 +473,6 @@
     max-width: 160px;
     height: 60px;
     font-size: 16px;
-    font-weight:  600;
+    font-weight: 600;
   }
-  
-
 }

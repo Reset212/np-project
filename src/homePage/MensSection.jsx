@@ -12,7 +12,7 @@ const MensSection = () => {
   const [isMobile, setIsMobile] = useState(false);
   const navigate = useNavigate();
 
-  // ОБНОВЛЕНО: Функция для перехода на real-estate страницу
+  // Функция для перехода на real-estate страницу
   const goToRealEstate = () => {
     navigate("/real-estate");
   };
@@ -55,20 +55,84 @@ const MensSection = () => {
       progress = Math.max(-1, Math.min(1, progress));
 
       const normalizedProgress = (progress + 1) / 2;
-      const smoothProgress = normalizedProgress < 0.5
-        ? 2 * normalizedProgress * normalizedProgress
-        : 1 - Math.pow(-2 * normalizedProgress + 2, 2) / 2;
-
-      // Анимация ширины фото
-      const minPhotoWidth = 30;
-      const centerPhotoWidth = 50;
-      const maxPhotoWidth = 80;
-      let photoWidth;
-      if (smoothProgress < 0.5) {
-        photoWidth = minPhotoWidth + (smoothProgress * 2 * (centerPhotoWidth - minPhotoWidth));
+      
+      // Создаем задержку в середине анимации (от 45% до 55%)
+      const holdStart = 0.45; // Начинаем задерживать с 45% прогресса
+      const holdEnd = 0.55;   // Заканчиваем задержку на 55% прогресса
+      
+      let smoothProgress;
+      if (normalizedProgress < holdStart) {
+        // Первая часть анимации до задержки - плавное ускорение
+        const t = normalizedProgress / holdStart;
+        // Кубическое easing для большей плавности
+        smoothProgress = t < 0.5 
+          ? 4 * t * t * t 
+          : 1 - Math.pow(-2 * t + 2, 3) / 2;
+        smoothProgress *= holdStart;
+      } else if (normalizedProgress > holdEnd) {
+        // Третья часть анимации после задержки - плавное замедление
+        const t = (normalizedProgress - holdEnd) / (1 - holdEnd);
+        // Кубическое easing для большей плавности
+        smoothProgress = t < 0.5 
+          ? 4 * t * t * t 
+          : 1 - Math.pow(-2 * t + 2, 3) / 2;
+        smoothProgress = holdEnd + smoothProgress * (1 - holdEnd);
       } else {
-        photoWidth = centerPhotoWidth + ((smoothProgress - 0.5) * 2 * (maxPhotoWidth - centerPhotoWidth));
+        // Средняя часть - СИЛЬНАЯ ЗАДЕРЖКА вокруг 50%
+        // Делаем очень медленное движение в зоне задержки
+        const holdCenter = 0.5;
+        const distanceFromCenter = Math.abs(normalizedProgress - holdCenter);
+        
+        if (distanceFromCenter < 0.02) {
+          // В самом центре (48%-52%) - почти полная остановка
+          smoothProgress = holdCenter;
+        } else {
+          // Ближе к краям зоны задержки - медленное движение
+          const direction = normalizedProgress > holdCenter ? 1 : -1;
+          const t = distanceFromCenter / 0.05; // 0.05 = половина зоны задержки
+          // Медленный квадратичный easing
+          const slowFactor = 0.2; // Замедляем в 5 раз
+          smoothProgress = holdCenter + direction * (t * t * slowFactor * 0.05);
+        }
       }
+
+      // Анимация ширины фото - больше промежуточных точек
+      const minPhotoWidth = 20;
+      const step1Width = 30;   // Первая промежуточная точка
+      const step2Width = 40;   // Вторая промежуточная точка (центр)
+      const step3Width = 50;   // Третья промежуточная точка
+      const step4Width = 60;   // Четвертая промежуточная точка
+      const maxPhotoWidth = 70;
+      
+      let photoWidth;
+      
+      // Разбиваем анимацию на 5 сегментов для большей плавности
+      if (smoothProgress < 0.2) {
+        // 0% - 20%: от min до step1
+        const t = smoothProgress / 0.2;
+        photoWidth = minPhotoWidth + t * (step1Width - minPhotoWidth);
+      } else if (smoothProgress < 0.4) {
+        // 20% - 40%: от step1 до step2
+        const t = (smoothProgress - 0.2) / 0.2;
+        photoWidth = step1Width + t * (step2Width - step1Width);
+      } else if (smoothProgress < 0.6) {
+        // 40% - 60%: от step2 до step3 (зона задержки)
+        const t = (smoothProgress - 0.4) / 0.2;
+        // В зоне задержки делаем более плавное изменение
+        const easedT = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+        photoWidth = step2Width + easedT * (step3Width - step2Width);
+      } else if (smoothProgress < 0.8) {
+        // 60% - 80%: от step3 до step4
+        const t = (smoothProgress - 0.6) / 0.2;
+        photoWidth = step3Width + t * (step4Width - step3Width);
+      } else {
+        // 80% - 100%: от step4 до max
+        const t = (smoothProgress - 0.8) / 0.2;
+        photoWidth = step4Width + t * (maxPhotoWidth - step4Width);
+      }
+      
+      // Гарантируем, что ширина в пределах границ
+      photoWidth = Math.max(minPhotoWidth, Math.min(maxPhotoWidth, photoWidth));
       
       photoContainerRef.current.style.width = `${photoWidth}%`;
 
@@ -77,9 +141,9 @@ const MensSection = () => {
       
       if (windowWidth <= 1024) {
         // Для планшетов
-        mainTextOffset = 40;
-        dateTextOffset = 40;
-        buttonOffset = 20;
+        mainTextOffset = 200;
+        dateTextOffset = 200;
+        buttonOffset = 200;
       } else if (windowWidth <= 1440) {
         // Для 1440px
         mainTextOffset = 40;
@@ -87,9 +151,9 @@ const MensSection = () => {
         buttonOffset = 20;
       } else {
         // Для широких экранов
-        mainTextOffset = 187; // Основной текст: 187px от фото
-        dateTextOffset = 187; // Второй текст: 187px от фото
-        buttonOffset = 147;   // Кнопка: 147px от фото
+        mainTextOffset = 187;
+        dateTextOffset = 187;
+        buttonOffset = 147;
       }
 
       // Позиционирование текста относительно фото
@@ -123,7 +187,6 @@ const MensSection = () => {
     };
   }, [isMobile]);
 
-  // ОБНОВЛЕНО: Добавлен id для навигации
   return (
     <section className="mens-section" id="mens-section" ref={sectionRef}>
       <div className="mens-sticky">
@@ -143,7 +206,6 @@ const MensSection = () => {
           </div>
 
           {/* Кнопка - выровнена по левому краю основного текста */}
-          {/* ОБНОВЛЕНО: Кнопка теперь ведет на /real-estate */}
           <div className="mens-secondary-container" ref={secondaryContainerRef}>
             <button className="mens-button" onClick={goToRealEstate}>
               READ MORE
