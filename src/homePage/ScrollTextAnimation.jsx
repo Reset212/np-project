@@ -165,7 +165,7 @@ const ScrollTextAnimation = () => {
         } else {
           // Вторая половина скролла - вторая секция
           newActiveSection = 1;
-          sectionProgress = (progress - 0.7) / 0.;
+          sectionProgress = (progress - 0.7) / 0.1;
         }
 
         // Управляем видимостью секций в зависимости от направления скролла
@@ -252,42 +252,68 @@ const ScrollTextAnimation = () => {
         let newActiveSection = 0;
         let sectionProgress = 0;
 
-        // Изменение: для второй секции используем меньший диапазон прогресса
-        if (progress < 0.6) {
+        // Увеличиваем время отображения второй секции
+        if (progress < 0.5) {
+          // Первая секция - 50% прогресса
           newActiveSection = 0;
-          sectionProgress = progress / 0.6;
+          sectionProgress = progress / 0.5;
         } else {
+          // Вторая секция - появляется на последних 50%
           newActiveSection = 1;
-          // Уменьшил с 0.4 до 0.3 для более быстрого скролла второй секции
-          sectionProgress = (progress - 0.6) / 0.1;
+          // Увеличиваем диапазон для второй секции - теперь 0.35 (было 0.1)
+          sectionProgress = (progress - 0.5) / 0.35;
         }
 
         if (newActiveSection !== activeSection) {
           setActiveSection(newActiveSection);
         }
 
+        // Управление видимостью цифр
         if (newActiveSection === 0) {
+          // Первая цифра
           const firstWordKey = getWordKey(0, 0, 0);
           const isFirstWordActive = wordStates[firstWordKey] || false;
-          setNumber1Visible(isFirstWordActive);
+          setNumber1Visible(isFirstWordActive && sectionProgress > 0.1);
           setNumber2Visible(false);
         } else {
+          // Вторая цифра - показываем дольше
           setNumber1Visible(false);
           const secondWordKey = getWordKey(1, 0, 0);
           const isSecondWordActive = wordStates[secondWordKey] || false;
-          setNumber2Visible(isSecondWordActive);
+          // Увеличиваем порог для исчезновения второй цифры
+          setNumber2Visible(isSecondWordActive && sectionProgress < 0.9);
         }
 
         const activeSectionData = sections[newActiveSection];
         const totalWords = activeSectionData.lines.flat().length;
         
-        // Увеличиваем скорость появления слов для второй секции
-        const speedMultiplier = newActiveSection === 0 ? 2.0 : 6.0;
+        // Разная скорость для первой и второй секций
+        let speedMultiplier, wordsToActivate;
         
-        const wordsToActivate = Math.min(
-          totalWords,
-          Math.floor(sectionProgress * totalWords * speedMultiplier)
-        );
+        if (newActiveSection === 0) {
+          // Первая секция - нормальная скорость
+          speedMultiplier = 2.0;
+          wordsToActivate = Math.min(
+            totalWords,
+            Math.floor(sectionProgress * totalWords * speedMultiplier)
+          );
+        } else {
+          // Вторая секция - плавное появление и плавное исчезновение
+          speedMultiplier = 3.0;
+          // Плавное появление
+          if (sectionProgress < 0.8) {
+            wordsToActivate = Math.min(
+              totalWords,
+              Math.floor(sectionProgress * totalWords * speedMultiplier)
+            );
+          } else {
+            // Плавное исчезновение
+            wordsToActivate = Math.max(
+              0,
+              Math.floor((1 - sectionProgress) * totalWords * 3)
+            );
+          }
+        }
 
         const newWordStates = { ...wordStates };
 
@@ -333,11 +359,11 @@ const ScrollTextAnimation = () => {
       return (
         <div
           key={`section-${sectionIdx}`}
-          className={`text-section ${isActive ? 'active' : ''}`}
+          className={`text-section ${isActive ? 'active' : ''} ${isActive ? 'section-2-active' : 'section-2-inactive'}`}
           data-section-index={sectionIdx}
         >
           <div className="section-content-wrapper">
-            <div className={`text-number number-2 ${number2Visible ? 'active' : ''}`}>
+            <div className={`text-number number-2 ${number2Visible ? 'active' : ''} ${isActive ? 'number-2-active' : 'number-2-inactive'}`}>
               02
             </div>
 
@@ -350,9 +376,9 @@ const ScrollTextAnimation = () => {
                   return (
                     <React.Fragment key={`word-${key}`}>
                       <span
-                        className={`text-word ${isWordActive ? 'active' : ''}`}
+                        className={`text-word ${isWordActive ? 'active' : ''} ${isActive ? 'section-2-word' : ''}`}
                         style={{
-                          transitionDelay: `${(lineIdx * line.length + wordIdx) * 0.03}s`
+                          transitionDelay: `${(lineIdx * line.length + wordIdx) * 0.02}s`
                         }}
                       >
                         {word}
