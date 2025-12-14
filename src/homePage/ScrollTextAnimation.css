@@ -43,7 +43,7 @@
 
 /* ВТОРОЕ ПРЕДЛОЖЕНИЕ - СНИЗУ СПРАВА */
 .text-section[data-section-index="1"] {
-  bottom: 15%;
+  /* bottom: 15%; */
   right: 10%;
   text-align: right;
   transform: translateY(10px);

@@ -141,7 +141,7 @@
     transform: translateX(-50%) translateY(-50%) !important;
     transform-origin: center !important;
     text-align: center !important;
-    width: 100% !important;
+    /* width: 100% !important; */
     max-width: 100% !important;
     white-space: normal !important;
     word-break: break-word !important;
@@ -223,17 +223,20 @@
   }
 
   .word-1 {
-    font-size: 28px !important;
+    font-size: 64px !important;
+    width: 200px;
     min-height: 30px !important;
   }
 
   .word-2 {
-    font-size: 36px !important;
+    font-size: 48px !important;
+    width: 300px;
     min-height: 45px !important;
   }
 
   .word-3 {
-    font-size: 32px !important;
+    font-size: 64px !important;
+    width: 300px;
     min-height: 35px !important;
   }
 }

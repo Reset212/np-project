@@ -138,7 +138,7 @@ const MensSection = () => {
           {/* Основной текст */}
           <div className="mens-text-container" ref={textContainerRef}>
             <p className="mens-text-bold">
-            Movie park is an international production studio creating unique visual solutions across video, marketing, and event industries. Our portfolio spans commercial and creative projects for brands, private clients, and major companies.
+            Movie park is an international production studio creating unique visual solutions across video, marketing, and event industries. Our portfolio spans commercial and creative projects for brands, private <br /> clients, and major companies.
             </p>
           </div>
 

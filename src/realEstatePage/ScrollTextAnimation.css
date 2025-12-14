@@ -331,7 +331,7 @@
   .text-line:not(.mobile-line),
   .text-word:not(.mobile-word),
   .word-space:not(.mobile-word-space) {
-    display: none !important;
+    /* display: none !important; */
   }
 }
 

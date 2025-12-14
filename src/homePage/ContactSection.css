@@ -221,7 +221,7 @@
 }
 
 .text-section {
-  margin-bottom: 40px;
+  /* margin-bottom: 40px; */
   position: relative;
   z-index: 2;
 }
@@ -335,7 +335,7 @@
   color: #000000;
   padding: 10px 0;
   border: none;
-  border-bottom: 1px solid #000000;
+  border-bottom: 1px solid #CFCECE;
   background: transparent;
   outline: none;
   transition: border-color 0.3s ease;
@@ -614,7 +614,7 @@
   }
 
   .chat-section {
-    margin-bottom: 40px;
+    /* margin-bottom: 40px; */
     margin-top: 0;
     order: -1;
   }
@@ -677,7 +677,7 @@
     font-size: 24px;
     line-height: 30px;
     text-align: center;
-    margin-bottom: 30px;
+    /* margin-bottom: 30px; */
   }
 
   /* Скрываем десктопные email блоки */
@@ -730,7 +730,7 @@
     width: 100%;
     padding: 0;
     border-top: none;
-    padding-bottom: 20px;
+    /* padding-bottom: 20px; */
     height: auto;
   }
 
@@ -738,7 +738,7 @@
     order: 2;
     width: 100%;
     padding: 0;
-    padding-top: 20px;
+    /* padding-top: 20px; */
     min-height: auto;
   }
 
@@ -748,26 +748,28 @@
   }
 
   .submit-button {
-    width: 120px !important;
-    max-width: 120px !important;
-    height: 50px;
-    font-size: 14px;
+    width: 122px !important;
+    max-width: 122px !important;
+    height: 60px;
+    font-size: 16px;
+    font-weight: 600;
     align-self: center !important;
-    margin-top: 20px;
+    margin-top: 10px;
   }
 
   .chat-text {
     font-size: 50px;
-    line-height: 45px;
+    line-height: 60px;
     text-align: center;
     margin-bottom: 0;
+    font-weight: 800;
   }
 
   .contact-text {
-    font-size: 18px;
+    font-size: 20px;
     line-height: 24px;
     text-align: center;
-    margin-bottom: 25px;
+    /* margin-bottom: 25px; */
   }
 
   .contact-form {
@@ -775,8 +777,9 @@
   }
 
   .form-label {
-    font-size: 12px;
+    font-size: 16px;
     text-align: center;
+    font-weight: 500;
   }
 
   .form-input,
@@ -814,6 +817,10 @@
     flex-direction: column;
     gap: 20px;
   }
+  .form-label{
+    padding-top: 20px;
+  }
+
 }
 
 @media (max-width: 360px) {
@@ -910,7 +917,7 @@
   
   /* Скрываем мобильные email блоки в ландшафтной ориентации */
   .mobile-emails-section {
-    display: none !important;
+    /* display: none !important; */
   }
 }
 

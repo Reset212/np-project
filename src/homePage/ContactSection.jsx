@@ -180,7 +180,7 @@ const ContactSection = () => {
                 value={formData.project}
                 onChange={handleInputChange}
                 className="form-textarea"
-                rows="4"
+                rows="1"
                 placeholder=""
                 required
               />

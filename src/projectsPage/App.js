@@ -1,6 +1,7 @@
 // App.js - обновленная версия
 import React from "react";
 import NavBar from "./NavBar"; // Импортируем переименованный компонент
+import GlobalCursor from './GlobalCursor';
 import ScrollTextAnimation from "./ScrollTextAnimation";
 import ThirdScrollBlock from "./ThirdScrollBlock";
 import FourthScrollBlock from "./FourthScrollBlock";
@@ -13,6 +14,7 @@ import "./App.css";
 function ProjectsPageApp() {
   return (
     <div className="App">
+      <GlobalCursor />
       <NavBar /> {/* Используем переименованный компонент */}
       
       <ProjectsVideoSection />

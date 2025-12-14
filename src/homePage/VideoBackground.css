@@ -5,6 +5,7 @@
   --scale-factor: 1;
 }
 
+/* ОСНОВНОЙ КОНТЕЙНЕР */
 .video-background-container {
   position: relative;
   width: 100%;
@@ -27,17 +28,75 @@
 @media (min-width: 1441px) {
   :root {
     --scale-factor: min(1.5, calc(100vw / var(--base-width)));
-    /* Ограничиваем максимальное увеличение до 1.5x */
   }
 }
 
-/* НАВИГАЦИЯ - ПК ВЕРСИЯ (КОРРЕКТНАЯ) */
+/* КАСТОМНЫЙ КУРСОР */
+.cursor-dot {
+  width: 16px;
+  height: 16px;
+  background-color: white;
+  border-radius: 50%;
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  mix-blend-mode: difference;
+  transition: transform 0.15s ease, background-color 0.3s ease;
+}
+
+.cursor-dot.dark {
+  background-color: black;
+}
+
+.cursor-ring {
+  width: 78px;
+  height: 78px;
+  border: 1px solid white;
+  border-radius: 50%;
+  position: fixed;
+  pointer-events: none;
+  z-index: 9998;
+  mix-blend-mode: difference;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  transition: transform 0.25s ease, border-color 0.3s ease, border-width 0.3s ease;
+  transform: translate(-50%, -50%);
+}
+
+.cursor-ring.dark {
+  border-color: black;
+}
+
+.cursor-ring.expanded {
+  transform: translate(-50%, -50%) scale(1.2);
+  border-width: 2px;
+}
+
+.cursor-dot.expanded {
+  transform: scale(0.7);
+}
+
+.cursor-ring.clicked {
+  transform: translate(-50%, -50%) scale(0.8);
+  border-width: 2px;
+}
+
+.cursor-dot.clicked {
+  transform: scale(1.2);
+}
+
+/* Отключаем стандартный курсор */
+* {
+  cursor: none !important;
+}
+
+/* НАВИГАЦИЯ - ПК ВЕРСИЯ */
 .navigation {
   position: absolute;
   top: 20px;
   width: 100%;
   max-width: 1440px;
-  z-index: 1;
+  z-index: 100;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
@@ -91,10 +150,11 @@
 .nav-item {
   color: white;
   font-size: 14px;
-  cursor: pointer;
+  cursor: none;
   text-align: center;
   white-space: nowrap;
   transition: opacity 0.3s ease;
+  text-decoration: none;
 }
 
 @media (min-width: 1441px) {
@@ -151,10 +211,11 @@
   padding: 0;
   font-size: 14px;
   color: white;
-  cursor: pointer;
+  cursor: none;
   transition: all 0.3s ease;
   backdrop-filter: blur(5px);
   white-space: nowrap;
+  font-family: inherit;
 }
 
 @media (min-width: 1441px) {
@@ -179,7 +240,7 @@
   transform: translateX(-50%);
   width: 100%;
   max-width: 1440px;
-  z-index: 1;
+  z-index: 100;
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
@@ -299,11 +360,12 @@
   font-size: 16px;
   font-weight: bold;
   border-radius: 25px;
-  cursor: pointer;
+  cursor: none;
   transition: all 0.3s ease;
   flex-shrink: 0;
   margin-left: 40px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  font-family: inherit;
 }
 
 @media (min-width: 1441px) {
@@ -334,6 +396,16 @@
 /* МОБИЛЬНАЯ ВЕРСИЯ (768px и меньше) */
 /* ============================================= */
 @media (max-width: 768px) {
+  /* Включаем стандартный курсор на мобильных */
+  * {
+    cursor: auto !important;
+  }
+  
+  .cursor-dot,
+  .cursor-ring {
+    display: none !important;
+  }
+  
   /* НАВИГАЦИЯ - МОБИЛЬНАЯ */
   .navigation {
     top: 16px;
@@ -354,6 +426,7 @@
   .burger-menu,
   .mobile-chat-button {
     display: flex;
+    cursor: pointer;
   }
   
   /* Логотип в центре */
@@ -375,19 +448,19 @@
     height: 48px;
     background: rgba(185, 185, 185, 0.32);
     backdrop-filter: blur(8px);
-    border-radius: 12px; /* Более мягкие углы как у кнопок */
+    border-radius: 12px;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    z-index: 101; /* Выше чем меню */
-    border: 1px solid rgba(255, 255, 255, 0.3); /* Граница как у кнопки CHAT WITH US */
+    z-index: 101;
+    border: 1px solid rgba(255, 255, 255, 0.3);
     order: 1;
-    transition: all 0.3s ease; /* Плавный переход */
+    transition: all 0.3s ease;
   }
   
   .burger-menu:hover {
     background-color: rgba(255, 255, 255, 0.2);
-    transform: translateY(-2px); /* Эффект подъема как у кнопок */
+    transform: translateY(-2px);
   }
   
   .burger-menu svg {
@@ -409,7 +482,7 @@
     border: 1px solid rgba(255, 255, 255, 0.3);
     order: 3;
     transition: all 0.3s ease;
-    z-index: 101; /* Выше чем меню */
+    z-index: 101;
   }
   
   .mobile-chat-button:hover {
@@ -422,12 +495,29 @@
     height: 18px;
   }
   
-
+  /* МОБИЛЬНОЕ ВЫПАДАЮЩЕЕ МЕНЮ */
+  .mobile-dropdown {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    /* background: rgba(0, 0, 0, 0.9); */
+    /* backdrop-filter: blur(20px); */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    z-index: 100;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+  }
   
   .mobile-dropdown.active {
     opacity: 1;
     visibility: visible;
-    /* transform: translateY(0); */
   }
   
   /* ЭЛЕМЕНТЫ МЕНЮ С ЭФФЕКТОМ СТЕКЛА */
@@ -438,22 +528,22 @@
     text-decoration: none;
     padding: 16px 32px;
     transition: all 0.3s ease;
-    background: rgba(255, 255, 255, 0.15); /* Полупрозрачный белый фон */
+    background: rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     border-radius: 12px;
     width: 250px;
     max-width: 80%;
     text-align: center;
-    border: 1px solid rgba(255, 255, 255, 0.2); /* Легкая граница */
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* Тень для объема */
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
     cursor: pointer;
   }
   
   .mobile-nav-item:hover {
     color: rgba(255, 255, 255, 0.95);
     background: rgba(255, 255, 255, 0.25);
-    transform: translateY(-3px); /* Эффект подъема */
+    transform: translateY(-3px);
     box-shadow: 0 6px 25px rgba(0, 0, 0, 0.3);
   }
   
@@ -498,7 +588,7 @@
     align-items: center;
     gap: 32px;
     max-width: 100%;
-    z-index: 1; /* Над видео, но под меню */
+    z-index: 1;
   }
   
   /* Награды в 2 колонки */
@@ -507,7 +597,7 @@
     grid-template-columns: 1fr 1fr;
     gap: 32px 20px;
     width: 100%;
-    order: 1; /* Награды сверху */
+    order: 1;
   }
   
   .award-item {
@@ -536,7 +626,8 @@
     max-width: 280px;
     font-size: 14px;
     padding: 12px 24px;
-    order: 2; /* Кнопка снизу */
+    order: 2;
+    cursor: pointer;
   }
 }
 
@@ -628,7 +719,7 @@
   
   .mobile-dropdown {
     padding: 60px 20px;
-    width: 90% ;
+    width: 90%;
     gap: 12px;
   }
 }

@@ -1,5 +1,6 @@
 // App.js - обновленная версия
 import React from "react";
+import GlobalCursor from './GlobalCursor';
 import VideoBackground from "./VideoBackground";
 import ScrollTextAnimation from "./ScrollTextAnimation";
 import ThirdScrollBlock from "./ThirdScrollBlock";
@@ -13,6 +14,7 @@ import "./App.css";
 function HomePageApp() {
   return (
     <div className="App">
+      <GlobalCursor />
       <VideoBackground />
       <div style={{height: '20vh', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
       </div>
