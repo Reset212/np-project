@@ -153,10 +153,10 @@
   border-radius: 32px;
   font-family: 'Helvetica Neue', Arial, sans-serif;
   font-size: 18px;
-  font-weight: 500;
   line-height: 1;
   color: #000000;
   letter-spacing: 1px;
+  font-style: normal;
   text-transform: uppercase;
   cursor: pointer;
   transition: all 0.3s ease;
