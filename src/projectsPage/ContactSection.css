@@ -79,7 +79,7 @@
 .email-row {
   display: flex;
   align-items: flex-start;
-  gap: 30px;
+  gap: 120px !important;
   width: 100%;
 }
 

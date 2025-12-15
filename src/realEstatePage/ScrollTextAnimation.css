@@ -23,7 +23,7 @@
   height: 100%;
 }
 
-/* ========== ДЕСКТОПНЫЕ СТИЛИ ========== */
+/* ДЕСКТОПНЫЕ СТИЛИ */
 
 /* КАЖДОЕ ПРЕДЛОЖЕНИЕ */
 .text-section {
@@ -43,7 +43,7 @@
 
 /* ВТОРОЕ ПРЕДЛОЖЕНИЕ - СНИЗУ СПРАВА */
 .text-section[data-section-index="1"] {
-  bottom: -55%;
+  bottom: -500px !important;
   right: 10%;
   text-align: right;
   transform: translateY(10px);
@@ -61,6 +61,16 @@
   opacity: 1;
   visibility: visible;
   transform: translateY(0);
+}
+
+/* Вторая секция - быстрое исчезновение */
+.text-section.section-2-active {
+  
+  transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+}
+
+.text-section.section-2-inactive {
+  transition: opacity 0.2s ease-out, transform 0.2s ease-out;
 }
 
 /* ЦИФРЫ - ОБЩИЕ СТИЛИ */
@@ -96,6 +106,15 @@
   opacity: 1;
 }
 
+/* Вторая цифра - быстрое исчезновение */
+.text-number.number-2-active {
+  transition: opacity 0.3s ease-out;
+}
+
+.text-number.number-2-inactive {
+  transition: opacity 0.15s ease-out;
+}
+
 /* Строка внутри предложения */
 .text-line {
   display: block;
@@ -117,8 +136,14 @@
 
   opacity: 0;
   transform: translateY(20px);
-  transition: opacity 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-              transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: opacity 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Слова второй секции - быстрое исчезновение */
+.text-word.section-2-word {
+  transition: opacity 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 /* Активное слово */
@@ -134,117 +159,69 @@
   height: 1px;
 }
 
-/* ========== МОБИЛЬНЫЕ СТИЛИ ========== */
-.mobile-sections-container {
+/* МОБИЛЬНЫЕ СТИЛИ */
+.mobile-container {
   position: relative;
   width: 100%;
-  height: 100%;
+  height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 0 20px;
+  overflow: hidden;
 }
 
-/* Мобильные секции - основные стили */
-.mobile-section {
+.mobile-block {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  top: 0;
+  left: 0;
   width: 100%;
+  height: 100%;
   max-width: 360px;
+  padding: 0 20px;
+  margin: 0 auto;
   text-align: center;
   opacity: 0;
   visibility: hidden;
+  transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
   pointer-events: none;
   display: flex;
   flex-direction: column;
   align-items: center;
-  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  justify-content: center;
 }
 
-/* Первая секция - появляется сверху, исчезает вверх */
-.mobile-section[data-section-index="0"] {
-  opacity: 0;
-  visibility: hidden;
-  transform: translate(-50%, calc(-50% - 40px));
-}
-
-/* Вторая секция - появляется снизу, исчезает вниз */
-.mobile-section[data-section-index="1"] {
-  opacity: 0;
-  visibility: hidden;
-  transform: translate(-50%, calc(-50% + 40px));
-}
-
-/* Секция становится видимой */
-.mobile-section.visible[data-section-index="0"] {
+.mobile-block.active {
   opacity: 1;
   visibility: visible;
-  transform: translate(-50%, calc(-50% - 40px));
+  pointer-events: auto;
 }
 
-.mobile-section.visible[data-section-index="1"] {
-  opacity: 1;
-  visibility: visible;
-  transform: translate(-50%, calc(-50% + 40px));
-}
-
-/* Активная мобильная секция */
-.mobile-section.active[data-section-index="0"] {
-  opacity: 1;
-  visibility: visible;
-  transform: translate(-50%, -50%) !important;
-}
-
-.mobile-section.active[data-section-index="1"] {
-  opacity: 1;
-  visibility: visible;
-  transform: translate(-50%, -50%) !important;
-}
-
-/* Анимация исчезновения при скролле */
-.mobile-section[data-section-index="0"]:not(.active):not(.visible) {
+.mobile-block.inactive {
   opacity: 0;
   visibility: hidden;
-  transform: translate(-50%, calc(-50% - 40px));
-  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.mobile-section[data-section-index="1"]:not(.active):not(.visible) {
-  opacity: 0;
-  visibility: hidden;
-  transform: translate(-50%, calc(-50% + 40px));
-  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* Цифра для мобильной секции */
-.mobile-section-number {
+/* Цифра над текстом */
+.mobile-number {
   font-family: 'Helvetica Neue', Arial, sans-serif;
   font-size: 18px;
   font-weight: 400;
   color: #000000;
   margin-bottom: 25px;
-  opacity: 0;
-  letter-spacing: 1.2px;
-  transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.1s;
-}
-
-.mobile-section-number.active {
   opacity: 0.8;
+  letter-spacing: 1.2px;
 }
 
-/* Контейнер для текста мобильной секции */
-.mobile-section-content {
+/* Контейнер для текста */
+.mobile-text-content {
   display: flex;
   flex-direction: column;
   gap: 12px;
   align-items: center;
-  width: 100%;
 }
 
-/* Строка текста мобильной секции */
+/* Строка текста */
 .mobile-line {
   display: flex;
   flex-wrap: wrap;
@@ -253,7 +230,7 @@
   line-height: 1.2;
 }
 
-/* Отдельное слово мобильной секции */
+/* Отдельное слово */
 .mobile-word {
   display: inline-block;
   font-family: 'Helvetica Neue', Arial, sans-serif;
@@ -266,8 +243,8 @@
 
   opacity: 0;
   transform: translateY(15px);
-  transition: opacity 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-              transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .mobile-word.active {
@@ -275,70 +252,16 @@
   transform: translateY(0);
 }
 
-/* Пробел в мобильной версии */
+/* Пробел */
 .mobile-word-space {
   display: inline-block;
   width: 6px;
 }
 
-/* Мобильные цифры (альтернативный вариант) */
-.text-number.mobile-number {
-  position: absolute;
-  font-family: 'Helvetica Neue', Arial, sans-serif;
-  font-size: 18px;
-  font-weight: 400;
-  color: #000000;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.5s ease-out;
-  white-space: nowrap;
-  letter-spacing: 1.2px;
-}
-
-.text-number.mobile-number.number-1 {
-  top: 20%;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.text-number.mobile-number.number-2 {
-  bottom: 20%;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.text-number.mobile-number.active {
-  opacity: 0.8;
-}
-
-/* Управление видимостью десктоп/мобильные элементы */
-@media (min-width: 481px) {
-  .mobile-sections-container,
-  .mobile-section,
-  .mobile-section-number,
-  .mobile-section-content,
-  .mobile-line,
-  .mobile-word,
-  .mobile-word-space,
-  .text-number.mobile-number {
-    display: none !important;
-  }
-}
-
-@media (max-width: 480px) {
-  .text-section:not(.mobile-section),
-  .text-number:not(.mobile-number),
-  .text-line:not(.mobile-line),
-  .text-word:not(.mobile-word),
-  .word-space:not(.mobile-word-space) {
-    /* display: none !important; */
-  }
-}
-
-/* ========== АДАПТАЦИЯ ДЛЯ 1040px И МЕНЬШЕ ========== */
+/* АДАПТАЦИЯ ДЛЯ 1040px И МЕНЬШЕ */
 @media (max-width: 1040px) {
   .scroll-text-animation-wrapper {
-    height: 350vh;
+    height: 200vh;
   }
 
   .scroll-text-fixed-container {
@@ -354,13 +277,12 @@
   .text-section[data-section-index="1"] {
     position: relative;
     top: auto;
-    bottom: 150px;
-    /* margin-bottom: 200px; */
+    bottom: auto;
     left: 5%;
     right: auto;
     width: 100%;
     text-align: left;
-    /* margin-top: 80vh; */
+    margin-top: 80vh;
     transform: none;
   }
 
@@ -388,7 +310,7 @@
   }
 }
 
-/* ========== АДАПТАЦИЯ ДЛЯ ПЛАНШЕТОВ (768px) ========== */
+/* Адаптивность для ПЛАНШЕТОВ (768px) */
 @media (max-width: 768px) {
   .text-section[data-section-index="0"] {
     top: 15%;
@@ -397,7 +319,7 @@
 
   .text-section[data-section-index="1"] {
     left: 5%;
-    margin-top: 40vh !important;
+    margin-top: 90vh;
   }
 
   .text-number.number-1 {
@@ -415,14 +337,14 @@
   }
 
   .scroll-text-animation-wrapper {
-    height: 300vh;
+    height: 150vh;
   }
 }
 
-/* ========== МОБИЛЬНАЯ ВЕРСИЯ (480px и меньше) ========== */
+/* МОБИЛЬНАЯ ВЕРСИЯ (480px и меньше) */
 @media (max-width: 480px) {
   .scroll-text-animation-wrapper {
-    height: 400vh; /* Увеличиваем для плавного скролла */
+    height: 150vh;
   }
 
   .scroll-text-fixed-container {
@@ -432,9 +354,91 @@
     height: 100vh;
   }
 
-  /* Основные мобильные стили */
+  .mobile-sections-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .mobile-section {
+    position: absolute;
+    width: 100%;
+    max-width: 360px;
+    padding: 0 20px;
+    text-align: center;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(20px);
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .mobile-section.visible {
+    opacity: 0.3;
+    visibility: visible;
+  }
+
+  .mobile-section.active {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .mobile-section-number {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 18px;
+    font-weight: 400;
+    color: #000000;
+    margin-bottom: 25px;
+    opacity: 0;
+    transition: opacity 0.4s ease-out;
+  }
+
+  .mobile-section-number.active {
+    opacity: 0.8;
+  }
+
+  .mobile-section-content {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .mobile-line {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+    line-height: 1.2;
+  }
+
   .mobile-word {
-    font-size: 38px;
+    display: inline-block;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-weight: 400;
+    font-size: 40px;
+    letter-spacing: -0.8px;
+    text-transform: uppercase;
+    color: #000000;
+    white-space: nowrap;
+
+    opacity: 0;
+    transform: translateY(15px);
+    transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .mobile-word.active {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .mobile-word-space {
+    display: inline-block;
+    width: 6px;
   }
 
   /* Адаптация для маленьких экранов */
@@ -489,159 +493,5 @@
     .mobile-line {
       gap: 5px;
     }
-  }
-}
-
-/* ========== ДОПОЛНИТЕЛЬНЫЕ СТИЛИ ИЗ ТРЕТЬЕГО ФАЙЛА ========== */
-@media (max-width: 480px) {
-  /* Альтернативные мобильные стили */
-  .text-section.mobile-section {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 100%;
-    transform: translate(-50%, -50%);
-    text-align: center;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.8s ease-out, visibility 0.8s ease-out;
-  }
-  
-  .text-section.mobile-section.active {
-    opacity: 1;
-    visibility: visible;
-  }
-  
-  /* Мобильные цифры - альтернативное позиционирование */
-  .text-number.mobile-number {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    text-align: center;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.8s ease-out, visibility 0.8s ease-out;
-    font-size: 18px;
-    white-space: nowrap;
-    z-index: 10;
-  }
-  
-  .text-number.mobile-number.number-1 {
-    transform: translate(-50%, calc(-50% - 200px));
-  }
-  
-  .text-number.mobile-number.number-2 {
-    transform: translate(-50%, calc(-50% - 200px));
-  }
-  
-  .text-number.mobile-number.active {
-    opacity: 1;
-    visibility: visible;
-  }
-  
-  /* Мобильные строки и слова - альтернативные стили */
-  .text-line.mobile-line {
-    display: block;
-    text-align: center;
-    line-height: 1.3;
-    margin-bottom: 15px;
-    white-space: normal;
-  }
-  
-  .text-word.mobile-word {
-    font-size: 42px;
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    display: inline-block;
-    line-height: 1.3;
-    letter-spacing: -0.5px;
-  }
-  
-  .text-word.mobile-word.active {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  
-  .word-space.mobile-space {
-    width: 8px;
-    display: inline-block;
-  }
-  
-  @media (max-width: 380px) {
-    .text-word.mobile-word {
-      font-size: 38px;
-    }
-    
-    .text-number.mobile-number {
-      font-size: 16px;
-    }
-  }
-  
-  @media (max-width: 320px) {
-    .text-word.mobile-word {
-      font-size: 34px;
-    }
-    
-    .text-line.mobile-line {
-      margin-bottom: 12px;
-    }
-  }
-}
-
-/* Утилитарные классы для управления видимостью */
-.hidden {
-  display: none !important;
-  opacity: 0 !important;
-  visibility: hidden !important;
-  pointer-events: none !important;
-}
-
-.visible {
-  display: block !important;
-  opacity: 1 !important;
-  visibility: visible !important;
-}
-
-/* Общие классы для плавных переходов */
-.smooth-transition {
-  transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
-
-/* Класс для центрирования */
-.center-content {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-}
-
-/* Класс для абсолютного центрирования */
-.absolute-center {
-  position: absolute !important;
-  top: 50% !important;
-  left: 50% !important;
-  transform: translate(-50%, -50%) !important;
-}
-
-/* Скрытие десктопных элементов на мобильных */
-@media (max-width: 480px) {
-  .desktop-only {
-    display: none !important;
-  }
-  
-  .mobile-only {
-    display: block !important;
-  }
-}
-
-/* Скрытие мобильных элементов на десктопе */
-@media (min-width: 481px) {
-  .mobile-only {
-    display: none !important;
-  }
-  
-  .desktop-only {
-    display: block !important;
   }
 }

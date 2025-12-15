@@ -154,7 +154,7 @@
 }
 
 .third-button {
-  width: 216px;
+  width: 240px !important;
   height: 60px;
   background: rgba(230, 230, 230, 0.72);
   border: none;

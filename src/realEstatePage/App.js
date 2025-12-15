@@ -20,8 +20,7 @@ function HomePageApp() {
       </div>
       
       <ScrollTextAnimation />
-      <div style={{height: '120vh', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-      </div>
+
       <ThirdScrollBlock />
       
       {/* Добавляем новый блок с видео и сортировкой */}
