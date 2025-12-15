@@ -24,11 +24,15 @@ const ThirdScrollBlock = () => {
       const rect = section.getBoundingClientRect();
       const windowHeight = window.innerHeight;
 
-      const isInView = rect.top < windowHeight * 0.6 && rect.bottom > windowHeight * 0.4;
+      // Анимация появления: когда блок входит в видимую область
+      const triggerIn = rect.top < windowHeight * 0.6 && rect.bottom > windowHeight * 0.4;
+      
+      // Анимация исчезновения: только когда блок полностью скрыт
+      const triggerOut = rect.bottom < 0 || rect.top > windowHeight;
 
-      if (isInView) {
+      if (triggerIn) {
         setIsVisible(true);
-      } else {
+      } else if (triggerOut) {
         setIsVisible(false);
       }
     };
