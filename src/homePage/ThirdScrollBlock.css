@@ -220,25 +220,30 @@
   display: block;
 }
 
-/* Контур WE внизу в левом углу - ДЕСКТОП */
-.outline-we-container.desktop-outline {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.outline-we-container.desktop-outline .outline-we {
-  font-size: 300px;
-  line-height: 300px;
-  color: transparent;
-  -webkit-text-stroke: 2px #DDDBDB;
-  text-stroke: 2px #DDDBDB;
-  -webkit-text-fill-color: transparent;
-  margin-bottom: -50px;
-}
-
+  /* Контур WE на планшетах - ОСНОВНОЕ ИЗМЕНЕНИЕ */
+  .outline-we-container.desktop-outline {
+    position: absolute;
+    bottom: -10px !important; /* Заставляем WE выходить за нижнюю границу на 25px */
+    left: -30px !important;
+    width: 100%;
+    padding: 35px -25px !important;
+    z-index: 2;
+    overflow: visible; /* Разрешаем выход за границы */
+  }
+  
+  .outline-we-container.desktop-outline .outline-we {
+    font-size: 250px;
+    line-height: 250px;
+    color: transparent;
+    -webkit-text-stroke: 2px #DDDBDB;
+    text-stroke: 2px #DDDBDB;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 0;
+    padding-top: 0;
+    display: block;
+    position: relative;
+    bottom: 0;
+  }
 /* Контур DO справа (выступает на 33%) - ДЕСКТОП */
 .outline-do-container.desktop-outline {
   position: absolute;
@@ -310,7 +315,9 @@
 @media (max-width: 1440px) {
   .third-scroll-section {
     padding-top: 80px;
-    padding-bottom: 90px;
+    padding-bottom: 70px; /* Уменьшили отступ снизу, чтобы WE заходил за границу */
+    overflow: visible; /* Разрешаем выход за границы */
+    position: relative;
   }
   
   .third-scroll-container {
@@ -319,6 +326,8 @@
     padding: 0 60px;
     gap: 30px;
     min-width: 0;
+    position: relative;
+    z-index: 3;
   }
 
   .left-side {
@@ -336,7 +345,7 @@
   }
 
   .third-title {
-    font-size: 250px !important;
+    font-size: 200px;
     line-height: 0.8;
     text-align: left;
     width: 100%;
@@ -377,19 +386,52 @@
     width: 100%;
   }
   
-  /* Контурные буквы */
+  .third-button{
+    width: 216px !important;
+    font-size: 16px !important;
+  }
+  /* Контур WE на планшетах - ОСНОВНОЕ ИЗМЕНЕНИЕ */
   .outline-we-container.desktop-outline {
-    padding: 0 60px;
+    position: absolute;
+    bottom: -20px; /* Заставляем WE выходить за нижнюю границу на 25px */
+    left: -20;
+    width: 100%;
+    padding: 35px 0px;
+    z-index: 2;
+    overflow: visible; /* Разрешаем выход за границы */
   }
   
-  .outline-we-container.desktop-outline .outline-we,
+  .outline-we-container.desktop-outline .outline-we {
+    font-size: 250px;
+    line-height: 250px;
+    color: transparent;
+    -webkit-text-stroke: 2px #DDDBDB;
+    text-stroke: 2px #DDDBDB;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 0;
+    padding-top: 0;
+    display: block;
+    position: relative;
+    bottom: 0;
+  }
+  
+  /* Контур DO справа */
+  .outline-do-container.desktop-outline {
+    position: absolute;
+    top: 100px;
+    right: 0;
+    transform: translateX(33%);
+  }
+  
   .outline-do-container.desktop-outline .outline-do {
     font-size: 250px;
     line-height: 250px;
+    color: transparent;
     -webkit-text-stroke: 2px #DDDBDB;
+    text-stroke: 2px #DDDBDB;
+    -webkit-text-fill-color: transparent;
   }
 }
-
 /* ========== ТЕЛЕФОННАЯ ВЕРСИЯ (мобильные устройства) ========== */
 @media (max-width: 768px) {
   .third-scroll-section {

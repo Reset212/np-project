@@ -157,13 +157,13 @@
 }
 
 .third-button {
-  width: 240px !important;
-  height: 60px;
+  width: 216px !important;
+  font-size: 16px !important;
+  height: 50px !important;
   background: rgba(230, 230, 230, 0.72);
   border: none;
   border-radius: 32px;
   font-family: 'Helvetica Neue', Arial, sans-serif;
-  font-size: 18px;
   line-height: 1;
   color: #000000;
   letter-spacing: 1px;
@@ -237,16 +237,19 @@
   left: 0;
   width: 100%;
   box-sizing: border-box;
+  /* padding-top: 20px; */
 }
 
 .outline-we-container.desktop-outline .outline-we {
   font-size: 300px;
   line-height: 300px;
   color: transparent;
+  /* position: absolute; */
   -webkit-text-stroke: 2px #DDDBDB;
   text-stroke: 2px #DDDBDB;
   -webkit-text-fill-color: transparent;
-  margin-bottom: -50px; /* Чтобы буквы "вылазили" из блока */
+  padding-top: 20px;
+  margin-bottom: -100px ;  /* Чтобы буквы "вылазили" из блока */
 }
 
 /* Контур DO справа (выступает на 33%) - ДЕСКТОП */
@@ -483,7 +486,11 @@
     overflow: visible;
     text-overflow: clip;
   }
-
+  .third-button{
+    width: 216px !important;
+    font-size: 16px !important;
+    height: 50px !important;
+  }
   .title-space {
     width: 20px;
   }
