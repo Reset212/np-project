@@ -48,6 +48,39 @@ const ThirdScrollBlock = () => {
     };
   }, []);
 
+  // Функция для рендеринга текста с пробелами
+  const renderTextWithSpaces = (text, getLetterDelay, type = "item", itemIndex = 0) => {
+    const letters = [];
+    
+    for (let i = 0; i < text.length; i++) {
+      const char = text[i];
+      const key = `${type}-${itemIndex}-${i}`;
+      
+      if (char === " ") {
+        letters.push(
+          <span key={key} className="text-space">
+            &nbsp;
+          </span>
+        );
+      } else {
+        letters.push(
+          <span
+            key={key}
+            className="text-letter"
+            style={{
+              opacity: isVisible ? 1 : 0,
+              transitionDelay: `${getLetterDelay(itemIndex, i, isVisible)}ms`
+            }}
+          >
+            {char}
+          </span>
+        );
+      }
+    }
+    
+    return letters;
+  };
+
   const getTitleLetterDelay = (index, isAppearing, wordIndex = 0) => {
     if (!isAppearing) return 0;
     const letterIndex = wordIndex === 0 ? index : index + 3;
@@ -168,24 +201,8 @@ const ThirdScrollBlock = () => {
                     width: "100%",
                   }}
                 >
-                  <span
-                    className="item-text"
-                    style={{
-                      display: "block",
-                    }}
-                  >
-                    {item.split("").map((letter, letterIndex) => (
-                      <span
-                        key={letterIndex}
-                        className="item-letter"
-                        style={{
-                          opacity: isVisible ? 1 : 0,
-                          transitionDelay: `${getItemLetterDelay(index, letterIndex, isVisible)}ms`,
-                        }}
-                      >
-                        {letter}
-                      </span>
-                    ))}
+                  <span className="item-text">
+                    {renderTextWithSpaces(item, getItemLetterDelay, "item", index)}
                   </span>
                 </div>
               ))}
@@ -266,45 +283,45 @@ const ThirdScrollBlock = () => {
           </h2>
         </div>
 
- {/* Контур DO на уровне кнопки - МОБИЛЬНЫЙ */}
-<div className="outline-do-container mobile-outline do-above-button">
-  <h2 className="outline-do">
-    {"DO".split("").map((letter, index) => (
-      <span
-        key={`mobile-outline-do-${index}`}
-        className="outline-letter"
-        style={{
-          opacity: isVisible ? 0.9 : 0,
-          transform: isVisible ? 'translateY(0)' : 'translateY(20px)',
-          transitionDelay: `${index * 100 + 400}ms`,
-          transition: 'opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1)'
-        }}
-      >
-        {letter}
-      </span>
-    ))}
-  </h2>
-</div>
+        {/* Контур DO на уровне кнопки - МОБИЛЬНЫЙ */}
+        <div className="outline-do-container mobile-outline do-above-button">
+          <h2 className="outline-do">
+            {"DO".split("").map((letter, index) => (
+              <span
+                key={`mobile-outline-do-${index}`}
+                className="outline-letter"
+                style={{
+                  opacity: isVisible ? 0.9 : 0,
+                  transform: isVisible ? 'translateY(0)' : 'translateY(20px)',
+                  transitionDelay: `${index * 100 + 400}ms`,
+                  transition: 'opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1)'
+                }}
+              >
+                {letter}
+              </span>
+            ))}
+          </h2>
+        </div>
 
-{/* Контур WE под кнопкой - МОБИЛЬНЫЙ */}
-<div className="outline-we-container mobile-outline we-below-button">
-  <h2 className="outline-we">
-    {"WE".split("").map((letter, index) => (
-      <span
-        key={`mobile-outline-we-${index}`}
-        className="outline-letter"
-        style={{
-          opacity: isVisible ? 0.9 : 0,
-          transform: isVisible ? 'translateY(0)' : 'translateY(20px)',
-          transitionDelay: `${index * 100 + 600}ms`,
-          transition: 'opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1)'
-        }}
-      >
-        {letter}
-      </span>
-    ))}
-  </h2>
-</div>
+        {/* Контур WE под кнопкой - МОБИЛЬНЫЙ */}
+        <div className="outline-we-container mobile-outline we-below-button">
+          <h2 className="outline-we">
+            {"WE".split("").map((letter, index) => (
+              <span
+                key={`mobile-outline-we-${index}`}
+                className="outline-letter"
+                style={{
+                  opacity: isVisible ? 0.9 : 0,
+                  transform: isVisible ? 'translateY(0)' : 'translateY(20px)',
+                  transitionDelay: `${index * 100 + 600}ms`,
+                  transition: 'opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1)'
+                }}
+              >
+                {letter}
+              </span>
+            ))}
+          </h2>
+        </div>
       </div>
     </section>
   );

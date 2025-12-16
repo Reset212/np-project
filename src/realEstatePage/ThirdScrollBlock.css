@@ -738,11 +738,11 @@
   }
 
   .title-word:nth-child(1) {
-    transform: translateX(-15px);
+    transform: translateX(-30px);
   }
 
   .title-word:nth-child(2) {
-    transform: translateX(15px);
+    transform: translateX(35px);
   }
 
   .item-text {
@@ -763,7 +763,7 @@
   /* Контурные буквы мобильные */
   .outline-do-container.mobile-outline.do-above-button {
     bottom: calc(100% - 65px);
-    right: 12px;
+    right: 1=2px;
   }
   
   .outline-do-container.mobile-outline.do-above-button .outline-do {
