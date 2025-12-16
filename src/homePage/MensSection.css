@@ -1,4 +1,4 @@
-/* Секция статичная без анимаций */
+/* Секция с эффектом выдвижения фото */
 .mens-section {
   position: relative;
   height: 100vh;
@@ -6,15 +6,27 @@
   overflow: hidden;
 }
 
-/* Статичный контейнер */
+/* Sticky контейнер */
 .mens-sticky {
-  position: relative;
+  position: sticky;
   top: 0;
   left: 0;
   width: 100%;
   height: 100vh;
   display: flex;
   align-items: center;
+  overflow: hidden;
+}
+
+/* Основной контейнер */
+.mens-content {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 0 5vw;
+  box-sizing: border-box;
 }
 
 /* Контейнер для фото */
@@ -22,12 +34,12 @@
   position: absolute;
   top: 0;
   right: 0;
-  width: 50%;
+  width: 30%; /* Начальная ширина фото */
   height: 100vh;
-  z-index: 3;
+  z-index: 1;
+  will-change: width;
   overflow: hidden;
-  opacity: 1;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  transition: width 0.1s ease-out;
 }
 
 .mens-photo {
@@ -35,76 +47,73 @@
   height: 100%;
   object-fit: cover;
   object-position: left center;
-  display: block;
 }
 
-/* Контейнеры для текста */
+/* Контейнеры для текста - базовые стили */
 .mens-date-container {
   position: absolute;
-  right: calc(55%);
-  top: calc(15%);
-  width: 550px;
+  right: calc(30% + 187px); /* 187px от фото на широких экранах */
+  top: calc(30% - 100px);
+  width: 600px;
   z-index: 2;
   text-align: left;
+  transition: right 0.1s ease-out;
   word-wrap: break-word;
   overflow-wrap: break-word;
-  opacity: 1;
-  visibility: visible;
 }
 
-/* Стили для текста */
+.mens-text-container {
+  position: absolute;
+  right: calc(30% + 187px); /* 187px от фото на широких экранах */
+  top: 50%;
+  transform: translateY(-50%);
+  width: 600px;
+  z-index: 2;
+  text-align: left;
+  transition: right 0.1s ease-out;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.mens-secondary-container {
+  position: absolute;
+  right: calc(30% + 147px); /* 147px от фото на широких экранах */
+  top: calc(50% + 100px);
+  width: 600px; /* Такая же ширина как у основного текста */
+  z-index: 2;
+  text-align: left;
+  transition: right 0.1s ease-out;
+}
+
+/* Стили для текста - БЕЗ ЛЕВЫХ ОТСТУПОВ */
 .mens-date {
   font-family: 'Helvetica Neue', sans-serif;
-  font-size: 15px !important;
-  line-height: 24px !important;
+  font-size: 14px;
+  line-height: 20px;
   color: #000000;
   margin: 0;
   padding: 0;
   text-align: left;
   word-break: break-word;
   hyphens: auto;
-  width: 100%;
-  opacity: 1;
-}
-
-.mens-text-container {
-  position: absolute;
-  right: calc(52%);
-  top: 50%;
-  transform: translateY(-50%);
-  width: 820px;
-  z-index: 2;
   text-align: left;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  opacity: 1;
-  visibility: visible;
+  width: 100%;
 }
 
 .mens-text-bold {
   font-family: 'Helvetica Neue', sans-serif;
-  font-size: 32px !important;
-  line-height: 40px !important;
+  font-size: 32px;
+  line-height: 40px;
   letter-spacing: -0.02em;
   text-transform: uppercase;
   color: #282525;
   margin: 0;
   padding: 0;
-  text-align: left !important;
+  text-align: left;
   word-break: break-word;
   hyphens: auto;
-  opacity: 1;
-}
-
-.mens-secondary-container {
-  position: absolute;
-  right: calc(63%);
-  top: calc(55%);
-  width: 600px;
-  z-index: 2;
   text-align: left;
-  opacity: 1;
-  visibility: visible;
+  width: 90%;
 }
 
 /* Кнопка */
@@ -129,8 +138,8 @@
   transition: all 0.3s ease;
   margin-top: 100px;
   padding: 0;
+  /* Выравнивание по левому краю контейнера основного текста */
   margin-left: 0;
-  opacity: 1;
 }
 
 .mens-button:hover {
@@ -141,32 +150,55 @@
 
 /* Адаптивность для 1440px */
 @media (max-width: 1440px) {
-  .mens-date-container {
-    top: 60px !important;
-    width: 350px !important;
-    right: calc(50% + 20px) !important;
+  .mens-content {
+    padding: 0 3vw;
   }
-  
-  .mens-date {
-    font-size: 13px;
-    line-height: 18px;
+
+  .mens-date-container,
+  .mens-text-container,
+  .mens-secondary-container {
+    width: 500px;
+    max-width: calc(100vw - 50vw - 100px);
+  }
+
+  .mens-date-container {
+    /* right динамический из JS */
+    top: calc(30% - 100px) !important;
+    min-width: 350px;
   }
 
   .mens-text-container {
-    top: 45% !important;
-    right: calc(50% + 20px) !important;
-    width: 500px !important;
-  }
-  
-  .mens-text-bold {
-    font-size: 28px;
-    line-height: 34px;
+    /* right динамический из JS */
+    top: 50% !important;
+    transform: translateY(-50%);
+    min-width: 350px;
   }
 
   .mens-secondary-container {
-    top: calc(63%) !important;
-    width: 350px !important;
-    right: calc(50% + 20px) !important;
+    /* right динамический из JS */
+    top: calc(50% + 110px) !important;
+    /* Ширина такая же как у основного текста */
+    width: 500px !important;
+    /* Кнопка выровнена по левому краю основного текста */
+    text-align: left;
+    padding-left: 0;
+  }
+
+  .mens-date {
+    font-size: 13px;
+    line-height: 18px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+  }
+
+  .mens-text-bold {
+    font-size: 28px;
+    line-height: 34px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+    /* max-width: 100%; */
   }
 
   .mens-button {
@@ -174,186 +206,134 @@
     height: 55px;
     margin-top: 90px !important;
     font-size: 15px;
+    /* Прижата к левому краю контейнера основного текста */
+    margin-left: 0;
+    float: none;
   }
 }
 
-/* Планшетная версия 1024px - ФИКСИРОВАНО */
+/* Версия для средних экранов между 1440px и 1600px */
+@media (min-width: 1441px) and (max-width: 1600px) {
+  .mens-date-container,
+  .mens-text-container,
+  .mens-secondary-container {
+    width: 550px;
+  }
+  
+  .mens-text-bold {
+    font-size: 30px;
+  }
+  
+  .mens-button {
+    margin-top: 100px;
+  }
+}
+
+/* Планшетная версия 1024px */
 @media (max-width: 1024px) {
   .mens-section {
-    height: 100vh;
+    height: 250vh;
+  }
+  
+  .mens-content {
+    padding: 0 2vw;
   }
 
-  .mens-photo-container {
-    width: 45%;
+  .mens-date-container,
+  .mens-text-container,
+  .mens-secondary-container {
+    width: 450px;
+    max-width: calc(100vw - 40vw - 80px);
   }
 
   .mens-date-container {
-    right: calc(48% + 10px) !important;
-    top: 10% !important;
-    width: 300px !important;
-    max-width: calc(100vw - 45% - 40px);
-  }
-
-  .mens-date {
-    font-size: 12px !important;
-    line-height: 16px !important;
+    top: calc(30% - 90px) !important;
   }
 
   .mens-text-container {
-    right: calc(48% + 10px) !important;
-    top: 45% !important;
-    width: 400px !important;
-    max-width: calc(100vw - 45% - 40px);
-    transform: translateY(-50%);
-  }
-
-  .mens-text-bold {
-    font-size: 22px !important;
-    line-height: 28px !important;
+    top: 50% !important;
   }
 
   .mens-secondary-container {
-    right: calc(48% + 10px) !important;
-    top: 70% !important;
-    width: 300px !important;
-    max-width: calc(100vw - 45% - 40px);
-  }
-
-  .mens-button {
-    width: 140px !important;
-    height: 50px;
-    margin-top: 50px !important;
-    font-size: 14px;
-  }
-}
-
-/* Планшетная версия 900px - ДОБАВЛЕНО */
-@media (max-width: 900px) {
-  .mens-section {
-    height: 100vh;
-  }
-
-  .mens-photo-container {
-    width: 45%;
-  }
-
-  .mens-date-container {
-    right: calc(50% + 15px) !important;
-    top: 8% !important;
-    width: 280px !important;
-    max-width: calc(100vw - 45% - 30px);
+    top: calc(50% + 100px) !important;
+    width: 450px !important;
+    text-align: left;
+    padding-left: 0;
   }
 
   .mens-date {
-    font-size: 11px !important;
-    line-height: 15px !important;
-  }
-
-  .mens-text-container {
-    right: calc(50% + 15px) !important;
-    top: 45% !important;
-    width: 350px !important;
-    max-width: calc(100vw - 45% - 30px);
-    transform: translateY(-50%);
-  }
-
-  .mens-text-bold {
-    font-size: 20px !important;
-    line-height: 26px !important;
-  }
-
-  .mens-secondary-container {
-    right: calc(50% + 15px) !important;
-    top: 75% !important;
-    width: 280px !important;
-    max-width: calc(100vw - 45% - 30px);
-  }
-
-  .mens-button {
-    width: 130px !important;
-    height: 48px;
-    margin-top: 40px !important;
-    font-size: 13px;
-  }
-}
-
-/* Планшетная версия 768px - ФИКСИРОВАНО */
-@media (max-width: 768px) {
-  .mens-section {
-    height: 100vh;
-    min-height: 100vh;
-    overflow: hidden;
-  }
-
-  .mens-sticky {
-    height: 100vh;
-  }
-
-  .mens-photo-container {
-    width: 40%;
-    height: 100vh;
-    right: 0;
-    position: absolute;
-    top: 0;
-  }
-
-  .mens-date-container {
-    right: calc(55% + 10px) !important;
-    top: 8% !important;
-    width: 250px !important;
-    max-width: calc(100vw - 40% - 30px);
-  }
-
-  .mens-date {
-    font-size: 10px !important;
-    line-height: 14px !important;
-  }
-
-  .mens-text-container {
-    right: calc(55% + 10px) !important;
-    top: 45% !important;
-    width: 300px !important;
-    max-width: calc(100vw - 40% - 30px);
-    transform: translateY(-50%);
-  }
-
-  .mens-text-bold {
-    font-size: 18px !important;
-    line-height: 24px !important;
-  }
-
-  .mens-secondary-container {
-    right: calc(55% + 10px) !important;
-    top: 78% !important;
-    width: 250px !important;
-    max-width: calc(100vw - 40% - 30px);
-  }
-
-  .mens-button {
-    width: 120px !important;
-    height: 45px;
-    margin-top: 30px !important;
     font-size: 12px;
+    line-height: 16px;
+  }
+
+  .mens-text-bold {
+    font-size: 24px;
+    line-height: 28px;
+  }
+
+  .mens-button {
+    width: 140px;
+    height: 50px;
+    margin-top: 80px !important;
+    font-size: 14px;
+    margin-left: 0;
   }
 }
 
-/* АНИМАЦИИ ДЛЯ ТЕЛЕФОННЫХ ВЕРСИЙ - ОБНОВЛЕНО */
+/* ШИРОКИЕ ЭКРАНЫ (больше 1600px) */
+@media (min-width: 1601px) {
+  .mens-date-container,
+  .mens-text-container,
+  .mens-secondary-container {
+    width: 650px; /* Шире для больших экранов */
+  }
+  
+  .mens-date {
+    font-size: 15px;
+    line-height: 22px;
+  }
+  
+  .mens-text-bold {
+    font-size: 34px;
+    line-height: 42px;
+  }
+  
+  .mens-button {
+    margin-top: 110px;
+  }
+}
 
-/* Мобильная версия 600px - С ДВУСТОРОННЕЙ АНИМАЦИЕЙ */
-@media (max-width: 600px) {
+/* ОЧЕНЬ ШИРОКИЕ ЭКРАНЫ */
+@media (min-width: 1920px) {
+  .mens-date-container,
+  .mens-text-container,
+  .mens-secondary-container {
+    width: 700px;
+  }
+  
+  .mens-text-bold {
+    font-size: 36px;
+    line-height: 44px;
+  }
+  
+  .mens-button {
+    margin-top: 120px;
+  }
+}
+
+/* МОБИЛЬНАЯ ВЕРСИЯ - ВСЕ ЭЛЕМЕНТЫ СТОЛБЦОМ */
+@media (max-width: 768px) {
   .mens-section {
     height: auto;
     min-height: 100vh;
-    padding: 40px 15px !important;
-    overflow: hidden !important;
+    padding: 40px 20px;
+    overflow: visible;
     background-color: #ffffff;
   }
 
   .mens-sticky {
     position: relative;
     height: auto;
-    width: 100% !important;
-    display: block !important;
     overflow: visible;
   }
 
@@ -362,319 +342,132 @@
     flex-direction: column;
     align-items: flex-start;
     justify-content: flex-start;
-    width: 100% !important;
-    max-width: 100vw !important;
-    padding: 0 !important;
-    margin: 0 !important;
+    padding: 0;
     height: auto;
-    gap: 25px;
-    box-sizing: border-box !important;
-    overflow: hidden !important;
-    opacity: 0;
-    transform: translateY(30px);
-    transition: opacity 0.8s ease, transform 0.8s ease;
+    gap: 30px;
   }
 
-  .mens-content.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  .mens-content.hidden {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-
-  /* Анимация для фото - скролл вниз */
+  /* 1. ФОТО - ПЕРВЫМ */
   .mens-photo-container {
-    opacity: 0;
-    transform: translateY(40px);
-    transition: opacity 0.6s ease, transform 0.6s ease;
-  }
-
-  .mens-content.visible .mens-photo-container {
-    opacity: 1;
-    transform: translateY(0);
-    transition: opacity 0.6s ease 0.2s, transform 0.6s ease 0.2s;
-  }
-
-  .mens-content.hidden .mens-photo-container {
-    opacity: 0;
-    transform: translateY(40px);
-    transition: opacity 0.4s ease, transform 0.4s ease;
-  }
-
-  /* Анимация для основного текста - скролл вниз */
-  .mens-text-container {
-    opacity: 0;
-    transform: translateY(40px);
-    transition: opacity 0.6s ease, transform 0.6s ease;
-  }
-
-  .mens-content.visible .mens-text-container {
-    opacity: 1;
-    transform: translateY(0);
-    transition: opacity 0.6s ease 0.3s, transform 0.6s ease 0.3s;
-  }
-
-  .mens-content.hidden .mens-text-container {
-    opacity: 0;
-    transform: translateY(40px);
-    transition: opacity 0.4s ease, transform 0.4s ease;
-  }
-
-  /* Анимация для даты - скролл вниз */
-  .mens-date-container {
-    opacity: 0;
-    transform: translateY(40px);
-    transition: opacity 0.6s ease, transform 0.6s ease;
-  }
-
-  .mens-content.visible .mens-date-container {
-    opacity: 1;
-    transform: translateY(0);
-    transition: opacity 0.6s ease 0.4s, transform 0.6s ease 0.4s;
-  }
-
-  .mens-content.hidden .mens-date-container {
-    opacity: 0;
-    transform: translateY(40px);
-    transition: opacity 0.4s ease, transform 0.4s ease;
-  }
-
-  /* Анимация для кнопки - скролл вниз */
-  .mens-secondary-container {
-    opacity: 0;
-    transform: translateY(40px);
-    transition: opacity 0.6s ease, transform 0.6s ease;
-  }
-
-  .mens-content.visible .mens-secondary-container {
-    opacity: 1;
-    transform: translateY(0);
-    transition: opacity 0.6s ease 0.5s, transform 0.6s ease 0.5s;
-  }
-
-  .mens-content.hidden .mens-secondary-container {
-    opacity: 0;
-    transform: translateY(40px);
-    transition: opacity 0.4s ease, transform 0.4s ease;
-  }
-
-  /* Анимация для фото - скролл вверх */
-  .mens-section[data-scroll-direction="up"] .mens-content.visible .mens-photo-container {
-    opacity: 1;
-    transform: translateY(0);
-    transition: opacity 0.6s ease, transform 0.6s ease;
-  }
-
-  .mens-section[data-scroll-direction="up"] .mens-content.hidden .mens-photo-container {
-    opacity: 0;
-    transform: translateY(-40px);
-    transition: opacity 0.6s ease 0.2s, transform 0.6s ease 0.2s;
-  }
-
-  /* Анимация для основного текста - скролл вверх */
-  .mens-section[data-scroll-direction="up"] .mens-content.visible .mens-text-container {
-    opacity: 1;
-    transform: translateY(0);
-    transition: opacity 0.6s ease, transform 0.6s ease;
-  }
-
-  .mens-section[data-scroll-direction="up"] .mens-content.hidden .mens-text-container {
-    opacity: 0;
-    transform: translateY(-40px);
-    transition: opacity 0.6s ease 0.3s, transform 0.6s ease 0.3s;
-  }
-
-  /* Анимация для даты - скролл вверх */
-  .mens-section[data-scroll-direction="up"] .mens-content.visible .mens-date-container {
-    opacity: 1;
-    transform: translateY(0);
-    transition: opacity 0.6s ease, transform 0.6s ease;
-  }
-
-  .mens-section[data-scroll-direction="up"] .mens-content.hidden .mens-date-container {
-    opacity: 0;
-    transform: translateY(-40px);
-    transition: opacity 0.6s ease 0.4s, transform 0.6s ease 0.4s;
-  }
-
-  /* Анимация для кнопки - скролл вверх */
-  .mens-section[data-scroll-direction="up"] .mens-content.visible .mens-secondary-container {
-    opacity: 1;
-    transform: translateY(0);
-    transition: opacity 0.6s ease, transform 0.6s ease;
-  }
-
-  .mens-section[data-scroll-direction="up"] .mens-content.hidden .mens-secondary-container {
-    opacity: 0;
-    transform: translateY(-40px);
-    transition: opacity 0.6s ease 0.5s, transform 0.6s ease 0.5s;
-  }
-
-  /* СБРОС ВСЕХ АБСОЛЮТНЫХ ПОЗИЦИЙ */
-  .mens-photo-container,
-  .mens-text-container,
-  .mens-date-container,
-  .mens-secondary-container {
     position: relative !important;
-    display: block !important;
-    float: none !important;
-    clear: both !important;
+    width: 100% !important;
+    height: 300px !important;
+    margin: 0 !important;
     top: auto !important;
     right: auto !important;
-    left: auto !important;
-    bottom: auto !important;
-    visibility: visible !important;
-    box-shadow: none !important;
-  }
-
-  /* ФОТО */
-  .mens-photo-container {
-    width: 100% !important;
-    max-width: 100vw !important;
-    height: 300px !important;
-    margin: 0 0 20px 0 !important;
     order: 1;
-    box-sizing: border-box !important;
-    padding: 0 !important;
-    overflow: hidden;
+    transition: none !important;
   }
 
   .mens-photo {
-    width: 100% !important;
-    height: 100% !important;
+    width: 100%;
+    height: 100%;
     object-fit: cover;
-    object-position: center;
-    display: block;
     border-radius: 8px;
-    transform: scale(1.05);
-    transition: transform 1s ease;
   }
 
-  .mens-content.visible .mens-photo {
-    transform: scale(1);
-  }
-
-  .mens-content.hidden .mens-photo {
-    transform: scale(1.05);
-  }
-
-  /* ОСНОВНОЙ ТЕКСТ */
+  /* 2. ОСНОВНОЙ ТЕКСТ - ВТОРЫМ */
   .mens-text-container {
+    position: relative !important;
     width: 100% !important;
-    max-width: 100% !important;
     margin: 0 !important;
-    padding: 0 !important;
+    top: auto !important;
+    right: auto !important;
+    transform: none !important;
     text-align: left;
     order: 2;
-    box-sizing: border-box !important;
+    padding-left: 0; /* Без отступа слева */
+    padding-right: 0; /* Без отступа справа */
+    box-sizing: border-box;
   }
 
   .mens-text-bold {
-    font-family: 'Helvetica Neue', sans-serif;
     font-size: 20px !important;
     line-height: 1.4 !important;
-    letter-spacing: -0.02em;
-    text-transform: uppercase;
-    color: #282525;
     margin: 0 !important;
     padding: 0 !important;
-    text-align: left !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    word-wrap: break-word !important;
-    overflow-wrap: break-word !important;
-    box-sizing: border-box !important;
-    font-weight: 300 !important;
+    white-space: normal !important;
+    /* letter-spacing: -0.02em; */
+    color: #282525;
+    text-transform: uppercase;
+    font-weight: 500;
+    text-align: left;
+    /* width: 100%; */
+    /* max-width: 100%; Занимает всю ширину фото */
+    box-sizing: border-box;
   }
 
-  /* ДАТА */
+  /* 3. ВТОРОЙ ТЕКСТ - ТРЕТЬИМ */
   .mens-date-container {
+    position: relative !important;
     width: 100% !important;
-    max-width: 100% !important;
     margin: 0 !important;
-    padding: 0 !important;
+    top: auto !important;
+    right: auto !important;
     text-align: left;
     order: 3;
-    box-sizing: border-box !important;
+    padding-left: 0; /* Без отступа слева по умолчанию */
+    padding-right: 0; /* Без отступа справа */
+    box-sizing: border-box;
   }
 
   .mens-date {
-    font-family: 'Helvetica Neue', sans-serif;
     font-size: 16px !important;
     line-height: 1.6 !important;
-    color: #000000;
     margin: 0 !important;
     padding: 0 !important;
-    text-align: left !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    word-wrap: break-word !important;
-    overflow-wrap: break-word !important;
-    box-sizing: border-box !important;
-    font-weight: 400 !important;
+    white-space: normal !important;
+    color: #000000;
+    font-weight: 400;
+    font-family: 'Helvetica Neue', sans-serif;
+    text-align: left;
+    width: 100%;
+    max-width: 100%; /* Занимает всю ширину фото */
+    box-sizing: border-box;
   }
 
-  /* КНОПКА */
+  /* Добавляем отступ слева только для мобильных экранов */
+  @media (max-width: 768px) {
+    .mens-date-container {
+      padding-left: 15px; /* Отступ слева на мобильных */
+    }
+    
+    .mens-date {
+      padding-left: 0; /* Текст без отступа, но контейнер с отступом */
+    }
+  }
+
+  /* 4. КНОПКА - ЧЕТВЕРТОЙ */
   .mens-secondary-container {
+    position: relative !important;
     width: 100% !important;
-    max-width: 100% !important;
-    margin: 20px 0 0 0 !important;
-    padding: 0 !important;
+    margin: 0 !important;
+    top: auto !important;
+    left: 0 !important;
+    right: auto !important;
     text-align: left;
     order: 4;
-    box-sizing: border-box !important;
+    padding-left: 0; /* Без отступа слева */
+    padding-right: 0; /* Без отступа справа */
+    box-sizing: border-box;
   }
 
   .mens-button {
-    width: auto !important;
-    min-width: 160px !important;
-    max-width: 100% !important;
+    width: 100%;
+    max-width: 200px;
     height: 50px;
+    margin-top: 0 !important;
+    font-size: 14px;
     background: rgba(230, 230, 230, 0.72);
     border-radius: 32px;
-    border: none;
-    font-family: 'Helvetica Neue', sans-serif;
-    font-size: 14px !important;
-    font-weight: 500;
-    color: #000000;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    cursor: pointer;
-    display: inline-flex !important;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    transition: all 0.3s ease;
-    margin: 0 !important;
-    padding: 0 25px !important;
-    box-sizing: border-box !important;
-    transform: translateY(5px);
-    transition: all 0.5s ease;
-  }
-
-  .mens-content.visible .mens-button {
-    transform: translateY(0);
-    transition: all 0.5s ease 0.6s;
-  }
-
-  .mens-content.hidden .mens-button {
-    transform: translateY(5px);
-  }
-
-  .mens-button:hover {
-    background: rgba(210, 210, 210, 0.85);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin-left: 0;
   }
 }
 
-/* Мобильная версия 420px */
-@media (max-width: 420px) {
+/* Для очень маленьких экранов */
+@media (max-width: 480px) {
   .mens-section {
-    padding: 30px 12px !important;
+    padding: 30px 15px;
   }
 
   .mens-photo-container {
@@ -683,70 +476,17 @@
 
   .mens-text-bold {
     font-size: 18px !important;
-    line-height: 1.35 !important;
   }
 
   .mens-date {
-    font-size: 15px !important;
+    font-size: 16px !important;
     line-height: 1.5 !important;
   }
 
   .mens-button {
-    min-width: 150px !important;
-    height: 48px;
-    font-size: 13px !important;
-    padding: 0 20px !important;
-  }
-}
-
-/* Для очень маленьких экранов */
-@media (max-width: 375px) {
-  .mens-section {
-    padding: 25px 10px !important;
-  }
-
-  .mens-photo-container {
-    height: 220px !important;
-  }
-
-  .mens-text-bold {
-    font-size: 17px !important;
-    line-height: 1.3 !important;
-  }
-
-  .mens-date {
-    font-size: 14px !important;
-    line-height: 1.4 !important;
-  }
-
-  .mens-button {
-    min-width: 140px !important;
-    height: 46px;
-    font-size: 12px !important;
-    padding: 0 18px !important;
-  }
-}
-
-/* Для экстра-маленьких экранов */
-@media (max-width: 320px) {
-  .mens-section {
-    padding: 20px 8px !important;
-  }
-
-  .mens-text-bold {
-    font-size: 16px !important;
-    line-height: 1.25 !important;
-  }
-
-  .mens-date {
-    font-size: 13px !important;
-    line-height: 1.35 !important;
-  }
-
-  .mens-button {
-    min-width: 130px !important;
-    height: 44px;
-    font-size: 11px !important;
-    padding: 0 15px !important;
+    max-width: 160px;
+    height: 60px;
+    font-size: 16px;
+    font-weight:  600;
   }
 }
