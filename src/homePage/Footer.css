@@ -16,9 +16,12 @@
 
 .footer {
   background-color: #ffff;
-  padding: 49px 0;
+  /* padding: 4px 0 !important; */
+  display: flex;
+  align-items: center;
   position: relative;
   bottom: 0;
+  height: 10vh !important;
   width: 100%;
   border-top: 1px solid #ddd;
   box-sizing: border-box;
@@ -26,8 +29,11 @@
 
 /* Масштабирование для больших экранов */
 @media (min-width: 1441px) {
+
+}
+@media (min-width: 1441px) {
   .footer {
-    padding: calc(49px * var(--scale-factor)) 0;
+    /* padding: calc(49px * var(--scale-factor)) 0; */
     border-top: calc(1px * var(--scale-factor)) solid #ddd;
   }
 }
@@ -207,7 +213,8 @@
   }
   
   .footer {
-    padding: 30px 0;
+    height: 16vh !important;
+    padding: 3px 0 !important;
   }
   
   .footer-left {
@@ -253,6 +260,7 @@
 @media (max-width: 480px) {
   .footer {
     padding: 25px 0;
+    height: 20vh !important;
   }
   
   .footer-content {

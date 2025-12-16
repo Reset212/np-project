@@ -22,19 +22,19 @@
 .contact-section {
   /* border-top: 1px solid #eee; */
   position: relative;
-  min-height: 100vh;
+  min-height: 50vh;
   background-color: white;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 80px 20px; /* Удален padding-top - полоса теперь снаружи */
-  z-index: 1;
-  overflow-x: hidden;
+  /* padding: 80px 20px; Удален padding-top - полоса теперь снаружи */
+  /* z-index: 1; */
+  /* overflow-x: hidden; */
 }
 
 @media (min-width: 1441px) {
   .contact-section {
-    padding: calc(80px * var(--scale-factor)) calc(20px * var(--scale-factor));
+    /* padding: calc(80px * var(--scale-factor)) calc(20px * var(--scale-factor)); */
   }
 }
 
@@ -370,7 +370,7 @@
   max-height: 200px;
   position: relative;
   z-index: 5;
-  overflow-y: auto;
+  /* overflow-y: auto; */
 }
 
 @media (min-width: 1441px) {
@@ -383,7 +383,7 @@
 .submit-button {
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-style: normal;
-  font-weight: 400;
+  font-weight: 300;
   font-size: 16px;
   color: #000000;
   text-transform: uppercase;
@@ -395,8 +395,8 @@
   align-self: flex-end;
   letter-spacing: 0.5px;
   border-radius: 32px;
-  width: 122px;
-  height: 60px;
+  width: 102px !important; 
+  height: 35px !important;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -649,7 +649,7 @@
 /* НОВЫЕ ИЗМЕНЕНИЯ: Делаем мобильные email блоки видимыми уже на 768px */
 @media (max-width: 768px) {
   .contact-section {
-    padding: 60px 15px;
+    /* padding: 60px 15px; */
     min-height: auto;
   }
 
@@ -849,7 +849,7 @@
 /* Особенности для ландшафтной ориентации */
 @media (max-height: 600px) and (orientation: landscape) {
   .contact-section {
-    padding: 30px 20px;
+    /* padding: 30px 20px; */
     min-height: auto;
   }
 
@@ -897,6 +897,7 @@
 
   .contact-form {
     gap: 25px;
+    overflow: hidden;
   }
 
   .submit-button {
@@ -963,7 +964,7 @@
 
 .contact-form {
   -webkit-overflow-scrolling: touch;
-  overflow-y: visible;
+  /* overflow-y: visible; */
 }
 
 @media (max-width: 1040px) {
