@@ -164,7 +164,6 @@
   border-radius: 32px;
   font-family: 'Helvetica Neue', Arial, sans-serif;
   font-size: 18px;
-  font-weight: 500;
   line-height: 1;
   color: #000000;
   letter-spacing: 1px;
@@ -342,9 +341,7 @@
   }
   
   /* Контурные буквы */
-  .outline-we-container.desktop-outline {
-    padding: 0 60px;
-  }
+
   
   .outline-we-container.desktop-outline .outline-we,
   .outline-do-container.desktop-outline .outline-do {
@@ -378,9 +375,7 @@
   }
   
   /* Контурные буквы */
-  .outline-we-container.desktop-outline {
-    padding: 0 80px;
-  }
+
   
   .outline-we-container.desktop-outline .outline-we,
   .outline-do-container.desktop-outline .outline-do {
@@ -500,10 +495,7 @@
   }
   
   /* Контур WE на планшетах */
-  .outline-we-container.desktop-outline {
-    padding: 0 60px;
-  }
-  
+
   .outline-we-container.desktop-outline .outline-we,
   .outline-do-container.desktop-outline .outline-do {
     font-size: 250px;

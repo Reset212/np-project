@@ -390,7 +390,7 @@
     /* letter-spacing: -0.02em; */
     color: #282525;
     text-transform: uppercase;
-    font-weight: 500;
+    font-weight: 300;
     text-align: left;
     /* width: 100%; */
     /* max-width: 100%; Занимает всю ширину фото */
@@ -418,7 +418,7 @@
     padding: 0 !important;
     white-space: normal !important;
     color: #000000;
-    font-weight: 400;
+    font-weight: 300;
     font-family: 'Helvetica Neue', sans-serif;
     text-align: left;
     width: 100%;
@@ -484,14 +484,14 @@
   .mens-date {
     font-size: 16px !important;
     line-height: 1.5 !important;
-    font-weight:  500;
+    font-weight:  300;
   }
 
   .mens-button {
     width: 160px;
     height: 60px;
     font-size: 16px;
-    font-weight:  600;
+    font-weight:  400;
   }
   
   /* Для маленьких экранов уменьшаем отступ */
