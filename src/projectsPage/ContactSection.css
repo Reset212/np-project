@@ -126,7 +126,7 @@
 .email-value {
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-style: normal;
-  font-weight: 400;
+  font-weight: 300;
   font-size: 18px;
   color: #000000;
   cursor: pointer;
@@ -229,7 +229,7 @@
 .contact-text {
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-style: normal;
-  font-weight: 400;
+  font-weight: 300;
   font-size: 32px;
   line-height: 40px;
   letter-spacing: -0.03em;
@@ -304,7 +304,7 @@
 .form-label {
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-style: normal;
-  font-weight: 400;
+  font-weight: 300;
   font-size: 16px;
   color: #000000;
   letter-spacing: 0.5px;
@@ -492,7 +492,7 @@
 .mobile-email-value {
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-style: normal;
-  font-weight: 400;
+  font-weight: 300;
   font-size: 16px;
   color: #000000;
   cursor: pointer;
@@ -548,6 +548,7 @@
   }
 
   .contact-text {
+    font-weight: 300;
     font-size: 28px;
     line-height: 36px;
   }
@@ -630,6 +631,7 @@
   }
 
   .submit-button {
+    font-weight: 400;
     margin-top: 30px;
     align-self: center;
   }
@@ -689,6 +691,7 @@
   }
 
   .form-label {
+    font-weight: 300;
     font-size: 14px;
     text-align: center;
   }
@@ -746,7 +749,7 @@
     max-width: 122px !important;
     height: 60px;
     font-size: 16px;
-    font-weight: 600;
+    font-weight: 400;
     align-self: center !important;
     margin-top: 10px;
   }
@@ -771,6 +774,7 @@
   }
 
   .form-label {
+    font-weight: 300;
     font-size: 16px;
     text-align: center;
     font-weight: 500;
@@ -813,6 +817,7 @@
   }
   .form-label{
     padding-top: 20px;
+    font-weight: 300;
   }
 
 }
@@ -828,6 +833,7 @@
   }
 
   .contact-text {
+    font-weight: 300;
     font-size: 16px;
     line-height: 22px;
   }
@@ -882,6 +888,7 @@
   }
 
   .contact-text {
+    font-weight: 300;
     font-size: 20px;
     line-height: 26px;
   }

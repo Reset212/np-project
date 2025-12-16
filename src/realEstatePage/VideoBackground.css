@@ -367,6 +367,7 @@
     height: 30px;
   }
     .view-project-button {
+     font-weight: 400 !important;
     max-width: 160px !important;
     height: 35px !important;
     font-size: 15px !important;
