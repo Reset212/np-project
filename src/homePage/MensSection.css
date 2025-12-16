@@ -74,7 +74,8 @@
   /* Контейнер для текста СЛЕВА от фото */
   .text-container-left {
     position: absolute;
-    top: 50%;
+    margin-top: 145px;
+    top: 60% !important;
     left: calc(100%); /* Начинаем справа, чтобы фото могло толкать */
     transform: translateY(-50%);
     width: 810px;
