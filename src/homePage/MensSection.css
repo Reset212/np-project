@@ -7,7 +7,6 @@
   overflow: hidden;
 }
 
-<<<<<<< Updated upstream
 /* Sticky контейнер */
 .mens-sticky {
   position: sticky;
@@ -156,84 +155,6 @@
 @media (max-width: 1440px) {
   .mens-content {
     padding: 0 3vw;
-=======
-/* ============================================
-   ДЕСКТОПНАЯ ВЕРСИЯ С АНИМАЦИЕЙ
-   ============================================ */
-@media (min-width: 1025px) {
-  .mens-section.desktop {
-    position: relative;
-    min-height: 100vh;
-  }
-  
-  .desktop-animation-wrapper {
-    position: relative;
-    width: 100%;
-  }
-  
-  .animation-background {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100vh;
-    z-index: 90;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s ease;
-  }
-  
-  .mens-section[data-fixed="true"] .animation-background {
-    opacity: 1;
-    pointer-events: all;
-  }
-  
-  /* Фиксированный контейнер для анимации */
-  .animation-container {
-    position: relative;
-    width: 100%;
-    z-index: 95;
-  }
-  
-  .animation-container.fixed {
-    position: fixed;
-    top: 0;
-    left: 0;
-  }
-  
-  /* Контейнер для фото - всегда справа */
-  .photo-container {
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 50%;
-    height: 100vh;
-    overflow: hidden;
-    z-index: 96;
-    /* Убираем transition, так как управляем через JS */
-    /* transition: width 0.1s linear, transform 0.1s linear; */
-  }
-  
-  .animation-photo {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
-    display: block;
-  }
-  /* Контейнер для текста СЛЕВА от фото */
-  .text-container-left {
-    position: absolute;
-    top: 50%;
-    left: calc(100%); /* Начинаем справа, чтобы фото могло толкать */
-    transform: translateY(-50%);
-    width: 810px;
-    z-index: 97;
-    transition: transform 0.1s linear;
-    opacity: 1 !important;
-    overflow: visible;
-    will-change: left;
->>>>>>> Stashed changes
   }
 
   .text-content-left {
