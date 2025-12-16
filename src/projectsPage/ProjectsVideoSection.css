@@ -863,4 +863,80 @@
   .popup-video-container {
     min-height: 300px;
   }
+}/* Контейнер для изображения превью */
+.preview-image-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.preview-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.8);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Плейсхолдер при ошибке загрузки изображения */
+.image-error-placeholder {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  font-size: 24px;
+  color: #ffffff;
+  text-align: center;
+  padding: 20px;
+  opacity: 0.8;
+}
+
+/* На десктопе при наведении скрываем изображение и показываем видео */
+@media (min-width: 769px) {
+  .video-card:hover .preview-image {
+    opacity: 0;
+    transform: scale(1.05);
+  }
+
+  .video-card:not(:hover) .video-background {
+    opacity: 0 !important;
+  }
+  
+  .video-card:hover .video-background {
+    opacity: 1 !important;
+  }
+}
+
+/* На мобильных устройствах показываем только изображение */
+@media (max-width: 768px) {
+  .preview-image {
+    opacity: 1 !important;
+    filter: brightness(0.7);
+  }
+  
+  .video-background {
+    display: none;
+  }
+  
+  .preview-image-container {
+    z-index: 1;
+  }
+}
+
+/* Десктоп: при наведении усиливаем оверлей */
+@media (min-width: 769px) {
+  .video-card:hover .video-overlay {
+    background: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0) 0%,
+      rgba(0, 0, 0, 0.9) 100%
+    );
+  }
 }
