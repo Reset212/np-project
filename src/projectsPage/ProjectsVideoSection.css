@@ -464,7 +464,7 @@
 /* Кнопка "WATCH VIDEO" */
 .watch-btn {
   width: 173px;
-  height: 48px;
+  height: 35px;
   background: rgba(238, 238, 238, 0.72);
   backdrop-filter: blur(8px);
   border: none;
@@ -636,7 +636,7 @@
 
   .watch-btn {
     width: 160px;
-    height: 44px;
+    height: 35px;
     font-size: 14px;
     margin-top: 10px;
   }
@@ -706,7 +706,7 @@
 
   .watch-btn {
     width: 140px;
-    height: 40px;
+    height: 35px;
     font-size: 13px;
   }
 }
