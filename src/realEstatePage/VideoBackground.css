@@ -340,7 +340,11 @@
     justify-content: space-between;
     align-items: center;
   }
-  
+    .video-background {
+    display: block !important; /* Принудительно показываем видео */
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
   /* Скрываем десктопную навигацию в мобильной версии */
   .nav-left, 
   .nav-right,

@@ -434,7 +434,11 @@
   * {
     cursor: auto !important;
   }
-  
+    .video-background {
+    display: block !important; /* Принудительно показываем видео */
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
   .cursor-dot,
   .cursor-ring {
     display: none !important;
