@@ -4,221 +4,247 @@ import "./MensSection.css";
 import mensPhoto from "../image/mens.png";
 
 const MensSection = () => {
+  const [isDesktop, setIsDesktop] = useState(false);
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const [isFixed, setIsFixed] = useState(false);
   const sectionRef = useRef(null);
-  const photoContainerRef = useRef(null);
-  const dateTextRef = useRef(null);
-  const textContainerRef = useRef(null);
-  const secondaryContainerRef = useRef(null);
-  const [isMobile, setIsMobile] = useState(false);
+  const photoRef = useRef(null);
+  const textRef = useRef(null);
   const navigate = useNavigate();
 
-  // Функция для перехода на real-estate страницу
   const goToRealEstate = () => {
     navigate("/real-estate");
   };
 
   useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 768);
+    const checkDesktop = () => {
+      setIsDesktop(window.innerWidth > 1024);
     };
 
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
+    checkDesktop();
+    window.addEventListener("resize", checkDesktop);
 
     return () => {
-      window.removeEventListener("resize", checkMobile);
+      window.removeEventListener("resize", checkDesktop);
     };
   }, []);
 
   useEffect(() => {
-    // На мобильных устройствах не запускаем анимацию скролла
-    if (isMobile) return;
+    if (!isDesktop) return;
 
     const handleScroll = () => {
-      if (
-        !sectionRef.current ||
-        !photoContainerRef.current ||
-        !dateTextRef.current ||
-        !textContainerRef.current ||
-        !secondaryContainerRef.current
-      )
-        return;
+      if (!sectionRef.current || !photoRef.current) return;
 
       const section = sectionRef.current;
       const rect = section.getBoundingClientRect();
       const windowHeight = window.innerHeight;
-      const windowWidth = window.innerWidth;
 
-      const sectionCenter = rect.top + rect.height / 2;
-      const windowCenter = windowHeight / 2;
-      let progress = (windowCenter - sectionCenter) / (windowHeight / 2);
-      progress = Math.max(-1, Math.min(1, progress));
-
-      const normalizedProgress = (progress + 1) / 2;
-      
-      // Создаем задержку в середине анимации (от 45% до 55%)
-      const holdStart = 0.45; // Начинаем задерживать с 45% прогресса
-      const holdEnd = 0.55;   // Заканчиваем задержку на 55% прогресса
-      
-      let smoothProgress;
-      if (normalizedProgress < holdStart) {
-        // Первая часть анимации до задержки - плавное ускорение
-        const t = normalizedProgress / holdStart;
-        // Кубическое easing для большей плавности
-        smoothProgress = t < 0.5 
-          ? 4 * t * t * t 
-          : 1 - Math.pow(-2 * t + 2, 3) / 2;
-        smoothProgress *= holdStart;
-      } else if (normalizedProgress > holdEnd) {
-        // Третья часть анимации после задержки - плавное замедление
-        const t = (normalizedProgress - holdEnd) / (1 - holdEnd);
-        // Кубическое easing для большей плавности
-        smoothProgress = t < 0.5 
-          ? 4 * t * t * t 
-          : 1 - Math.pow(-2 * t + 2, 3) / 2;
-        smoothProgress = holdEnd + smoothProgress * (1 - holdEnd);
-      } else {
-        // Средняя часть - СИЛЬНАЯ ЗАДЕРЖКА вокруг 50%
-        // Делаем очень медленное движение в зоне задержки
-        const holdCenter = 0.5;
-        const distanceFromCenter = Math.abs(normalizedProgress - holdCenter);
+      // Когда верхняя граница секции достигает верха экрана
+      if (rect.top <= 0 && rect.bottom >= windowHeight) {
+        setIsFixed(true);
         
-        if (distanceFromCenter < 0.02) {
-          // В самом центре (48%-52%) - почти полная остановка
-          smoothProgress = holdCenter;
-        } else {
-          // Ближе к краям зоны задержки - медленное движение
-          const direction = normalizedProgress > holdCenter ? 1 : -1;
-          const t = distanceFromCenter / 0.05; // 0.05 = половина зоны задержки
-          // Медленный квадратичный easing
-          const slowFactor = 0.2; // Замедляем в 5 раз
-          smoothProgress = holdCenter + direction * (t * t * slowFactor * 0.05);
+        // Рассчитываем прогресс от 0 до 2
+        const sectionHeight = section.offsetHeight;
+        const visibleHeight = windowHeight;
+        
+        // Сколько пикселей секции уже проскроллено
+        const scrolled = Math.abs(rect.top);
+        const maxScroll = sectionHeight - visibleHeight;
+        
+        // Прогресс от 0 до 2 (удваиваем обычный прогресс)
+        let progress = Math.min(2, Math.max(0, (scrolled / maxScroll) * 2));
+        
+        setScrollProgress(progress);
+        
+        // Применяем анимацию
+        if (photoRef.current && textRef.current) {
+          const photo = photoRef.current;
+          const text = textRef.current;
+          
+          // ПАРАМЕТРЫ ДЛЯ ФОТО
+          const photoStartWidth = -50; // Начальная ширина
+          const photoEndWidth = 100;   // Конечная ширина
+          
+          // ПАРАМЕТРЫ ДЛЯ ТЕКСТА
+          const textStartX = 0;        // Начальная позиция
+          const textEndX = -340;       // Конечная позиция
+          
+          // РАСПРЕДЕЛЕНИЕ АНИМАЦИЙ:
+          // 0-1: Фото расширяется от -50% до 100%
+          // 1-2: Фото поднимается вверх
+          
+          let photoWidth, photoTranslateY, textTranslateX;
+          
+          if (progress < 1) {
+            // Фаза 1: фото расширяется (0-100% прогресса)
+            const expandProgress = progress; // от 0 до 1
+            photoWidth = photoStartWidth + (photoEndWidth - photoStartWidth) * expandProgress;
+            photoTranslateY = 0;
+            // Текст плавно уезжает влево
+            textTranslateX = textStartX + (textEndX - textStartX) * expandProgress;
+          } else {
+            // Фаза 2: фото поднимается (100-200% прогресса)
+            photoWidth = photoEndWidth; // Фиксируем на 100%
+            
+            const liftProgress = progress - 1; // от 0 до 1
+            // Поднимаем фото вверх (например, на 100vh)
+            photoTranslateY = -liftProgress * 100;
+            
+            // Текст может оставаться на месте или двигаться дальше
+            textTranslateX = textEndX; // или можно добавить дополнительное движение
+          }
+          
+          // Применяем стили
+          const photoTranslateX = 0; // Горизонтальное смещение фото
+          
+          photo.style.transform = `translateX(${photoTranslateX}vw) translateY(${photoTranslateY}vh)`;
+          photo.style.width = `${photoWidth}%`;
+          photo.style.right = "0";
+          photo.style.left = "auto";
+          
+          text.style.transform = `translateX(${textTranslateX}vh)`;
+          
+          // ДОПОЛНИТЕЛЬНО: можно добавить эффекты прозрачности или масштабирования
+          if (progress > 1.5) {
+            // На последних 25% анимации можно добавить fade out или другие эффекты
+            const fadeProgress = (progress - 1.5) / 0.5; // 0-1
+            // photo.style.opacity = (1 - fadeProgress * 0.5).toString(); // Пример fade
+          }
+        }
+      } else {
+        setIsFixed(false);
+        // Сбрасываем анимацию, если вышли из зоны
+        if (rect.top > 0) {
+          // Мы выше секции
+          setScrollProgress(0);
+          if (photoRef.current) {
+            photoRef.current.style.transform = "translateX(0vw) translateY(0vh)";
+            photoRef.current.style.width = "-50%";
+          }
+          if (textRef.current) {
+            textRef.current.style.transform = "translateX(0vh)";
+          }
+        } else if (rect.bottom < windowHeight) {
+          // Мы ниже секции
+          setScrollProgress(2);
         }
       }
-
-      // Анимация ширины фото - больше промежуточных точек
-      const minPhotoWidth = 20;
-      const step1Width = 40;   // Первая промежуточная точка
-      const step2Width = 50;   // Вторая промежуточная точка (центр)
-      const step3Width = 50;   // Третья промежуточная точка
-      const step4Width = 50;   // Четвертая промежуточная точка
-      const maxPhotoWidth = 50;
-      
-      let photoWidth;
-      
-      // Разбиваем анимацию на 5 сегментов для большей плавности
-      if (smoothProgress < 0.2) {
-        // 0% - 20%: от min до step1
-        const t = smoothProgress / 0.2;
-        photoWidth = minPhotoWidth + t * (step1Width - minPhotoWidth);
-      } else if (smoothProgress < 0.4) {
-        // 20% - 40%: от step1 до step2
-        const t = (smoothProgress - 0.2) / 0.2;
-        photoWidth = step1Width + t * (step2Width - step1Width);
-      } else if (smoothProgress < 0.6) {
-        // 40% - 60%: от step2 до step3 (зона задержки)
-        const t = (smoothProgress - 0.4) / 0.2;
-        // В зоне задержки делаем более плавное изменение
-        const easedT = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
-        photoWidth = step2Width + easedT * (step3Width - step2Width);
-      } else if (smoothProgress < 0.8) {
-        // 60% - 80%: от step3 до step4
-        const t = (smoothProgress - 0.6) / 0.2;
-        photoWidth = step3Width + t * (step4Width - step3Width);
-      } else {
-        // 80% - 100%: от step4 до max
-        const t = (smoothProgress - 0.8) / 0.2;
-        photoWidth = step4Width + t * (maxPhotoWidth - step4Width);
-      }
-      
-      // Гарантируем, что ширина в пределах границ
-      photoWidth = Math.max(minPhotoWidth, Math.min(maxPhotoWidth, photoWidth));
-      
-      photoContainerRef.current.style.width = `${photoWidth}%`;
-
-      // Определяем отступы в зависимости от ширины экрана
-      let mainTextOffset, dateTextOffset, buttonOffset;
-      
-      if (windowWidth <= 1024) {
-        // Для планшетов
-        mainTextOffset = 200;
-        dateTextOffset = 200;
-        buttonOffset = 200;
-      } else if (windowWidth <= 1440) {
-        // Для 1440px
-        mainTextOffset = 40;
-        dateTextOffset = 40;
-        buttonOffset = 20;
-      } else {
-        // Для широких экранов
-        mainTextOffset = 187;
-        dateTextOffset = 187;
-        buttonOffset = 147;
-      }
-
-      // Позиционирование текста относительно фото
-      const mainTextRightPosition = `calc(${photoWidth}% + ${mainTextOffset}px)`;
-      const dateTextRightPosition = `calc(${photoWidth}% + ${dateTextOffset}px)`;
-      const buttonRightPosition = `calc(${photoWidth}% + ${buttonOffset}px)`;
-      
-      dateTextRef.current.style.right = dateTextRightPosition;
-      textContainerRef.current.style.right = mainTextRightPosition;
-      secondaryContainerRef.current.style.right = buttonRightPosition;
     };
 
-    let ticking = false;
-    const scrollHandler = () => {
-      if (!ticking) {
-        requestAnimationFrame(() => {
-          handleScroll();
-          ticking = false;
-        });
-        ticking = true;
-      }
-    };
-
-    window.addEventListener("scroll", scrollHandler, { passive: true });
-    window.addEventListener("resize", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    
+    // Инициализация
+    if (photoRef.current) {
+      photoRef.current.style.transform = "translateX(0vw) translateY(0vh)";
+      photoRef.current.style.width = "-50%";
+      photoRef.current.style.right = "0";
+      photoRef.current.style.left = "auto";
+    }
+    
+    if (textRef.current) {
+      textRef.current.style.transform = "translateX(0vh)";
+    }
+    
     handleScroll();
-
-    return () => {
-      window.removeEventListener("scroll", scrollHandler);
-      window.removeEventListener("resize", handleScroll);
-    };
-  }, [isMobile]);
+    
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [isDesktop]);
 
   return (
-    <section className="mens-section" id="mens-section" ref={sectionRef}>
-      <div className="mens-sticky">
-        <div className="mens-content">
-          {/* Дата */}
-          <div className="mens-date-container" ref={dateTextRef}>
-            <p className="mens-date">
-             Founded in 2013 by Fedor Balvanovich and Stanislav Kasatov, Movie Park aims to make a lasting mark in the industry by bringing bold ideas to life and turning them into powerful visual stories that inspire and remain relevant for a long time.
-            </p>
+    <>
+      <section 
+        className={`mens-section ${isDesktop ? 'desktop' : 'mobile'}`}
+        id="mens-section"
+        ref={sectionRef}
+        data-progress={scrollProgress.toFixed(2)}
+        data-fixed={isFixed}
+      >
+        {/* Для десктопа - анимация */}
+        {isDesktop ? (
+          <div className="desktop-animation-wrapper">
+            {/* Фон для скролла */}
+            <div className="animation-background"></div>
+            
+            {/* Фиксированный контейнер */}
+            <div className={`animation-container ${isFixed ? 'fixed' : ''}`}>
+              {/* Фото - начинается с шириной -50% */}
+              <div 
+                className="photo-container"
+                ref={photoRef}
+                style={{ 
+                  width: '0%',
+                  right: '0', 
+                  left: 'auto',
+                  transform: 'translateX(0vw) translateY(0vh)'
+                }}
+              >
+                <img 
+                  src={mensPhoto} 
+                  alt="Movie Park team" 
+                  className="animation-photo"
+                />
+              </div>
+              
+              {/* Текст слева от фото */}
+              <div 
+                className="text-container-left"
+                ref={textRef}
+                style={{ transform: 'translateX(0vh)' }}
+              >
+                <div className="text-content-left">
+                  <div className="text-date-left">
+                    <p className="date-text-left">
+                      <span className="highlight-left">Founded in 2013</span> by Fedor Balvanovich and Stanislav Kasatov, Movie Park aims to make a lasting mark in the industry by bringing bold ideas to life and turning them into powerful visual stories that inspire and remain relevant for a long time.
+                    </p>
+                  </div>
+                  
+                  <div className="text-main-left">
+                    <p className="main-text-left">
+                      <span className="reveal-left">Movie park</span> is an international production studio creating unique visual solutions across video, marketing, and event industries. Our portfolio spans commercial and creative projects for brands, private clients, and major companies.
+                    </p>
+                  </div>
+                  
+                  <div className="text-button-left">
+                    <button className="action-button-left" onClick={goToRealEstate}>
+                      <span className="btn-text-left">READ MORE</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            {/* Контент под анимацией */}
+            <div className="content-after-animation">
+              {/* Пустое пространство для скролла анимации - теперь нужно больше места */}
+              <div className="animation-space" style={{ height: '400vh' }}></div>
+            </div>
           </div>
+        ) : (
+          /* Оригинальная версия для планшетов/телефонов */
+          <div className="original-content">
+            <div className="mens-photo-container">
+              <img src={mensPhoto} alt="Movie Park team" className="mens-photo" />
+            </div>
 
-          {/* Основной текст */}
-          <div className="mens-text-container" ref={textContainerRef}>
-            <p className="mens-text-bold">
-            Movie park is an international production studio creating unique visual solutions across video, marketing, and event industries. Our portfolio spans commercial and creative projects for brands, private <br /> clients, and major companies.
-            </p>
+            <div className="mens-text-container">
+              <p className="mens-text-bold">
+                <span className="text-reveal">Movie park</span> is an international production studio creating unique visual solutions across video, marketing, and event industries. Our portfolio spans commercial and creative projects for brands, private clients, and major companies.
+              </p>
+            </div>
+            <div className="mens-date-container">
+              <p className="mens-date">
+                <span className="text-light">Founded in 2013</span> by Fedor Balvanovich and Stanislav Kasatov, Movie Park aims to make a lasting mark in the industry by bringing bold ideas to life and turning them into powerful visual stories that inspire and remain relevant for a long time.
+              </p>
+            </div>
+            <div className="mens-secondary-container">
+              <button className="mens-button" onClick={goToRealEstate}>
+                <span className="button-text">READ MORE</span>
+              </button>
+            </div>
           </div>
-
-          {/* Кнопка - выровнена по левому краю основного текста */}
-          <div className="mens-secondary-container" ref={secondaryContainerRef}>
-            <button className="mens-button" onClick={goToRealEstate}>
-              READ MORE
-            </button>
-          </div>
-
-          {/* Фото */}
-          <div className="mens-photo-container" ref={photoContainerRef}>
-            <img src={mensPhoto} alt="Movie Park team" className="mens-photo" />
-          </div>
-        </div>
-      </div>
-    </section>
+        )}
+      </section>
+    </>
   );
 };
 

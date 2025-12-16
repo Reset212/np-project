@@ -25,6 +25,10 @@ function HomePageApp() {
       <ThirdScrollBlock />
       <HomeSection />
       <MensSection />
+            {/* <div style={{height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+      </div> */}
+                  {/* <div style={{height: '100vh', background:'red', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+      </div> */}
       <ProjectsSection />
       <FourthScrollBlock />
       <ContactSection />
