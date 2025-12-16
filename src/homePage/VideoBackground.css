@@ -186,36 +186,38 @@
 }
 
 .logo-image {
-  width: 105px;
-  height: 40px;
+  width: 240px !important;
+  height: 80px !important;
   object-fit: contain;
+  padding-left: 50px;
 }
 
 @media (min-width: 1441px) {
   .logo-image {
-    width: calc(105px * var(--scale-factor));
-    height: calc(40px * var(--scale-factor));
+    width: calc(240px * var(--scale-factor));
+    height: calc(80px * var(--scale-factor));
   }
 }
 
 /* Кнопка CHAT WITH US - ПК версия */
 .chat-button {
   background-color: rgba(255, 255, 255, 0.2);
-  width: 176px;
-  height: 60px;
+  width: 165px !important;
+  height: 50px !important;
+  white-space: nowrap !important;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 30px;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 0px solid rgba(255, 255, 255, 0.3) !important;
   padding: 0;
-  font-size: 14px;
+  font-size: 14px !important;
   color: white;
   cursor: none;
   transition: all 0.3s ease;
   backdrop-filter: blur(5px);
   white-space: nowrap;
-  font-family: inherit;
+  /* font-family: inherit; */
 }
 
 @media (min-width: 1441px) {
@@ -356,16 +358,19 @@
   background-color: white;
   color: black;
   border: none;
-  padding: 15px 30px;
-  font-size: 16px;
-  font-weight: bold;
+  width: 175px;
+  height: 35px;
+  padding: 1px 0px !important;
+  font-size: 17px !important;
+  font-weight: 500 !important;
   border-radius: 25px;
   cursor: none;
   transition: all 0.3s ease;
   flex-shrink: 0;
   margin-left: 40px;
+  white-space: nowrap !important;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  font-family: inherit;
+  /* font-family: inherit; */
 }
 
 @media (min-width: 1441px) {
@@ -435,11 +440,12 @@
     left: auto;
     transform: none;
     order: 2;
+
   }
   
   .logo-image {
-    width: 80px;
-    height: 30px;
+    width: 240px !important;
+    height: 80px !important;
   }
   
   /* БУРГЕР-МЕНЮ С ЭФФЕКТОМ СТЕКЛА */
@@ -648,7 +654,12 @@
   .nav-right {
     gap: 80px;
   }
-  
+  .view-project-button {
+    max-width: 160px !important;
+    height: 35px !important;
+    font-size: 15px !important;
+    padding: 5px 0px !important;
+  }
   .content-wrapper {
     padding: 0 24px;
     bottom: 40px;
@@ -695,9 +706,10 @@
   }
   
   .view-project-button {
-    max-width: 240px;
-    font-size: 13px;
-    padding: 10px 20px;
+    max-width: 140px !important;
+    height: 37px !important;
+    font-size: 15px !important;
+    padding: 5px 0px !important;
   }
   
   .logo-image {

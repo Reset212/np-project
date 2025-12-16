@@ -12,7 +12,6 @@ const MensSection = () => {
   const [isMobile, setIsMobile] = useState(false);
   const navigate = useNavigate();
 
-  // Функция для перехода на real-estate страницу
   const goToRealEstate = () => {
     navigate("/real-estate");
   };
@@ -31,8 +30,10 @@ const MensSection = () => {
   }, []);
 
   useEffect(() => {
-    // На мобильных устройствах не запускаем анимацию скролла
     if (isMobile) return;
+
+    let animationFrameId;
+    let lastScrollY = window.scrollY;
 
     const handleScroll = () => {
       if (
@@ -49,141 +50,167 @@ const MensSection = () => {
       const windowHeight = window.innerHeight;
       const windowWidth = window.innerWidth;
 
-      const sectionCenter = rect.top + rect.height / 2;
-      const windowCenter = windowHeight / 2;
-      let progress = (windowCenter - sectionCenter) / (windowHeight / 2);
-      progress = Math.max(-1, Math.min(1, progress));
-
-      const normalizedProgress = (progress + 1) / 2;
+      // Рассчитываем прогресс анимации
+      let progress = 0;
       
-      // Создаем задержку в середине анимации (от 45% до 55%)
-      const holdStart = 0.45; // Начинаем задерживать с 45% прогресса
-      const holdEnd = 0.55;   // Заканчиваем задержку на 55% прогресса
-      
-      let smoothProgress;
-      if (normalizedProgress < holdStart) {
-        // Первая часть анимации до задержки - плавное ускорение
-        const t = normalizedProgress / holdStart;
-        // Кубическое easing для большей плавности
-        smoothProgress = t < 0.5 
-          ? 4 * t * t * t 
-          : 1 - Math.pow(-2 * t + 2, 3) / 2;
-        smoothProgress *= holdStart;
-      } else if (normalizedProgress > holdEnd) {
-        // Третья часть анимации после задержки - плавное замедление
-        const t = (normalizedProgress - holdEnd) / (1 - holdEnd);
-        // Кубическое easing для большей плавности
-        smoothProgress = t < 0.5 
-          ? 4 * t * t * t 
-          : 1 - Math.pow(-2 * t + 2, 3) / 2;
-        smoothProgress = holdEnd + smoothProgress * (1 - holdEnd);
-      } else {
-        // Средняя часть - СИЛЬНАЯ ЗАДЕРЖКА вокруг 50%
-        // Делаем очень медленное движение в зоне задержки
-        const holdCenter = 0.5;
-        const distanceFromCenter = Math.abs(normalizedProgress - holdCenter);
-        
-        if (distanceFromCenter < 0.02) {
-          // В самом центре (48%-52%) - почти полная остановка
-          smoothProgress = holdCenter;
-        } else {
-          // Ближе к краям зоны задержки - медленное движение
-          const direction = normalizedProgress > holdCenter ? 1 : -1;
-          const t = distanceFromCenter / 0.05; // 0.05 = половина зоны задержки
-          // Медленный квадратичный easing
-          const slowFactor = 0.2; // Замедляем в 5 раз
-          smoothProgress = holdCenter + direction * (t * t * slowFactor * 0.05);
-        }
+      // Когда секция начинает появляться снизу
+      if (rect.top < windowHeight && rect.top > -windowHeight) {
+        // Прогресс от 0 до 1.5 для более длинной анимации
+        progress = 1 - (rect.top / windowHeight);
+      } else if (rect.top <= -windowHeight / 2) {
+        // Секция уже проскроллена - завершаем анимацию
+        progress = 1.5;
+      } else if (rect.top >= windowHeight) {
+        // Секция еще ниже
+        progress = 0;
       }
 
-      // Анимация ширины фото - больше промежуточных точек
-      const minPhotoWidth = 20;
-      const step1Width = 40;   // Первая промежуточная точка
-      const step2Width = 50;   // Вторая промежуточная точка (центр)
-      const step3Width = 50;   // Третья промежуточная точка
-      const step4Width = 50;   // Четвертая промежуточная точка
-      const maxPhotoWidth = 50;
+      progress = Math.max(0, Math.min(1.5, progress));
+
+      // Разные фазы анимации
+      const photoExpandPhase = Math.min(1, progress); // Фаза увеличения фото (0-1)
+      const textDisappearPhase = Math.max(0, Math.min(1, progress * 1.5)); // Фаза исчезновения текста
+      const fullSizePhase = Math.max(0, progress - 1); // Фаза после полного расширения
+
+      // Smooth кривые для плавности
+      const smoothPhotoProgress = photoExpandPhase * photoExpandPhase * (3 - 2 * photoExpandPhase);
+      const smoothTextProgress = textDisappearPhase * textDisappearPhase * (3 - 2 * textDisappearPhase);
+
+      // АНИМАЦИЯ ФОТО: из маленького угла в полный размер
+      const startWidth = 15; // Начальный размер в углу
+      const endWidth = 100;  // Полный размер
       
-      let photoWidth;
+      // Фото расширяется от угла
+      const photoWidth = startWidth + (endWidth - startWidth) * smoothPhotoProgress;
       
-      // Разбиваем анимацию на 5 сегментов для большей плавности
-      if (smoothProgress < 0.2) {
-        // 0% - 20%: от min до step1
-        const t = smoothProgress / 0.2;
-        photoWidth = minPhotoWidth + t * (step1Width - minPhotoWidth);
-      } else if (smoothProgress < 0.4) {
-        // 20% - 40%: от step1 до step2
-        const t = (smoothProgress - 0.2) / 0.2;
-        photoWidth = step1Width + t * (step2Width - step1Width);
-      } else if (smoothProgress < 0.6) {
-        // 40% - 60%: от step2 до step3 (зона задержки)
-        const t = (smoothProgress - 0.4) / 0.2;
-        // В зоне задержки делаем более плавное изменение
-        const easedT = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
-        photoWidth = step2Width + easedT * (step3Width - step2Width);
-      } else if (smoothProgress < 0.8) {
-        // 60% - 80%: от step3 до step4
-        const t = (smoothProgress - 0.6) / 0.2;
-        photoWidth = step3Width + t * (step4Width - step3Width);
-      } else {
-        // 80% - 100%: от step4 до max
-        const t = (smoothProgress - 0.8) / 0.2;
-        photoWidth = step4Width + t * (maxPhotoWidth - step4Width);
-      }
+      // Прозрачность фото
+      const photoOpacity = 0.4 + 0.6 * smoothPhotoProgress;
       
-      // Гарантируем, что ширина в пределах границ
-      photoWidth = Math.max(minPhotoWidth, Math.min(maxPhotoWidth, photoWidth));
+      // Позиция фото: начинается в правом верхнем углу
+      const startRight = 0;
+      const endRight = 0; // Остается справа
       
+      // Применяем стили к фото
       photoContainerRef.current.style.width = `${photoWidth}%`;
-
-      // Определяем отступы в зависимости от ширины экрана
+      photoContainerRef.current.style.opacity = photoOpacity.toString();
+      photoContainerRef.current.style.right = `${startRight}px`;
+      
+      // АНИМАЦИЯ ТЕКСТОВ: плавное исчезновение
+      // Текст начинает исчезать раньше, чем фото достигает полного размера
+      const textOpacity = Math.max(0, 1 - smoothTextProgress * 1.5);
+      const textTranslateX = smoothTextProgress * 100; // Сдвиг вправо при исчезновении
+      
+      // Определяем отступы для текста в зависимости от размера фото
       let mainTextOffset, dateTextOffset, buttonOffset;
       
       if (windowWidth <= 1024) {
-        // Для планшетов
         mainTextOffset = 200;
         dateTextOffset = 200;
         buttonOffset = 200;
       } else if (windowWidth <= 1440) {
-        // Для 1440px
         mainTextOffset = 40;
         dateTextOffset = 40;
         buttonOffset = 20;
       } else {
-        // Для широких экранов
         mainTextOffset = 187;
         dateTextOffset = 187;
         buttonOffset = 147;
       }
 
-      // Позиционирование текста относительно фото
-      const mainTextRightPosition = `calc(${photoWidth}% + ${mainTextOffset}px)`;
-      const dateTextRightPosition = `calc(${photoWidth}% + ${dateTextOffset}px)`;
-      const buttonRightPosition = `calc(${photoWidth}% + ${buttonOffset}px)`;
+      // Позиционирование текста с учетом сдвига при исчезновении
+      const photoWidthPercent = Math.min(photoWidth, 50); // Ограничиваем влияние на позицию текста
+      const mainTextRightPosition = `calc(${photoWidthPercent}% + ${mainTextOffset}px + ${textTranslateX}px)`;
+      const dateTextRightPosition = `calc(${photoWidthPercent}% + ${dateTextOffset}px + ${textTranslateX}px)`;
+      const buttonRightPosition = `calc(${photoWidthPercent}% + ${buttonOffset}px + ${textTranslateX}px)`;
       
+      // Применяем стили к текстам
       dateTextRef.current.style.right = dateTextRightPosition;
+      dateTextRef.current.style.opacity = textOpacity.toString();
+      dateTextRef.current.style.transform = `translateX(${textTranslateX * 0.5}px)`;
+      
       textContainerRef.current.style.right = mainTextRightPosition;
+      textContainerRef.current.style.opacity = textOpacity.toString();
+      textContainerRef.current.style.transform = `translateX(${textTranslateX * 0.5}px)`;
+      
       secondaryContainerRef.current.style.right = buttonRightPosition;
+      secondaryContainerRef.current.style.opacity = textOpacity.toString();
+      secondaryContainerRef.current.style.transform = `translateX(${textTranslateX * 0.5}px)`;
+      
+      // Когда фото полностью развернулось, тексты скрыты
+      if (photoExpandPhase >= 0.9 && textOpacity <= 0.1) {
+        dateTextRef.current.style.visibility = "hidden";
+        textContainerRef.current.style.visibility = "hidden";
+        secondaryContainerRef.current.style.visibility = "hidden";
+      } else {
+        dateTextRef.current.style.visibility = "visible";
+        textContainerRef.current.style.visibility = "visible";
+        secondaryContainerRef.current.style.visibility = "visible";
+      }
+
+      // Управляем sticky поведением
+      if (fullSizePhase > 0) {
+        // После полного расширения фото, разрешаем скролл
+        sectionRef.current.style.pointerEvents = "auto";
+      } else {
+        sectionRef.current.style.pointerEvents = "auto";
+      }
     };
 
-    let ticking = false;
     const scrollHandler = () => {
-      if (!ticking) {
-        requestAnimationFrame(() => {
-          handleScroll();
-          ticking = false;
-        });
-        ticking = true;
+      const currentScrollY = window.scrollY;
+      
+      // Используем requestAnimationFrame для плавности
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
       }
+      
+      animationFrameId = requestAnimationFrame(() => {
+        handleScroll();
+        lastScrollY = currentScrollY;
+      });
     };
 
     window.addEventListener("scroll", scrollHandler, { passive: true });
     window.addEventListener("resize", handleScroll);
-    handleScroll();
+    
+    // Инициализация
+    const init = () => {
+      if (photoContainerRef.current) {
+        // Начальное состояние: маленький блок в правом верхнем углу
+        photoContainerRef.current.style.width = "15%";
+        photoContainerRef.current.style.opacity = "0.4";
+        photoContainerRef.current.style.transform = "translateX(0)";
+        photoContainerRef.current.style.right = "0";
+        photoContainerRef.current.style.top = "0";
+      }
+      
+      // Тексты видимы изначально
+      if (dateTextRef.current && textContainerRef.current && secondaryContainerRef.current) {
+        dateTextRef.current.style.opacity = "1";
+        dateTextRef.current.style.visibility = "visible";
+        dateTextRef.current.style.transform = "translateX(0)";
+        
+        textContainerRef.current.style.opacity = "1";
+        textContainerRef.current.style.visibility = "visible";
+        textContainerRef.current.style.transform = "translateX(0)";
+        
+        secondaryContainerRef.current.style.opacity = "1";
+        secondaryContainerRef.current.style.visibility = "visible";
+        secondaryContainerRef.current.style.transform = "translateX(0)";
+      }
+      
+      handleScroll();
+    };
+
+    // Даем время на рендер
+    setTimeout(init, 100);
 
     return () => {
       window.removeEventListener("scroll", scrollHandler);
       window.removeEventListener("resize", handleScroll);
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+      }
     };
   }, [isMobile]);
 
@@ -194,18 +221,18 @@ const MensSection = () => {
           {/* Дата */}
           <div className="mens-date-container" ref={dateTextRef}>
             <p className="mens-date">
-             Founded in 2013 by Fedor Balvanovich and Stanislav Kasatov, Movie Park aims to make a lasting mark in the industry by bringing bold ideas to life and turning them into powerful visual stories that inspire and remain relevant for a long time.
+              Founded in 2013 by Fedor Balvanovich and Stanislav Kasatov, Movie Park aims to make a lasting mark in the industry by bringing bold ideas to life and turning them into powerful visual stories that inspire and remain relevant for a long time.
             </p>
           </div>
 
           {/* Основной текст */}
           <div className="mens-text-container" ref={textContainerRef}>
             <p className="mens-text-bold">
-            Movie park is an international production studio creating unique visual solutions across video, marketing, and event industries. Our portfolio spans commercial and creative projects for brands, private <br /> clients, and major companies.
+              Movie park is an international production studio creating unique visual solutions across video, marketing, and event industries. Our portfolio spans commercial and creative projects for brands, private <br /> clients, and major companies.
             </p>
           </div>
 
-          {/* Кнопка - выровнена по левому краю основного текста */}
+          {/* Кнопка */}
           <div className="mens-secondary-container" ref={secondaryContainerRef}>
             <button className="mens-button" onClick={goToRealEstate}>
               READ MORE

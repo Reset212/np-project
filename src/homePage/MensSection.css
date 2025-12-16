@@ -1,7 +1,7 @@
-/* Секция с эффектом выдвижения фото */
+/* Секция с эффектом выдвижения фото из правого верхнего угла */
 .mens-section {
   position: relative;
-  height: 100vh;
+  height: 300vh; /* Увеличиваем высоту для более плавной анимации */
   background-color: #ffffff;
   overflow: hidden;
 }
@@ -29,17 +29,21 @@
   box-sizing: border-box;
 }
 
-/* Контейнер для фото */
+/* Контейнер для фото - АНИМАЦИЯ ИЗ УГЛА */
 .mens-photo-container {
   position: absolute;
   top: 0;
   right: 0;
-  width: 30%; /* Начальная ширина фото */
+  width: 15%; /* Начальная ширина */
   height: 100vh;
-  z-index: 1;
-  will-change: width;
+  z-index: 3; /* Поверх текста */
   overflow: hidden;
-  transition: width 0.1s ease-out;
+  opacity: 0.4;
+  transition: width 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              opacity 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  will-change: width, opacity, transform;
+  transform-origin: top right;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
 }
 
 .mens-photo {
@@ -47,45 +51,58 @@
   height: 100%;
   object-fit: cover;
   object-position: left center;
+  display: block;
 }
 
-/* Контейнеры для текста - базовые стили */
+/* Контейнеры для текста - АНИМАЦИЯ ИСЧЕЗНОВЕНИЯ */
 .mens-date-container {
   position: absolute;
-  right: calc(30% + 187px); /* 187px от фото на широких экранах */
+  right: calc(15% + 187px);
   top: calc(30% - 100px);
   width: 600px;
   z-index: 2;
   text-align: left;
-  transition: right 0.1s ease-out;
+  transition: right 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              opacity 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   word-wrap: break-word;
   overflow-wrap: break-word;
+  opacity: 1;
+  visibility: visible;
 }
 
 .mens-text-container {
   position: absolute;
-  right: calc(30% + 187px); /* 187px от фото на широких экранах */
+  right: calc(15% + 187px);
   top: 50%;
   transform: translateY(-50%);
   width: 600px;
   z-index: 2;
   text-align: left;
-  transition: right 0.1s ease-out;
+  transition: right 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              opacity 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   word-wrap: break-word;
   overflow-wrap: break-word;
+  opacity: 1;
+  visibility: visible;
 }
 
 .mens-secondary-container {
   position: absolute;
-  right: calc(30% + 147px); /* 147px от фото на широких экранах */
+  right: calc(15% + 147px);
   top: calc(50% + 100px);
-  width: 600px; /* Такая же ширина как у основного текста */
+  width: 600px;
   z-index: 2;
   text-align: left;
-  transition: right 0.1s ease-out;
+  transition: right 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              opacity 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  opacity: 1;
+  visibility: visible;
 }
 
-/* Стили для текста - БЕЗ ЛЕВЫХ ОТСТУПОВ */
+/* Стили для текста */
 .mens-date {
   font-family: 'Helvetica Neue', sans-serif;
   font-size: 14px;
@@ -96,8 +113,9 @@
   text-align: left;
   word-break: break-word;
   hyphens: auto;
-  text-align: left;
   width: 100%;
+  opacity: 1;
+  transition: opacity 0.3s ease;
 }
 
 .mens-text-bold {
@@ -112,8 +130,9 @@
   text-align: left;
   word-break: break-word;
   hyphens: auto;
-  text-align: left;
   width: 90%;
+  opacity: 1;
+  transition: opacity 0.3s ease;
 }
 
 /* Кнопка */
@@ -138,8 +157,8 @@
   transition: all 0.3s ease;
   margin-top: 100px;
   padding: 0;
-  /* Выравнивание по левому краю контейнера основного текста */
   margin-left: 0;
+  opacity: 1;
 }
 
 .mens-button:hover {
@@ -162,43 +181,29 @@
   }
 
   .mens-date-container {
-    /* right динамический из JS */
     top: calc(30% - 100px) !important;
     min-width: 350px;
   }
 
   .mens-text-container {
-    /* right динамический из JS */
     top: 50% !important;
     transform: translateY(-50%);
     min-width: 350px;
   }
 
   .mens-secondary-container {
-    /* right динамический из JS */
     top: calc(50% + 110px) !important;
-    /* Ширина такая же как у основного текста */
     width: 500px !important;
-    /* Кнопка выровнена по левому краю основного текста */
-    text-align: left;
-    padding-left: 0;
   }
 
   .mens-date {
     font-size: 13px;
     line-height: 18px;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-    hyphens: auto;
   }
 
   .mens-text-bold {
     font-size: 28px;
     line-height: 34px;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-    hyphens: auto;
-    /* max-width: 100%; */
   }
 
   .mens-button {
@@ -206,26 +211,6 @@
     height: 55px;
     margin-top: 90px !important;
     font-size: 15px;
-    /* Прижата к левому краю контейнера основного текста */
-    margin-left: 0;
-    float: none;
-  }
-}
-
-/* Версия для средних экранов между 1440px и 1600px */
-@media (min-width: 1441px) and (max-width: 1600px) {
-  .mens-date-container,
-  .mens-text-container,
-  .mens-secondary-container {
-    width: 550px;
-  }
-  
-  .mens-text-bold {
-    font-size: 30px;
-  }
-  
-  .mens-button {
-    margin-top: 100px;
   }
 }
 
@@ -257,8 +242,6 @@
   .mens-secondary-container {
     top: calc(50% + 100px) !important;
     width: 450px !important;
-    text-align: left;
-    padding-left: 0;
   }
 
   .mens-date {
@@ -276,52 +259,10 @@
     height: 50px;
     margin-top: 80px !important;
     font-size: 14px;
-    margin-left: 0;
   }
 }
 
-/* ШИРОКИЕ ЭКРАНЫ (больше 1600px) */
-@media (min-width: 1601px) {
-  .mens-date-container,
-  .mens-text-container,
-  .mens-secondary-container {
-    width: 650px; /* Шире для больших экранов */
-  }
-  
-  .mens-date {
-    font-size: 15px;
-    line-height: 22px;
-  }
-  
-  .mens-text-bold {
-    font-size: 34px;
-    line-height: 42px;
-  }
-  
-  .mens-button {
-    margin-top: 110px;
-  }
-}
-
-/* ОЧЕНЬ ШИРОКИЕ ЭКРАНЫ */
-@media (min-width: 1920px) {
-  .mens-date-container,
-  .mens-text-container,
-  .mens-secondary-container {
-    width: 700px;
-  }
-  
-  .mens-text-bold {
-    font-size: 36px;
-    line-height: 44px;
-  }
-  
-  .mens-button {
-    margin-top: 120px;
-  }
-}
-
-/* МОБИЛЬНАЯ ВЕРСИЯ - ВСЕ ЭЛЕМЕНТЫ СТОЛБЦОМ */
+/* МОБИЛЬНАЯ ВЕРСИЯ */
 @media (max-width: 768px) {
   .mens-section {
     height: auto;
@@ -347,7 +288,6 @@
     gap: 30px;
   }
 
-  /* 1. ФОТО - ПЕРВЫМ */
   .mens-photo-container {
     position: relative !important;
     width: 100% !important;
@@ -356,7 +296,9 @@
     top: auto !important;
     right: auto !important;
     order: 1;
+    opacity: 1 !important;
     transition: none !important;
+    box-shadow: none;
   }
 
   .mens-photo {
@@ -366,7 +308,6 @@
     border-radius: 8px;
   }
 
-  /* 2. ОСНОВНОЙ ТЕКСТ - ВТОРЫМ */
   .mens-text-container {
     position: relative !important;
     width: 100% !important;
@@ -376,9 +317,9 @@
     transform: none !important;
     text-align: left;
     order: 2;
-    padding-left: 0;
-    padding-right: 0;
-    box-sizing: border-box;
+    padding: 0;
+    opacity: 1 !important;
+    visibility: visible !important;
   }
 
   .mens-text-bold {
@@ -386,15 +327,12 @@
     line-height: 1.4 !important;
     margin: 0 !important;
     padding: 0 !important;
-    white-space: normal !important;
     color: #282525;
     text-transform: uppercase;
     font-weight: 500;
     text-align: left;
-    box-sizing: border-box;
   }
 
-  /* 3. ВТОРОЙ ТЕКСТ - ТРЕТЬИМ */
   .mens-date-container {
     position: relative !important;
     width: 100% !important;
@@ -403,9 +341,10 @@
     right: auto !important;
     text-align: left;
     order: 3;
-    padding-left: 15px; /* Отступ слева на мобильных */
+    padding-left: 15px;
     padding-right: 0;
-    box-sizing: border-box;
+    opacity: 1 !important;
+    visibility: visible !important;
   }
 
   .mens-date {
@@ -413,17 +352,12 @@
     line-height: 1.6 !important;
     margin: 0 !important;
     padding: 0 !important;
-    white-space: normal !important;
     color: #000000;
     font-weight: 400;
-    font-family: 'Helvetica Neue', sans-serif;
     text-align: left;
     width: 100%;
-    max-width: 100%;
-    box-sizing: border-box;
   }
 
-  /* 4. КНОПКА - ЧЕТВЕРТОЙ */
   .mens-secondary-container {
     position: relative !important;
     width: 100% !important;
@@ -433,9 +367,9 @@
     right: auto !important;
     text-align: left;
     order: 4;
-    padding-left: 0;
-    padding-right: 0;
-    box-sizing: border-box;
+    padding: 0;
+    opacity: 1 !important;
+    visibility: visible !important;
   }
 
   .mens-button {

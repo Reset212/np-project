@@ -1,10 +1,15 @@
 
-
+@font-face {
+    font-family: "Helvetica Neue";
+    font-weight: 500 !important;
+    src: url("../../public/fonts/HelveticaNeue-Medium.otf") format("opentype");
+    font-style: normal;
+}
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
- 
+  font-family: 'Helvetica Neue', sans-serif !important;
 }
 
 /* App.css - добавьте эти стили */
