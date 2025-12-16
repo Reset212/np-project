@@ -7,154 +7,82 @@
   overflow: hidden;
 }
 
-/* Sticky контейнер */
-.mens-sticky {
-  position: sticky;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  overflow: hidden;
-}
-
-/* Основной контейнер */
-.mens-content {
-  width: 100%;
-  height: 100%;
-  position: relative;
-  display: flex;
-  align-items: center;
-  padding: 0 5vw;
-  box-sizing: border-box;
-}
-
-/* Контейнер для фото */
-.mens-photo-container {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 30%; /* Начальная ширина фото */
-  height: 100vh;
-  z-index: 1;
-  will-change: width;
-  overflow: hidden;
-  transition: width 0.1s ease-out;
-}
-
-.mens-photo {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: left center;
-}
-
-/* Контейнеры для текста - базовые стили */
-.mens-date-container {
-  position: absolute;
-  right: calc(30% + 187px); /* 187px от фото на широких экранах */
-  top: calc(30% - 100px);
-  width: 600px;
-  z-index: 2;
-  text-align: left;
-  transition: right 0.1s ease-out;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-}
-
-.mens-text-container {
-  position: absolute;
-  right: calc(30% + 187px); /* 187px от фото на широких экранах */
-  top: 50%;
-  transform: translateY(-50%);
-  width: 600px;
-  z-index: 2;
-  text-align: left;
-  transition: right 0.1s ease-out;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-}
-
-.mens-secondary-container {
-  position: absolute;
-  right: calc(30% + 147px); /* 147px от фото на широких экранах */
-  top: calc(50% + 100px);
-  width: 600px; /* Такая же ширина как у основного текста */
-  z-index: 2;
-  text-align: left;
-  transition: right 0.1s ease-out;
-}
-
-/* Стили для текста - БЕЗ ЛЕВЫХ ОТСТУПОВ */
-.mens-date {
-  font-family: 'Helvetica Neue', sans-serif;
-  font-size: 14px;
-  line-height: 20px;
-  color: #000000;
-  margin: 0;
-  padding: 0;
-  text-align: left;
-  word-break: break-word;
-  hyphens: auto;
-  text-align: left;
-  width: 100%;
-  font-weight: 300;
-}
-
-.mens-text-bold {
-  font-family: 'Helvetica Neue', sans-serif;
-  font-size: 32px;
-  line-height: 40px;
-  letter-spacing: -0.02em;
-  text-transform: uppercase;
-  color: #282525;
-  margin: 0;
-  padding: 0;
-  text-align: left;
-  word-break: break-word;
-  hyphens: auto;
-  text-align: left;
-  width: 90%;
-   font-weight: 300;
-}
-
-/* Кнопка */
-.mens-button {
-  position: relative;
-  width: 160px;
-  height: 60px;
-  background: rgba(230, 230, 230, 0.72);
-  border-radius: 32px;
-  border: none;
-  font-family: 'Helvetica Neue', sans-serif;
-  font-size: 16px;
-  font-weight: 300;
-  color: #000000;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  transition: all 0.3s ease;
-  margin-top: 100px;
-  padding: 0;
-  /* Выравнивание по левому краю контейнера основного текста */
-  margin-left: 0;
-}
-
-.mens-button:hover {
-  background: rgba(210, 210, 210, 0.85);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-/* Адаптивность для 1440px */
-@media (max-width: 1440px) {
-  .mens-content {
-    padding: 0 3vw;
+/* ============================================
+   ДЕСКТОПНАЯ ВЕРСИЯ С АНИМАЦИЕЙ
+   ============================================ */
+@media (min-width: 1025px) {
+  .mens-section.desktop {
+    position: relative;
+    min-height: 100vh;
+  }
+  
+  .desktop-animation-wrapper {
+    position: relative;
+    width: 100%;
+  }
+  
+  .animation-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: 90;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+  
+  .mens-section[data-fixed="true"] .animation-background {
+    opacity: 1;
+    pointer-events: all;
+  }
+  
+  /* Фиксированный контейнер для анимации */
+  .animation-container {
+    position: relative;
+    width: 100%;
+    z-index: 95;
+  }
+  
+  .animation-container.fixed {
+    position: fixed;
+    top: 0;
+    left: 0;
+  }
+  
+  /* Контейнер для фото - всегда справа */
+  .photo-container {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 50%;
+    height: 100vh;
+    overflow: hidden;
+    z-index: 96;
+    /* Убираем transition, так как управляем через JS */
+    /* transition: width 0.1s linear, transform 0.1s linear; */
+  }
+  
+  .animation-photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+  }
+  /* Контейнер для текста СЛЕВА от фото */
+  .text-container-left {
+    position: absolute;
+    top: 50%;
+    left: calc(100%); /* Начинаем справа, чтобы фото могло толкать */
+    transform: translateY(-50%);
+    width: 810px;
+    z-index: 97;
+    transition: transform 0.1s linear;
+    opacity: 1 !important;
+    overflow: visible;
+    will-change: left;
   }
 
   .text-content-left {
@@ -432,31 +360,9 @@
   }
 
   .mens-secondary-container {
-    /* right динамический из JS */
-    top: calc(50% + 110px) !important;
-    /* Ширина такая же как у основного текста */
-    width: 500px !important;
-    /* Кнопка выровнена по левому краю основного текста */
-    text-align: left;
-    padding-left: 0;
-  }
-
-  .mens-date {
-    font-size: 13px;
-    line-height: 18px;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-    hyphens: auto;
-    font-weight: 300;
-  }
-
-  .mens-text-bold {
-    font-size: 28px;
-    line-height: 34px;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-    hyphens: auto;
-    /* max-width: 100%; */
+    top: calc(63%) !important;
+    width: 350px !important;
+    right: calc(50% + 20px) !important;
   }
 
   .mens-button {
@@ -468,123 +374,9 @@
   }
 }
 
-/* Версия для средних экранов между 1440px и 1600px */
-@media (min-width: 1441px) and (max-width: 1600px) {
-  .mens-date-container,
-  .mens-text-container,
-  .mens-secondary-container {
-    width: 550px;
-  }
-  
-  .mens-text-bold {
-    font-size: 30px;
-  }
-  
-  .mens-button {
-    margin-top: 100px;
-  }
-}
-
-/* Планшетная версия 1024px */
-@media (max-width: 1024px) {
-  .mens-section {
-    height: 250vh;
-  }
-  
-  .mens-content {
-    padding: 0 2vw;
-  }
-
-  .mens-date-container,
-  .mens-text-container,
-  .mens-secondary-container {
-    width: 450px;
-    max-width: calc(100vw - 40vw - 80px);
-  }
-
-  .mens-date-container {
-    top: calc(30% - 90px) !important;
-  }
-
-  .mens-text-container {
-    top: 50% !important;
-  }
-
-  .mens-secondary-container {
-    top: calc(50% + 100px) !important;
-    width: 450px !important;
-    text-align: left;
-    padding-left: 0;
-  }
-
-  .mens-date {
-    font-size: 12px;
-    line-height: 16px;
-    font-weight: 300;
-  }
-
-  .mens-text-bold {
-    font-size: 24px;
-    line-height: 28px;
-  }
-
-  .mens-button {
-    width: 140px;
-    height: 50px;
-    margin-top: 80px !important;
-    font-size: 14px;
-    margin-left: 0;
-  }
-}
-
-/* ШИРОКИЕ ЭКРАНЫ (больше 1600px) */
-@media (min-width: 1601px) {
-  .mens-date-container,
-  .mens-text-container,
-  .mens-secondary-container {
-    width: 650px; /* Шире для больших экранов */
-  }
-  
-  .mens-date {
-    font-size: 15px;
-    line-height: 22px;
-  }
-  
-  .mens-text-bold {
-    font-size: 34px;
-    line-height: 42px;
-  }
-  
-  .mens-button {
-    margin-top: 110px;
-  }
-}
-
-/* ОЧЕНЬ ШИРОКИЕ ЭКРАНЫ */
-@media (min-width: 1920px) {
-  .mens-date-container,
-  .mens-text-container,
-  .mens-secondary-container {
-    width: 700px;
-  }
-  .mens-date-container{
-    height: 300px;
-    width: 550px;
-  }
-  .mens-text-bold {
-    width: 870px;
-    font-size: 34px;
-    line-height: 44px;
-    /* padding-left: 20px !important; */
-  }
-  
-  .mens-button {
-    margin-top: 120px;
-    margin-left: -40px;
-  }
-}
-
-/* МОБИЛЬНАЯ ВЕРСИЯ - ВСЕ ЭЛЕМЕНТЫ СТОЛБЦОМ */
+/* ============================================
+   АДАПТИВНОСТЬ ДЛЯ ТЕЛЕФОНОВ
+   ============================================ */
 @media (max-width: 768px) {
   .mens-section.mobile {
     height: auto;
@@ -635,65 +427,11 @@
   }
   
   .mens-text-bold {
-    font-weight: 300 !important;
-    font-size: 20px !important;
-    line-height: 1.4 !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    white-space: normal !important;
-    /* letter-spacing: -0.02em; */
-    color: #282525;
-    text-transform: uppercase;
-    font-weight: 500;
-    text-align: left;
-    /* width: 100%; */
-    /* max-width: 100%; Занимает всю ширину фото */
-    box-sizing: border-box;
+    font-size: 27px !important;
+    width: 500px !important;
+    line-height: 30px !important;
   }
-
-  /* 3. ВТОРОЙ ТЕКСТ - ТРЕТЬИМ */
-  .mens-date-container {
-    position: relative !important;
-    width: 100% !important;
-    margin: 0 !important;
-    top: auto !important;
-    right: auto !important;
-    text-align: left;
-    order: 3;
-    padding-left: 0; /* Без отступа слева по умолчанию */
-    padding-right: 0; /* Без отступа справа */
-    box-sizing: border-box;
-  }
-
-  .mens-date {
-    font-size: 16px !important;
-    line-height: 1.6 !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    white-space: normal !important;
-    color: #000000;
-    font-weight: 400;
-    font-family: 'Helvetica Neue', sans-serif;
-    text-align: left;
-    width: 100%;
-    max-width: 100%; /* Занимает всю ширину фото */
-    box-sizing: border-box;
-  }
-
-  /* Добавляем отступ слева только для мобильных экранов */
-  @media (max-width: 768px) {
-    .mens-date-container {
-      font-weight: 300;
-      padding-left: 15px; /* Отступ слева на мобильных */
-    }
-    
-    .mens-date {
-       font-weight: 300;
-      padding-left: 0; /* Текст без отступа, но контейнер с отступом */
-    }
-  }
-
-  /* 4. КНОПКА - ЧЕТВЕРТОЙ */
+  
   .mens-secondary-container {
     position: relative;
     width: 100% !important;
@@ -703,9 +441,8 @@
   }
   
   .mens-button {
-    font-weight: 300;
-    width: 100%;
-    max-width: 200px;
+    margin-top: 20px !important;
+    width: 140px;
     height: 50px;
     font-size: 14px !important;
   }
@@ -715,27 +452,6 @@
    ОЧЕНЬ МАЛЕНЬКИЕ ЭКРАНЫ
    ============================================ */
 @media (max-width: 480px) {
-  .mens-section {
-    padding: 30px 15px;
-  }
-
-  .mens-photo-container {
-    height: 250px !important;
-  }
-  .mens-text-container{
-    width: 100% !important;
-
-  }
-  .mens-text-bold {
-    padding-left: 30px !important;
-    width: 400px;
-    font-size: 20px !important;
-    font-weight: 300;
-    letter-spacing: -3%;
-    line-height: 24px;
-    
-  }
-
   .mens-date {
     font-size: 16px !important;
     line-height: 18px !important;
@@ -748,9 +464,8 @@
   }
   
   .mens-button {
-    max-width: 160px;
-    height: 60px;
-    font-size: 16px;
-    font-weight: 300;
+    width: 130px;
+    height: 45px;
+    font-size: 13px !important;
   }
 }
