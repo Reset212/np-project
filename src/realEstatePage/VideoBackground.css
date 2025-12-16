@@ -89,6 +89,7 @@
 }
 
 .nav-item {
+  font-weight: 300;
   color: white;
   font-size: 14px;
   cursor: pointer;
@@ -97,11 +98,7 @@
   transition: opacity 0.3s ease;
 }
 
-@media (min-width: 1441px) {
-  .nav-item {
-    font-size: calc(14px * var(--scale-factor));
-  }
-}
+
 
 .nav-item:hover {
   opacity: 0.8;
@@ -174,7 +171,7 @@
 /* КОНТЕНТ СНИЗУ - ПК ВЕРСИЯ */
 .content-wrapper {
   position: absolute;
-  bottom: 50px;
+  bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
   width: 100%;
@@ -190,7 +187,7 @@
 /* Масштабирование контента для больших экранов */
 @media (min-width: 1441px) {
   .content-wrapper {
-    bottom: calc(50px * var(--scale-factor));
+    bottom: calc(20px * var(--scale-factor));
     padding: 0 calc(40px * var(--scale-factor));
     max-width: calc(1440px * var(--scale-factor));
   }
@@ -590,7 +587,6 @@
   
   .content-wrapper {
     padding: 0 24px;
-    bottom: 40px;
   }
   
   .awards-row {

@@ -374,18 +374,14 @@
     gap: calc(2px * var(--scale-factor));
   }
   
-  .award-count {
-    font-size: calc(15px * var(--scale-factor));
-  }
+ 
   
   .award-type {
     font-size: calc(14px * var(--scale-factor));
     margin-bottom: calc(2px * var(--scale-factor));
   }
   
-  .award-description {
-    font-size: calc(13px * var(--scale-factor));
-  }
+
 }
 
 /* Кнопка VIEW PROJECT - ПК версия */
@@ -660,7 +656,7 @@
   }
   
   .award-count {
-    font-size: 13px;
+    font-size: 14px;
   }
   
   .award-type {
@@ -668,7 +664,7 @@
   }
   
   .award-description {
-    font-size: 11px;
+    font-size: 14px;
   }
   
   /* Кнопка VIEW PROJECT под наградами */
@@ -754,7 +750,7 @@
   }
   
   .award-count {
-    font-size: 12px;
+    font-size: 14px;
   }
   
   .award-type {
@@ -762,7 +758,7 @@
   }
   
   .award-description {
-    font-size: 10px;
+    font-size: 14px;
   }
   
   .view-project-button {
