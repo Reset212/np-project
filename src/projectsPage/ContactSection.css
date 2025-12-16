@@ -194,13 +194,7 @@
   z-index: 1;
 }
 
-@media (min-width: 1441px) {
-  .chat-text {
-    font-size: calc(140px * var(--scale-factor));
-    line-height: calc(132px * var(--scale-factor));
-    letter-spacing: calc(-0.05em * var(--scale-factor));
-  }
-}
+
 
 .right-column {
   width: 50%;

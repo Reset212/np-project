@@ -196,7 +196,7 @@ const VideoBackground = () => {
             <div className="award-icon-container icon-1">
               <img src={taglineImg} alt="Tagline" className="award-icon" />
             </div>
-            <p className="award-text">1X GOLD<br />Best  <br /> video</p>
+            <p className="award-text">1X GOLD<br />Best  <br />video</p>
           </div>
           <div className="award-item">
             <div className="award-icon-container icon-2">
