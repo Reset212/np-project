@@ -470,3 +470,23 @@
     font-size: 13px !important;
   }
 }
+
+@media (max-width: 360px) {
+  .mens-date {
+    margin-left: 18px;
+    font-size: 14px !important;
+    line-height: 16px !important;
+  }
+  
+  .mens-text-bold {
+    width: 320px !important;
+    font-size: 18px !important;
+    line-height: 24px !important;
+  }
+  
+  .mens-button {
+    width: 130px;
+    height: 45px;
+    font-size: 13px !important;
+  }
+}
