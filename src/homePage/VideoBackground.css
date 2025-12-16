@@ -393,7 +393,7 @@
   height: 35px;
   padding: 1px 0px !important;
   font-size: 17px !important;
-  font-weight: 500 !important;
+  font-weight: 400 !important;
   border-radius: 25px;
   cursor: none;
   transition: all 0.3s ease;
@@ -406,7 +406,6 @@
 @media (min-width: 1441px) {
   .view-project-button {
     padding: calc(15px * var(--scale-factor)) calc(30px * var(--scale-factor));
-    font-size: calc(16px * var(--scale-factor));
     border-radius: calc(25px * var(--scale-factor));
     margin-left: calc(40px * var(--scale-factor));
   }
@@ -762,6 +761,7 @@
   }
   
   .view-project-button {
+    font-weight: 400 !important;
     max-width: 140px !important;
     height: 37px !important;
     font-size: 15px !important;

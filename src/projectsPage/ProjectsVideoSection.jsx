@@ -1,22 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import './ProjectsVideoSection.css';
 
-// Импорты локальных видео (для тех, что не на Vimeo)
-// ЗАКОММЕНТИРОВАНО: Старые импорты видео
-// import BRUNELLOVideo from './video/BRUNELLO.mp4';
-// import VILLADELGAVIVideo from './video/VILLADELGAVI.mp4';
-// import EYWAWAYOFWATERVideo from './video/EYWAWAYOFWATER.mp4';
-// import ELITEMERITVideo from './video/ELITEMERIT.mp4';
-// import InterstellarVideo from './video/Interstellar.mp4';
-// import VilladelDivosVideo from './video/VilladelDivos.mp4';
-// import MrEightBrandVideo from './video/MrEightBrandvideo.mp4';
-// import LaunchoftheVilladelGaviVideo from './video/LaunchoftheVilladelGavi.mp4';
-// // Добавлены недостающие импорты - замените на реальные пути к видео
-// import LaunchoftheEYWAVideo from './video/BRUNELLO.mp4';
-// import LaunchoftheDIVOSVideo from './video/LaunchoftheDIVOS.mp4';
-// import PRoftheVilladelGaviVideo from './video/BRUNELLO.mp4'; 
-// import CelebrityAppearancesVideo from './video/LaunchoftheVilladelGavi.mp4';
-
 // Временная заглушка для видео (пока видео не загружены)
 import VideoPlaceholder from '../video/hero-video.mp4'; // Используем один файл как заглушку для всех
 
@@ -51,7 +35,8 @@ const videoData = [
     id: 1,
     title: "BRUNELLO",
     description: "WE COMBINE FILM AND REAL ESTATE ADVERTISING. REAL ESTATE IS SOLD THROUGH EMOTION, THROUGH STORYTELLING, AND THROUGH THE EXPERIENCE OF BEING IN IT.",
-    videoUrl: VideoPlaceholder, // Используем заглушку
+    videoUrl: VideoPlaceholder,
+    previewImage: "/projectImage/BRUNELLO.png", // Добавлено фото превью
     desktopMainCategory: "VIDEO",
     desktopSubCategory: "Real Estate development",
     mobileCategories: ["VIDEO"],
@@ -60,7 +45,8 @@ const videoData = [
     id: 2,
     title: "VILLA DEL GAVI",
     description: "WE CREATED AN EMOTIONAL SALES VIDEO THAT SHOWCASES THE CONCEPT OF THE HOUSE. THE STORY AND CHARACTER OF THE HOUSE WERE CREATED. 3D RENDERINGS.",
-    videoUrl: VideoPlaceholder, // Используем заглушку
+    videoUrl: VideoPlaceholder,
+    previewImage: "/projectImage/VILLA DEL GAVI.png", // Добавлено фото превью
     desktopMainCategory: "VIDEO", 
     desktopSubCategory: "Real Estate development",
     mobileCategories: ["VIDEO"],
@@ -69,7 +55,8 @@ const videoData = [
     id: 3,
     title: "EYWA WAY OF WATER",
     description: "THEY CREATED A MAGICAL WORLD IN WHICH THE MAIN CHARACTERS ARE A FATHER AND SON.",
-    videoUrl: VideoPlaceholder, // Используем заглушку
+    videoUrl: VideoPlaceholder,
+    previewImage: "/projectImage/EYWA WAY OF WATER.png", // Добавлено фото превью
     desktopMainCategory: "VIDEO",
     desktopSubCategory: "Commercial",
     mobileCategories: ["VIDEO"],
@@ -78,7 +65,8 @@ const videoData = [
     id: 4,
     title: "ELITE MERIT",
     description: "WE MAKE VIDEOS AND MARKETING THAT NO ONE ELSE DOES.",
-    videoUrl: VideoPlaceholder, // Используем заглушку
+    videoUrl: VideoPlaceholder,
+    previewImage: "/projectImage/ELITE MERIT.png", // Добавлено фото превью
     desktopMainCategory: "HYPE & MARKETING",
     desktopSubCategory: "Betting",
     mobileCategories: ["HYPE & MARKETING"],
@@ -87,7 +75,8 @@ const videoData = [
     id: 5,
     title: "INTERSTELLAR",
     description: "WE COMBINED FILMING IN A STUDIO AND 3D GRAPHICS TO CONVEY THE FUTURE HOME AND ITS PHILOSOPHY AS ACCURATELY AS POSSIBLE.",
-    videoUrl: VideoPlaceholder, // Используем заглушку
+    videoUrl: VideoPlaceholder,
+    previewImage: "/projectImage/Interstellar.png", // Добавлено фото превью
     desktopMainCategory: "VIDEO",
     desktopSubCategory: "Beauty",
     mobileCategories: ["VIDEO"],
@@ -96,7 +85,8 @@ const videoData = [
     id: 6,
     title: "VILLA DEL DIVOS",
     description: "PARTICULAR ATTENTION IS PAID TO THE PHILOSOPHY BEHIND THE PROJECT AND ITS KEY ADVANTAGES: AN ATMOSPHERE OF COMFORT, AESTHETICS, AND SERVICE.",
-    videoUrl: VideoPlaceholder, // Используем заглушку
+    videoUrl: VideoPlaceholder,
+    previewImage: "/projectImage/Villa del Divos.png", // Добавлено фото превью
     desktopMainCategory: "VIDEO",
     desktopSubCategory: "Commercial",
     mobileCategories: ["VIDEO"],
@@ -105,7 +95,8 @@ const videoData = [
     id: 7,
     title: "MR.EIGHT | BRAND VIDEO",
     description: "«FOLLOW YOUR DREAM WHATEVER IT TAKES» - THIS THESIS REFLECTS THE COMPANY'S DETERMINATION AND UNWAVERING COMMITMENT TO WHICH IT MOVES FORWARD IN THE IMPLEMENTATION OF ITS PROJECTS.",
-    videoUrl: VideoPlaceholder, // Используем заглушку
+    videoUrl: VideoPlaceholder,
+    previewImage: "/projectImage/Mr.Eight  Brand video.png", // Добавлено фото превью
     desktopMainCategory: "HYPE & MARKETING",
     desktopSubCategory: "Real Estate development",
     mobileCategories: ["HYPE & MARKETING"],
@@ -114,7 +105,8 @@ const videoData = [
     id: 8,
     title: "LAUNCH OF THE VILLA DEL GAVI",
     description: "1400 PEOPLE TURNKEY EVENT ORGANIZATION POWERFUL PR CAMPAIGN HOLLYWOOD STARS OSCAR WINNER ADRIEN BRODY",
-    videoUrl: VideoPlaceholder, // Используем заглушку
+    videoUrl: VideoPlaceholder,
+    previewImage: "/projectImage/Launch of the Villa del Gavi.png", // Добавлено фото превью
     desktopMainCategory: "EVENTS & LAUNCHES",
     desktopSubCategory: "Beauty",
     mobileCategories: ["EVENTS & LAUNCHES"],
@@ -123,7 +115,8 @@ const videoData = [
     id: 9,
     title: "LAUNCH OF THE EYWA",
     description: "700 PEOPLE TURNKEY EVENT ORGANIZATION POWERFUL PR CAMPAIGN CONTENT",
-    videoUrl: VideoPlaceholder, // Используем заглушку
+    videoUrl: VideoPlaceholder,
+    previewImage: "/projectImage/Launch of the EYWA.png", // Добавлено фото превью
     desktopMainCategory: "EVENTS & LAUNCHES",
     desktopSubCategory: "Beauty",
     mobileCategories: ["EVENTS & LAUNCHES"],
@@ -132,7 +125,8 @@ const videoData = [
     id: 10,
     title: "LAUNCH OF THE DIVOS",
     description: "900 PEOPLE TURNKEY EVENT ORGANIZATION POWERFUL PR CAMPAIGN CONTENT",
-    videoUrl: VideoPlaceholder, // Используем заглушку
+    videoUrl: VideoPlaceholder,
+    previewImage: "/projectImage/Launch of the DIVOS.png", // Добавлено фото превью
     desktopMainCategory: "EVENTS & LAUNCHES",
     desktopSubCategory: "Beauty",
     mobileCategories: ["EVENTS & LAUNCHES"],
@@ -141,7 +135,8 @@ const videoData = [
     id: 11,
     title: "PR OF THE VILLA DEL GAVI",
     description: "PR CAMPAIGN WITH BRAND AMBASSADORS MR. THANK YOU & MR.GOODLUCK. A SERIES OF 98 REELS WAS PRODUCED, REACHING 195,000,000 VIEWS. AND 127 STORIES WERE PRODUCED, REACHING 48,500,000 VIEWS.",
-    videoUrl: VideoPlaceholder, // Используем заглушку
+    videoUrl: VideoPlaceholder,
+    previewImage: "/projectImage/PR of the Villa del Gavi.png", // Добавлено фото превью
     desktopMainCategory: "HYPE & MARKETING",
     desktopSubCategory: "Beauty",
     mobileCategories: ["HYPE & MARKETING"],
@@ -150,7 +145,8 @@ const videoData = [
     id: 12,
     title: "CELEBRITY APPEARANCES",
     description: "WE CAN BRING ANY STAR FOR YOU. MATTHEW MCCONAUGHEY, ADRIAN BRODY, NICOLAS CAGE, MILA JOVOVICH, VINCENT CASSEL, ZENDAYA, QUENTIN TARANTINO, KEANU REEVES, JASON MAMOA AND OTHERS.",
-    videoUrl: VideoPlaceholder, // Используем заглушку
+    videoUrl: VideoPlaceholder,
+    previewImage: "/projectImage/Celebrity Appearances.png", // Добавлено фото превью
     desktopMainCategory: "CELEBRITY APPEARANCES",
     desktopSubCategory: "Beauty",
     mobileCategories: ["CELEBRITY APPEARANCES"],
@@ -165,6 +161,7 @@ const ProjectsVideoSection = () => {
   const [videoLoadError, setVideoLoadError] = useState(false);
   const [hoveredCard, setHoveredCard] = useState(null);
   const [isMobile, setIsMobile] = useState(false);
+  const [imageLoadError, setImageLoadError] = useState({});
   
   // Состояния для анимации подкатегорий (десктоп)
   const [desktopSubcategoriesOpen, setDesktopSubcategoriesOpen] = useState(false);
@@ -405,6 +402,14 @@ const ProjectsVideoSection = () => {
     console.error('Ошибка загрузки видео');
   };
 
+  // Обработчик ошибки загрузки изображения
+  const handleImageError = (videoId) => {
+    setImageLoadError(prev => ({
+      ...prev,
+      [videoId]: true
+    }));
+  };
+
   return (
     <div className="projects-video-section">
       <div className="projects-video-container">
@@ -510,6 +515,23 @@ const ProjectsVideoSection = () => {
               onMouseEnter={() => handleMouseEnter(video.id)}
               onMouseLeave={() => handleMouseLeave(video.id)}
             >
+              {/* Превью изображение (постоянно видимое) */}
+              <div className="preview-image-container">
+                {!imageLoadError[video.id] ? (
+                  <img
+                    src={video.previewImage}
+                    alt={video.title}
+                    className="preview-image"
+                    onError={() => handleImageError(video.id)}
+                  />
+                ) : (
+                  <div className="image-error-placeholder">
+                    <span>{video.title}</span>
+                  </div>
+                )}
+              </div>
+              
+              {/* Видео (воспроизводится только при наведении на десктопе) */}
               <video
                 ref={el => videoRefs.current[video.id] = el}
                 className={`video-background ${isMobile ? 'mobile-static' : ''}`}

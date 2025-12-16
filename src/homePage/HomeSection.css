@@ -64,7 +64,6 @@
   font-family: 'Montserrat', sans-serif;
   font-size: 64px;
   font-weight: 500;
-  letter-spacing: 2px;
   margin-bottom: 24px;
   text-transform: uppercase;
   line-height: 1.2;
@@ -125,7 +124,7 @@
 /* Кнопка read more */
 .read-more-button {
   width: 174px;
-  height: 60px;
+  height: 35px;
   background: rgba(118, 118, 118, 0.16);
   border: 1.5px solid rgba(156, 156, 156, 0.32);
   backdrop-filter: blur(8px);
