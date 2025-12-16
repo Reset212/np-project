@@ -21,27 +21,26 @@ const ScrollTextAnimation = () => {
         ["WE", "BRING", "IDEAS", "TO", "LIFE", "THROUGH"],
         ["BRANDING,", "VISUALS", "AND", "HYPE"]
       ],
-      number: 1
+    
     },
     {
       lines: [
         ["EVERY", "PROJECT", "SUCCEEDS"]
       ],
-      number: 2
+ 
     }
   ];
 
   // Данные для текста - МОБИЛЬНАЯ ВЕРСИЯ
   const mobileSections = [
     {
-      number: "01",
       lines: [
         ["WE", "BRING", "IDEAS", "TO", "LIFE"],
         ["THROUGH", "BRANDING,", "VISUALS", "AND", "HYPE"]
       ]
     },
     {
-      number: "02",
+     
       lines: [
         ["EVERY", "PROJECT", "SUCCEEDS"]
       ]
@@ -387,9 +386,7 @@ const ScrollTextAnimation = () => {
           data-section-index={sectionIdx}
         >
           <div className="section-content-wrapper">
-            <div className={`text-number number-2 ${number2Visible ? 'active' : ''} ${isActive ? 'number-2-active' : 'number-2-inactive'}`}>
-              02
-            </div>
+            
 
             {section.lines.map((line, lineIdx) => (
               <div key={`line-${lineIdx}`} className="text-line">
@@ -512,9 +509,7 @@ const ScrollTextAnimation = () => {
           {/* Десктопная версия */}
           {!isMobile && (
             <>
-              <div className={`text-number number-1 ${number1Visible ? 'active' : ''}`}>
-                01
-              </div>
+            
               {sections.map((_, idx) => renderDesktopSection(idx))}
             </>
           )}
