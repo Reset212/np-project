@@ -310,14 +310,20 @@
   .mens-secondary-container {
     width: 700px;
   }
-  
+  .mens-date-container{
+    height: 300px;
+    width: 550px;
+  }
   .mens-text-bold {
-    font-size: 36px;
+    width: 870px;
+    font-size: 34px;
     line-height: 44px;
+    /* padding-left: 20px !important; */
   }
   
   .mens-button {
     margin-top: 120px;
+    margin-left: -40px;
   }
 }
 
@@ -445,10 +451,10 @@
     top: auto !important;
     left: 0 !important;
     right: auto !important;
+    padding-left: -20px !important;
     text-align: left;
     order: 4;
     padding-left: 0; /* Без отступа слева */
-    padding-right: 0; /* Без отступа справа */
     box-sizing: border-box;
   }
 
@@ -473,12 +479,22 @@
   .mens-photo-container {
     height: 250px !important;
   }
+  .mens-text-container{
+    width: 100% !important;
 
+  }
   .mens-text-bold {
-    font-size: 18px !important;
+    padding-left: 30px !important;
+    width: 400px;
+    font-size: 20px !important;
+    font-weight: 400;
+    letter-spacing: -3%;
+    line-height: 24px;
+    
   }
 
   .mens-date {
+    padding-left: 40px !important;
     font-size: 16px !important;
     line-height: 1.5 !important;
   }
@@ -487,6 +503,6 @@
     max-width: 160px;
     height: 60px;
     font-size: 16px;
-    font-weight:  600;
+    font-weight:  500;
   }
 }
