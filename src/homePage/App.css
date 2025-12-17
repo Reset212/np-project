@@ -53,7 +53,9 @@
     -webkit-box-pack: center !important;
     padding-top: 2px !important;
   }
-
+  .view-project-button{
+    padding-top: 6px !important;
+  }
 }
 
 /* Фикс для старых Safari */
