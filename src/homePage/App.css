@@ -39,7 +39,6 @@
   .button-text,
   .button-text-span,
   .view-project-button,
-  a,
   .submit,
   .submit-button,
   .mobile-nav-item,
@@ -52,7 +51,7 @@
     justify-content: center !important;
     -webkit-box-align: center !important;
     -webkit-box-pack: center !important;
-    padding-top: 21px !important;
+    padding-top: 2px !important;
   }
 
 }
