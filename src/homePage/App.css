@@ -1,10 +1,7 @@
-
-
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
- 
 }
 
 /* App.css - добавьте эти стили */
@@ -26,3 +23,66 @@
   border: 1px solid red !important;
 }
 
+/* ============================================
+   ГЛОБАЛЬНЫЕ ФИКСЫ ДЛЯ iOS И КНОПОК
+   ============================================ */
+@supports (-webkit-touch-callout: none) {
+  body, html, .App {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-font-smoothing: antialiased;
+  }
+  
+  /* Фиксы для всех кнопок в приложении */
+  button,
+  .action-button-left,
+  .mens-button,
+  .read-more-button,
+  [role="button"] {
+    display: -webkit-flex !important;
+    display: flex !important;
+    -webkit-align-items: center !important;
+    align-items: center !important;
+    -webkit-justify-content: center !important;
+    justify-content: center !important;
+    -webkit-font-smoothing: antialiased;
+    -webkit-touch-callout: none;
+  }
+  
+  /* Фиксы для текста внутри кнопок */
+  .btn-text-left,
+  .button-text,
+  .button-text-span,
+  button > span,
+  [role="button"] > span {
+    display: -webkit-flex !important;
+    display: flex !important;
+    -webkit-align-items: center !important;
+    align-items: center !important;
+    -webkit-justify-content: center !important;
+    justify-content: center !important;
+    -webkit-box-align: center !important;
+    -webkit-box-pack: center !important;
+    line-height: 1 !important;
+    padding-top: 1px !important;
+    width: 100%;
+    height: 100%;
+  }
+}
+
+/* Фикс для старых Safari */
+_::-webkit-full-page-media, _:future, :root button,
+_::-webkit-full-page-media, _:future, :root .action-button-left,
+_::-webkit-full-page-media, _:future, :root .mens-button,
+_::-webkit-full-page-media, _:future, :root .read-more-button {
+  line-height: 40px !important;
+}
+
+/* Фикс для мобильных браузеров */
+@media (max-width: 768px) {
+  button,
+  [role="button"] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+  }
+}
