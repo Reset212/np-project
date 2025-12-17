@@ -5,6 +5,8 @@
   position: relative;
   width: 100%;
   overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* ============================================
@@ -148,22 +150,32 @@
     letter-spacing: 0.5px;
     text-transform: uppercase;
     cursor: pointer;
-    display: inline-flex;
+    display: flex;
     align-items: center;
     justify-content: center;
     gap: 10px;
     transition: all 0.3s ease;
+    -webkit-appearance: none;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  
+  .btn-text-left {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    line-height: 1;
+    position: relative;
+    z-index: 2;
   }
   
   .action-button-left:hover {
     background: rgba(210, 210, 210, 0.85);
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  }
-  
-  .btn-text-left {
-    position: relative;
-    z-index: 2;
   }
   
   /* Контент после анимации */
@@ -310,7 +322,7 @@
     letter-spacing: 0.5px;
     text-transform: uppercase;
     cursor: pointer;
-    display: inline-flex;
+    display: flex;
     align-items: center;
     justify-content: center;
     gap: 10px;
@@ -318,17 +330,27 @@
     margin-top: 100px;
     padding: 0;
     margin-left: 0;
+    -webkit-appearance: none;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  
+  .button-text {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    line-height: 1;
+    position: relative;
+    z-index: 2;
   }
   
   .mens-button:hover {
     background: rgba(210, 210, 210, 0.85);
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  }
-  
-  .button-text {
-    position: relative;
-    z-index: 2;
   }
 }
 
@@ -442,7 +464,6 @@
   }
   
   .mens-button {
-
     margin-top: 20px !important;
     width: 140px;
     height: 35px;
@@ -490,4 +511,43 @@
     height: 45px;
     font-size: 13px !important;
   }
+}
+
+/* ============================================
+   СПЕЦИФИЧНЫЕ ФИКСЫ ДЛЯ iOS
+   ============================================ */
+@supports (-webkit-touch-callout: none) {
+  .mens-section {
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  .action-button-left,
+  .mens-button {
+    display: -webkit-flex !important;
+    display: flex !important;
+    -webkit-align-items: center !important;
+    align-items: center !important;
+    -webkit-justify-content: center !important;
+    justify-content: center !important;
+    -webkit-font-smoothing: antialiased;
+  }
+  
+  .btn-text-left,
+  .button-text {
+    display: -webkit-flex !important;
+    display: flex !important;
+    -webkit-align-items: center !important;
+    align-items: center !important;
+    -webkit-justify-content: center !important;
+    justify-content: center !important;
+    -webkit-box-align: center !important;
+    -webkit-box-pack: center !important;
+    padding-top: 1px !important;
+  }
+}
+
+/* Фикс для старых Safari */
+_::-webkit-full-page-media, _:future, :root .action-button-left,
+_::-webkit-full-page-media, _:future, :root .mens-button {
+  line-height: 40px !important;
 }
