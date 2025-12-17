@@ -3,12 +3,13 @@ import "./ThirdScrollBlock.css";
 
 const ThirdScrollBlock = () => {
   const [isVisible, setIsVisible] = useState(false);
+  const [hoveredItem, setHoveredItem] = useState(null);
   const sectionRef = useRef(null);
 
   const title = "WE DO";
   const items = [
     "COMMERCIAL VIDEO",
-    "HYPE & MARKETING",
+    "HYPE & MARKETING", 
     "BRANDING",
     "EVENTS / LAUNCHES",
     "CELEBRITY APPEARANCES",
@@ -62,11 +63,39 @@ const ThirdScrollBlock = () => {
             &nbsp;
           </span>
         );
+      } else if (char === "&") {
+        letters.push(
+          <span
+            key={key}
+            className="text-letter item-letter"
+            style={{
+              opacity: isVisible ? 1 : 0,
+              transitionDelay: `${getLetterDelay(itemIndex, i, isVisible)}ms`,
+              fontStyle: 'normal'
+            }}
+          >
+            {char}
+          </span>
+        );
+      } else if (char === "/") {
+        letters.push(
+          <span
+            key={key}
+            className="text-letter item-letter"
+            style={{
+              opacity: isVisible ? 1 : 0,
+              transitionDelay: `${getLetterDelay(itemIndex, i, isVisible)}ms`,
+              fontStyle: 'normal'
+            }}
+          >
+            {char}
+          </span>
+        );
       } else {
         letters.push(
           <span
             key={key}
-            className="text-letter"
+            className="text-letter item-letter"
             style={{
               opacity: isVisible ? 1 : 0,
               transitionDelay: `${getLetterDelay(itemIndex, i, isVisible)}ms`
@@ -118,12 +147,19 @@ const ThirdScrollBlock = () => {
     return isAppearing ? "translateX(0)" : "translateX(-50px)";
   };
 
+  const handleItemMouseEnter = (index) => {
+    setHoveredItem(index);
+  };
+
+  const handleItemMouseLeave = () => {
+    setHoveredItem(null);
+  };
+
   return (
     <section
       className={`third-scroll-section ${isVisible ? 'section-visible' : ''}`}
       ref={sectionRef}
     >
-
       <div className="third-scroll-container">
         {/* Левая часть - основной WE DO (заполненный) */}
         <div className="left-side">
@@ -200,8 +236,13 @@ const ThirdScrollBlock = () => {
                     transitionDelay: `${getItemDelay(index, isVisible)}ms`,
                     width: "100%",
                   }}
+                  onMouseEnter={() => handleItemMouseEnter(index)}
+                  onMouseLeave={handleItemMouseLeave}
                 >
-                  <span className="item-text">
+                  <span 
+                    className="item-text"
+                    data-text={item}
+                  >
                     {renderTextWithSpaces(item, getItemLetterDelay, "item", index)}
                   </span>
                 </div>
