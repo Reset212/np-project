@@ -33,21 +33,7 @@
   }
   
   /* Фиксы для всех кнопок в приложении */
-  button,
-  .action-button-left,
-  .mens-button,
-  .read-more-button,
-  [role="button"] {
-    display: -webkit-flex !important;
-    display: flex !important;
-    -webkit-align-items: center !important;
-    align-items: center !important;
-    -webkit-justify-content: center !important;
-    justify-content: center !important;
-    -webkit-font-smoothing: antialiased;
-    -webkit-touch-callout: none;
-  }
-  
+
   /* Фиксы для текста внутри кнопок */
     .btn-text-left,
   .button-text,
@@ -55,6 +41,7 @@
   .view-project-button,
   .submit,
   .submit-button,
+  .mobile-nav-item,
   button {
     display: -webkit-flex !important;
     display: flex !important;
