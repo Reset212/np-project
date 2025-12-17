@@ -76,7 +76,7 @@ const VideoBackground = () => {
     <div className="video-background-container">
       <div className="video-background-overlay"></div>
       
-      <video autoPlay muted loop className="video-background">
+      <video autoPlay playsInline muted loop className="video-background">
         <source src={videoSrc} type="video/mp4" />
         Your browser does not support the video tag.
       </video>
