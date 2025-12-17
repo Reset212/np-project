@@ -91,15 +91,6 @@ _::-webkit-full-page-media, _:future, :root .read-more-button {
     justify-content: center !important;
     -webkit-box-align: center !important;
     -webkit-box-pack: center !important;
-    padding-top: 1px !important;
+    padding-top: 21px !important;
   }
 
-/* Фикс для мобильных браузеров */
-@media (max-width: 768px) {
-  button,
-  [role="button"] {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-  }
-}
