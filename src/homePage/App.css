@@ -35,10 +35,11 @@
   /* Фиксы для всех кнопок в приложении */
 
   /* Фиксы для текста внутри кнопок */
-    .btn-text-left,
+  .btn-text-left,
   .button-text,
   .button-text-span,
   .view-project-button,
+  a,
   .submit,
   .submit-button,
   .mobile-nav-item,
