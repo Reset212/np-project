@@ -457,17 +457,17 @@ const ScrollTextAnimation = () => {
 
                 return (
                   <React.Fragment key={`desktop-word-${key}`}>
-                    <div
+                    <span
                       className={`desktop-word ${isWordActive ? 'active' : ''} ${sectionIdx === 1 ? 'section-2-word' : ''}`}
                       style={{
                         transitionDelay: `${(lineIdx * line.length + wordIdx) * 0.02}s`
                       }}
                     >
-                      <span className="desktop-word-text">{word}</span>
-                    </div>
+                      {word}
+                    </span>
 
                     {wordIdx < line.length - 1 && (
-                      <div className="desktop-word-space"> </div>
+                      <span className="desktop-word-space"> </span>
                     )}
                   </React.Fragment>
                 );
@@ -500,17 +500,17 @@ const ScrollTextAnimation = () => {
 
                 return (
                   <React.Fragment key={`mobile-word-${key}`}>
-                    <div
+                    <span
                       className={`mobile-word ${isWordActive ? 'active' : ''} ${sectionIdx === 1 ? 'mobile-word-2' : ''}`}
                       style={{
                         transitionDelay: `${(lineIdx * line.length + wordIdx) * 0.015}s`
                       }}
                     >
-                      <span className="mobile-word-text">{word}</span>
-                    </div>
+                      {word}
+                    </span>
 
                     {wordIdx < line.length - 1 && (
-                      <div className="mobile-word-space"> </div>
+                      <span className="mobile-word-space"> </span>
                     )}
                   </React.Fragment>
                 );

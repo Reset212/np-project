@@ -3,8 +3,6 @@
   width: 100%;
   height: 300vh;
   z-index: 100;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
 /* ФИКСИРОВАННЫЙ контейнер */
@@ -16,7 +14,6 @@
   height: 100vh;
   pointer-events: none;
   z-index: 1000;
-  -webkit-tap-highlight-color: transparent;
 }
 
 /* Общий контейнер для ВСЕГО текста */
@@ -81,9 +78,7 @@
 }
 
 .desktop-word {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  display: inline-block;
   font-family: 'Helvetica Neue', Arial, sans-serif;
   font-weight: 500;
   font-size: 72px;
@@ -97,20 +92,6 @@
   transform: translateY(15px);
   transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
               transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  /* Фикс для iOS */
-  -webkit-appearance: none;
-  -webkit-touch-callout: none;
-}
-
-.desktop-word-text {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  width: 100%;
-  line-height: 1;
-  -webkit-box-align: center;
-  -webkit-box-pack: center;
 }
 
 /* Быстрое исчезновение слов */
@@ -175,15 +156,12 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  align-items: center;
   gap: 6px;
   line-height: 1.2;
 }
 
 .mobile-word {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  display: inline-block;
   font-family: 'Helvetica Neue', Arial, sans-serif;
   font-weight: 500;
   font-size: 40px;
@@ -196,20 +174,6 @@
   transform: translateY(10px);
   transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1),
               transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  /* Фикс для iOS */
-  -webkit-appearance: none;
-  -webkit-touch-callout: none;
-}
-
-.mobile-word-text {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  width: 100%;
-  line-height: 1;
-  -webkit-box-align: center;
-  -webkit-box-pack: center;
 }
 
 .mobile-word.active {
@@ -220,38 +184,6 @@
 .mobile-word-space {
   display: inline-block;
   width: 6px;
-}
-
-/* Специфичные фиксы для iOS */
-@supports (-webkit-touch-callout: none) {
-  .scroll-text-content {
-    padding-top: env(safe-area-inset-top);
-    padding-bottom: env(safe-area-inset-bottom);
-  }
-  
-  .desktop-word,
-  .mobile-word {
-    display: -webkit-flex;
-    display: flex;
-    -webkit-align-items: center;
-    align-items: center;
-    -webkit-justify-content: center;
-    justify-content: center;
-    -webkit-font-smoothing: antialiased;
-  }
-  
-  .desktop-word-text,
-  .mobile-word-text {
-    -webkit-box-align: center;
-    -webkit-box-pack: center;
-    padding-top: 1px;
-  }
-}
-
-/* Фикс для старых Safari */
-_::-webkit-full-page-media, _:future, :root .desktop-word,
-_::-webkit-full-page-media, _:future, :root .mobile-word {
-  line-height: 1 !important;
 }
 
 /* АДАПТАЦИЯ ДЛЯ 1040px И МЕНЬШЕ - АДАПТИВНОСТЬ ИЗ ВТОРОГО ПРИМЕРА */
