@@ -11,20 +11,27 @@ import designfestivalImg from "../image/designfestival.png";
 const VideoBackground = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
+  const [showPlayButton, setShowPlayButton] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const videoRef = useRef(null);
+  const containerRef = useRef(null);
 
   // Функция для запуска видео
   const playVideo = () => {
-    if (videoRef.current && !isVideoPlaying) {
+    if (videoRef.current) {
       videoRef.current.play()
         .then(() => {
           setIsVideoPlaying(true);
-          console.log("Video started playing");
+          setShowPlayButton(false);
+          console.log("Video started playing successfully");
         })
         .catch(error => {
           console.log("Video play failed:", error);
+          // Показываем кнопку воспроизведения только на мобильных
+          if (window.innerWidth <= 768) {
+            setShowPlayButton(true);
+          }
         });
     }
   };
@@ -34,29 +41,64 @@ const VideoBackground = () => {
     playVideo();
   };
 
+  // Инициализация видео при загрузке
   useEffect(() => {
-    // Пытаемся запустить видео при загрузке компонента
+    // Пытаемся запустить видео после небольшой задержки
     const timer = setTimeout(() => {
       playVideo();
-    }, 100);
+    }, 300);
 
-    // Добавляем обработчики для пользовательского взаимодействия
-    const handleTouchStart = () => {
-      handleUserInteraction();
-    };
+    // Проверяем, является ли устройство мобильным
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    
+    if (isMobile) {
+      // На мобильных добавляем больше обработчиков
+      const interactionEvents = ['touchstart', 'click', 'scroll', 'mousedown'];
+      
+      const handleInteraction = () => {
+        playVideo();
+        // Удаляем обработчики после успешного запуска
+        interactionEvents.forEach(event => {
+          document.removeEventListener(event, handleInteraction);
+        });
+      };
 
-    const handleClick = () => {
-      handleUserInteraction();
-    };
+      interactionEvents.forEach(event => {
+        document.addEventListener(event, handleInteraction, { once: true });
+      });
 
-    // Подписываемся на события
-    document.addEventListener('touchstart', handleTouchStart, { passive: true });
-    document.addEventListener('click', handleClick);
+      return () => {
+        interactionEvents.forEach(event => {
+          document.removeEventListener(event, handleInteraction);
+        });
+        clearTimeout(timer);
+      };
+    }
 
     return () => {
       clearTimeout(timer);
-      document.removeEventListener('touchstart', handleTouchStart);
-      document.removeEventListener('click', handleClick);
+    };
+  }, []);
+
+  // Проверяем статус видео через интервалы
+  useEffect(() => {
+    const checkVideoStatus = () => {
+      if (videoRef.current) {
+        const isPlaying = !videoRef.current.paused && !videoRef.current.ended && 
+                         videoRef.current.readyState > 2;
+        
+        if (!isPlaying && window.innerWidth <= 768) {
+          setShowPlayButton(true);
+        } else {
+          setShowPlayButton(false);
+        }
+      }
+    };
+
+    const interval = setInterval(checkVideoStatus, 1000);
+    
+    return () => {
+      clearInterval(interval);
     };
   }, []);
 
@@ -136,10 +178,51 @@ const VideoBackground = () => {
     };
   }, [isMenuOpen]);
 
+  // Кнопка для ручного запуска видео на мобильных
+  const VideoPlayButton = () => {
+    if (!showPlayButton) return null;
+
+    return (
+      <button 
+        className="mobile-video-play-button"
+        onClick={playVideo}
+        style={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          zIndex: 100,
+          background: 'rgba(255, 255, 255, 0.2)',
+          backdropFilter: 'blur(10px)',
+          border: '1px solid rgba(255, 255, 255, 0.3)',
+          borderRadius: '50%',
+          width: '60px',
+          height: '60px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          cursor: 'pointer',
+          animation: 'pulse 2s infinite'
+        }}
+      >
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
+          <path d="M8 5v14l11-7z"/>
+        </svg>
+      </button>
+    );
+  };
+
   return (
     <>
-      <div className="video-background-container">
+      <div 
+        className="video-background-container" 
+        ref={containerRef}
+        onClick={handleUserInteraction}
+      >
         <div className="video-background-overlay"></div>
+        
+        {/* Кнопка воспроизведения для мобильных */}
+        <VideoPlayButton />
         
         <video
           ref={videoRef}
@@ -147,6 +230,8 @@ const VideoBackground = () => {
           muted
           loop
           playsInline
+          webkit-playsinline="true"
+          preload="auto"
           className="video-background"
           onClick={handleUserInteraction}
         >
@@ -158,10 +243,10 @@ const VideoBackground = () => {
         <nav className="navigation">
           {/* Десктопная навигация - ЛЕВАЯ ЧАСТЬ */}
           <div className="nav-left">
-            <Link to="/real-estate" className="nav-item directions">
+            <Link to="/real-estate" className="nav-item directions" onClick={handleUserInteraction}>
               DIRECTIONS
             </Link>
-            <Link to="/projects" className="nav-item projects">
+            <Link to="/projects" className="nav-item projects" onClick={handleUserInteraction}>
               PROJECTS
             </Link>
           </div>
