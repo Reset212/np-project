@@ -840,3 +840,12 @@ button,
 }
   
 }
+@media (max-width: 540px) {
+.mobile-nav-item{
+  width: 250px !important;
+  border-radius: 10px !important;
+  padding: 14px 0px !important;
+  /* height: 20px !important; */
+}
+  
+}
