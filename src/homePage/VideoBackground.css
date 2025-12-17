@@ -5,22 +5,6 @@
   --scale-factor: 1;
 }
 
-/* Анимация пульсации для кнопки воспроизведения */
-@keyframes pulse {
-  0% {
-    transform: translate(-50%, -50%) scale(1);
-    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4);
-  }
-  70% {
-    transform: translate(-50%, -50%) scale(1.05);
-    box-shadow: 0 0 0 10px rgba(255, 255, 255, 0);
-  }
-  100% {
-    transform: translate(-50%, -50%) scale(1);
-    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
-  }
-}
-
 /* ОСНОВНОЙ КОНТЕЙНЕР */
 .video-background-container {
   position: relative;
@@ -28,7 +12,6 @@
   height: 100vh;
   overflow: hidden;
   margin: 0 auto;
-  cursor: pointer;
 }
 
 .video-background {
@@ -39,43 +22,6 @@
   height: 100%;
   object-fit: cover;
   z-index: -1;
-  -webkit-transform: translateZ(0);
-  transform: translateZ(0);
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-}
-
-/* Стили для кнопки воспроизведения на мобильных */
-.mobile-video-play-button {
-  position: absolute;
-  top: 50% !important;
-  left: 50% !important;
-  transform: translate(-50%, -50%) !important;
-  z-index: 100;
-  background: rgba(255, 255, 255, 0.2) !important;
-  backdrop-filter: blur(10px) !important;
-  -webkit-backdrop-filter: blur(10px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.3) !important;
-  border-radius: 50% !important;
-  width: 60px !important;
-  height: 60px !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  cursor: pointer !important;
-  animation: pulse 2s infinite !important;
-  transition: all 0.3s ease !important;
-}
-
-.mobile-video-play-button:hover {
-  background: rgba(255, 255, 255, 0.3) !important;
-  transform: translate(-50%, -50%) scale(1.1) !important;
-}
-
-.mobile-video-play-button svg {
-  width: 24px;
-  height: 24px;
-  fill: white;
 }
 
 /* Автоматическое вычисление масштаба для больших экранов */
@@ -428,16 +374,14 @@
     gap: calc(2px * var(--scale-factor));
   }
   
-  .award-count {
-  }
+ 
   
   .award-type {
     font-size: calc(14px * var(--scale-factor));
     margin-bottom: calc(2px * var(--scale-factor));
   }
   
-  .award-description {
-  }
+
 }
 
 /* Кнопка VIEW PROJECT - ПК версия */
@@ -490,26 +434,14 @@
   * {
     cursor: auto !important;
   }
-  
-  /* Гарантируем отображение видео на мобильных */
-  .video-background {
-    display: block !important;
+    .video-background {
+    display: block !important; /* Принудительно показываем видео */
     opacity: 1 !important;
     visibility: visible !important;
-    object-fit: cover !important;
-    -webkit-transform: translateZ(0);
-    transform: translateZ(0);
   }
-  
-  /* Скрываем кастомный курсор на мобильных */
   .cursor-dot,
   .cursor-ring {
     display: none !important;
-  }
-  
-  /* Стили для кнопки воспроизведения на мобильных */
-  .mobile-video-play-button {
-    display: flex !important;
   }
   
   /* НАВИГАЦИЯ - МОБИЛЬНАЯ */
@@ -608,6 +540,8 @@
     left: 0;
     width: 100%;
     height: 100vh;
+    /* background: rgba(0, 0, 0, 0.9); */
+    /* backdrop-filter: blur(20px); */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -750,11 +684,6 @@
 
 /* ДЛЯ ПЛАНШЕТОВ (769px - 1024px) */
 @media (min-width: 769px) and (max-width: 1024px) {
-  /* Скрываем кнопку воспроизведения на планшетах и ПК */
-  .mobile-video-play-button {
-    display: none !important;
-  }
-  
   .navigation {
     padding: 0 24px;
   }
