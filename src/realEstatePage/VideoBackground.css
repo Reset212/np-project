@@ -138,20 +138,23 @@
 /* Кнопка CHAT WITH US - ПК версия */
 .chat-button {
   background-color: rgba(255, 255, 255, 0.2);
-  width: 176px;
-  height: 60px;
+  width: 165px !important;
+  height: 50px !important;
+  white-space: nowrap !important;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 30px;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  padding: 0;
-  font-size: 14px;
+  border: 0px solid rgba(255, 255, 255, 0.3) !important;
+  padding: 0 !important; /* Убираем все padding */
+  font-size: 14px !important;
   color: white;
-  cursor: pointer;
+  cursor: none;
   transition: all 0.3s ease;
   backdrop-filter: blur(5px);
   white-space: nowrap;
+  line-height: 1 !important; /* Добавляем line-height */
+  text-decoration: none !important;
 }
 
 @media (min-width: 1441px) {
