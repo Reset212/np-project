@@ -5,43 +5,38 @@ const ScrollTextAnimation = () => {
   const [activeSection, setActiveSection] = useState(0);
   const [wordStates, setWordStates] = useState({});
   const [isMobile, setIsMobile] = useState(false);
-  const [number1Visible, setNumber1Visible] = useState(false);
-  const [number2Visible, setNumber2Visible] = useState(false);
   const [section1Visible, setSection1Visible] = useState(false);
   const [section2Visible, setSection2Visible] = useState(false);
   const wrapperRef = useRef(null);
   const animationFrameRef = useRef(null);
   const lastScrollYRef = useRef(0);
   const lastProgressRef = useRef(0);
+  const directionRef = useRef('down');
 
-  // Данные для текста - ДЕСКТОП
+  // Данные для текста - ДЕСКТОП (центрированные как в первом примере)
   const sections = [
     {
       lines: [
         ["WE", "BRING", "IDEAS", "TO", "LIFE", "THROUGH"],
         ["BRANDING,", "VISUALS", "AND", "HYPE"]
       ],
-      number: 1
     },
     {
       lines: [
         ["EVERY", "PROJECT", "SUCCEEDS"]
       ],
-      number: 2
     }
   ];
 
   // Данные для текста - МОБИЛЬНАЯ ВЕРСИЯ
   const mobileSections = [
     {
-      number: "01",
       lines: [
         ["WE", "BRING", "IDEAS", "TO", "LIFE"],
         ["THROUGH", "BRANDING,", "VISUALS", "AND", "HYPE"]
       ]
     },
     {
-      number: "02",
       lines: [
         ["EVERY", "PROJECT", "SUCCEEDS"]
       ]
@@ -51,9 +46,10 @@ const ScrollTextAnimation = () => {
   const getWordKey = (sectionIdx, lineIdx, wordIdx) =>
     `${sectionIdx}-${lineIdx}-${wordIdx}`;
 
-  // Определение мобильного устройства
+  // Определение мобильного устройства с планшетной адаптацией
   useEffect(() => {
     const checkMobile = () => {
+      // Мобильной считаем только до 480px, как во втором примере
       const mobile = window.innerWidth <= 480;
       setIsMobile(mobile);
 
@@ -81,8 +77,6 @@ const ScrollTextAnimation = () => {
       
       setWordStates(initialWordStates);
       setActiveSection(0);
-      setNumber1Visible(false);
-      setNumber2Visible(false);
       setSection1Visible(false);
       setSection2Visible(false);
     };
@@ -98,7 +92,7 @@ const ScrollTextAnimation = () => {
     };
   }, []);
 
-  // ОБЩАЯ АНИМАЦИЯ ДЛЯ ВСЕХ УСТРОЙСТВ
+  // Анимация скролла с поддержкой планшетной адаптивности
   useEffect(() => {
     const updateAnimation = () => {
       if (!wrapperRef.current) {
@@ -111,14 +105,17 @@ const ScrollTextAnimation = () => {
       const windowHeight = window.innerHeight;
       const scrollY = window.scrollY;
       
+      // Определяем направление скролла
+      const isScrollingDown = scrollY > lastScrollYRef.current;
+      directionRef.current = isScrollingDown ? 'down' : 'up';
+      lastScrollYRef.current = scrollY;
+      
       // Проверяем, виден ли блок
       const isVisible = rect.top < windowHeight && rect.bottom > 0;
 
       if (!isVisible) {
         // Если блок не виден, скрываем всё
         setActiveSection(0);
-        setNumber1Visible(false);
-        setNumber2Visible(false);
         setSection1Visible(false);
         setSection2Visible(false);
         
@@ -148,213 +145,278 @@ const ScrollTextAnimation = () => {
         }
       }
 
-      // Определяем направление скролла
-      const isScrollingDown = scrollY > lastScrollYRef.current;
-      lastScrollYRef.current = scrollY;
+      // Инвертируем прогресс при скролле вверх
+      let effectiveProgress = progress;
+      if (directionRef.current === 'up') {
+        effectiveProgress = 1 - progress;
+      }
 
-      // ЛОГИКА ДЛЯ МОБИЛЬНОЙ ВЕРСИИ - ИЗМЕНЕНИЯ ЗДЕСЬ
-      if (isMobile) {
-        // Для мобильной версии - увеличиваем время отображения второй секции
-        let newActiveSection = 0;
-        let sectionProgress = 0;
-        
-        if (progress < 0.6) {
-          // Первая секция - 60% прогресса
-          newActiveSection = 0;
-          sectionProgress = progress / 0.6;
-        } else {
-          // Вторая секция - появляется на последних 40%
-          newActiveSection = 1;
-          // Увеличиваем диапазон для второй секции - теперь 0.25 (было 0.1)
-          sectionProgress = (progress - 0.6) / 0.25;
-        }
-
-        // Управляем видимостью секций в зависимости от направления скролла
-        if (newActiveSection === 0) {
-          // Показываем первую секцию
-          if (isScrollingDown) {
-            // При скролле вниз плавно показываем первую секцию
+      // ЛОГИКА ДЛЯ ДЕСКТОПНОЙ ВЕРСИИ (включая планшеты до 480px)
+      if (!isMobile) {
+        // Управление видимостью секций - с учетом направления
+        if (directionRef.current === 'down') {
+          // СКРОЛЛ ВНИЗ
+          if (progress < 0.45) {
             setSection1Visible(true);
             setSection2Visible(false);
-          } else {
-            // При скролле вверх плавно скрываем вторую секцию
-            // Увеличиваем порог для исчезновения второй секции
-            if (sectionProgress < 0.2) {
-              setSection2Visible(false);
-            }
-            setSection1Visible(true);
-          }
-        } else {
-          // Показываем вторую секцию
-          if (isScrollingDown) {
-            // При скролле вниз плавно скрываем первую секцию
-            // Увеличиваем порог для исчезновения первой секции
-            if (sectionProgress > 0.8) {
-              setSection1Visible(false);
-            }
-            setSection2Visible(true);
-          } else {
-            // При скролле вверх плавно показываем вторую секцию
-            setSection2Visible(true);
+            setActiveSection(0);
+          } else if (progress < 0.55) {
             setSection1Visible(false);
+            setSection2Visible(true);
+            setActiveSection(1);
+          } else if (progress < 0.85) {
+            setSection1Visible(false);
+            setSection2Visible(true);
+            setActiveSection(1);
+          } else {
+            setSection1Visible(false);
+            setSection2Visible(true);
+            setActiveSection(1);
+          }
+        } else {
+          // СКРОЛЛ ВВЕРХ - ИНВЕРТИРОВАННАЯ ЛОГИКА
+          if (effectiveProgress < 0.45) {
+            setSection1Visible(false);
+            setSection2Visible(true);
+            setActiveSection(1);
+          } else if (effectiveProgress < 0.55) {
+            setSection1Visible(true);
+            setSection2Visible(false);
+            setActiveSection(0);
+          } else if (effectiveProgress < 0.85) {
+            setSection1Visible(true);
+            setSection2Visible(false);
+            setActiveSection(0);
+          } else {
+            setSection1Visible(true);
+            setSection2Visible(false);
+            setActiveSection(0);
           }
         }
 
-        if (newActiveSection !== activeSection) {
-          setActiveSection(newActiveSection);
-        }
-
-        // Показываем цифры для соответствующей секции
-        if (newActiveSection === 0) {
-          const firstWordKey = getWordKey(0, 0, 0);
-          const isFirstWordActive = wordStates[firstWordKey] || false;
-          // Для первой цифры - обычный порог
-          setNumber1Visible(isFirstWordActive && sectionProgress > 0.1);
-          setNumber2Visible(false);
-        } else {
-          setNumber1Visible(false);
-          const secondWordKey = getWordKey(1, 0, 0);
-          const isSecondWordActive = wordStates[secondWordKey] || false;
-          // Для второй цифры - увеличиваем порог исчезновения
-          setNumber2Visible(isSecondWordActive && sectionProgress < 0.9);
-        }
-
-        // Обновляем состояния слов для активной секции
-        const activeSectionData = mobileSections[newActiveSection];
-        const totalWords = activeSectionData.lines.flat().length;
+        // Обновляем состояния слов для ОБЕИХ секций
+        const newWordStates = { ...wordStates };
         
-        // Разная скорость для первой и второй секций
-        let wordsToActivate;
+        // ПЕРВАЯ СЕКЦИЯ
+        const section1Data = sections[0];
+        const totalWords1 = section1Data.lines.flat().length;
         
-        if (newActiveSection === 0) {
-          // Первая секция - обычная скорость
-          wordsToActivate = Math.min(
-            totalWords,
-            Math.floor(sectionProgress * totalWords * 2.5)
-          );
-        } else {
-          // Вторая секция - плавное появление и плавное исчезновение
-          if (sectionProgress < 0.8) {
-            wordsToActivate = Math.min(
-              totalWords,
-              Math.floor(sectionProgress * totalWords * 3.0)
+        // ВТОРАЯ СЕКЦИЯ
+        const section2Data = sections[1];
+        const totalWords2 = section2Data.lines.flat().length;
+        
+        let wordsToActivate1 = 0;
+        let wordsToActivate2 = 0;
+        
+        if (directionRef.current === 'down') {
+          // СКРОЛЛ ВНИЗ - ОРИГИНАЛЬНАЯ АНИМАЦИЯ
+          if (progress < 0.4) {
+            let section1Progress = progress / 0.4;
+            wordsToActivate1 = Math.min(
+              totalWords1,
+              Math.floor(section1Progress * totalWords1 * 1.5)
             );
           } else {
-            // Плавное исчезновение
-            wordsToActivate = Math.max(
+            wordsToActivate1 = 0;
+          }
+          
+          // Вторая секция
+          if (progress > 0.45 && progress < 0.7) {
+            let section2Progress = (progress - 0.45) / 0.25;
+            wordsToActivate2 = Math.min(
+              totalWords2,
+              Math.floor(section2Progress * totalWords2 * 1.5)
+            );
+          } else if (progress >= 0.7 && progress < 0.85) {
+            wordsToActivate2 = totalWords2;
+          } else if (progress >= 0.85) {
+            let fadeOutProgress = 1 - ((progress - 0.85) / 0.15);
+            wordsToActivate2 = Math.max(
               0,
-              Math.floor((1 - sectionProgress) * totalWords * 4)
+              Math.floor(fadeOutProgress * totalWords2)
+            );
+          }
+        } else {
+          // СКРОЛЛ ВВЕРХ - ИНВЕРТИРОВАННАЯ АНИМАЦИЯ
+          if (effectiveProgress < 0.4) {
+            let section2Progress = effectiveProgress / 0.4;
+            wordsToActivate2 = Math.min(
+              totalWords2,
+              Math.floor(section2Progress * totalWords2 * 1.5)
+            );
+          } else {
+            wordsToActivate2 = 0;
+          }
+          
+          // Первая секция (появляется после второй при скролле вверх)
+          if (effectiveProgress > 0.45 && effectiveProgress < 0.7) {
+            let section1Progress = (effectiveProgress - 0.45) / 0.25;
+            wordsToActivate1 = Math.min(
+              totalWords1,
+              Math.floor(section1Progress * totalWords1 * 1.5)
+            );
+          } else if (effectiveProgress >= 0.7 && effectiveProgress < 0.85) {
+            wordsToActivate1 = totalWords1;
+          } else if (effectiveProgress >= 0.85) {
+            let fadeOutProgress = 1 - ((effectiveProgress - 0.85) / 0.15);
+            wordsToActivate1 = Math.max(
+              0,
+              Math.floor(fadeOutProgress * totalWords1)
             );
           }
         }
-
-        const newWordStates = { ...wordStates };
-
-        // Активируем слова в активной секции
-        let wordIndex = 0;
-        activeSectionData.lines.forEach((line, lineIdx) => {
+        
+        // Применяем состояния для первой секции
+        let wordIndex1 = 0;
+        section1Data.lines.forEach((line, lineIdx) => {
           line.forEach((_, wordIdx) => {
-            const key = getWordKey(newActiveSection, lineIdx, wordIdx);
-            newWordStates[key] = (wordIndex < wordsToActivate);
-            wordIndex++;
+            const key = getWordKey(0, lineIdx, wordIdx);
+            newWordStates[key] = (wordIndex1 < wordsToActivate1);
+            wordIndex1++;
           });
         });
-
-        // Деактивируем слова из неактивной секции
-        const inactiveSectionIdx = newActiveSection === 0 ? 1 : 0;
-        mobileSections[inactiveSectionIdx].lines.forEach((line, lineIdx) => {
+        
+        // Применяем состояния для второй секции
+        let wordIndex2 = 0;
+        section2Data.lines.forEach((line, lineIdx) => {
           line.forEach((_, wordIdx) => {
-            const key = getWordKey(inactiveSectionIdx, lineIdx, wordIdx);
-            newWordStates[key] = false;
+            const key = getWordKey(1, lineIdx, wordIdx);
+            newWordStates[key] = (wordIndex2 < wordsToActivate2);
+            wordIndex2++;
           });
         });
 
         setWordStates(newWordStates);
       } 
-      // ЛОГИКА ДЛЯ ДЕСКТОПНОЙ ВЕРСИИ
+      // ЛОГИКА ДЛЯ МОБИЛЬНОЙ ВЕРСИИ (только для экранов ≤ 480px)
       else {
-        let newActiveSection = 0;
-        let sectionProgress = 0;
-
-        // Увеличиваем время отображения второй секции
-        if (progress < 0.5) {
-          // Первая секция - 50% прогресса
-          newActiveSection = 0;
-          sectionProgress = progress / 0.5;
-        } else {
-          // Вторая секция - появляется на последних 50%
-          newActiveSection = 1;
-          // Увеличиваем диапазон для второй секции - теперь 0.35 (было 0.1)
-          sectionProgress = (progress - 0.5) / 0.35;
-        }
-
-        if (newActiveSection !== activeSection) {
-          setActiveSection(newActiveSection);
-        }
-
-        // Управление видимостью цифр
-        if (newActiveSection === 0) {
-          // Первая цифра
-          const firstWordKey = getWordKey(0, 0, 0);
-          const isFirstWordActive = wordStates[firstWordKey] || false;
-          setNumber1Visible(isFirstWordActive && sectionProgress > 0.1);
-          setNumber2Visible(false);
-        } else {
-          // Вторая цифра - показываем дольше
-          setNumber1Visible(false);
-          const secondWordKey = getWordKey(1, 0, 0);
-          const isSecondWordActive = wordStates[secondWordKey] || false;
-          // Увеличиваем порог для исчезновения второй цифры
-          setNumber2Visible(isSecondWordActive && sectionProgress < 0.9);
-        }
-
-        const activeSectionData = sections[newActiveSection];
-        const totalWords = activeSectionData.lines.flat().length;
-        
-        // Разная скорость для первой и второй секций
-        let speedMultiplier, wordsToActivate;
-        
-        if (newActiveSection === 0) {
-          // Первая секция - нормальная скорость
-          speedMultiplier = 2.0;
-          wordsToActivate = Math.min(
-            totalWords,
-            Math.floor(sectionProgress * totalWords * speedMultiplier)
-          );
-        } else {
-          // Вторая секция - плавное появление и плавное исчезновение
-          speedMultiplier = 3.0;
-          // Плавное появление
-          if (sectionProgress < 0.8) {
-            wordsToActivate = Math.min(
-              totalWords,
-              Math.floor(sectionProgress * totalWords * speedMultiplier)
-            );
+        // Для мобильной версии - аналогичная логика с учетом направления
+        if (directionRef.current === 'down') {
+          if (progress < 0.45) {
+            setSection1Visible(true);
+            setSection2Visible(false);
+            setActiveSection(0);
+          } else if (progress < 0.55) {
+            setSection1Visible(false);
+            setSection2Visible(true);
+            setActiveSection(1);
+          } else if (progress < 0.85) {
+            setSection1Visible(false);
+            setSection2Visible(true);
+            setActiveSection(1);
           } else {
-            // Плавное исчезновение
-            wordsToActivate = Math.max(
-              0,
-              Math.floor((1 - sectionProgress) * totalWords * 3)
-            );
+            setSection1Visible(false);
+            setSection2Visible(true);
+            setActiveSection(1);
+          }
+        } else {
+          // СКРОЛЛ ВВЕРХ - ИНВЕРТИРОВАННАЯ ЛОГИКА
+          if (effectiveProgress < 0.45) {
+            setSection1Visible(false);
+            setSection2Visible(true);
+            setActiveSection(1);
+          } else if (effectiveProgress < 0.55) {
+            setSection1Visible(true);
+            setSection2Visible(false);
+            setActiveSection(0);
+          } else if (effectiveProgress < 0.85) {
+            setSection1Visible(true);
+            setSection2Visible(false);
+            setActiveSection(0);
+          } else {
+            setSection1Visible(true);
+            setSection2Visible(false);
+            setActiveSection(0);
           }
         }
 
+        // Обновляем состояния слов
         const newWordStates = { ...wordStates };
-
-        let wordIndex = 0;
-        activeSectionData.lines.forEach((line, lineIdx) => {
+        
+        // Первая секция
+        const section1Data = mobileSections[0];
+        const totalWords1 = section1Data.lines.flat().length;
+        
+        // Вторая секция
+        const section2Data = mobileSections[1];
+        const totalWords2 = section2Data.lines.flat().length;
+        
+        let wordsToActivate1 = 0;
+        let wordsToActivate2 = 0;
+        
+        if (directionRef.current === 'down') {
+          // СКРОЛЛ ВНИЗ
+          if (progress < 0.4) {
+            let section1Progress = progress / 0.4;
+            wordsToActivate1 = Math.min(
+              totalWords1,
+              Math.floor(section1Progress * totalWords1 * 1.8)
+            );
+          } else {
+            wordsToActivate1 = 0;
+          }
+          
+          if (progress > 0.45 && progress < 0.7) {
+            let section2Progress = (progress - 0.45) / 0.25;
+            wordsToActivate2 = Math.min(
+              totalWords2,
+              Math.floor(section2Progress * totalWords2 * 1.8)
+            );
+          } else if (progress >= 0.7 && progress < 0.85) {
+            wordsToActivate2 = totalWords2;
+          } else if (progress >= 0.85) {
+            let fadeOutProgress = 1 - ((progress - 0.85) / 0.15);
+            wordsToActivate2 = Math.max(
+              0,
+              Math.floor(fadeOutProgress * totalWords2)
+            );
+          }
+        } else {
+          // СКРОЛЛ ВВЕРХ
+          if (effectiveProgress < 0.4) {
+            let section2Progress = effectiveProgress / 0.4;
+            wordsToActivate2 = Math.min(
+              totalWords2,
+              Math.floor(section2Progress * totalWords2 * 1.8)
+            );
+          } else {
+            wordsToActivate2 = 0;
+          }
+          
+          if (effectiveProgress > 0.45 && effectiveProgress < 0.7) {
+            let section1Progress = (effectiveProgress - 0.45) / 0.25;
+            wordsToActivate1 = Math.min(
+              totalWords1,
+              Math.floor(section1Progress * totalWords1 * 1.8)
+            );
+          } else if (effectiveProgress >= 0.7 && effectiveProgress < 0.85) {
+            wordsToActivate1 = totalWords1;
+          } else if (effectiveProgress >= 0.85) {
+            let fadeOutProgress = 1 - ((effectiveProgress - 0.85) / 0.15);
+            wordsToActivate1 = Math.max(
+              0,
+              Math.floor(fadeOutProgress * totalWords1)
+            );
+          }
+        }
+        
+        // Применяем состояния для первой секции
+        let wordIndex1 = 0;
+        section1Data.lines.forEach((line, lineIdx) => {
           line.forEach((_, wordIdx) => {
-            const key = getWordKey(newActiveSection, lineIdx, wordIdx);
-            newWordStates[key] = (wordIndex < wordsToActivate);
-            wordIndex++;
+            const key = getWordKey(0, lineIdx, wordIdx);
+            newWordStates[key] = (wordIndex1 < wordsToActivate1);
+            wordIndex1++;
           });
         });
-
-        const inactiveSectionIdx = newActiveSection === 0 ? 1 : 0;
-        sections[inactiveSectionIdx].lines.forEach((line, lineIdx) => {
+        
+        // Применяем состояния для второй секции
+        let wordIndex2 = 0;
+        section2Data.lines.forEach((line, lineIdx) => {
           line.forEach((_, wordIdx) => {
-            const key = getWordKey(inactiveSectionIdx, lineIdx, wordIdx);
-            newWordStates[key] = false;
+            const key = getWordKey(1, lineIdx, wordIdx);
+            newWordStates[key] = (wordIndex2 < wordsToActivate2);
+            wordIndex2++;
           });
         });
 
@@ -374,84 +436,45 @@ const ScrollTextAnimation = () => {
     };
   }, [isMobile, activeSection, wordStates]);
 
-  // Рендер десктопной секции
+  // Рендер десктопной секции (центрированная как в первом примере)
   const renderDesktopSection = (sectionIdx) => {
     const section = sections[sectionIdx];
     const isActive = sectionIdx === activeSection;
-
-    if (sectionIdx === 1) {
-      return (
-        <div
-          key={`section-${sectionIdx}`}
-          className={`text-section ${isActive ? 'active' : ''} ${isActive ? 'section-2-active' : 'section-2-inactive'}`}
-          data-section-index={sectionIdx}
-        >
-          <div className="section-content-wrapper">
-            <div className={`text-number number-2 ${number2Visible ? 'active' : ''} ${isActive ? 'number-2-active' : 'number-2-inactive'}`}>
-              02
-            </div>
-
-            {section.lines.map((line, lineIdx) => (
-              <div key={`line-${lineIdx}`} className="text-line">
-                {line.map((word, wordIdx) => {
-                  const key = getWordKey(sectionIdx, lineIdx, wordIdx);
-                  const isWordActive = wordStates[key] || false;
-
-                  return (
-                    <React.Fragment key={`word-${key}`}>
-                      <span
-                        className={`text-word ${isWordActive ? 'active' : ''} ${isActive ? 'section-2-word' : ''}`}
-                        style={{
-                          transitionDelay: `${(lineIdx * line.length + wordIdx) * 0.02}s`
-                        }}
-                      >
-                        {word}
-                      </span>
-
-                      {wordIdx < line.length - 1 && (
-                        <span className="word-space"> </span>
-                      )}
-                    </React.Fragment>
-                  );
-                })}
-              </div>
-            ))}
-          </div>
-        </div>
-      );
-    }
+    const isVisible = sectionIdx === 0 ? section1Visible : section2Visible;
 
     return (
       <div
-        key={`section-${sectionIdx}`}
-        className={`text-section ${isActive ? 'active' : ''}`}
+        key={`desktop-section-${sectionIdx}`}
+        className={`desktop-section ${isVisible ? 'visible' : ''} ${isActive ? 'active' : ''}`}
         data-section-index={sectionIdx}
       >
-        {section.lines.map((line, lineIdx) => (
-          <div key={`line-${lineIdx}`} className="text-line">
-            {line.map((word, wordIdx) => {
-              const key = getWordKey(sectionIdx, lineIdx, wordIdx);
-              const isWordActive = wordStates[key] || false;
+        <div className="desktop-section-content">
+          {section.lines.map((line, lineIdx) => (
+            <div key={`desktop-line-${lineIdx}`} className="desktop-line">
+              {line.map((word, wordIdx) => {
+                const key = getWordKey(sectionIdx, lineIdx, wordIdx);
+                const isWordActive = wordStates[key] || false;
 
-              return (
-                <React.Fragment key={`word-${key}`}>
-                  <span
-                    className={`text-word ${isWordActive ? 'active' : ''}`}
-                    style={{
-                      transitionDelay: `${(lineIdx * line.length + wordIdx) * 0.03}s`
-                    }}
-                  >
-                    {word}
-                  </span>
+                return (
+                  <React.Fragment key={`desktop-word-${key}`}>
+                    <span
+                      className={`desktop-word ${isWordActive ? 'active' : ''} ${sectionIdx === 1 ? 'section-2-word' : ''}`}
+                      style={{
+                        transitionDelay: `${(lineIdx * line.length + wordIdx) * 0.02}s`
+                      }}
+                    >
+                      {word}
+                    </span>
 
-                  {wordIdx < line.length - 1 && (
-                    <span className="word-space"> </span>
-                  )}
-                </React.Fragment>
-              );
-            })}
-          </div>
-        ))}
+                    {wordIdx < line.length - 1 && (
+                      <span className="desktop-word-space"> </span>
+                    )}
+                  </React.Fragment>
+                );
+              })}
+            </div>
+          ))}
+        </div>
       </div>
     );
   };
@@ -465,15 +488,9 @@ const ScrollTextAnimation = () => {
     return (
       <div
         key={`mobile-section-${sectionIdx}`}
-        className={`mobile-section ${isActive && isVisible ? 'active' : ''} ${isVisible ? 'visible' : ''} ${sectionIdx === 1 ? 'mobile-section-2' : 'mobile-section-1'}`}
+        className={`mobile-section ${isVisible ? 'visible' : ''} ${isActive ? 'active' : ''}`}
         data-section-index={sectionIdx}
-        data-scroll-direction={sectionIdx === 0 ? 'down' : 'up'}
       >
-        {/* Цифра над текстом для мобильной версии */}
-        <div className={`mobile-section-number ${sectionIdx === 0 ? 'number-1' : 'number-2'} ${(sectionIdx === 0 ? number1Visible : number2Visible) ? 'active' : ''} ${sectionIdx === 1 ? 'mobile-number-2' : ''}`}>
-          {section.number}
-        </div>
-
         <div className="mobile-section-content">
           {section.lines.map((line, lineIdx) => (
             <div key={`mobile-line-${lineIdx}`} className="mobile-line">
@@ -486,7 +503,7 @@ const ScrollTextAnimation = () => {
                     <span
                       className={`mobile-word ${isWordActive ? 'active' : ''} ${sectionIdx === 1 ? 'mobile-word-2' : ''}`}
                       style={{
-                        transitionDelay: `${(lineIdx * line.length + wordIdx) * 0.02}s`
+                        transitionDelay: `${(lineIdx * line.length + wordIdx) * 0.015}s`
                       }}
                     >
                       {word}
@@ -509,17 +526,14 @@ const ScrollTextAnimation = () => {
     <div className="scroll-text-animation-wrapper" ref={wrapperRef}>
       <div className="scroll-text-fixed-container">
         <div className="scroll-text-content">
-          {/* Десктопная версия */}
+          {/* Десктопная версия (включая планшеты до 480px) */}
           {!isMobile && (
-            <>
-              <div className={`text-number number-1 ${number1Visible ? 'active' : ''}`}>
-                01
-              </div>
+            <div className="desktop-sections-container">
               {sections.map((_, idx) => renderDesktopSection(idx))}
-            </>
+            </div>
           )}
 
-          {/* Мобильная версия */}
+          {/* Мобильная версия (только для экранов ≤ 480px) */}
           {isMobile && (
             <div className="mobile-sections-container">
               {mobileSections.map((_, idx) => renderMobileSection(idx))}

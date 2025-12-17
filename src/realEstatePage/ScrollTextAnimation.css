@@ -1,7 +1,7 @@
 .scroll-text-animation-wrapper {
   position: relative;
   width: 100%;
-  height: 200vh;
+  height: 300vh;
   z-index: 100;
 }
 
@@ -23,205 +23,135 @@
   height: 100%;
 }
 
-/* ДЕСКТОПНЫЕ СТИЛИ */
+/* ДЕСКТОПНЫЕ СТИЛИ - ЦЕНТРИРОВАННЫЕ */
+.desktop-sections-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
 
-/* КАЖДОЕ ПРЕДЛОЖЕНИЕ */
-.text-section {
+.desktop-section {
   position: absolute;
-  text-align: left;
+  width: 100%;
+  max-width: 1200px;
+  padding: 0 40px;
+  text-align: center;
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+  transform: translateY(15px);
+  transition: all 0.4s ease-out;
 }
 
-/* ПЕРВОЕ ПРЕДЛОЖЕНИЕ - СВЕРХУ СЛЕВА */
-.text-section[data-section-index="0"] {
-  top: 15%;
-  left: 10%;
-  transform: translateY(-10px);
-}
-
-/* ВТОРОЕ ПРЕДЛОЖЕНИЕ - СНИЗУ СПРАВА */
-.text-section[data-section-index="1"] {
-  bottom: -500px !important;
-  right: 10%;
-  text-align: right;
-  transform: translateY(10px);
-}
-
-/* Контейнер для второго текста с цифрой */
-.text-section[data-section-index="1"] .section-content-wrapper {
-  position: relative;
-  display: inline-block;
-  text-align: right;
-}
-
-/* Активное предложение */
-.text-section.active {
+.desktop-section.visible {
   opacity: 1;
   visibility: visible;
   transform: translateY(0);
 }
 
-/* Вторая секция - быстрое исчезновение */
-.text-section.section-2-active {
-  
-  transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+/* Быстрое скрытие секций */
+.desktop-section:not(.visible) {
+  transition: all 0.2s ease-out;
 }
 
-.text-section.section-2-inactive {
-  transition: opacity 0.2s ease-out, transform 0.2s ease-out;
-}
-
-/* ЦИФРЫ - ОБЩИЕ СТИЛИ */
-.text-number {
-  position: absolute;
-  font-family: 'Helvetica Neue', Arial, sans-serif;
-  font-size: 16px;
-  font-weight: 400;
-  color: #000000;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.5s ease-out;
-  white-space: nowrap;
-}
-
-/* Цифра 01 - слева сверху над первым предложением */
-.text-number.number-1 {
-  top: calc(15% - 40px);
-  left: 10%;
-}
-
-/* Цифра 02 - В НАЧАЛЕ ТЕКСТА (слева от текста) */
-.text-number.number-2 {
-  position: absolute;
-  top: -40px;
-  left: 0;
-  opacity: 0;
-  text-align: left;
-}
-
-/* Активная цифра */
-.text-number.active {
-  opacity: 1;
-}
-
-/* Вторая цифра - быстрое исчезновение */
-.text-number.number-2-active {
-  transition: opacity 0.3s ease-out;
-}
-
-.text-number.number-2-inactive {
-  transition: opacity 0.15s ease-out;
-}
-
-/* Строка внутри предложения */
-.text-line {
-  display: block;
+.desktop-section-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
   width: 100%;
-  line-height: 1.1;
-  margin-bottom: 5px;
 }
 
-/* Отдельное слово */
-.text-word {
+/* Строка - теперь без flex-wrap и с центрированием */
+.desktop-line {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  line-height: 1.1;
+  white-space: nowrap;
+  width: 100%;
+  overflow: visible;
+}
+
+.desktop-word {
   display: inline-block;
   font-family: 'Helvetica Neue', Arial, sans-serif;
   font-weight: 500;
-  font-size: 64px;
+  font-size: 72px;
   letter-spacing: -1px;
   text-transform: uppercase;
   color: #000000;
   white-space: nowrap;
+  flex-shrink: 0;
 
   opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-              transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transform: translateY(15px);
+  transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Слова второй секции - быстрое исчезновение */
-.text-word.section-2-word {
-  transition: opacity 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-              transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+/* Быстрое исчезновение слов */
+.desktop-word.section-2-word:not(.active) {
+  transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Активное слово */
-.text-word.active {
+.desktop-word.active {
   opacity: 1;
   transform: translateY(0);
 }
 
-/* Пробел между словами */
-.word-space {
+.desktop-word-space {
   display: inline-block;
-  width: 15px;
+  width: 12px;
+  flex-shrink: 0;
   height: 1px;
 }
 
 /* МОБИЛЬНЫЕ СТИЛИ */
-.mobile-container {
-  position: relative;
+.mobile-sections-container {
   width: 100%;
-  height: 100vh;
+  height: 100%;
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
 }
 
-.mobile-block {
+.mobile-section {
   position: absolute;
-  top: 0;
-  left: 0;
   width: 100%;
-  height: 100%;
   max-width: 360px;
   padding: 0 20px;
-  margin: 0 auto;
   text-align: center;
   opacity: 0;
   visibility: hidden;
-  transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
-  pointer-events: none;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  transform: translateY(10px);
+  transition: all 0.3s ease-out;
 }
 
-.mobile-block.active {
+.mobile-section.visible {
   opacity: 1;
   visibility: visible;
-  pointer-events: auto;
+  transform: translateY(0);
 }
 
-.mobile-block.inactive {
-  opacity: 0;
-  visibility: hidden;
+.mobile-section:not(.visible) {
+  transition: all 0.15s ease-out;
 }
 
-/* Цифра над текстом */
-.mobile-number {
-  font-family: 'Helvetica Neue', Arial, sans-serif;
-  font-size: 18px;
-  font-weight: 400;
-  color: #000000;
-  margin-bottom: 25px;
-  opacity: 0.8;
-  letter-spacing: 1.2px;
-}
-
-/* Контейнер для текста */
-.mobile-text-content {
+.mobile-section-content {
   display: flex;
   flex-direction: column;
   gap: 12px;
   align-items: center;
 }
 
-/* Строка текста */
 .mobile-line {
   display: flex;
   flex-wrap: wrap;
@@ -230,11 +160,10 @@
   line-height: 1.2;
 }
 
-/* Отдельное слово */
 .mobile-word {
   display: inline-block;
   font-family: 'Helvetica Neue', Arial, sans-serif;
-  font-weight: 400;
+  font-weight: 500;
   font-size: 40px;
   letter-spacing: -0.8px;
   text-transform: uppercase;
@@ -242,9 +171,9 @@
   white-space: nowrap;
 
   opacity: 0;
-  transform: translateY(15px);
-  transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-              transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateY(10px);
+  transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .mobile-word.active {
@@ -252,13 +181,12 @@
   transform: translateY(0);
 }
 
-/* Пробел */
 .mobile-word-space {
   display: inline-block;
   width: 6px;
 }
 
-/* АДАПТАЦИЯ ДЛЯ 1040px И МЕНЬШЕ */
+/* АДАПТАЦИЯ ДЛЯ 1040px И МЕНЬШЕ - АДАПТИВНОСТЬ ИЗ ВТОРОГО ПРИМЕРА */
 @media (max-width: 1040px) {
   .scroll-text-animation-wrapper {
     height: 200vh;
@@ -268,83 +196,40 @@
     height: 150vh;
   }
 
-  .text-section[data-section-index="0"] {
-    top: 15%;
-    left: 5%;
-    transform: translateY(0);
+  .desktop-word {
+    font-size: 64px;
   }
-
-  .text-section[data-section-index="1"] {
-    position: relative;
-    top: auto;
-    bottom: auto;
-    left: 5%;
-    right: auto;
-    width: 100%;
-    text-align: left;
-    margin-top: 80vh;
-    transform: none;
-  }
-
-  .text-section[data-section-index="1"] .section-content-wrapper {
-    display: block;
-    width: 100%;
-    text-align: left;
-  }
-
-  .text-number.number-1 {
-    top: calc(15% - 40px);
-    left: 5%;
-  }
-
-  .text-number.number-2 {
-    position: absolute;
-    top: -40px;
-    left: 0;
-    right: auto;
-    transform: none !important;
-  }
-
-  .text-word {
-    font-size: 56px;
+  
+  .desktop-section {
+    max-width: 1000px;
   }
 }
 
-/* Адаптивность для ПЛАНШЕТОВ (768px) */
+/* Адаптивность для ПЛАНШЕТОВ (768px) - АДАПТИВНОСТЬ ИЗ ВТОРОГО ПРИМЕРА */
 @media (max-width: 768px) {
-  .text-section[data-section-index="0"] {
-    top: 15%;
-    left: 5%;
-  }
-
-  .text-section[data-section-index="1"] {
-    left: 5%;
-    margin-top: 90vh;
-  }
-
-  .text-number.number-1 {
-    top: calc(15% - 40px);
-    left: 5%;
-  }
-
-  .text-number.number-2 {
-    top: -40px;
-    left: 0;
-  }
-
-  .text-word {
-    font-size: 48px;
-  }
-
   .scroll-text-animation-wrapper {
     height: 150vh;
+  }
+  
+  /* На планшетах включаем перенос как во втором примере */
+  .desktop-line {
+    flex-wrap: wrap;
+  }
+  
+  .desktop-word {
+    font-size: 56px;
+  }
+  
+  .desktop-section {
+    max-width: 800px;
+    padding: 0 30px;
   }
 }
 
 /* МОБИЛЬНАЯ ВЕРСИЯ (480px и меньше) */
 @media (max-width: 480px) {
   .scroll-text-animation-wrapper {
-    height: 150vh;
+    height: 130vh;
   }
 
   .scroll-text-fixed-container {
@@ -354,102 +239,10 @@
     height: 100vh;
   }
 
-  .mobile-sections-container {
-    width: 100%;
-    height: 100%;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .mobile-section {
-    position: absolute;
-    width: 100%;
-    max-width: 360px;
-    padding: 0 20px;
-    text-align: center;
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(20px);
-    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .mobile-section.visible {
-    opacity: 0.3;
-    visibility: visible;
-  }
-
-  .mobile-section.active {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  .mobile-section-number {
-    font-family: 'Helvetica Neue', Arial, sans-serif;
-    font-size: 18px;
-    font-weight: 400;
-    color: #000000;
-    margin-bottom: 25px;
-    opacity: 0;
-    transition: opacity 0.4s ease-out;
-  }
-
-  .mobile-section-number.active {
-    opacity: 0.8;
-  }
-
-  .mobile-section-content {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    align-items: center;
-  }
-
-  .mobile-line {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 6px;
-    line-height: 1.2;
-  }
-
-  .mobile-word {
-    display: inline-block;
-    font-family: 'Helvetica Neue', Arial, sans-serif;
-    font-weight: 400;
-    font-size: 40px;
-    letter-spacing: -0.8px;
-    text-transform: uppercase;
-    color: #000000;
-    white-space: nowrap;
-
-    opacity: 0;
-    transform: translateY(15px);
-    transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-                transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .mobile-word.active {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  .mobile-word-space {
-    display: inline-block;
-    width: 6px;
-  }
-
   /* Адаптация для маленьких экранов */
   @media (max-width: 390px) {
     .mobile-word {
       font-size: 36px;
-    }
-
-    .mobile-section-number {
-      font-size: 17px;
-      margin-bottom: 22px;
     }
 
     .mobile-section {
@@ -466,11 +259,6 @@
       font-size: 34px;
     }
 
-    .mobile-section-number {
-      font-size: 16px;
-      margin-bottom: 20px;
-    }
-
     .mobile-section {
       max-width: 320px;
     }
@@ -479,11 +267,6 @@
   @media (max-width: 320px) {
     .mobile-word {
       font-size: 32px;
-    }
-
-    .mobile-section-number {
-      font-size: 15px;
-      margin-bottom: 18px;
     }
 
     .mobile-section {
