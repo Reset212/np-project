@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import "./VideoBackground.css";
 import videoSrc from "../video/Brunello.mp4";
@@ -12,6 +12,7 @@ const VideoBackground = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+  const videoContainerRef = useRef(null);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -89,15 +90,31 @@ const VideoBackground = () => {
     };
   }, [isMenuOpen]);
 
+  // HTML-строка для видео с гарантированными атрибутами для iOS
+  const videoHTML = `
+    <video 
+      autoplay 
+      muted 
+      loop 
+      playsinline 
+      class="video-background"
+      preload="auto"
+    >
+      <source src="${videoSrc}" type="video/mp4" />
+      Your browser does not support the video tag.
+    </video>
+  `;
+
   return (
     <>
       <div className="video-background-container">
         <div className="video-background-overlay"></div>
         
-        <video autoPlay muted loop className="video-background">
-          <source src={videoSrc} type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
+        {/* Вставка видео через dangerouslySetInnerHTML */}
+        <div 
+          ref={videoContainerRef}
+          dangerouslySetInnerHTML={{ __html: videoHTML }}
+        />
 
         {/* НАВИГАЦИЯ */}
         <nav className="navigation">
@@ -210,47 +227,47 @@ const VideoBackground = () => {
         {/* КОНТЕНТ СНИЗУ */}
         <div className="content-wrapper">
           {/* НАГРАДЫ */}
-        <div className="awards-row">
-  <div className="award-item">
-    <div className="award-icon-container icon-1">
-      <img src={taglineImg} alt="Tagline" className="award-icon" />
-    </div>
-    <p className="award-text">
-      <span className="award-count">1X GOLD</span>
-      <span className="award-description">Best video</span>
-    </p>
-  </div>
-  
-  <div className="award-item">
-    <div className="award-icon-container icon-2">
-      <img src={awardsImg} alt="Awards" className="award-icon" />
-    </div>
-    <p className="award-text">
-      <span className="award-count">3X SILVER</span>
-      <span className="award-description">Efficiency in business</span>
-    </p>
-  </div>
-  
-  <div className="award-item">
-    <div className="award-icon-container icon-3">
-      <img src={silverImg} alt="Mercury" className="award-icon" />
-    </div>
-    <p className="award-text">
-      <span className="award-count">2X BRONZE</span>
-      <span className="award-description">Situational marketing</span>
-    </p>
-  </div>
-  
-  <div className="award-item">
-    <div className="award-icon-container icon-4">
-      <img src={designfestivalImg} alt="Festival" className="award-icon" />
-    </div>
-    <p className="award-text">
-      <span className="award-count">3X SHORTLIST</span>
-      <span className="award-description">Visual solutions in video advertising</span>
-    </p>
-  </div>
-</div>
+          <div className="awards-row">
+            <div className="award-item">
+              <div className="award-icon-container icon-1">
+                <img src={taglineImg} alt="Tagline" className="award-icon" />
+              </div>
+              <p className="award-text">
+                <span className="award-count">1X GOLD</span>
+                <span className="award-description">Best video</span>
+              </p>
+            </div>
+            
+            <div className="award-item">
+              <div className="award-icon-container icon-2">
+                <img src={awardsImg} alt="Awards" className="award-icon" />
+              </div>
+              <p className="award-text">
+                <span className="award-count">3X SILVER</span>
+                <span className="award-description">Efficiency in business</span>
+              </p>
+            </div>
+            
+            <div className="award-item">
+              <div className="award-icon-container icon-3">
+                <img src={silverImg} alt="Mercury" className="award-icon" />
+              </div>
+              <p className="award-text">
+                <span className="award-count">2X BRONZE</span>
+                <span className="award-description">Situational marketing</span>
+              </p>
+            </div>
+            
+            <div className="award-item">
+              <div className="award-icon-container icon-4">
+                <img src={designfestivalImg} alt="Festival" className="award-icon" />
+              </div>
+              <p className="award-text">
+                <span className="award-count">3X SHORTLIST</span>
+                <span className="award-description">Visual solutions in video advertising</span>
+              </p>
+            </div>
+          </div>
 
           {/* КНОПКА VIEW PROJECT */}
           <button 
