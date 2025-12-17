@@ -38,7 +38,6 @@
   .btn-text-left,
   .button-text,
   .button-text-span,
-  .view-project-button,
   .submit,
   .submit-button,
   button {
@@ -55,6 +54,10 @@
   .mobile-nav-item{
     padding-top: 18px !important;
   }
+  .view-project-button{
+    padding-top: 18px !important;
+  }
+
 }
 
 /* Фикс для старых Safari */
