@@ -4,6 +4,8 @@
   height: 100vh;
   overflow: hidden;
   z-index: 2;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .home-section-background {
@@ -29,6 +31,7 @@
   color: white;
   text-align: center;
   padding: 0 20px;
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* Анимация для логотипа */
@@ -73,8 +76,6 @@
   align-items: center;
   justify-content: center;
   width: 100%;
-
-
 }
 
 /* Контейнер для двух строк */
@@ -122,7 +123,15 @@
   transition-delay: 0s;
 }
 
-/* Кнопка read more */
+/* Контейнер для кнопки */
+.home-button-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
+/* Кнопка read more - теперь это div */
 .read-more-button {
   width: 174px;
   height: 35px;
@@ -138,13 +147,34 @@
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none;
-  display: inline-flex;
+  display: flex;
   align-items: center;
   justify-content: center;
+  
+  /* Фикс для iOS */
+  -webkit-appearance: none;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
   
   /* Начальное состояние */
   opacity: 0;
   transform: scale(0.95) translateY(15px);
+}
+
+/* Контейнер для текста кнопки - фиксим выравнивание */
+.read-more-button .button-text {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  
+  /* Фикс для iOS */
+  line-height: 1;
+  transform: translateY(0); /* Убираем лишние трансформации */
 }
 
 .read-more-button.animate-in {
@@ -159,11 +189,18 @@
   transition: opacity 0.3s ease 0.1s, transform 0.4s ease 0.1s;
 }
 
-.read-more-button:hover {
+.read-more-button:hover,
+.read-more-button:active {
   background: rgba(118, 118, 118, 0.25);
   border: 1.5px solid rgba(200, 200, 200, 0.4);
   transform: translateY(-2px) scale(1.05);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+/* Фокус состояния для accessibility */
+.read-more-button:focus {
+  outline: 2px solid rgba(255, 255, 255, 0.5);
+  outline-offset: 2px;
 }
 
 /* Адаптивность */
@@ -181,4 +218,35 @@
   .home-title {
     font-size: 36px;
   }
+}
+
+/* Специфичные фиксы для iOS */
+@supports (-webkit-touch-callout: none) {
+  .home-section-content {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  
+  .read-more-button {
+    /* Исправляем вертикальное выравнивание текста на iOS */
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
+    -webkit-justify-content: center;
+    justify-content: center;
+  }
+  
+  .read-more-button .button-text {
+    /* Фиксим отображение текста на iOS */
+    -webkit-font-smoothing: antialiased;
+    -webkit-box-align: center;
+    -webkit-box-pack: center;
+    padding-top: 1px; /* Микро-фикс для выравнивания */
+  }
+}
+
+/* Фикс для старых Safari */
+_::-webkit-full-page-media, _:future, :root .read-more-button {
+  line-height: 35px !important;
 }

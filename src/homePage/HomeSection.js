@@ -15,8 +15,8 @@ const HomeSection = () => {
         });
       },
       {
-        threshold: 0.2, // 20% видимости
-        rootMargin: "50px" // Небольшой отступ для плавности
+        threshold: 0.2,
+        rootMargin: "50px"
       }
     );
 
@@ -55,13 +55,22 @@ const HomeSection = () => {
             </div>
           </h1>
         
-          {/* Кнопка для навигации */}
-          <Link 
-            to="/real-estate" 
-            className={`read-more-button ${isVisible ? 'animate-in' : 'animate-out'}`}
-          >
-            READ MORE
-          </Link>
+          {/* Заменяем Link на div для кнопки */}
+          <div className="home-button-container">
+            <div 
+              className={`read-more-button ${isVisible ? 'animate-in' : 'animate-out'}`}
+              onClick={() => window.location.href = "/real-estate"}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  window.location.href = "/real-estate";
+                }
+              }}
+            >
+              <span className="button-text">READ MORE</span>
+            </div>
+          </div>
         </div>
       </div>
     </section>
