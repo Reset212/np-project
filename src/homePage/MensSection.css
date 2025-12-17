@@ -523,6 +523,7 @@
   
   .action-button-left,
   .mens-button {
+
     display: -webkit-flex !important;
     display: flex !important;
     -webkit-align-items: center !important;
@@ -530,10 +531,12 @@
     -webkit-justify-content: center !important;
     justify-content: center !important;
     -webkit-font-smoothing: antialiased;
+
   }
   
   .btn-text-left,
   .button-text {
+    
     display: -webkit-flex !important;
     display: flex !important;
     -webkit-align-items: center !important;
@@ -542,7 +545,7 @@
     justify-content: center !important;
     -webkit-box-align: center !important;
     -webkit-box-pack: center !important;
-    padding-top: 1px !important;
+    padding-top: 21px !important;
   }
 }
 
