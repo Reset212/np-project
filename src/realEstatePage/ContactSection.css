@@ -1,6 +1,7 @@
 :root {
   --base-width: 1440px;
   --scale-factor: 1;
+  
 }
 
 @media (min-width: 1441px) {
@@ -20,6 +21,7 @@
 
 /* Удалены внутренние отступы сверху для правильного разделения блоков */
 .contact-section {
+  gap: 50px !important;
   /* border-top: 1px solid #eee; */
   position: relative;
   min-height: 50vh;
@@ -106,7 +108,7 @@
 .email-label {
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-style: normal;
-  font-weight: 500;
+  font-weight: 400;
   font-size: 16px;
   line-height: 16px;
   text-transform: uppercase;
@@ -126,7 +128,7 @@
 .email-value {
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-style: normal;
-  font-weight: 400;
+  font-weight: 300;
   font-size: 18px;
   color: #000000;
   cursor: pointer;
@@ -180,6 +182,7 @@
 }
 
 .chat-text {
+  padding-bottom: 124px ;
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-style: normal;
   font-weight: 700;
@@ -194,11 +197,10 @@
   z-index: 1;
 }
 
-@media (min-width: 1441px) {
+@media (max-width: 1441px) {
   .chat-text {
-    font-size: calc(140px * var(--scale-factor));
-    line-height: calc(132px * var(--scale-factor));
-    letter-spacing: calc(-0.05em * var(--scale-factor));
+     font-size: 140px;
+    padding-bottom: 81px;
   }
 }
 
@@ -235,7 +237,7 @@
 .contact-text {
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-style: normal;
-  font-weight: 400;
+  font-weight: 300;
   font-size: 32px;
   line-height: 40px;
   letter-spacing: -0.03em;
@@ -266,9 +268,7 @@
 }
 
 @media (min-width: 1441px) {
-  .contact-form {
-    gap: calc(56px * var(--scale-factor));
-  }
+  
 }
 
 .form-group {
@@ -310,7 +310,7 @@
 .form-label {
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-style: normal;
-  font-weight: 400;
+  font-weight: 300;
   font-size: 16px;
   color: #000000;
   letter-spacing: 0.5px;
@@ -330,7 +330,7 @@
 .form-textarea {
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-style: normal;
-  font-weight: 400;
+  font-weight: 300;
   font-size: 16px;
   color: #000000;
   padding: 10px 0;
@@ -345,12 +345,7 @@
 }
 
 @media (min-width: 1441px) {
-  .form-input,
-  .form-textarea {
-    font-size: calc(16px * var(--scale-factor));
-    padding: calc(10px * var(--scale-factor)) 0;
-    border-bottom: calc(1px * var(--scale-factor)) solid #000000;
-  }
+ 
 }
 
 .form-input::placeholder,
@@ -373,14 +368,10 @@
   /* overflow-y: auto; */
 }
 
-@media (min-width: 1441px) {
-  .form-textarea {
-    min-height: calc(80px * var(--scale-factor));
-    max-height: calc(200px * var(--scale-factor));
-  }
-}
+
 
 .submit-button {
+ 
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-style: normal;
   font-weight: 300;
@@ -406,14 +397,7 @@
 }
 
 @media (min-width: 1441px) {
-  .submit-button {
-    font-size: calc(16px * var(--scale-factor));
-    letter-spacing: calc(0.5px * var(--scale-factor));
-    border-radius: calc(32px * var(--scale-factor));
-    width: calc(122px * var(--scale-factor));
-    height: calc(60px * var(--scale-factor));
-    margin-top: calc(20px * var(--scale-factor));
-  }
+ 
 }
 
 .submit-button:hover {
@@ -475,6 +459,7 @@
 }
 
 .mobile-email-item {
+  padding-bottom: 50px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -544,16 +529,19 @@
   }
 
   .right-column {
-    padding-left: 50px;
+    padding-left: 35px;
     min-height: 550px;
   }
 
   .chat-text {
-    font-size: 120px;
+    padding-bottom: 81px ;
+    font-size: 140px;
     line-height: 110px;
   }
 
   .contact-text {
+    padding-bottom: 40px;
+    font-weight: 300;
     font-size: 28px;
     line-height: 36px;
   }
@@ -567,7 +555,7 @@
   }
 
   .contact-form {
-    gap: 50px;
+    gap: 35px;
   }
 }
 
@@ -601,6 +589,7 @@
   }
 
   .chat-text {
+       padding-bottom: 81px;
     font-size: 100px;
     line-height: 90px;
     text-align: center;
@@ -632,7 +621,7 @@
   }
 
   .contact-form {
-    gap: 40px;
+    gap: 35px;
   }
 
   .submit-button {
@@ -707,7 +696,7 @@
   .submit-button {
     width: 120px;
     height: 55px;
-    font-size: 15px;
+    font-size: 14px;
     margin-top: 25px;
     align-self: center;
   }
@@ -834,7 +823,7 @@
   .submit-button {
     width: 110px !important;
     height: 45px;
-    font-size: 13px;
+    font-size: 14px;
   }
 
   .mobile-email-label {
