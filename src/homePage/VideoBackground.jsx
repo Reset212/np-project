@@ -25,7 +25,6 @@ const VideoBackground = () => {
   const scrollToMens = () => {
     closeMenu();
     
-    // Если мы на домашней странице, скроллим к секции
     if (location.pathname === "/home" || location.pathname === "/") {
       const mensSection = document.getElementById('mens-section');
       if (mensSection) {
@@ -35,7 +34,6 @@ const VideoBackground = () => {
         });
       }
     } else {
-      // Если мы на другой странице, переходим на главную с хэшем
       navigate('/home#mens-section');
     }
   };
@@ -78,7 +76,6 @@ const VideoBackground = () => {
       }
     };
 
-    // Предотвращение скролла при открытом меню
     if (isMenuOpen) {
       document.body.style.overflow = 'hidden';
       document.addEventListener('keydown', handleEscape);
@@ -93,171 +90,178 @@ const VideoBackground = () => {
   }, [isMenuOpen]);
 
   return (
-    <div className="video-background-container">
-      <div className="video-background-overlay"></div>
-      
-      <video autoPlay muted loop className="video-background">
-        <source src={videoSrc} type="video/mp4" />
-        Your browser does not support the video tag.
-      </video>
+    <>
+      <div className="video-background-container">
+        <div className="video-background-overlay"></div>
+        
+        <video autoPlay muted loop className="video-background">
+          <source src={videoSrc} type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
 
-      {/* НАВИГАЦИЯ */}
-      <nav className="navigation">
-        {/* Десктопная навигация - ЛЕВАЯ ЧАСТЬ */}
-        <div className="nav-left">
-          {/* Кнопка DIRECTIONS с ссылкой на real-estate страницу */}
-          <Link to="/real-estate" className="nav-item directions">
-            DIRECTIONS
-          </Link>
-          {/* Кнопка PROJECTS с ссылкой на projects страницу */}
-          <Link to="/projects" className="nav-item projects">
-            PROJECTS
-          </Link>
-        </div>
-        
-        {/* Логотип с ссылкой на домашнюю страницу */}
-        <div className="logo">
-          <Link to="/home">
-            <img src={logoImg} alt="Logo" className="logo-image" />
-          </Link>
-        </div>
-        
-        {/* Десктопная навигация - ПРАВАЯ ЧАСТЬ */}
-        <div className="nav-right">
-          {/* ОБНОВЛЕНО: About теперь Link как и другие кнопки */}
-          <Link 
-            to="/home#mens-section" 
-            className="nav-item about"
-            onClick={(e) => {
-              // Если мы уже на домашней странице, предотвращаем переход
-              // и скроллим локально
-              if (location.pathname === "/home" || location.pathname === "/") {
-                e.preventDefault();
-                scrollToMens();
-              }
+        {/* НАВИГАЦИЯ */}
+        <nav className="navigation">
+          {/* Десктопная навигация - ЛЕВАЯ ЧАСТЬ */}
+          <div className="nav-left">
+            <Link to="/real-estate" className="nav-item directions">
+              DIRECTIONS
+            </Link>
+            <Link to="/projects" className="nav-item projects">
+              PROJECTS
+            </Link>
+          </div>
+          
+          {/* Логотип */}
+          <div className="logo">
+            <Link to="/home">
+              <img src={logoImg} alt="Logo" className="logo-image" />
+            </Link>
+          </div>
+          
+          {/* Десктопная навигация - ПРАВАЯ ЧАСТЬ */}
+          <div className="nav-right">
+            <Link 
+              to="/home#mens-section" 
+              className="nav-item about"
+              onClick={(e) => {
+                if (location.pathname === "/home" || location.pathname === "/") {
+                  e.preventDefault();
+                  scrollToMens();
+                }
+              }}
+            >
+              ABOUT
+            </Link>
+            <button 
+              className="nav-item chat-button"
+              onClick={scrollToContact}
+            >
+              CHAT WITH US
+            </button>
+          </div>
+          
+          {/* Мобильная навигация */}
+          <button 
+            className="burger-menu" 
+            onClick={toggleMenu} 
+            aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+            aria-expanded={isMenuOpen}
+          >
+            {isMenuOpen ? (
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M1 1L19 19M19 1L1 19" stroke="white" strokeWidth="2" strokeLinecap="round"/>
+              </svg>
+            ) : (
+              <svg width="18" height="12" viewBox="0 0 18 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M0 12L0 10H18V12H0ZM0 7L0 5H18V7H0ZM0 2L0 0H18V2H0Z" fill="white"/>
+              </svg>
+            )}
+          </button>
+          
+          <button 
+            className="mobile-chat-button" 
+            aria-label="Chat with us"
+            onClick={() => {
+              closeMenu();
+              scrollToContact();
             }}
           >
-            ABOUT
-          </Link>
-          {/* ОБНОВЛЕНО: CHAT WITH US теперь скроллит к ContactSection */}
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M16.2 0H1.8C0.81 0 0 0.81 0 1.8V18L3.6 14.4H16.2C17.19 14.4 18 13.59 18 12.6V1.8C18 0.81 17.19 0 16.2 0ZM16.2 12.6H2.88L1.8 13.68V1.8H16.2V12.6Z" fill="white"/>
+            </svg>
+          </button>
+          
+          {/* Мобильное выпадающее меню */}
+          <div className={`mobile-dropdown ${isMenuOpen ? 'active' : ''}`}>
+            {isMenuOpen && (
+              <>
+                <Link 
+                  to="/real-estate" 
+                  className="mobile-nav-item"
+                  onClick={closeMenu}
+                >
+                  DIRECTIONS
+                </Link>
+                <Link 
+                  to="/projects" 
+                  className="mobile-nav-item"
+                  onClick={closeMenu}
+                >
+                  PROJECTS
+                </Link>
+                <Link 
+                  to="/home#mens-section" 
+                  className="mobile-nav-item"
+                  onClick={(e) => {
+                    closeMenu();
+                    if (location.pathname === "/home" || location.pathname === "/") {
+                      e.preventDefault();
+                      scrollToMens();
+                    }
+                  }}
+                >
+                  ABOUT
+                </Link>
+              </>
+            )}
+          </div>
+        </nav>
+
+        {/* КОНТЕНТ СНИЗУ */}
+        <div className="content-wrapper">
+          {/* НАГРАДЫ */}
+        <div className="awards-row">
+  <div className="award-item">
+    <div className="award-icon-container icon-1">
+      <img src={taglineImg} alt="Tagline" className="award-icon" />
+    </div>
+    <p className="award-text">
+      <span className="award-count">1X GOLD</span>
+      <span className="award-description">Best video</span>
+    </p>
+  </div>
+  
+  <div className="award-item">
+    <div className="award-icon-container icon-2">
+      <img src={awardsImg} alt="Awards" className="award-icon" />
+    </div>
+    <p className="award-text">
+      <span className="award-count">3X SILVER</span>
+      <span className="award-description">Efficiency in business</span>
+    </p>
+  </div>
+  
+  <div className="award-item">
+    <div className="award-icon-container icon-3">
+      <img src={silverImg} alt="Mercury" className="award-icon" />
+    </div>
+    <p className="award-text">
+      <span className="award-count">2X BRONZE</span>
+      <span className="award-description">Situational marketing</span>
+    </p>
+  </div>
+  
+  <div className="award-item">
+    <div className="award-icon-container icon-4">
+      <img src={designfestivalImg} alt="Festival" className="award-icon" />
+    </div>
+    <p className="award-text">
+      <span className="award-count">3X SHORTLIST</span>
+      <span className="award-description">Visual solutions in video advertising</span>
+    </p>
+  </div>
+</div>
+
+          {/* КНОПКА VIEW PROJECT */}
           <button 
-            className="nav-item chat-button"
-            onClick={scrollToContact}
-            
+            className="view-project-button"
+            onClick={() => alert("Viewing project...")}
           >
-            CHAT WITH US
+            VIEW PROJECT
           </button>
         </div>
-        
-        {/* Мобильная навигация */}
-        <button 
-          className="burger-menu" 
-          onClick={toggleMenu} 
-          aria-label={isMenuOpen ? "Close menu" : "Open menu"}
-          aria-expanded={isMenuOpen}
-        >
-          {isMenuOpen ? (
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M1 1L19 19M19 1L1 19" stroke="white" strokeWidth="2" strokeLinecap="round"/>
-            </svg>
-          ) : (
-            <svg width="18" height="12" viewBox="0 0 18 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M0 12L0 10H18V12H0ZM0 7L0 5H18V7H0ZM0 2L0 0H18V2H0Z" fill="white"/>
-            </svg>
-          )}
-        </button>
-        
-        <button 
-          className="mobile-chat-button" 
-          aria-label="Chat with us"
-          onClick={() => {
-            closeMenu();
-            scrollToContact();
-          }}
-        >
-          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M16.2 0H1.8C0.81 0 0 0.81 0 1.8V18L3.6 14.4H16.2C17.19 14.4 18 13.59 18 12.6V1.8C18 0.81 17.19 0 16.2 0ZM16.2 12.6H2.88L1.8 13.68V1.8H16.2V12.6Z" fill="white"/>
-          </svg>
-        </button>
-        
-        {/* Мобильное выпадающее меню с эффектом стекла */}
-        <div className={`mobile-dropdown ${isMenuOpen ? 'active' : ''}`}>
-          {isMenuOpen && (
-            <>
-              {/* Мобильная версия кнопки DIRECTIONS */}
-              <Link 
-                to="/real-estate" 
-                className="mobile-nav-item"
-                onClick={closeMenu}
-              >
-                DIRECTIONS
-              </Link>
-              {/* Мобильная версия кнопки PROJECTS */}
-              <Link 
-                to="/projects" 
-                className="mobile-nav-item"
-                onClick={closeMenu}
-              >
-                PROJECTS
-              </Link>
-              {/* ОБНОВЛЕНО: Мобильная версия ABOUT */}
-              <Link 
-                to="/home#mens-section" 
-                className="mobile-nav-item"
-                onClick={(e) => {
-                  closeMenu();
-                  if (location.pathname === "/home" || location.pathname === "/") {
-                    e.preventDefault();
-                    scrollToMens();
-                  }
-                }}
-              >
-                ABOUT
-              </Link>
-            </>
-          )}
-        </div>
-      </nav>
-
-      {/* КОНТЕНТ СНИЗУ */}
-      <div className="content-wrapper">
-        {/* НАГРАДЫ */}
-        <div className="awards-row">
-          <div className="award-item">
-            <div className="award-icon-container icon-1">
-              <img src={taglineImg} alt="Tagline" className="award-icon" />
-            </div>
-            <p className="award-text">1X GOLD<br />Best video</p>
-          </div>
-          <div className="award-item">
-            <div className="award-icon-container icon-2">
-              <img src={awardsImg} alt="Awards" className="award-icon" />
-            </div>
-            <p className="award-text">4X SILVER<br />Efficiency in business</p>
-          </div>
-          <div className="award-item">
-            <div className="award-icon-container icon-3">
-              <img src={silverImg} alt="Mercury" className="award-icon" />
-            </div>
-            <p className="award-text">2X BRONZE<br />Situational marketing</p>
-          </div>
-          <div className="award-item">
-            <div className="award-icon-container icon-4">
-              <img src={designfestivalImg} alt="Festival" className="award-icon" />
-            </div>
-            <p className="award-text">3X SHORTLIST<br />Visual solutions in video advertising</p>
-          </div>
-        </div>
-
-        {/* КНОПКА VIEW PROJECT */}
-        <button 
-          className="view-project-button"
-          onClick={() => alert("Viewing project...")}
-        >
-          VIEW PROJECT
-        </button>
       </div>
-    </div>
+    </>
   );
 };
 
