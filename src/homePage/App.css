@@ -76,6 +76,23 @@ _::-webkit-full-page-media, _:future, :root .mens-button,
 _::-webkit-full-page-media, _:future, :root .read-more-button {
   line-height: 40px !important;
 }
+  .btn-text-left,
+  .button-text,
+  .button-text-span,
+  .view-project-button,
+  .submit,
+  .submit-button,
+  button {
+    display: -webkit-flex !important;
+    display: flex !important;
+    -webkit-align-items: center !important;
+    align-items: center !important;
+    -webkit-justify-content: center !important;
+    justify-content: center !important;
+    -webkit-box-align: center !important;
+    -webkit-box-pack: center !important;
+    padding-top: 1px !important;
+  }
 
 /* Фикс для мобильных браузеров */
 @media (max-width: 768px) {
