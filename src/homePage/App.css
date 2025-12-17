@@ -49,34 +49,7 @@
   }
   
   /* Фиксы для текста внутри кнопок */
-  .btn-text-left,
-  .button-text,
-  .button-text-span,
-  .view-project-button,
-  .submit,
-  .submit-button,
-  button > span,
-  [role="button"] > span {
-    display: -webkit-flex !important;
-    display: flex !important;
-    -webkit-align-items: center !important;
-    align-items: center !important;
-    -webkit-justify-content: center !important;
-    justify-content: center !important;
-    -webkit-box-align: center !important;
-    -webkit-box-pack: center !important;
-    padding-top: 1px !important;
-  }
-}
-
-/* Фикс для старых Safari */
-_::-webkit-full-page-media, _:future, :root button,
-_::-webkit-full-page-media, _:future, :root .action-button-left,
-_::-webkit-full-page-media, _:future, :root .mens-button,
-_::-webkit-full-page-media, _:future, :root .read-more-button {
-  line-height: 40px !important;
-}
-  .btn-text-left,
+    .btn-text-left,
   .button-text,
   .button-text-span,
   .view-project-button,
@@ -93,4 +66,14 @@ _::-webkit-full-page-media, _:future, :root .read-more-button {
     -webkit-box-pack: center !important;
     padding-top: 21px !important;
   }
+
+}
+
+/* Фикс для старых Safari */
+_::-webkit-full-page-media, _:future, :root button,
+_::-webkit-full-page-media, _:future, :root .action-button-left,
+_::-webkit-full-page-media, _:future, :root .mens-button,
+_::-webkit-full-page-media, _:future, :root .read-more-button {
+  line-height: 40px !important;
+}
 
