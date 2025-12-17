@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import "./VideoBackground.css";
 import videoSrc from "../video/Brunello.mp4";
@@ -10,8 +10,55 @@ import designfestivalImg from "../image/designfestival.png";
 
 const VideoBackground = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+  const videoRef = useRef(null);
+
+  // Функция для запуска видео
+  const playVideo = () => {
+    if (videoRef.current && !isVideoPlaying) {
+      videoRef.current.play()
+        .then(() => {
+          setIsVideoPlaying(true);
+          console.log("Video started playing");
+        })
+        .catch(error => {
+          console.log("Video play failed:", error);
+        });
+    }
+  };
+
+  // Обработчик пользовательского взаимодействия
+  const handleUserInteraction = () => {
+    playVideo();
+  };
+
+  useEffect(() => {
+    // Пытаемся запустить видео при загрузке компонента
+    const timer = setTimeout(() => {
+      playVideo();
+    }, 100);
+
+    // Добавляем обработчики для пользовательского взаимодействия
+    const handleTouchStart = () => {
+      handleUserInteraction();
+    };
+
+    const handleClick = () => {
+      handleUserInteraction();
+    };
+
+    // Подписываемся на события
+    document.addEventListener('touchstart', handleTouchStart, { passive: true });
+    document.addEventListener('click', handleClick);
+
+    return () => {
+      clearTimeout(timer);
+      document.removeEventListener('touchstart', handleTouchStart);
+      document.removeEventListener('click', handleClick);
+    };
+  }, []);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -94,7 +141,15 @@ const VideoBackground = () => {
       <div className="video-background-container">
         <div className="video-background-overlay"></div>
         
-        <video autoPlay muted loop playsInline className="video-background">
+        <video
+          ref={videoRef}
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="video-background"
+          onClick={handleUserInteraction}
+        >
           <source src={videoSrc} type="video/mp4" />
           Your browser does not support the video tag.
         </video>
@@ -113,7 +168,7 @@ const VideoBackground = () => {
           
           {/* Логотип */}
           <div className="logo">
-            <Link to="/home">
+            <Link to="/home" onClick={handleUserInteraction}>
               <img src={logoImg} alt="Logo" className="logo-image" />
             </Link>
           </div>
@@ -124,6 +179,7 @@ const VideoBackground = () => {
               to="/home#mens-section" 
               className="nav-item about"
               onClick={(e) => {
+                handleUserInteraction();
                 if (location.pathname === "/home" || location.pathname === "/") {
                   e.preventDefault();
                   scrollToMens();
@@ -134,7 +190,10 @@ const VideoBackground = () => {
             </Link>
             <button 
               className="nav-item chat-button"
-              onClick={scrollToContact}
+              onClick={() => {
+                handleUserInteraction();
+                scrollToContact();
+              }}
             >
               CHAT WITH US
             </button>
@@ -143,7 +202,10 @@ const VideoBackground = () => {
           {/* Мобильная навигация */}
           <button 
             className="burger-menu" 
-            onClick={toggleMenu} 
+            onClick={() => {
+              handleUserInteraction();
+              toggleMenu();
+            }} 
             aria-label={isMenuOpen ? "Close menu" : "Open menu"}
             aria-expanded={isMenuOpen}
           >
@@ -162,6 +224,7 @@ const VideoBackground = () => {
             className="mobile-chat-button" 
             aria-label="Chat with us"
             onClick={() => {
+              handleUserInteraction();
               closeMenu();
               scrollToContact();
             }}
@@ -178,14 +241,20 @@ const VideoBackground = () => {
                 <Link 
                   to="/real-estate" 
                   className="mobile-nav-item"
-                  onClick={closeMenu}
+                  onClick={() => {
+                    handleUserInteraction();
+                    closeMenu();
+                  }}
                 >
                   DIRECTIONS
                 </Link>
                 <Link 
                   to="/projects" 
                   className="mobile-nav-item"
-                  onClick={closeMenu}
+                  onClick={() => {
+                    handleUserInteraction();
+                    closeMenu();
+                  }}
                 >
                   PROJECTS
                 </Link>
@@ -193,6 +262,7 @@ const VideoBackground = () => {
                   to="/home#mens-section" 
                   className="mobile-nav-item"
                   onClick={(e) => {
+                    handleUserInteraction();
                     closeMenu();
                     if (location.pathname === "/home" || location.pathname === "/") {
                       e.preventDefault();
@@ -210,52 +280,55 @@ const VideoBackground = () => {
         {/* КОНТЕНТ СНИЗУ */}
         <div className="content-wrapper">
           {/* НАГРАДЫ */}
-        <div className="awards-row">
-  <div className="award-item">
-    <div className="award-icon-container icon-1">
-      <img src={taglineImg} alt="Tagline" className="award-icon" />
-    </div>
-    <p className="award-text">
-      <span className="award-count">1X GOLD</span>
-      <span className="award-description">Best video</span>
-    </p>
-  </div>
-  
-  <div className="award-item">
-    <div className="award-icon-container icon-2">
-      <img src={awardsImg} alt="Awards" className="award-icon" />
-    </div>
-    <p className="award-text">
-      <span className="award-count">3X SILVER</span>
-      <span className="award-description">Efficiency in business</span>
-    </p>
-  </div>
-  
-  <div className="award-item">
-    <div className="award-icon-container icon-3">
-      <img src={silverImg} alt="Mercury" className="award-icon" />
-    </div>
-    <p className="award-text">
-      <span className="award-count">2X BRONZE</span>
-      <span className="award-description">Situational marketing</span>
-    </p>
-  </div>
-  
-  <div className="award-item">
-    <div className="award-icon-container icon-4">
-      <img src={designfestivalImg} alt="Festival" className="award-icon" />
-    </div>
-    <p className="award-text">
-      <span className="award-count">3X SHORTLIST</span>
-      <span className="award-description">Visual solutions in video advertising</span>
-    </p>
-  </div>
-</div>
+          <div className="awards-row">
+            <div className="award-item">
+              <div className="award-icon-container icon-1">
+                <img src={taglineImg} alt="Tagline" className="award-icon" />
+              </div>
+              <p className="award-text">
+                <span className="award-count">1X GOLD</span>
+                <span className="award-description">Best video</span>
+              </p>
+            </div>
+            
+            <div className="award-item">
+              <div className="award-icon-container icon-2">
+                <img src={awardsImg} alt="Awards" className="award-icon" />
+              </div>
+              <p className="award-text">
+                <span className="award-count">3X SILVER</span>
+                <span className="award-description">Efficiency in business</span>
+              </p>
+            </div>
+            
+            <div className="award-item">
+              <div className="award-icon-container icon-3">
+                <img src={silverImg} alt="Mercury" className="award-icon" />
+              </div>
+              <p className="award-text">
+                <span className="award-count">2X BRONZE</span>
+                <span className="award-description">Situational marketing</span>
+              </p>
+            </div>
+            
+            <div className="award-item">
+              <div className="award-icon-container icon-4">
+                <img src={designfestivalImg} alt="Festival" className="award-icon" />
+              </div>
+              <p className="award-text">
+                <span className="award-count">3X SHORTLIST</span>
+                <span className="award-description">Visual solutions in video advertising</span>
+              </p>
+            </div>
+          </div>
 
           {/* КНОПКА VIEW PROJECT */}
           <button 
             className="view-project-button"
-            onClick={() => alert("Viewing project...")}
+            onClick={() => {
+              handleUserInteraction();
+              alert("Viewing project...");
+            }}
           >
             VIEW PROJECT
           </button>
