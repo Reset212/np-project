@@ -41,7 +41,7 @@
   .view-project-button,
   .submit,
   .submit-button,
-  .mobile-nav-item,
+  
   button {
     display: -webkit-flex !important;
     display: flex !important;
@@ -53,7 +53,11 @@
     -webkit-box-pack: center !important;
     padding-top: 2px !important;
   }
-
+  .mobile-nav-item,
+  button{
+    
+    padding-top: 2px !important;
+  }
 }
 
 /* Фикс для старых Safari */
