@@ -1,0 +1,66 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* App.css - добавьте эти стили */
+
+.App {
+  position: relative;
+  width: 100%;
+  overflow-x: hidden; /* Только горизонтальное скрытие */
+}
+
+/* Убедитесь, что все секции имеют позицию relative */
+.App > * {
+  position: relative;
+  z-index: auto;
+}
+
+/* Отладка - можно временно включить */
+.debug-border {
+  border: 1px solid red !important;
+}
+
+/* ============================================
+   ГЛОБАЛЬНЫЕ ФИКСЫ ДЛЯ iOS И КНОПОК
+   ============================================ */
+@supports (-webkit-touch-callout: none) {
+  body, html, .App {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-font-smoothing: antialiased;
+  }
+  
+  /* Фиксы для всех кнопок в приложении */
+
+  /* Фиксы для текста внутри кнопок */
+  .btn-text-left,
+  .button-text,
+  .button-text-span,
+  .view-project-button,
+  .submit,
+  .submit-button,
+  .mobile-nav-item,
+  button {
+    display: -webkit-flex !important;
+    display: flex !important;
+    -webkit-align-items: center !important;
+    align-items: center !important;
+    -webkit-justify-content: center !important;
+    justify-content: center !important;
+    -webkit-box-align: center !important;
+    -webkit-box-pack: center !important;
+    padding-top: 2px !important;
+  }
+
+}
+
+/* Фикс для старых Safari */
+_::-webkit-full-page-media, _:future, :root button,
+_::-webkit-full-page-media, _:future, :root .action-button-left,
+_::-webkit-full-page-media, _:future, :root .mens-button,
+_::-webkit-full-page-media, _:future, :root .read-more-button {
+  line-height: 40px !important;
+}
+
