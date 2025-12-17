@@ -52,6 +52,53 @@ const ThirdScrollBlock = () => {
     };
   }, []);
 
+  // Функция для рендеринга текста с пробелами и специальными символами
+  const renderTextWithSpaces = (text, getLetterDelay, type = "item", itemIndex = 0) => {
+    const letters = [];
+    
+    for (let i = 0; i < text.length; i++) {
+      const char = text[i];
+      const key = `${type}-${itemIndex}-${i}`;
+      
+      if (char === " ") {
+        letters.push(
+          <span key={key} className={`${type}-space text-space`}>
+            &nbsp;
+          </span>
+        );
+      } else if (char === "/") {
+        letters.push(
+          <span
+            key={key}
+            className={`${type}-letter text-letter item-letter`}
+            style={{
+              opacity: isVisible ? 1 : 0,
+              transitionDelay: `${getLetterDelay(itemIndex, i, isVisible)}ms`,
+              fontStyle: 'normal'
+            }}
+          >
+            {char}
+          </span>
+        );
+      } else {
+        letters.push(
+          <span
+            key={key}
+            className={`${type}-letter text-letter item-letter`}
+            style={{
+              opacity: isVisible ? 1 : 0,
+              transitionDelay: `${getLetterDelay(itemIndex, i, isVisible)}ms`
+            }}
+          >
+            {char}
+          </span>
+        );
+      }
+    }
+    
+    return letters;
+  };
+
   const getTitleLetterDelay = (index, isAppearing, wordIndex = 0) => {
     if (!isAppearing) return 0;
     const letterIndex = wordIndex === 0 ? index : index + 3;
@@ -172,24 +219,8 @@ const ThirdScrollBlock = () => {
                     width: "100%",
                   }}
                 >
-                  <span
-                    className="item-text"
-                    style={{
-                      display: "block",
-                    }}
-                  >
-                    {item.split("").map((letter, letterIndex) => (
-                      <span
-                        key={letterIndex}
-                        className="item-letter"
-                        style={{
-                          opacity: isVisible ? 1 : 0,
-                          transitionDelay: `${getItemLetterDelay(index, letterIndex, isVisible)}ms`,
-                        }}
-                      >
-                        {letter}
-                      </span>
-                    ))}
+                  <span className="item-text" data-text={item}>
+                    {renderTextWithSpaces(item, getItemLetterDelay, "item", index)}
                   </span>
                 </div>
               ))}
@@ -206,24 +237,7 @@ const ThirdScrollBlock = () => {
               }}
             >
               <button className="third-button">
-                {buttonText.split("").map((letter, index) => (
-                  <React.Fragment key={index}>
-                    {letter === " " ? (
-                      <span className="button-space"></span>
-                    ) : (
-                      <span
-                        key={index}
-                        className="button-letter"
-                        style={{
-                          opacity: isVisible ? 1 : 0,
-                          transitionDelay: `${getButtonLetterDelay(index, isVisible)}ms`
-                        }}
-                      >
-                        {letter}
-                      </span>
-                    )}
-                  </React.Fragment>
-                ))}
+                {renderTextWithSpaces(buttonText, getButtonLetterDelay, "button")}
               </button>
             </div>
           </div>

@@ -7,7 +7,90 @@
   padding-top: 100px;
   max-height: 90vh;
 }
+/* ========== ЭФФЕКТ ПРЕВРАЩЕНИЯ В КОНТУР ========== */
+.third-item {
+  position: relative;
+  cursor: pointer;
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
 
+.item-text {
+  position: relative;
+  display: inline-block;
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Контурная версия текста (скрыта по умолчанию) */
+.item-text::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  color: transparent;
+  -webkit-text-stroke: 1.5px #282525;
+  text-stroke: 1.5px #282525;
+  -webkit-text-fill-color: transparent;
+  opacity: 0;
+  transform: scale(1.02);
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+  letter-spacing: -0.03em;
+}
+
+/* Эффект при наведении на весь элемент */
+.third-item:hover .item-text {
+  color: transparent !important;
+  -webkit-text-stroke: 1.5px #282525;
+  text-stroke: 1.5px #282525;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Плавное изменение для букв при наведении */
+.item-letter {
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.third-item:hover .item-letter {
+  color: transparent !important;
+  -webkit-text-stroke: 2px #999797;
+  text-stroke: 2px #999797;
+  -webkit-text-fill-color: transparent;
+  opacity: 1 !important;
+}
+
+/* Убираем стандартное подчеркивание */
+.third-item:hover {
+  text-decoration: none;
+}
+
+/* Для мобильных устройств - уменьшаем толщину контура */
+@media (max-width: 768px) {
+  .third-item:hover .item-text,
+  .third-item:hover .item-letter {
+    -webkit-text-stroke: 1px #282525;
+    text-stroke: 1px #282525;
+  }
+  
+  .item-text::after {
+    -webkit-text-stroke: 1px #282525;
+    text-stroke: 1px #282525;
+  }
+}
+
+/* Fallback для браузеров без поддержки text-stroke */
+@supports not (-webkit-text-stroke: 1px #282525) {
+  .third-item:hover .item-text,
+  .third-item:hover .item-letter {
+    color: transparent !important;
+    text-shadow: 
+      -0.5px -0.5px 0 #282525,
+      0.5px -0.5px 0 #282525,
+      -0.5px 0.5px 0 #282525,
+      0.5px 0.5px 0 #282525;
+  }
+}
 /* ========== ОСНОВНОЙ КОНТЕЙНЕР ========== */
 .third-scroll-container {
   width: 100%;
