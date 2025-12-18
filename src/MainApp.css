@@ -1,3 +1,4 @@
+/* MainApp.css - добавьте эти стили */
 * {
   margin: 0;
   padding: 0;
@@ -9,7 +10,6 @@
 .App {
   position: relative;
   width: 100%;
-  overflow-x: hidden; /* Только горизонтальное скрытие */
 }
 
 /* Убедитесь, что все секции имеют позицию relative */

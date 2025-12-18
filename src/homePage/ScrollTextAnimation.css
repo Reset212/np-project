@@ -1,26 +1,31 @@
 .scroll-text-animation-wrapper {
   position: relative;
   width: 100%;
-  height: 300vh;
+  height: 300vh; /* Высота для скролла через блок */
   z-index: 100;
 }
 
-/* ФИКСИРОВАННЫЙ контейнер */
+/* ФИКСИРОВАННЫЙ контейнер для текста - ИЗМЕНИЛ НА FIXED */
 .scroll-text-fixed-container {
-  position: fixed;
+  position: fixed; /* Изменил на fixed */
   top: 0;
   left: 0;
   width: 100%;
-  height: 100vh;
+  height: 100vh; /* Фиксированная высота видимой части */
   pointer-events: none;
   z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Общий контейнер для ВСЕГО текста */
 .scroll-text-content {
   position: relative;
   width: 100%;
-  height: 100%;
+  max-width: 1200px; /* Добавил max-width */
+  padding: 0 40px;
+  text-align: center;
 }
 
 /* ДЕСКТОПНЫЕ СТИЛИ - ЦЕНТРИРОВАННЫЕ */
@@ -37,8 +42,6 @@
 .desktop-section {
   position: absolute;
   width: 100%;
-  max-width: 1200px;
-  padding: 0 40px;
   text-align: center;
   opacity: 0;
   visibility: hidden;
@@ -191,15 +194,11 @@
     height: 200vh;
   }
 
-  .scroll-text-fixed-container {
-    height: 150vh;
-  }
-
   .desktop-word {
     font-size: 64px;
   }
   
-  .desktop-section {
+  .scroll-text-content {
     max-width: 1000px;
   }
 }
@@ -218,7 +217,7 @@
     font-size: 56px;
   }
   
-  .desktop-section {
+  .scroll-text-content {
     max-width: 800px;
     padding: 0 30px;
   }
@@ -231,10 +230,19 @@
   }
 
   .scroll-text-fixed-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 100vh;
+  }
+
+  .scroll-text-content {
+    max-width: 360px;
+    padding: 0 20px;
   }
 
   @media (max-height: 700px) {
@@ -254,7 +262,7 @@
       font-size: 36px;
     }
 
-    .mobile-section {
+    .scroll-text-content {
       max-width: 340px;
     }
 
@@ -268,7 +276,7 @@
       font-size: 34px;
     }
 
-    .mobile-section {
+    .scroll-text-content {
       max-width: 320px;
     }
   }
@@ -278,7 +286,7 @@
       font-size: 32px;
     }
 
-    .mobile-section {
+    .scroll-text-content {
       max-width: 300px;
     }
 
@@ -318,7 +326,7 @@
     font-size: 32px;
   }
   
-  .mobile-section {
+  .scroll-text-content {
     max-width: 600px;
   }
 }

@@ -9,7 +9,6 @@
 .App {
   position: relative;
   width: 100%;
-  overflow-x: hidden; /* Только горизонтальное скрытие */
 }
 
 /* Убедитесь, что все секции имеют позицию relative */
