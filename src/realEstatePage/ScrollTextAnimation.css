@@ -1,3 +1,4 @@
+/* ОСНОВНЫЕ СТИЛИ */
 .scroll-text-animation-wrapper {
   position: relative;
   width: 100%;
@@ -5,9 +6,9 @@
   z-index: 100;
 }
 
-/* ФИКСИРОВАННЫЙ контейнер для текста - ИЗМЕНИЛ НА FIXED */
+/* ФИКСИРОВАННЫЙ КОНТЕЙНЕР - ИЗНАЧАЛЬНО СКРЫТ */
 .scroll-text-fixed-container {
-  position: fixed; /* Изменил на fixed */
+  position: fixed; /* Используем fixed вместо sticky */
   top: 0;
   left: 0;
   width: 100%;
@@ -17,50 +18,89 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  opacity: 0; /* Изначально скрыт */
+  visibility: hidden; /* Изначально скрыт */
+  transition: opacity 0.5s ease, visibility 0.5s ease;
 }
 
-/* Общий контейнер для ВСЕГО текста */
-.scroll-text-content {
-  position: relative;
-  width: 100%;
-  max-width: 1200px; /* Добавил max-width */
-  padding: 0 40px;
-  text-align: center;
+/* КОГДА БЛОК АКТИВЕН - ПОКАЗЫВАЕМ */
+.scroll-text-fixed-container.active {
+  opacity: 1;
+  visibility: visible;
 }
 
-/* ДЕСКТОПНЫЕ СТИЛИ - ЦЕНТРИРОВАННЫЕ */
-.desktop-sections-container {
+/* ОГРАНИЧИТЕЛЬ ВИДИМОЙ ОБЛАСТИ */
+.viewport-limiter {
   width: 100%;
   height: 100%;
   position: relative;
+  overflow: hidden;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
 }
 
-.desktop-section {
+/* ОБЩИЙ КОНТЕЙНЕР ДЛЯ ВСЕГО ТЕКСТА */
+.scroll-text-content {
+  position: relative;
+  width: 100%;
+  max-width: 1200px; /* Ограничиваем максимальную ширину */
+  padding: 0 40px;
+  text-align: center;
+}
+
+/* КОНТЕЙНЕРЫ ДЛЯ СЕКЦИЙ */
+.desktop-sections-container,
+.mobile-sections-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ОБЩИЕ СТИЛИ ДЛЯ СЕКЦИЙ */
+.desktop-section,
+.mobile-section {
   position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   width: 100%;
   text-align: center;
   opacity: 0;
   visibility: hidden;
-  transform: translateY(15px);
-  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+  transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.1s,
+              visibility 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.1s;
+  will-change: opacity, visibility;
 }
 
-.desktop-section.visible {
+/* ВИДИМЫЕ СЕКЦИИ */
+.desktop-section.visible,
+.mobile-section.visible {
   opacity: 1;
   visibility: visible;
-  transform: translateY(0);
+  pointer-events: auto;
+  transition-delay: 0s; /* При появлении без задержки */
 }
 
-/* Быстрое скрытие секций */
-.desktop-section:not(.visible) {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+/* СПЕЦИФИЧНЫЕ СТИЛИ ДЛЯ ДЕСКТОПА */
+.desktop-section {
+  max-width: 1200px;
+  padding: 0 40px;
 }
 
-.desktop-section-content {
+/* СПЕЦИФИЧНЫЕ СТИЛИ ДЛЯ МОБИЛЬНЫХ */
+.mobile-section {
+  max-width: 360px;
+  padding: 0 20px;
+}
+
+/* КОНТЕНТ СЕКЦИЙ */
+.desktop-section-content,
+.mobile-section-content {
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -68,7 +108,7 @@
   width: 100%;
 }
 
-/* Строка - теперь без flex-wrap и с центрированием */
+/* СТРОКИ */
 .desktop-line {
   display: flex;
   justify-content: center;
@@ -79,34 +119,62 @@
   overflow: visible;
 }
 
-.desktop-word {
+.mobile-line {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  line-height: 1.2;
+  max-width: 100%;
+  width: 100%;
+  overflow: visible;
+  box-sizing: border-box;
+}
+
+/* ОБЩИЕ СТИЛИ ДЛЯ СЛОВ */
+.desktop-word,
+.mobile-word {
   display: inline-block;
   font-family: 'Helvetica Neue', Arial, sans-serif;
   font-weight: 500;
-  font-size: 72px;
-  letter-spacing: -1px;
   text-transform: uppercase;
   color: #000000;
   white-space: nowrap;
   flex-shrink: 0;
-
   opacity: 0;
   transform: translateY(15px);
-  transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-              transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: opacity, transform;
+  transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Быстрое исчезновение слов */
-.desktop-word.section-2-word:not(.active) {
-  transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1),
-              transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+/* ДЕСКТОПНЫЕ СЛОВА */
+.desktop-word {
+  font-size: 72px;
+  letter-spacing: -1px;
 }
 
-.desktop-word.active {
+/* МОБИЛЬНЫЕ СЛОВА */
+.mobile-word {
+  font-size: 40px;
+  letter-spacing: -0.8px;
+}
+
+/* АКТИВНЫЕ СЛОВА */
+.desktop-word.active,
+.mobile-word.active {
   opacity: 1;
   transform: translateY(0);
 }
 
+/* НЕАКТИВНЫЕ СЛОВА - БЫСТРОЕ ИСЧЕЗНОВЕНИЕ */
+.desktop-word:not(.active),
+.mobile-word:not(.active) {
+  transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ПРОБЕЛЫ МЕЖДУ СЛОВАМИ */
 .desktop-word-space {
   display: inline-block;
   width: 12px;
@@ -114,78 +182,17 @@
   height: 1px;
 }
 
-/* МОБИЛЬНЫЕ СТИЛИ */
-.mobile-sections-container {
-  width: 100%;
-  height: 100%;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.mobile-section {
-  position: absolute;
-  width: 100%;
-  max-width: 360px;
-  padding: 0 20px;
-  text-align: center;
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(10px);
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.mobile-section.visible {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0);
-}
-
-.mobile-section:not(.visible) {
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.mobile-section-content {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  align-items: center;
-}
-
-.mobile-line {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 6px;
-  line-height: 1.2;
-}
-
-.mobile-word {
-  display: inline-block;
-  font-family: 'Helvetica Neue', Arial, sans-serif;
-  font-weight: 500;
-  font-size: 40px;
-  letter-spacing: -0.8px;
-  text-transform: uppercase;
-  color: #000000;
-  white-space: nowrap;
-
-  opacity: 0;
-  transform: translateY(10px);
-  transition: opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1),
-              transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.mobile-word.active {
-  opacity: 1;
-  transform: translateY(0);
-}
-
 .mobile-word-space {
   display: inline-block;
   width: 6px;
+}
+
+/* КЛАСС ДЛЯ ПРЕДВАРИТЕЛЬНОГО СКРЫТИЯ */
+.section-pre-hide .desktop-word,
+.section-pre-hide .mobile-word {
+  opacity: 0 !important;
+  transform: translateY(15px) !important;
+  transition: opacity 0.1s linear, transform 0.1s linear !important;
 }
 
 /* АДАПТАЦИЯ ДЛЯ 1040px И МЕНЬШЕ */
@@ -203,7 +210,7 @@
   }
 }
 
-/* Адаптивность для ПЛАНШЕТОВ (768px) */
+/* АДАПТИВНОСТЬ ДЛЯ ПЛАНШЕТОВ (768px) */
 @media (max-width: 768px) {
   .scroll-text-animation-wrapper {
     height: 180vh;
@@ -211,6 +218,7 @@
   
   .desktop-line {
     flex-wrap: wrap;
+    justify-content: center;
   }
   
   .desktop-word {
@@ -229,20 +237,24 @@
     height: 250vh;
   }
 
-  .scroll-text-fixed-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  .scroll-text-content {
+    max-width: 100%;
+    padding: 0 20px;
+    box-sizing: border-box;
   }
 
-  .scroll-text-content {
-    max-width: 360px;
-    padding: 0 20px;
+  .mobile-section {
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .mobile-line {
+    justify-content: center;
+    gap: 4px;
+  }
+
+  .mobile-word {
+    font-size: 40px;
   }
 
   @media (max-height: 700px) {
@@ -262,22 +274,14 @@
       font-size: 36px;
     }
 
-    .scroll-text-content {
-      max-width: 340px;
-    }
-
-    .mobile-section-content {
-      gap: 10px;
+    .mobile-line {
+      gap: 3px;
     }
   }
 
   @media (max-width: 360px) {
     .mobile-word {
       font-size: 34px;
-    }
-
-    .scroll-text-content {
-      max-width: 320px;
     }
   }
 
@@ -286,12 +290,8 @@
       font-size: 32px;
     }
 
-    .scroll-text-content {
-      max-width: 300px;
-    }
-
     .mobile-line {
-      gap: 5px;
+      gap: 2px;
     }
   }
 
@@ -310,13 +310,7 @@
   }
 }
 
-@media (min-width: 481px) and (max-width: 767px) and (max-height: 1024px) {
-  .scroll-text-animation-wrapper {
-    height: 160vh;
-  }
-}
-
-/* Для горизонтальной ориентации на мобильных */
+/* ДЛЯ ГОРИЗОНТАЛЬНОЙ ОРИЕНТАЦИИ НА МОБИЛЬНЫХ */
 @media (max-width: 900px) and (orientation: landscape) {
   .scroll-text-animation-wrapper {
     height: 350vh;
@@ -326,7 +320,14 @@
     font-size: 32px;
   }
   
-  .scroll-text-content {
+  .mobile-section {
     max-width: 600px;
+  }
+}
+
+/* ДЛЯ МАЛЕНЬКИХ ПЛАНШЕТОВ */
+@media (min-width: 481px) and (max-width: 767px) and (max-height: 1024px) {
+  .scroll-text-animation-wrapper {
+    height: 160vh;
   }
 }

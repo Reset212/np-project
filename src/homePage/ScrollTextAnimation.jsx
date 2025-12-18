@@ -7,6 +7,8 @@ const ScrollTextAnimation = () => {
   const [isMobile, setIsMobile] = useState(false);
   const [section1Visible, setSection1Visible] = useState(false);
   const [section2Visible, setSection2Visible] = useState(false);
+  const [isBlockActive, setIsBlockActive] = useState(false);
+  const [sectionTransitioning, setSectionTransitioning] = useState(false); // Новое состояние
   const containerRef = useRef(null);
   const wrapperRef = useRef(null);
   const animationFrameRef = useRef(null);
@@ -17,6 +19,10 @@ const ScrollTextAnimation = () => {
   const animationStartTimeRef = useRef(0);
   const isAnimatingRef = useRef(false);
   const lastWordStatesRef = useRef({});
+  const lastScrollYRef = useRef(0);
+  const lastScrollDirectionRef = useRef('down');
+  const wasActiveRef = useRef(false);
+  const lastActiveSectionRef = useRef(0); // Следим за предыдущей секцией
 
   // Данные для текста - ДЕСКТОП
   const sections = [
@@ -99,8 +105,12 @@ const ScrollTextAnimation = () => {
       setActiveSection(0);
       setSection1Visible(false);
       setSection2Visible(false);
+      setIsBlockActive(false);
+      setSectionTransitioning(false);
       currentProgressRef.current = 0;
       targetProgressRef.current = 0;
+      wasActiveRef.current = false;
+      lastActiveSectionRef.current = 0;
     };
 
     checkMobile();
@@ -114,45 +124,112 @@ const ScrollTextAnimation = () => {
     };
   }, []);
 
+  // Функция проверки, находится ли блок в видимой области экрана
+  const isBlockInView = useCallback((rect, windowHeight, direction) => {
+    const blockTop = rect.top;
+    const blockBottom = rect.bottom;
+    const blockHeight = rect.height;
+    
+    // Для скролла вниз - блок должен быть в верхней части экрана
+    if (direction === 'down') {
+      return (
+        blockTop < windowHeight * 0.8 && 
+        blockBottom > windowHeight * 0.2
+      );
+    }
+    
+    // Для скролла вверх - блок должен быть в центральной/нижней части экрана
+    if (direction === 'up') {
+      return (
+        blockTop < windowHeight * 0.4 && 
+        blockBottom > windowHeight * 0.1
+      );
+    }
+    
+    return false;
+  }, []);
+
   // Основная анимация скролла
   useEffect(() => {
     const updateAnimation = () => {
-      if (!wrapperRef.current || !containerRef.current) {
+      if (!wrapperRef.current) {
         animationFrameRef.current = requestAnimationFrame(updateAnimation);
         return;
       }
 
       const wrapper = wrapperRef.current;
-      const container = containerRef.current;
-      const wrapperRect = wrapper.getBoundingClientRect();
+      const rect = wrapper.getBoundingClientRect();
       const windowHeight = window.innerHeight;
+      const currentScrollY = window.scrollY;
+      
+      // Определяем направление скролла
+      if (currentScrollY > lastScrollYRef.current) {
+        lastScrollDirectionRef.current = 'down';
+      } else if (currentScrollY < lastScrollYRef.current) {
+        lastScrollDirectionRef.current = 'up';
+      }
+      lastScrollYRef.current = currentScrollY;
 
-      // Вычисляем, какая часть блока видна на экране
-      const visibleHeight = Math.min(
-        windowHeight,
-        wrapperRect.bottom
-      ) - Math.max(0, wrapperRect.top);
-
-      // Если блок не виден на экране - пропускаем
-      if (visibleHeight <= 0) {
+      // Проверяем, находится ли блок в правильной позиции на экране
+      const isInView = isBlockInView(rect, windowHeight, lastScrollDirectionRef.current);
+      
+      // Активируем/деактивируем блок в зависимости от видимости
+      if (isInView) {
+        setIsBlockActive(true);
+        wasActiveRef.current = true;
+      } else {
+        setIsBlockActive(false);
+        
+        // Если блок был активен, но вышел из зоны видимости, сбрасываем все
+        if (wasActiveRef.current) {
+          setActiveSection(0);
+          setSection1Visible(false);
+          setSection2Visible(false);
+          setSectionTransitioning(false);
+          
+          const resetWordStates = {};
+          const currentSections = isMobile ? mobileSections : sections;
+          currentSections.forEach((section, sectionIdx) => {
+            section.lines.forEach((line, lineIdx) => {
+              line.forEach((_, wordIdx) => {
+                const key = getWordKey(sectionIdx, lineIdx, wordIdx);
+                resetWordStates[key] = false;
+              });
+            });
+          });
+          setWordStates(resetWordStates);
+          lastWordStatesRef.current = resetWordStates;
+          currentProgressRef.current = 0;
+          targetProgressRef.current = 0;
+          isAnimatingRef.current = false;
+          lastActiveSectionRef.current = 0;
+        }
+        
         animationFrameRef.current = requestAnimationFrame(updateAnimation);
         return;
       }
 
-      // Вычисляем прогресс скролла внутри блока
-      // Когда верх блока вверху экрана - прогресс 0
-      // Когда нижняя часть блока внизу экрана - прогресс 1
+      // Вычисляем прогресс скролла внутри блока (только когда блок активен)
       let rawProgress = 0;
       
-      if (wrapperRect.top <= 0) {
-        // Блок начал скроллиться
-        const scrolled = -wrapperRect.top;
-        const totalScrollable = wrapperRect.height - windowHeight;
-        
-        if (totalScrollable > 0) {
-          rawProgress = Math.min(1, scrolled / totalScrollable);
-        } else {
-          rawProgress = 0;
+      // Для скролла вниз - начинаем анимацию раньше
+      if (lastScrollDirectionRef.current === 'down') {
+        if (rect.top < windowHeight * 0.8) {
+          const scrolled = Math.abs(rect.top - windowHeight * 0.8);
+          const maxScroll = rect.height - windowHeight * 0.2;
+          if (maxScroll > 0) {
+            rawProgress = Math.min(1, scrolled / maxScroll);
+          }
+        }
+      } 
+      // Для скролла вверх - начинаем анимацию позже
+      else {
+        if (rect.top <= 0) {
+          const scrolled = Math.abs(rect.top);
+          const maxScroll = rect.height - windowHeight;
+          if (maxScroll > 0) {
+            rawProgress = Math.min(1, scrolled / maxScroll);
+          }
         }
       }
 
@@ -172,22 +249,50 @@ const ScrollTextAnimation = () => {
       const newWordStates = { ...lastWordStatesRef.current };
       let needsUpdate = false;
       
-      // ЛОГИКА СЕКЦИЙ
+      // ОПРЕДЕЛЯЕМ ТЕКУЩУЮ СЕКЦИЮ
+      let targetSection = 0;
       if (progress < 0.5) {
-        // Первая секция активна
+        targetSection = 0;
+      } else {
+        targetSection = 1;
+      }
+      
+      // ПРОВЕРЯЕМ, ИЗМЕНИЛАСЬ ЛИ СЕКЦИЯ
+      const sectionChanged = targetSection !== lastActiveSectionRef.current;
+      
+      // ЕСЛИ СЕКЦИЯ ИЗМЕНИЛАСЬ - ЗАПУСКАЕМ ПЕРЕХОД
+      if (sectionChanged && !sectionTransitioning) {
+        setSectionTransitioning(true);
+        
+        // Быстро скрываем все слова перед сменой секции
+        const hideAllWords = {};
+        Object.keys(newWordStates).forEach(key => {
+          hideAllWords[key] = false;
+        });
+        setWordStates(hideAllWords);
+        lastWordStatesRef.current = hideAllWords;
+        
+        // Устанавливаем таймер для завершения перехода
+        setTimeout(() => {
+          setSectionTransitioning(false);
+          lastActiveSectionRef.current = targetSection;
+        }, 100); // Задержка для скрытия слов перед показом новой секции
+      }
+      
+      // ОБНОВЛЯЕМ ВИДИМОСТЬ СЕКЦИЙ
+      if (targetSection === 0) {
         setSection1Visible(true);
         setSection2Visible(false);
-        setActiveSection(0);
-      } else if (progress < 0.9) {
-        // Вторая секция активна
-        setSection1Visible(false);
-        setSection2Visible(true);
-        setActiveSection(1);
       } else {
-        // Финальная часть
         setSection1Visible(false);
         setSection2Visible(true);
-        setActiveSection(1);
+      }
+      setActiveSection(targetSection);
+      
+      // ЕСЛИ ИДЕТ ПЕРЕХОД - НЕ ОБНОВЛЯЕМ СЛОВА
+      if (sectionTransitioning) {
+        animationFrameRef.current = requestAnimationFrame(updateAnimation);
+        return;
       }
       
       // РАЗНАЯ ЛОГИКА ДЛЯ МОБИЛЬНОЙ И ДЕСКТОПНОЙ ВЕРСИЙ
@@ -204,72 +309,74 @@ const ScrollTextAnimation = () => {
         const totalWords2 = section2Data.lines.flat().length;
         let wordsToActivate2 = 0;
         
-        // Логика для десктопа
-        if (progress < 0.4) {
-          let section1Progress = progress / 0.4;
-          wordsToActivate1 = Math.min(
-            totalWords1,
-            Math.floor(section1Progress * totalWords1 * 1.5)
-          );
-        } else if (progress < 0.5) {
-          // 40-50%: быстрое скрытие первой секции
-          let hideProgress = (progress - 0.4) / 0.1;
-          wordsToActivate1 = Math.max(
-            0,
-            Math.floor((1 - hideProgress) * totalWords1)
-          );
-        }
-        
-        // Вторая секция
-        if (progress >= 0.5 && progress < 0.75) {
-          let section2Progress = (progress - 0.5) / 0.25;
-          wordsToActivate2 = Math.min(
-            totalWords2,
-            Math.floor(section2Progress * totalWords2 * 1.5)
-          );
-        } else if (progress >= 0.75 && progress < 0.85) {
-          // 75-85%: полная вторая секция
-          wordsToActivate2 = totalWords2;
-        } else if (progress >= 0.85) {
-          // 85-100%: плавное скрытие
-          let fadeOutProgress = 1 - ((progress - 0.85) / 0.15);
-          wordsToActivate2 = Math.max(
-            0,
-            Math.floor(fadeOutProgress * totalWords2)
-          );
-        }
-        
-        // Применяем состояния для первой секции (десктоп)
-        let wordIndex1 = 0;
-        section1Data.lines.forEach((line, lineIdx) => {
-          line.forEach((_, wordIdx) => {
-            const key = getWordKey(0, lineIdx, wordIdx);
-            const shouldBeActive = (wordIndex1 < wordsToActivate1);
-            if (newWordStates[key] !== shouldBeActive) {
-              newWordStates[key] = shouldBeActive;
-              needsUpdate = true;
-            }
-            wordIndex1++;
+        if (targetSection === 0) {
+          // Активация слов для первой секции
+          if (progress < 0.4) {
+            let section1Progress = progress / 0.4;
+            wordsToActivate1 = Math.min(
+              totalWords1,
+              Math.floor(section1Progress * totalWords1 * 1.5)
+            );
+          } else if (progress < 0.5) {
+            // 40-50%: плавное скрытие при приближении к смене секции
+            let hideProgress = (progress - 0.4) / 0.1;
+            wordsToActivate1 = Math.max(
+              0,
+              Math.floor((1 - hideProgress) * totalWords1)
+            );
+          }
+          
+          // Применяем состояния для первой секции
+          let wordIndex1 = 0;
+          section1Data.lines.forEach((line, lineIdx) => {
+            line.forEach((_, wordIdx) => {
+              const key = getWordKey(0, lineIdx, wordIdx);
+              const shouldBeActive = (wordIndex1 < wordsToActivate1);
+              if (newWordStates[key] !== shouldBeActive) {
+                newWordStates[key] = shouldBeActive;
+                needsUpdate = true;
+              }
+              wordIndex1++;
+            });
           });
-        });
-        
-        // Применяем состояния для второй секции (десктоп)
-        let wordIndex2 = 0;
-        section2Data.lines.forEach((line, lineIdx) => {
-          line.forEach((_, wordIdx) => {
-            const key = getWordKey(1, lineIdx, wordIdx);
-            const shouldBeActive = (wordIndex2 < wordsToActivate2);
-            if (newWordStates[key] !== shouldBeActive) {
-              newWordStates[key] = shouldBeActive;
-              needsUpdate = true;
-            }
-            wordIndex2++;
+        } else {
+          // Активация слов для второй секции
+          let adjustedProgress = (progress - 0.5) / 0.5; // Приводим к диапазону 0-1 для второй секции
+          
+          if (adjustedProgress < 0.5) {
+            wordsToActivate2 = Math.min(
+              totalWords2,
+              Math.floor(adjustedProgress * 2 * totalWords2)
+            );
+          } else if (adjustedProgress < 0.9) {
+            // 50-90% прогресса во второй секции: полная видимость
+            wordsToActivate2 = totalWords2;
+          } else {
+            // 90-100%: плавное скрытие
+            let fadeOutProgress = 1 - ((adjustedProgress - 0.9) / 0.1);
+            wordsToActivate2 = Math.max(
+              0,
+              Math.floor(fadeOutProgress * totalWords2)
+            );
+          }
+          
+          // Применяем состояния для второй секции
+          let wordIndex2 = 0;
+          section2Data.lines.forEach((line, lineIdx) => {
+            line.forEach((_, wordIdx) => {
+              const key = getWordKey(1, lineIdx, wordIdx);
+              const shouldBeActive = (wordIndex2 < wordsToActivate2);
+              if (newWordStates[key] !== shouldBeActive) {
+                newWordStates[key] = shouldBeActive;
+                needsUpdate = true;
+              }
+              wordIndex2++;
+            });
           });
-        });
+        }
       } 
       // МОБИЛЬНАЯ ВЕРСИЯ (только телефоны)
       else {
-        // ДЛЯ ТЕЛЕФОНА: более медленная и плавная анимация
         // Первая секция
         const section1Data = mobileSections[0];
         const totalWords1 = section1Data.lines.flat().length;
@@ -280,68 +387,64 @@ const ScrollTextAnimation = () => {
         const totalWords2 = section2Data.lines.flat().length;
         let wordsToActivate2 = 0;
         
-        // МЕДЛЕННЕЕ ДЛЯ ТЕЛЕФОНА: 0-50% - первая секция
-        if (progress < 0.5) {
-          let section1Progress = progress / 0.5;
-          wordsToActivate1 = Math.min(
-            totalWords1,
-            Math.floor(section1Progress * totalWords1 * 1.2)
-          );
-        } else if (progress < 0.55) {
-          // 50-55%: плавное скрытие первой секции
-          let hideProgress = (progress - 0.5) / 0.05;
-          wordsToActivate1 = Math.max(
-            0,
-            Math.floor((1 - hideProgress) * totalWords1)
-          );
-        }
-        
-        // Вторая секция для телефона
-        if (progress >= 0.55 && progress < 0.8) {
-          let section2Progress = (progress - 0.55) / 0.25;
-          wordsToActivate2 = Math.min(
-            totalWords2,
-            Math.floor(section2Progress * totalWords2 * 1.2)
-          );
-        } else if (progress >= 0.8 && progress < 0.9) {
-          // 80-90%: полная вторая секция
-          wordsToActivate2 = totalWords2;
-        } else if (progress >= 0.9) {
-          // 90-100%: плавное скрытие для телефона
-          let fadeOutProgress = 1 - ((progress - 0.9) / 0.1);
-          wordsToActivate2 = Math.max(
-            0,
-            Math.floor(fadeOutProgress * totalWords2)
-          );
-        }
-        
-        // Применяем состояния для первой секции (телефон)
-        let wordIndex1 = 0;
-        section1Data.lines.forEach((line, lineIdx) => {
-          line.forEach((_, wordIdx) => {
-            const key = getWordKey(0, lineIdx, wordIdx);
-            const shouldBeActive = (wordIndex1 < wordsToActivate1);
-            if (newWordStates[key] !== shouldBeActive) {
-              newWordStates[key] = shouldBeActive;
-              needsUpdate = true;
-            }
-            wordIndex1++;
+        if (targetSection === 0) {
+          // Активация слов для первой секции (телефон)
+          if (progress < 0.5) {
+            let section1Progress = progress / 0.5;
+            wordsToActivate1 = Math.min(
+              totalWords1,
+              Math.floor(section1Progress * totalWords1 * 1.2)
+            );
+          }
+          
+          // Применяем состояния для первой секции
+          let wordIndex1 = 0;
+          section1Data.lines.forEach((line, lineIdx) => {
+            line.forEach((_, wordIdx) => {
+              const key = getWordKey(0, lineIdx, wordIdx);
+              const shouldBeActive = (wordIndex1 < wordsToActivate1);
+              if (newWordStates[key] !== shouldBeActive) {
+                newWordStates[key] = shouldBeActive;
+                needsUpdate = true;
+              }
+              wordIndex1++;
+            });
           });
-        });
-        
-        // Применяем состояния для второй секции (телефон)
-        let wordIndex2 = 0;
-        section2Data.lines.forEach((line, lineIdx) => {
-          line.forEach((_, wordIdx) => {
-            const key = getWordKey(1, lineIdx, wordIdx);
-            const shouldBeActive = (wordIndex2 < wordsToActivate2);
-            if (newWordStates[key] !== shouldBeActive) {
-              newWordStates[key] = shouldBeActive;
-              needsUpdate = true;
-            }
-            wordIndex2++;
+        } else {
+          // Активация слов для второй секции (телефон)
+          let adjustedProgress = (progress - 0.5) / 0.5;
+          
+          if (adjustedProgress < 0.6) {
+            wordsToActivate2 = Math.min(
+              totalWords2,
+              Math.floor(adjustedProgress * 1.5 * totalWords2)
+            );
+          } else if (adjustedProgress < 0.9) {
+            // 60-90%: полная видимость
+            wordsToActivate2 = totalWords2;
+          } else {
+            // 90-100%: плавное скрытие
+            let fadeOutProgress = 1 - ((adjustedProgress - 0.9) / 0.1);
+            wordsToActivate2 = Math.max(
+              0,
+              Math.floor(fadeOutProgress * totalWords2)
+            );
+          }
+          
+          // Применяем состояния для второй секции
+          let wordIndex2 = 0;
+          section2Data.lines.forEach((line, lineIdx) => {
+            line.forEach((_, wordIdx) => {
+              const key = getWordKey(1, lineIdx, wordIdx);
+              const shouldBeActive = (wordIndex2 < wordsToActivate2);
+              if (newWordStates[key] !== shouldBeActive) {
+                newWordStates[key] = shouldBeActive;
+                needsUpdate = true;
+              }
+              wordIndex2++;
+            });
           });
-        });
+        }
       }
 
       if (needsUpdate) {
@@ -359,18 +462,18 @@ const ScrollTextAnimation = () => {
         cancelAnimationFrame(animationFrameRef.current);
       }
     };
-  }, [isMobile, smoothProgress]);
+  }, [isMobile, smoothProgress, isBlockInView, sectionTransitioning]);
 
   // Рендер десктопной секции
   const renderDesktopSection = (sectionIdx) => {
     const section = sections[sectionIdx];
-    const isActive = sectionIdx === activeSection;
     const isVisible = sectionIdx === 0 ? section1Visible : section2Visible;
+    const isTransitioning = sectionTransitioning && isVisible;
 
     return (
       <div
         key={`desktop-section-${sectionIdx}`}
-        className={`desktop-section ${isVisible ? 'visible' : ''} ${isActive ? 'active' : ''}`}
+        className={`desktop-section ${isVisible ? 'visible' : ''} ${isTransitioning ? 'section-pre-hide' : ''}`}
         data-section-index={sectionIdx}
       >
         <div className="desktop-section-content">
@@ -383,12 +486,9 @@ const ScrollTextAnimation = () => {
                 return (
                   <React.Fragment key={`desktop-word-${key}`}>
                     <span
-                      className={`desktop-word ${isWordActive ? 'active' : ''} ${sectionIdx === 1 ? 'section-2-word' : ''}`}
+                      className={`desktop-word ${isWordActive ? 'active' : ''}`}
                       style={{
                         transitionDelay: `${(lineIdx * line.length + wordIdx) * 0.02}s`,
-                        transition: isWordActive 
-                          ? 'opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)'
-                          : 'opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1), transform 0.25s cubic-bezier(0.4, 0, 0.2, 1)'
                       }}
                     >
                       {word}
@@ -410,13 +510,13 @@ const ScrollTextAnimation = () => {
   // Рендер мобильной секции
   const renderMobileSection = (sectionIdx) => {
     const section = mobileSections[sectionIdx];
-    const isActive = sectionIdx === activeSection;
     const isVisible = sectionIdx === 0 ? section1Visible : section2Visible;
+    const isTransitioning = sectionTransitioning && isVisible;
 
     return (
       <div
         key={`mobile-section-${sectionIdx}`}
-        className={`mobile-section ${isVisible ? 'visible' : ''} ${isActive ? 'active' : ''}`}
+        className={`mobile-section ${isVisible ? 'visible' : ''} ${isTransitioning ? 'section-pre-hide' : ''}`}
         data-section-index={sectionIdx}
       >
         <div className="mobile-section-content">
@@ -429,12 +529,9 @@ const ScrollTextAnimation = () => {
                 return (
                   <React.Fragment key={`mobile-word-${key}`}>
                     <span
-                      className={`mobile-word ${isWordActive ? 'active' : ''} ${sectionIdx === 1 ? 'mobile-word-2' : ''}`}
+                      className={`mobile-word ${isWordActive ? 'active' : ''}`}
                       style={{
                         transitionDelay: `${(lineIdx * line.length + wordIdx) * 0.03}s`,
-                        transition: isWordActive 
-                          ? 'opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)'
-                          : 'opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
                       }}
                     >
                       {word}
@@ -455,21 +552,23 @@ const ScrollTextAnimation = () => {
 
   return (
     <div className="scroll-text-animation-wrapper" ref={wrapperRef}>
-      <div className="scroll-text-fixed-container" ref={containerRef}>
-        <div className="scroll-text-content">
-          {/* Десктопная версия */}
-          {!isMobile && (
-            <div className="desktop-sections-container">
-              {sections.map((_, idx) => renderDesktopSection(idx))}
-            </div>
-          )}
+      <div className={`scroll-text-fixed-container ${isBlockActive ? 'active' : ''}`} ref={containerRef}>
+        <div className="viewport-limiter">
+          <div className="scroll-text-content">
+            {/* Десктопная версия */}
+            {!isMobile && (
+              <div className="desktop-sections-container">
+                {sections.map((_, idx) => renderDesktopSection(idx))}
+              </div>
+            )}
 
-          {/* Мобильная версия */}
-          {isMobile && (
-            <div className="mobile-sections-container">
-              {mobileSections.map((_, idx) => renderMobileSection(idx))}
-            </div>
-          )}
+            {/* Мобильная версия */}
+            {isMobile && (
+              <div className="mobile-sections-container">
+                {mobileSections.map((_, idx) => renderMobileSection(idx))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
