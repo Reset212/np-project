@@ -5,7 +5,7 @@
 .scroll-text-container {
   position: relative;
   width: 100%;
-  min-height: 300vh; /* Высота для скролла через секцию */
+  min-height: 350vh; /* Высота для скролла через секцию */
   z-index: 100;
   pointer-events: none;
 }
@@ -73,6 +73,7 @@
 }
 
 .text-section-block.active {
+  width: 322px;
   opacity: 1;
   visibility: visible;
 }
@@ -86,6 +87,7 @@
   white-space: nowrap;
   width: 100%;
   margin-bottom: 10px;
+  
 }
 
 /* СЛОВА */
@@ -104,12 +106,14 @@
 
 /* ДЕСКТОПНАЯ ВЕРСИЯ */
 .text-content-wrapper.desktop .text-word-item {
+
   font-size: 72px;
   letter-spacing: -1px;
 }
 
 /* МОБИЛЬНАЯ ВЕРСИЯ */
 .text-content-wrapper.mobile .text-word-item {
+
   font-size: 40px;
   letter-spacing: -0.8px;
 }
@@ -167,6 +171,7 @@
   }
   
   .text-content-wrapper {
+    width: 322px;
     padding: 0 20px;
   }
 }
