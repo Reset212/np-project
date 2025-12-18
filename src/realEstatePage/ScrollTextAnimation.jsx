@@ -126,7 +126,7 @@ const ScrollTextAnimation = () => {
       const shouldBeActive = (
         containerTop <= viewportBottom && 
         containerBottom >= viewportTop &&
-        distanceToCenter < windowHeight * 0.75
+        distanceToCenter < windowHeight * 1.5
       );
       
       // Обновляем состояние активности
@@ -334,7 +334,7 @@ const ScrollTextAnimation = () => {
         </div>
         
         {/* ПУСТОЕ ПРОСТРАНСТВО ДЛЯ СКРОЛЛА */}
-        <div style={{ height: '200vh' }}></div>
+        <div style={{ height: '150vh' }}></div>
       </div>
     </div>
   );

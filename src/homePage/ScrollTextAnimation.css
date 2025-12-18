@@ -5,7 +5,7 @@
 .scroll-text-container {
   position: relative;
   width: 100%;
-  min-height: 350vh; /* Высота для скролла через секцию */
+  min-height: 370vh; /* Высота для скролла через секцию */
   z-index: 100;
   pointer-events: none;
 }
