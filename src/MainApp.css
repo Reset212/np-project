@@ -56,10 +56,10 @@
   }
   @media (max-width:1920px) {
   .view-project-button{
-    padding-top: 17px !important;
+    padding-top: 5px !important;
   }
   .chat-button{
-    padding-top: 17px !important;
+    padding-top: 9px !important;
   }
   }
   @media (max-width: 480px) {
