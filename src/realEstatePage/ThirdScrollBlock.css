@@ -158,7 +158,7 @@
 
 .third-button {
   width: 240px !important;
-  height: 35px;
+  height: 48px;
   background: rgba(230, 230, 230, 0.72);
   border: none;
   border-radius: 32px;
@@ -488,7 +488,7 @@
   .third-button{
     width: 216px !important;
     font-size: 16px !important;
-    height: 50px !important;
+    height: 48px !important;
   }
   .title-space {
     width: 20px;

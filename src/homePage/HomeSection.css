@@ -133,8 +133,8 @@
 
 /* Кнопка read more - теперь это div */
 .read-more-button {
-  width: 174px;
-  height: 35px;
+  width: 160px;
+  height: 40px;
   background: rgba(118, 118, 118, 0.16);
   border: 1.5px solid rgba(156, 156, 156, 0.32);
   backdrop-filter: blur(8px);
