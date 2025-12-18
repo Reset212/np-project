@@ -57,7 +57,9 @@
   .view-project-button{
     padding-top: 6px !important;
   }
-
+  .nav-item, .chat-button{
+    padding-top: 3px !important;
+  }
 }
 
 /* Фикс для старых Safari */
