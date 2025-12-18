@@ -137,17 +137,17 @@
 
 /* Кнопка CHAT WITH US - ПК версия */
 .chat-button {
-  margin-top: 3px;
+  padding-top: 3px !important;
+  margin-top: 3px !important;
   background-color: #76767634;
   width: 165px !important;
   height: 48px !important;
   white-space: nowrap !important;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
   border-radius: 30px;
   border: 0px solid rgba(255, 255, 255, 0.3) !important;
-  padding: 0 !important; /* Убираем все padding */
   font-size: 16px !important;
   color: white;
   cursor: none;
@@ -330,7 +330,7 @@
 .burger-menu,
 .mobile-chat-button,
 .mobile-dropdown {
-  display: none;
+  /* display: none; */
 }
 
 /* ============================================= */
@@ -354,7 +354,7 @@
   .nav-left, 
   .nav-right,
   .chat-button {
-    display: none !important;
+    /* display: none !important; */
   }
   
   /* Показываем элементы мобильной версии */
@@ -672,4 +672,45 @@
     font-size: 14px;
     width: 120px;
   }
+  @supports (-webkit-touch-callout: none) {
+  body, html, .App {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-font-smoothing: antialiased;
+  }
   
+  /* Фиксы для всех кнопок в приложении */
+
+  .view-project-button{
+    padding-top: 8px !important;
+  }
+  .nav-item, .chat-button{
+    padding-top: 20px !important;
+  }
+.chat-button {
+  padding-top: 6px !important;
+  margin-top: 3px !important;
+  background-color: #76767634;
+  width: 165px !important;
+  height: 48px !important;
+  white-space: nowrap !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 30px;
+  border: 0px solid rgba(255, 255, 255, 0.3) !important;
+  font-size: 16px !important;
+  color: white;
+  cursor: none;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(5px);
+  white-space: nowrap;
+  line-height: 1 !important; /* Добавляем line-height */
+  text-decoration: none !important;
+}
+  @media (max-width: 480px) {
+   .view-project-button{
+    padding-top: 16px !important;
+  }
+  }
+
+}
