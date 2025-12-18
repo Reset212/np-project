@@ -850,21 +850,21 @@ button,
 }
   
 }
-  @supports (-webkit-touch-callout: none) {
+
+@supports (-webkit-touch-callout: none) {
   body, html, .App {
     -webkit-tap-highlight-color: transparent;
     -webkit-font-smoothing: antialiased;
   }
   
   /* Фиксы для всех кнопок в приложении */
-@media (max-width: 1920px) {
+
   .view-project-button{
     padding-top: 8px !important;
   }
-  .chat-button{
+  .nav-item, .chat-button{
     padding-top: 20px !important;
   }
-}
 
   @media (max-width: 480px) {
    .view-project-button{

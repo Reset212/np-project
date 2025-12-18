@@ -132,20 +132,12 @@ const VideoBackground = () => {
             >
               ABOUT
             </Link>
-              <div 
-    className="nav-item chat-button"
-    onClick={scrollToContact}
-    role="button"
-    tabIndex={0}
-    onKeyDown={(e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        scrollToContact();
-      }
-    }}
-  >
-    CHAT WITH US
-  </div>
+            <button 
+              className="nav-item chat-button"
+              onClick={scrollToContact}
+            >
+              CHAT WITH US
+            </button>
           </div>
           
           {/* Мобильная навигация */}
@@ -261,12 +253,12 @@ const VideoBackground = () => {
 </div>
 
           {/* КНОПКА VIEW PROJECT */}
- <button 
-              className="nav-item chat-button"
-              onClick={scrollToContact}
-            >
-              CHAT WITH US
-            </button>
+          <button 
+            className="view-project-button"
+            onClick={() => alert("Viewing project...")}
+          >
+            VIEW PROJECT
+          </button>
         </div>
       </div>
     </>
