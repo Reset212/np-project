@@ -458,7 +458,7 @@
   .nav-left, 
   .nav-right,
   .chat-button {
-    display: none !important;
+    /* display:  !important; */
   }
   
   /* Показываем элементы мобильной версии */

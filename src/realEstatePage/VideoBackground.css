@@ -330,7 +330,7 @@
 .burger-menu,
 .mobile-chat-button,
 .mobile-dropdown {
-  display: none;
+  /* display: none; */
 }
 
 /* ============================================= */
@@ -354,7 +354,7 @@
   .nav-left, 
   .nav-right,
   .chat-button {
-    display: none !important;
+    /* display: none !important; */
   }
   
   /* Показываем элементы мобильной версии */

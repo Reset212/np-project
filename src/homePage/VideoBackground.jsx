@@ -253,12 +253,12 @@ const VideoBackground = () => {
 </div>
 
           {/* КНОПКА VIEW PROJECT */}
-          <button 
-            className="view-project-button"
-            onClick={() => alert("Viewing project...")}
-          >
-            VIEW PROJECT
-          </button>
+ <button 
+              className="nav-item chat-button"
+              onClick={scrollToContact}
+            >
+              CHAT WITH US
+            </button>
         </div>
       </div>
     </>
