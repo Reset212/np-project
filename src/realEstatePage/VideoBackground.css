@@ -678,13 +678,14 @@
   }
   
   /* Фиксы для всех кнопок в приложении */
-
+@media (max-width: 1920px) {
   .view-project-button{
     padding-top: 8px !important;
   }
-  .nav-item, .chat-button{
+  .chat-button{
     padding-top: 20px !important;
   }
+}
 
   @media (max-width: 480px) {
    .view-project-button{
