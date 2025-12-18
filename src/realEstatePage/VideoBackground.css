@@ -672,4 +672,25 @@
     font-size: 14px;
     width: 120px;
   }
+  @supports (-webkit-touch-callout: none) {
+  body, html, .App {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-font-smoothing: antialiased;
+  }
   
+  /* Фиксы для всех кнопок в приложении */
+
+  .view-project-button{
+    padding-top: 8px !important;
+  }
+  .nav-item, .chat-button{
+    padding-top: 20px !important;
+  }
+
+  @media (max-width: 480px) {
+   .view-project-button{
+    padding-top: 16px !important;
+  }
+  }
+
+}
