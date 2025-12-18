@@ -228,7 +228,7 @@
 /* МОБИЛЬНАЯ ВЕРСИЯ (480px и меньше) */
 @media (max-width: 480px) {
   .scroll-text-animation-wrapper {
-    height: 130vh;
+    height: 300vh !important; /* Увеличено с 130vh для более медленного скролла */
   }
 
   .scroll-text-fixed-container {
@@ -238,10 +238,54 @@
     height: 100vh;
   }
 
+  /* Улучшенные анимации для телефона */
+  .mobile-section {
+    position: absolute;
+    width: 100%;
+    max-width: 360px;
+    padding: 0 20px;
+    text-align: center;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); /* Увеличено с 0.4s */
+  }
+
+  .mobile-section.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  .mobile-section:not(.visible) {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); /* Увеличено с 0.25s */
+  }
+
+  .mobile-word {
+    display: inline-block;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-weight: 500;
+    font-size: 40px;
+    letter-spacing: -0.8px;
+    text-transform: uppercase;
+    color: #000000;
+    white-space: nowrap;
+
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), /* Увеличено с 0.35s */
+                transform 0.5s cubic-bezier(0.4, 0, 0.2, 1); /* Увеличено с 0.35s */
+  }
+
+  .mobile-word.active {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
   /* Адаптация для маленьких экранов */
   @media (max-width: 390px) {
     .mobile-word {
-      font-size: 36px;
+      font-size: 38px; /* Немного уменьшил для лучшего отображения */
     }
 
     .mobile-section {
@@ -249,13 +293,13 @@
     }
 
     .mobile-section-content {
-      gap: 10px;
+      gap: 15px; /* Увеличено с 10px */
     }
   }
 
   @media (max-width: 360px) {
     .mobile-word {
-      font-size: 34px;
+      font-size: 36px;
     }
 
     .mobile-section {
@@ -265,7 +309,7 @@
 
   @media (max-width: 320px) {
     .mobile-word {
-      font-size: 32px;
+      font-size: 34px;
     }
 
     .mobile-section {
@@ -273,7 +317,7 @@
     }
 
     .mobile-line {
-      gap: 5px;
+      gap: 8px; /* Увеличено с 5px */
     }
   }
 }
