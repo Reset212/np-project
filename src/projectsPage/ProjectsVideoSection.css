@@ -888,7 +888,7 @@
   }
 
   .mobile-static {
-    opacity: 0.6 !important;
+    opacity: 0 !important;
     filter: brightness(0.7) !important;
     pointer-events: none;
   }
