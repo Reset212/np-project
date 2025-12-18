@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import "./ScrollTextAnimation.css";
 
 const ScrollTextAnimation = () => {
@@ -10,8 +10,14 @@ const ScrollTextAnimation = () => {
   const wrapperRef = useRef(null);
   const animationFrameRef = useRef(null);
   const lastScrollYRef = useRef(0);
-  const lastProgressRef = useRef(0);
   const directionRef = useRef('down');
+  
+  // Новые рефы для плавности
+  const currentProgressRef = useRef(0);
+  const targetProgressRef = useRef(0);
+  const animationStartTimeRef = useRef(0);
+  const isAnimatingRef = useRef(false);
+  const lastWordStatesRef = useRef({});
 
   // Данные для текста - ДЕСКТОП (центрированные как в первом примере)
   const sections = [
@@ -46,6 +52,33 @@ const ScrollTextAnimation = () => {
   const getWordKey = (sectionIdx, lineIdx, wordIdx) =>
     `${sectionIdx}-${lineIdx}-${wordIdx}`;
 
+  // Функция для плавной интерполяции
+  const lerp = useCallback((start, end, factor) => {
+    return start + (end - start) * factor;
+  }, []);
+
+  // Функция для плавного обновления прогресса
+  const smoothProgress = useCallback((targetProgress) => {
+    const now = performance.now();
+    const elapsed = now - animationStartTimeRef.current;
+    
+    // Используем более плавную кривую для медленного скролла
+    const smoothingFactor = Math.min(elapsed / 300, 1); // Увеличиваем время сглаживания
+    const easedFactor = 1 - Math.pow(1 - smoothingFactor, 3); // Кубическое замедление
+    
+    currentProgressRef.current = lerp(currentProgressRef.current, targetProgress, easedFactor * 0.15); // Медленнее
+    
+    // Если мы близко к цели, заканчиваем анимацию
+    if (Math.abs(currentProgressRef.current - targetProgress) < 0.001) {
+      currentProgressRef.current = targetProgress;
+      isAnimatingRef.current = false;
+    } else {
+      isAnimatingRef.current = true;
+    }
+    
+    return currentProgressRef.current;
+  }, [lerp]);
+
   // Определение мобильного устройства с планшетной адаптацией
   useEffect(() => {
     const checkMobile = () => {
@@ -76,9 +109,12 @@ const ScrollTextAnimation = () => {
       }
       
       setWordStates(initialWordStates);
+      lastWordStatesRef.current = initialWordStates;
       setActiveSection(0);
       setSection1Visible(false);
       setSection2Visible(false);
+      currentProgressRef.current = 0;
+      targetProgressRef.current = 0;
     };
 
     checkMobile();
@@ -115,36 +151,53 @@ const ScrollTextAnimation = () => {
 
       if (!isVisible) {
         // Если блок не виден, скрываем всё
-        setActiveSection(0);
-        setSection1Visible(false);
-        setSection2Visible(false);
-        
-        const resetWordStates = {};
-        const currentSections = isMobile ? mobileSections : sections;
-        currentSections.forEach((section, sectionIdx) => {
-          section.lines.forEach((line, lineIdx) => {
-            line.forEach((_, wordIdx) => {
-              const key = getWordKey(sectionIdx, lineIdx, wordIdx);
-              resetWordStates[key] = false;
+        if (section1Visible || section2Visible) {
+          setActiveSection(0);
+          setSection1Visible(false);
+          setSection2Visible(false);
+          
+          const resetWordStates = {};
+          const currentSections = isMobile ? mobileSections : sections;
+          currentSections.forEach((section, sectionIdx) => {
+            section.lines.forEach((line, lineIdx) => {
+              line.forEach((_, wordIdx) => {
+                const key = getWordKey(sectionIdx, lineIdx, wordIdx);
+                resetWordStates[key] = false;
+              });
             });
           });
-        });
-        setWordStates(resetWordStates);
+          setWordStates(resetWordStates);
+          lastWordStatesRef.current = resetWordStates;
+          currentProgressRef.current = 0;
+          targetProgressRef.current = 0;
+        }
         
         animationFrameRef.current = requestAnimationFrame(updateAnimation);
         return;
       }
 
       // Вычисляем прогресс скролла внутри блока
-      let progress = 0;
+      let rawProgress = 0;
       if (rect.top <= 0) {
         const scrolled = Math.abs(rect.top);
         const maxScroll = rect.height - windowHeight;
         if (maxScroll > 0) {
-          progress = Math.min(1, scrolled / maxScroll);
+          rawProgress = Math.min(1, scrolled / maxScroll);
         }
       }
 
+      // Устанавливаем цель для плавной анимации
+      targetProgressRef.current = rawProgress;
+      
+      // Запускаем анимацию если нужно
+      if (!isAnimatingRef.current) {
+        animationStartTimeRef.current = performance.now();
+        isAnimatingRef.current = true;
+      }
+      
+      // Получаем плавный прогресс
+      const progress = smoothProgress(targetProgressRef.current);
+      
       // Инвертируем прогресс при скролле вверх
       let effectiveProgress = progress;
       if (directionRef.current === 'up') {
@@ -195,7 +248,8 @@ const ScrollTextAnimation = () => {
         }
 
         // Обновляем состояния слов для ОБЕИХ секций
-        const newWordStates = { ...wordStates };
+        const newWordStates = { ...lastWordStatesRef.current };
+        let needsUpdate = false;
         
         // ПЕРВАЯ СЕКЦИЯ
         const section1Data = sections[0];
@@ -271,7 +325,11 @@ const ScrollTextAnimation = () => {
         section1Data.lines.forEach((line, lineIdx) => {
           line.forEach((_, wordIdx) => {
             const key = getWordKey(0, lineIdx, wordIdx);
-            newWordStates[key] = (wordIndex1 < wordsToActivate1);
+            const shouldBeActive = (wordIndex1 < wordsToActivate1);
+            if (newWordStates[key] !== shouldBeActive) {
+              newWordStates[key] = shouldBeActive;
+              needsUpdate = true;
+            }
             wordIndex1++;
           });
         });
@@ -281,12 +339,19 @@ const ScrollTextAnimation = () => {
         section2Data.lines.forEach((line, lineIdx) => {
           line.forEach((_, wordIdx) => {
             const key = getWordKey(1, lineIdx, wordIdx);
-            newWordStates[key] = (wordIndex2 < wordsToActivate2);
+            const shouldBeActive = (wordIndex2 < wordsToActivate2);
+            if (newWordStates[key] !== shouldBeActive) {
+              newWordStates[key] = shouldBeActive;
+              needsUpdate = true;
+            }
             wordIndex2++;
           });
         });
 
-        setWordStates(newWordStates);
+        if (needsUpdate) {
+          setWordStates(newWordStates);
+          lastWordStatesRef.current = newWordStates;
+        }
       } 
       // ЛОГИКА ДЛЯ МОБИЛЬНОЙ ВЕРСИИ (только для экранов ≤ 480px)
       else {
@@ -331,7 +396,8 @@ const ScrollTextAnimation = () => {
         }
 
         // Обновляем состояния слов
-        const newWordStates = { ...wordStates };
+        const newWordStates = { ...lastWordStatesRef.current };
+        let needsUpdate = false;
         
         // Первая секция
         const section1Data = mobileSections[0];
@@ -405,7 +471,11 @@ const ScrollTextAnimation = () => {
         section1Data.lines.forEach((line, lineIdx) => {
           line.forEach((_, wordIdx) => {
             const key = getWordKey(0, lineIdx, wordIdx);
-            newWordStates[key] = (wordIndex1 < wordsToActivate1);
+            const shouldBeActive = (wordIndex1 < wordsToActivate1);
+            if (newWordStates[key] !== shouldBeActive) {
+              newWordStates[key] = shouldBeActive;
+              needsUpdate = true;
+            }
             wordIndex1++;
           });
         });
@@ -415,15 +485,21 @@ const ScrollTextAnimation = () => {
         section2Data.lines.forEach((line, lineIdx) => {
           line.forEach((_, wordIdx) => {
             const key = getWordKey(1, lineIdx, wordIdx);
-            newWordStates[key] = (wordIndex2 < wordsToActivate2);
+            const shouldBeActive = (wordIndex2 < wordsToActivate2);
+            if (newWordStates[key] !== shouldBeActive) {
+              newWordStates[key] = shouldBeActive;
+              needsUpdate = true;
+            }
             wordIndex2++;
           });
         });
 
-        setWordStates(newWordStates);
+        if (needsUpdate) {
+          setWordStates(newWordStates);
+          lastWordStatesRef.current = newWordStates;
+        }
       }
 
-      lastProgressRef.current = progress;
       animationFrameRef.current = requestAnimationFrame(updateAnimation);
     };
 
@@ -434,7 +510,7 @@ const ScrollTextAnimation = () => {
         cancelAnimationFrame(animationFrameRef.current);
       }
     };
-  }, [isMobile, activeSection, wordStates]);
+  }, [isMobile, section1Visible, section2Visible, smoothProgress]);
 
   // Рендер десктопной секции (центрированная как в первом примере)
   const renderDesktopSection = (sectionIdx) => {
@@ -460,7 +536,10 @@ const ScrollTextAnimation = () => {
                     <span
                       className={`desktop-word ${isWordActive ? 'active' : ''} ${sectionIdx === 1 ? 'section-2-word' : ''}`}
                       style={{
-                        transitionDelay: `${(lineIdx * line.length + wordIdx) * 0.02}s`
+                        transitionDelay: `${(lineIdx * line.length + wordIdx) * 0.02}s`,
+                        transition: isWordActive 
+                          ? 'opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)'
+                          : 'opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1), transform 0.25s cubic-bezier(0.4, 0, 0.2, 1)'
                       }}
                     >
                       {word}
@@ -503,7 +582,10 @@ const ScrollTextAnimation = () => {
                     <span
                       className={`mobile-word ${isWordActive ? 'active' : ''} ${sectionIdx === 1 ? 'mobile-word-2' : ''}`}
                       style={{
-                        transitionDelay: `${(lineIdx * line.length + wordIdx) * 0.015}s`
+                        transitionDelay: `${(lineIdx * line.length + wordIdx) * 0.015}s`,
+                        transition: isWordActive 
+                          ? 'opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1), transform 0.35s cubic-bezier(0.4, 0, 0.2, 1)'
+                          : 'opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1), transform 0.2s cubic-bezier(0.4, 0, 0.2, 1)'
                       }}
                     >
                       {word}
