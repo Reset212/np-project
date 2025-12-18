@@ -55,7 +55,7 @@
     padding-top: 18px !important;
   }
   .view-project-button{
-    padding-top: 8px !important;
+    padding-top: 7px !important;
   }
   .nav-item, .chat-button{
     padding-top: 20px !important;
@@ -63,7 +63,7 @@
 
   @media (max-width: 480px) {
    .view-project-button{
-    padding-top: 16px !important;
+    padding-top: 6px !important;
   }
   }
 
