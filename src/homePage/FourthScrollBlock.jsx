@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./FourthScrollBlock.css";
 
 const FourthScrollBlock = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
+  const cityRefs = useRef([]);
 
   // Обновляем время каждую секунду
   useEffect(() => {
@@ -13,25 +14,69 @@ const FourthScrollBlock = () => {
     return () => clearInterval(timer);
   }, []);
 
+  // Инициализация Intersection Observer
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const cityLine = entry.target;
+          
+          if (entry.isIntersecting) {
+            // Когда элемент появляется в viewport (с любой стороны)
+            cityLine.classList.add("visible");
+            cityLine.classList.remove("hidden");
+          } else {
+            // Когда элемент уходит из viewport
+            const rect = entry.boundingClientRect;
+            const windowHeight = window.innerHeight;
+            
+            // Если элемент ушел вверх (верхняя граница выше viewport)
+            // ИЛИ если элемент ушел вниз (нижняя граница ниже viewport)
+            if (rect.top < 0 || rect.bottom > windowHeight) {
+              cityLine.classList.add("hidden");
+              cityLine.classList.remove("visible");
+            }
+          }
+        });
+      },
+      {
+        root: null,
+        rootMargin: "0px",
+        threshold: 0.1,
+      }
+    );
+
+    // Наблюдаем за всеми элементами городов
+    cityRefs.current.forEach((ref) => {
+      if (ref) observer.observe(ref);
+    });
+
+    return () => {
+      cityRefs.current.forEach((ref) => {
+        if (ref) observer.unobserve(ref);
+      });
+    };
+  }, []);
+
   // Функция для получения времени в разных городах
   const getCityTime = (city, baseTime = currentTime) => {
     const time = new Date(baseTime);
     
     switch(city) {
       case 'DUBAI':
-        time.setHours(time.getHours() + 4); // UTC+4
+        time.setHours(time.getHours() + 4);
         break;
       case 'NEW YORK':
-        time.setHours(time.getHours() - 5); // UTC-5
+        time.setHours(time.getHours() - 5);
         break;
       case 'MOSCOW':
-        time.setHours(time.getHours() + 3); // UTC+3
+        time.setHours(time.getHours() + 3);
         break;
       case 'CAPE TOWN':
-        time.setHours(time.getHours() + 2); // UTC+2
+        time.setHours(time.getHours() + 2);
         break;
       case 'PARIS':
-        time.setHours(time.getHours() + 1); // UTC+1
+        time.setHours(time.getHours() + 1);
         break;
       default:
         break;
@@ -59,10 +104,14 @@ const FourthScrollBlock = () => {
       <div className="fourth-content">
         <div className="cities-container">
           {cities.map((city, index) => (
-            <div key={index} className="city-line">
-            
-              
-              {/* Вариант 2: с flexbox (более надежный, включается на мобильных) */}
+            <div 
+              key={index} 
+              className="city-line"
+              ref={(el) => (cityRefs.current[index] = el)}
+              style={{
+                transitionDelay: `${index * 150}ms`
+              }}
+            >
               <div className="city-container-flex">
                 <div className="city-name-flex">{city.name}</div>
                 <div className="city-time-flex">{getCityTime(city.name)}</div>
