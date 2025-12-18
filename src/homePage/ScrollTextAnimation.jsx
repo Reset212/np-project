@@ -9,7 +9,6 @@ const ScrollTextAnimation = () => {
   const [section2Visible, setSection2Visible] = useState(false);
   const wrapperRef = useRef(null);
   const animationFrameRef = useRef(null);
-  const lastScrollYRef = useRef(0);
   
   // Рефы для плавности
   const currentProgressRef = useRef(0);
@@ -158,13 +157,47 @@ const ScrollTextAnimation = () => {
         return;
       }
 
-      // Вычисляем прогресс скролла внутри блока
+      // ОСНОВНОЕ ИЗМЕНЕНИЕ: используем позицию блока относительно окна
+      // Вычисляем, насколько блок "вошел" в окно просмотра сверху
+      const blockTopRelativeToWindow = rect.top;
+      
+      // Вычисляем высоту видимой части блока (как в оригинальном примере)
+      let visibleHeight = 0;
+      if (rect.bottom > 0 && rect.top < windowHeight) {
+        visibleHeight = Math.min(rect.bottom, windowHeight) - Math.max(rect.top, 0);
+      }
+      
+      // Вычисляем прогресс: 0 когда блок только начал появляться снизу
+      // 1 когда блок полностью проскроллен
       let rawProgress = 0;
-      if (rect.top <= 0) {
-        const scrolled = Math.abs(rect.top);
-        const maxScroll = rect.height - windowHeight;
-        if (maxScroll > 0) {
-          rawProgress = Math.min(1, scrolled / maxScroll);
+      
+      // Для мобильной версии: строго привязываем анимацию к положению блока
+      if (isMobile) {
+        // Когда блок начинает появляться снизу (top > 0, bottom > windowHeight)
+        if (rect.top > 0) {
+          // Блок еще не дошел до верха экрана
+          rawProgress = 0;
+        } else {
+          // Блок уже вышел за верх экрана (top <= 0)
+          const scrolled = Math.abs(rect.top);
+          const blockHeight = rect.height;
+          const maxScroll = blockHeight - windowHeight;
+          
+          if (maxScroll > 0) {
+            rawProgress = Math.min(1, scrolled / maxScroll);
+          } else {
+            // Если блок меньше высоты окна
+            rawProgress = Math.min(1, Math.abs(rect.top) / windowHeight);
+          }
+        }
+      } else {
+        // Десктопная версия - оригинальная логика
+        if (rect.top <= 0) {
+          const scrolled = Math.abs(rect.top);
+          const maxScroll = rect.height - windowHeight;
+          if (maxScroll > 0) {
+            rawProgress = Math.min(1, scrolled / maxScroll);
+          }
         }
       }
 
@@ -279,9 +312,9 @@ const ScrollTextAnimation = () => {
           });
         });
       } 
-      // МОБИЛЬНАЯ ВЕРСИЯ (только телефоны)
+      // МОБИЛЬНАЯ ВЕРСИЯ (только телефоны) - ИСПРАВЛЕННАЯ ЛОГИКА
       else {
-        // ДЛЯ ТЕЛЕФОНА: более медленная и плавная анимация
+        // ДЛЯ ТЕЛЕФОНА: строго в рамках блока
         // Первая секция
         const section1Data = mobileSections[0];
         const totalWords1 = section1Data.lines.flat().length;
@@ -292,17 +325,17 @@ const ScrollTextAnimation = () => {
         const totalWords2 = section2Data.lines.flat().length;
         let wordsToActivate2 = 0;
         
-        // МЕДЛЕННЕЕ ДЛЯ ТЕЛЕФОНА: 0-50% - первая секция
-        if (progress < 0.5) {
-          let section1Progress = progress / 0.5;
-          // Медленнее активируем слова для телефона
+        // Мобильная логика: анимация только когда блок в видимой области
+        // 0-60% - первая секция (увеличено для плавности)
+        if (progress < 0.6) {
+          let section1Progress = progress / 0.6;
           wordsToActivate1 = Math.min(
             totalWords1,
-            Math.floor(section1Progress * totalWords1 * 1.2) // Меньше множитель для плавности
+            Math.floor(section1Progress * totalWords1 * 1.2)
           );
-        } else if (progress < 0.55) {
-          // 50-55%: плавное скрытие первой секции (медленнее для телефона)
-          let hideProgress = (progress - 0.5) / 0.05;
+        } else if (progress < 0.65) {
+          // 60-65%: плавное скрытие первой секции
+          let hideProgress = (progress - 0.6) / 0.05;
           wordsToActivate1 = Math.max(
             0,
             Math.floor((1 - hideProgress) * totalWords1)
@@ -310,19 +343,19 @@ const ScrollTextAnimation = () => {
         }
         
         // Вторая секция для телефона
-        if (progress >= 0.55 && progress < 0.8) {
-          // 55-80%: активация второй секции (больший диапазон для телефона)
-          let section2Progress = (progress - 0.55) / 0.25;
+        if (progress >= 0.65 && progress < 0.85) {
+          // 65-85%: активация второй секции
+          let section2Progress = (progress - 0.65) / 0.2;
           wordsToActivate2 = Math.min(
             totalWords2,
-            Math.floor(section2Progress * totalWords2 * 1.2) // Медленнее для телефона
+            Math.floor(section2Progress * totalWords2 * 1.2)
           );
-        } else if (progress >= 0.8 && progress < 0.9) {
-          // 80-90%: полная вторая секция
+        } else if (progress >= 0.85 && progress < 0.95) {
+          // 85-95%: полная вторая секция
           wordsToActivate2 = totalWords2;
-        } else if (progress >= 0.9) {
-          // 90-100%: очень плавное скрытие для телефона
-          let fadeOutProgress = 1 - ((progress - 0.9) / 0.1);
+        } else if (progress >= 0.95) {
+          // 95-100%: плавное скрытие
+          let fadeOutProgress = 1 - ((progress - 0.95) / 0.05);
           wordsToActivate2 = Math.max(
             0,
             Math.floor(fadeOutProgress * totalWords2)
@@ -445,11 +478,10 @@ const ScrollTextAnimation = () => {
                     <span
                       className={`mobile-word ${isWordActive ? 'active' : ''} ${sectionIdx === 1 ? 'mobile-word-2' : ''}`}
                       style={{
-                        // БОЛЬШЕЕ ЗАДЕРЖКА для телефона
-                        transitionDelay: `${(lineIdx * line.length + wordIdx) * 0.03}s`, // Увеличено с 0.015s до 0.03s
+                        transitionDelay: `${(lineIdx * line.length + wordIdx) * 0.03}s`,
                         transition: isWordActive 
-                          ? 'opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)' // Увеличено с 0.35s до 0.5s
-                          : 'opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)' // Увеличено с 0.2s до 0.3s
+                          ? 'opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)'
+                          : 'opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
                       }}
                     >
                       {word}
