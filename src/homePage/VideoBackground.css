@@ -868,7 +868,7 @@ button,
 
   @media (max-width: 480px) {
    .view-project-button{
-    padding-top: 6px !important;
+    padding-top: 16px !important;
   }
   }
 
