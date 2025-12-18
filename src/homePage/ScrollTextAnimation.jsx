@@ -32,17 +32,19 @@ const ScrollTextAnimation = () => {
     }
   ];
 
-  // Данные для текста - МОБИЛЬНАЯ ВЕРСИЯ
+  // Данные для текста - МОБИЛЬНАЯ ВЕРСИЯ (обновленная)
   const mobileSections = [
     {
       lines: [
-        ["WE", "BRING", "IDEAS", "TO", "LIFE"],
-        ["THROUGH", "BRANDING,", "VISUALS", "AND", "HYPE"]
+        ["WE", "BRING", "IDEAS"],
+        ["TO", "LIFE", "THROUGH"],
+        ["BRANDING,", "VISUALS", "AND", "HYPE"]
       ]
     },
     {
       lines: [
-        ["EVERY", "PROJECT", "SUCCEEDS"]
+        ["EVERY", "PROJECT"],
+        ["SUCCEEDS"]
       ]
     }
   ];
@@ -80,7 +82,7 @@ const ScrollTextAnimation = () => {
   // Определение мобильного устройства
   useEffect(() => {
     const checkMobile = () => {
-      const mobile = window.innerWidth <= 480;
+      const mobile = window.innerWidth <= 768; // Изменил на 768 для лучшего адаптива
       setIsMobile(mobile);
 
       const initialWordStates = {};
@@ -157,38 +159,35 @@ const ScrollTextAnimation = () => {
         return;
       }
 
-      // ОСНОВНОЕ ИЗМЕНЕНИЕ: используем позицию блока относительно окна
-      // Вычисляем, насколько блок "вошел" в окно просмотра сверху
-      const blockTopRelativeToWindow = rect.top;
-      
-      // Вычисляем высоту видимой части блока (как в оригинальном примере)
-      let visibleHeight = 0;
-      if (rect.bottom > 0 && rect.top < windowHeight) {
-        visibleHeight = Math.min(rect.bottom, windowHeight) - Math.max(rect.top, 0);
-      }
-      
-      // Вычисляем прогресс: 0 когда блок только начал появляться снизу
-      // 1 когда блок полностью проскроллен
+      // Вычисляем прогресс в зависимости от видимости блока
       let rawProgress = 0;
       
-      // Для мобильной версии: строго привязываем анимацию к положению блока
+      // Для мобильной версии: ограничиваем анимацию только когда блок в центре экрана
       if (isMobile) {
-        // Когда блок начинает появляться снизу (top > 0, bottom > windowHeight)
-        if (rect.top > 0) {
-          // Блок еще не дошел до верха экрана
-          rawProgress = 0;
+        // Высота самого блока фиксированного контейнера
+        const blockHeight = windowHeight; // 100vh
+        
+        // Когда блок находится в центре экрана
+        const blockCenter = rect.top + (blockHeight / 2);
+        const windowCenter = windowHeight / 2;
+        
+        // Расстояние от центра блока до центра окна
+        const distanceFromCenter = Math.abs(blockCenter - windowCenter);
+        
+        // Максимальное расстояние, при котором анимация работает
+        const maxDistance = windowHeight * 0.4; // 40% высоты окна
+        
+        if (distanceFromCenter < maxDistance) {
+          // Блок близко к центру - запускаем анимацию
+          rawProgress = 1 - (distanceFromCenter / maxDistance);
         } else {
-          // Блок уже вышел за верх экрана (top <= 0)
-          const scrolled = Math.abs(rect.top);
-          const blockHeight = rect.height;
-          const maxScroll = blockHeight - windowHeight;
-          
-          if (maxScroll > 0) {
-            rawProgress = Math.min(1, scrolled / maxScroll);
-          } else {
-            // Если блок меньше высоты окна
-            rawProgress = Math.min(1, Math.abs(rect.top) / windowHeight);
-          }
+          // Блок далеко от центра - анимация не активна
+          rawProgress = 0;
+        }
+        
+        // Дополнительная проверка: блок должен быть видимым
+        if (rect.top > windowHeight || rect.bottom < 0) {
+          rawProgress = 0;
         }
       } else {
         // Десктопная версия - оригинальная логика
@@ -205,7 +204,7 @@ const ScrollTextAnimation = () => {
       targetProgressRef.current = rawProgress;
       
       // Запускаем анимацию если нужно
-      if (!isAnimatingRef.current) {
+      if (!isAnimatingRef.current && Math.abs(targetProgressRef.current - currentProgressRef.current) > 0.01) {
         animationStartTimeRef.current = performance.now();
         isAnimatingRef.current = true;
       }
@@ -223,13 +222,8 @@ const ScrollTextAnimation = () => {
         setSection1Visible(true);
         setSection2Visible(false);
         setActiveSection(0);
-      } else if (progress < 0.9) {
-        // Вторая секция активна
-        setSection1Visible(false);
-        setSection2Visible(true);
-        setActiveSection(1);
       } else {
-        // Финальная часть
+        // Вторая секция активна
         setSection1Visible(false);
         setSection2Visible(true);
         setActiveSection(1);
@@ -237,19 +231,17 @@ const ScrollTextAnimation = () => {
       
       // РАЗНАЯ ЛОГИКА ДЛЯ МОБИЛЬНОЙ И ДЕСКТОПНОЙ ВЕРСИЙ
       
-      // ДЕСКТОПНАЯ ВЕРСИЯ (включая планшеты)
       if (!isMobile) {
-        // Первая секция
+        // ДЕСКТОПНАЯ ВЕРСИЯ
         const section1Data = sections[0];
         const totalWords1 = section1Data.lines.flat().length;
         let wordsToActivate1 = 0;
         
-        // Вторая секция
         const section2Data = sections[1];
         const totalWords2 = section2Data.lines.flat().length;
         let wordsToActivate2 = 0;
         
-        // Логика для десктопа
+        // Десктоп логика
         if (progress < 0.4) {
           let section1Progress = progress / 0.4;
           wordsToActivate1 = Math.min(
@@ -257,7 +249,6 @@ const ScrollTextAnimation = () => {
             Math.floor(section1Progress * totalWords1 * 1.5)
           );
         } else if (progress < 0.5) {
-          // 40-50%: быстрое скрытие первой секции
           let hideProgress = (progress - 0.4) / 0.1;
           wordsToActivate1 = Math.max(
             0,
@@ -273,10 +264,8 @@ const ScrollTextAnimation = () => {
             Math.floor(section2Progress * totalWords2 * 1.5)
           );
         } else if (progress >= 0.75 && progress < 0.85) {
-          // 75-85%: полная вторая секция
           wordsToActivate2 = totalWords2;
         } else if (progress >= 0.85) {
-          // 85-100%: плавное скрытие
           let fadeOutProgress = 1 - ((progress - 0.85) / 0.15);
           wordsToActivate2 = Math.max(
             0,
@@ -284,7 +273,7 @@ const ScrollTextAnimation = () => {
           );
         }
         
-        // Применяем состояния для первой секции (десктоп)
+        // Применяем состояния для десктопа
         let wordIndex1 = 0;
         section1Data.lines.forEach((line, lineIdx) => {
           line.forEach((_, wordIdx) => {
@@ -298,7 +287,6 @@ const ScrollTextAnimation = () => {
           });
         });
         
-        // Применяем состояния для второй секции (десктоп)
         let wordIndex2 = 0;
         section2Data.lines.forEach((line, lineIdx) => {
           line.forEach((_, wordIdx) => {
@@ -311,58 +299,38 @@ const ScrollTextAnimation = () => {
             wordIndex2++;
           });
         });
-      } 
-      // МОБИЛЬНАЯ ВЕРСИЯ (только телефоны) - ИСПРАВЛЕННАЯ ЛОГИКА
-      else {
-        // ДЛЯ ТЕЛЕФОНА: строго в рамках блока
-        // Первая секция
+      } else {
+        // МОБИЛЬНАЯ ВЕРСИЯ - УПРОЩЕННАЯ ЛОГИКА
         const section1Data = mobileSections[0];
         const totalWords1 = section1Data.lines.flat().length;
         let wordsToActivate1 = 0;
         
-        // Вторая секция
         const section2Data = mobileSections[1];
         const totalWords2 = section2Data.lines.flat().length;
         let wordsToActivate2 = 0;
         
-        // Мобильная логика: анимация только когда блок в видимой области
-        // 0-60% - первая секция (увеличено для плавности)
-        if (progress < 0.6) {
-          let section1Progress = progress / 0.6;
+        // Упрощенная логика для телефона
+        if (progress < 0.5) {
+          // Первая секция появляется
           wordsToActivate1 = Math.min(
             totalWords1,
-            Math.floor(section1Progress * totalWords1 * 1.2)
+            Math.floor((progress / 0.5) * totalWords1)
           );
-        } else if (progress < 0.65) {
-          // 60-65%: плавное скрытие первой секции
-          let hideProgress = (progress - 0.6) / 0.05;
-          wordsToActivate1 = Math.max(
-            0,
-            Math.floor((1 - hideProgress) * totalWords1)
-          );
-        }
-        
-        // Вторая секция для телефона
-        if (progress >= 0.65 && progress < 0.85) {
-          // 65-85%: активация второй секции
-          let section2Progress = (progress - 0.65) / 0.2;
+        } else {
+          // Вторая секция появляется
           wordsToActivate2 = Math.min(
             totalWords2,
-            Math.floor(section2Progress * totalWords2 * 1.2)
+            Math.floor(((progress - 0.5) / 0.5) * totalWords2)
           );
-        } else if (progress >= 0.85 && progress < 0.95) {
-          // 85-95%: полная вторая секция
-          wordsToActivate2 = totalWords2;
-        } else if (progress >= 0.95) {
-          // 95-100%: плавное скрытие
-          let fadeOutProgress = 1 - ((progress - 0.95) / 0.05);
-          wordsToActivate2 = Math.max(
-            0,
-            Math.floor(fadeOutProgress * totalWords2)
-          );
+          
+          // Плавно скрываем первую секцию
+          if (progress > 0.6) {
+            const hideProgress = Math.min(1, (progress - 0.6) / 0.2);
+            wordsToActivate1 = Math.max(0, Math.floor((1 - hideProgress) * totalWords1));
+          }
         }
         
-        // Применяем состояния для первой секции (телефон)
+        // Применяем состояния для мобильной версии
         let wordIndex1 = 0;
         section1Data.lines.forEach((line, lineIdx) => {
           line.forEach((_, wordIdx) => {
@@ -376,7 +344,6 @@ const ScrollTextAnimation = () => {
           });
         });
         
-        // Применяем состояния для второй секции (телефон)
         let wordIndex2 = 0;
         section2Data.lines.forEach((line, lineIdx) => {
           line.forEach((_, wordIdx) => {
@@ -454,7 +421,7 @@ const ScrollTextAnimation = () => {
     );
   };
 
-  // Рендер мобильной секции с улучшенными настройками для телефона
+  // Рендер мобильной секции
   const renderMobileSection = (sectionIdx) => {
     const section = mobileSections[sectionIdx];
     const isActive = sectionIdx === activeSection;
@@ -476,12 +443,12 @@ const ScrollTextAnimation = () => {
                 return (
                   <React.Fragment key={`mobile-word-${key}`}>
                     <span
-                      className={`mobile-word ${isWordActive ? 'active' : ''} ${sectionIdx === 1 ? 'mobile-word-2' : ''}`}
+                      className={`mobile-word ${isWordActive ? 'active' : ''}`}
                       style={{
                         transitionDelay: `${(lineIdx * line.length + wordIdx) * 0.03}s`,
                         transition: isWordActive 
-                          ? 'opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)'
-                          : 'opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+                          ? 'opacity 0.5s ease-out, transform 0.5s ease-out'
+                          : 'opacity 0.3s ease-out, transform 0.3s ease-out'
                       }}
                     >
                       {word}

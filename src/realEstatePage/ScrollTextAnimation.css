@@ -21,6 +21,7 @@
   position: relative;
   width: 100%;
   height: 100%;
+  overflow: hidden; /* Добавлено для предотвращения выхода за границы */
 }
 
 /* ДЕСКТОПНЫЕ СТИЛИ - ЦЕНТРИРОВАННЫЕ */
@@ -111,7 +112,7 @@
   height: 1px;
 }
 
-/* МОБИЛЬНЫЕ СТИЛИ */
+/* МОБИЛЬНЫЕ СТИЛИ - ПЕРЕРАБОТАННЫЕ */
 .mobile-sections-container {
   width: 100%;
   height: 100%;
@@ -120,18 +121,20 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  overflow: hidden; /* Предотвращаем выход текста за границы */
 }
 
 .mobile-section {
   position: absolute;
   width: 100%;
-  max-width: 360px;
-  padding: 0 20px;
+  max-width: 90%; /* Уменьшено для гарантии, что текст не выйдет за границы */
+  padding: 0 5%;
   text-align: center;
   opacity: 0;
   visibility: hidden;
   transform: translateY(10px);
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.5s ease-out;
+  box-sizing: border-box; /* Учитываем padding в общей ширине */
 }
 
 .mobile-section.visible {
@@ -141,38 +144,42 @@
 }
 
 .mobile-section:not(.visible) {
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.4s ease-out;
 }
 
 .mobile-section-content {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
   align-items: center;
+  width: 100%;
+  overflow: hidden;
 }
 
 .mobile-line {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 6px;
-  line-height: 1.2;
+  align-items: center;
+  gap: 4px;
+  line-height: 1.1;
+  width: 100%;
+  overflow: hidden;
 }
 
 .mobile-word {
   display: inline-block;
   font-family: 'Helvetica Neue', Arial, sans-serif;
   font-weight: 500;
-  font-size: 40px;
-  letter-spacing: -0.8px;
+  font-size: 32px; /* Уменьшено для лучшего отображения на телефонах */
+  letter-spacing: -0.5px;
   text-transform: uppercase;
   color: #000000;
   white-space: nowrap;
-
+  flex-shrink: 0;
   opacity: 0;
-  transform: translateY(10px);
-  transition: opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1),
-              transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateY(8px);
+  transition: opacity 0.4s ease-out, transform 0.4s ease-out;
 }
 
 .mobile-word.active {
@@ -182,10 +189,11 @@
 
 .mobile-word-space {
   display: inline-block;
-  width: 6px;
+  width: 4px;
+  flex-shrink: 0;
 }
 
-/* АДАПТАЦИЯ ДЛЯ 1040px И МЕНЬШЕ - АДАПТИВНОСТЬ ИЗ ВТОРОГО ПРИМЕРА */
+/* АДАПТАЦИЯ ДЛЯ 1040px И МЕНЬШЕ */
 @media (max-width: 1040px) {
   .scroll-text-animation-wrapper {
     height: 200vh;
@@ -204,13 +212,12 @@
   }
 }
 
-/* Адаптивность для ПЛАНШЕТОВ (768px) - АДАПТИВНОСТЬ ИЗ ВТОРОГО ПРИМЕРА */
+/* Адаптивность для ПЛАНШЕТОВ (768px) */
 @media (max-width: 768px) {
   .scroll-text-animation-wrapper {
     height: 150vh;
   }
   
-  /* На планшетах включаем перенос как во втором примере */
   .desktop-line {
     flex-wrap: wrap;
   }
@@ -223,12 +230,21 @@
     max-width: 800px;
     padding: 0 30px;
   }
+  
+  /* На планшетах тоже используем мобильную версию */
+  .mobile-sections-container {
+    display: flex;
+  }
+  
+  .desktop-sections-container {
+    display: none;
+  }
 }
 
-/* МОБИЛЬНАЯ ВЕРСИЯ (480px и меньше) */
-@media (max-width: 480px) {
+/* МОБИЛЬНАЯ ВЕРСИЯ (до 768px) */
+@media (max-width: 768px) {
   .scroll-text-animation-wrapper {
-    height: 130vh;
+    height: 200vh !important; /* Уменьшено для компактности */
   }
 
   .scroll-text-fixed-container {
@@ -236,44 +252,115 @@
     align-items: center;
     justify-content: center;
     height: 100vh;
+    padding: 0 5%; /* Добавлены отступы по бокам */
   }
 
-  /* Адаптация для маленьких экранов */
-  @media (max-width: 390px) {
+  /* Улучшенные стили для мобильной версии */
+  .mobile-section {
+    position: absolute;
+    width: 100%;
+    max-width: 95%; /* Увеличено для лучшего использования пространства */
+    padding: 0;
+    text-align: center;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(8px);
+    transition: all 0.5s ease-out;
+  }
+
+  .mobile-section.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  .mobile-section:not(.visible) {
+    transition: all 0.4s ease-out;
+  }
+
+  .mobile-word {
+    font-size: 32px;
+    font-weight: 500;
+    letter-spacing: -0.5px;
+    margin: 2px 3px; /* Добавлены небольшие отступы */
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+  }
+
+  .mobile-word.active {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .mobile-section-content {
+    gap: 6px; /* Уменьшено для компактности */
+  }
+
+  .mobile-line {
+    gap: 4px; /* Уменьшено для компактности */
+    justify-content: center;
+    padding: 0 10px; /* Отступы по бокам строки */
+  }
+
+  /* Адаптация для разных размеров экранов */
+  @media (max-width: 480px) {
     .mobile-word {
-      font-size: 36px;
+      font-size: 30px;
     }
-
-    .mobile-section {
-      max-width: 340px;
+    
+    .scroll-text-animation-wrapper {
+      height: 180vh !important;
     }
+  }
 
+  @media (max-width: 420px) {
+    .mobile-word {
+      font-size: 28px;
+    }
+    
+    .mobile-line {
+      gap: 3px;
+    }
+  }
+
+  @media (max-width: 375px) {
+    .mobile-word {
+      font-size: 26px;
+      margin: 1px 2px;
+    }
+    
     .mobile-section-content {
-      gap: 10px;
-    }
-  }
-
-  @media (max-width: 360px) {
-    .mobile-word {
-      font-size: 34px;
-    }
-
-    .mobile-section {
-      max-width: 320px;
+      gap: 4px;
     }
   }
 
   @media (max-width: 320px) {
     .mobile-word {
-      font-size: 32px;
+      font-size: 24px;
     }
+    
+    .scroll-text-animation-wrapper {
+      height: 160vh !important;
+    }
+  }
+}
 
-    .mobile-section {
-      max-width: 300px;
-    }
-
-    .mobile-line {
-      gap: 5px;
-    }
+/* Большие планшеты (769px - 1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .scroll-text-animation-wrapper {
+    height: 200vh;
+  }
+  
+  .mobile-word {
+    font-size: 40px; /* Увеличенный размер для планшетов */
+  }
+  
+  .mobile-line {
+    gap: 6px;
+  }
+  
+  .mobile-section-content {
+    gap: 10px;
   }
 }
