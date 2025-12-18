@@ -36,7 +36,7 @@ const videoData = [
     title: "BRUNELLO",
     description: "WE COMBINE FILM AND REAL ESTATE ADVERTISING. REAL ESTATE IS SOLD THROUGH EMOTION, THROUGH STORYTELLING, AND THROUGH THE EXPERIENCE OF BEING IN IT.",
     videoUrl: VideoPlaceholder,
-    previewImage: "/projectImage/BRUNELLO.png", // Путь к изображению превью
+    previewImage: "/projectImage/BRUNELLO.png",
     desktopMainCategory: "VIDEO",
     desktopSubCategory: "Real Estate development",
     mobileCategories: ["VIDEO"],
@@ -167,9 +167,10 @@ const ProjectsVideoSection = () => {
   const [desktopSubcategoriesOpen, setDesktopSubcategoriesOpen] = useState(false);
   const [desktopAnimationState, setDesktopAnimationState] = useState('closed');
   
-  // Состояния для мобильной версии
+  // Состояния для мобильной версии - ИСПРАВЛЕННЫЕ
   const [openCategory, setOpenCategory] = useState(null);
   const [mobileAnimationState, setMobileAnimationState] = useState('closed');
+  const [mobileSubcategoriesVisible, setMobileSubcategoriesVisible] = useState(false);
 
   const videoRefs = useRef({});
   const popupVideoRef = useRef(null);
@@ -257,7 +258,7 @@ const ProjectsVideoSection = () => {
     setSelectedSubCategory(subCategory === selectedSubCategory ? null : subCategory);
   };
 
-  // Обработчик выбора главной категории на мобильном
+  // Обработчик выбора главной категории на мобильном - ИСПРАВЛЕННЫЙ
   const handleMobileCategoryClick = (category) => {
     if (openCategory === category && mobileAnimationState === 'open') {
       closeMobileSubcategories();
@@ -274,19 +275,25 @@ const ProjectsVideoSection = () => {
     }
   };
 
-  // Открытие подкатегорий на мобильном
+  // Открытие подкатегорий на мобильном - ИСПРАВЛЕННОЕ
   const openMobileSubcategories = (category) => {
-    setMobileAnimationState('opening');
     setOpenCategory(category);
     setSelectedMainCategory(category);
     setSelectedSubCategory(null);
     
+    // Даем время для рендера элемента с начальным состоянием
     setTimeout(() => {
-      setMobileAnimationState('open');
+      setMobileAnimationState('opening');
+      setMobileSubcategoriesVisible(true);
+      
+      // Даем время для применения начальных стилей
+      setTimeout(() => {
+        setMobileAnimationState('open');
+      }, 20);
     }, 10);
   };
 
-  // Закрытие подкатегорий на мобильном
+  // Закрытие подкатегорий на мобильном - ИСПРАВЛЕННОЕ
   const closeMobileSubcategories = (callback = null) => {
     setMobileAnimationState('closing');
     
@@ -296,10 +303,15 @@ const ProjectsVideoSection = () => {
       setSelectedMainCategory(null);
       setSelectedSubCategory(null);
       
-      if (callback) {
-        callback();
-      }
-    }, 500);
+      // Даем время для завершения анимации закрытия
+      setTimeout(() => {
+        setMobileSubcategoriesVisible(false);
+        
+        if (callback) {
+          callback();
+        }
+      }, 50);
+    }, 400); // Длительность анимации закрытия
   };
 
   // Обработчик выбора подкатегории на мобильном
@@ -445,7 +457,7 @@ const ProjectsVideoSection = () => {
           )}
         </div>
 
-        {/* Мобильная фильтрация */}
+        {/* Мобильная фильтрация - ИСПРАВЛЕННЫЙ КОД */}
         {isMobile && (
           <div className="mobile-category-filter">
             <div className="mobile-main-categories">
@@ -462,31 +474,32 @@ const ProjectsVideoSection = () => {
                     {category}
                   </div>
                   
-                  {/* Подкатегории с анимацией */}
-                  {openCategory === category && getSubcategoriesForCategory(category).length > 0 && (
-                    <div 
-                      className={`mobile-subcategories ${
-                        mobileAnimationState === 'opening' || mobileAnimationState === 'open' ? 'open' : 
+                  {/* Подкатегории с анимацией - ВСЕГДА В DOM, но скрыты */}
+                  <div 
+                    className={`mobile-subcategories ${
+                      mobileSubcategoriesVisible && openCategory === category ? (
+                        mobileAnimationState === 'opening' ? 'opening' :
+                        mobileAnimationState === 'open' ? 'open' : 
                         mobileAnimationState === 'closing' ? 'closing' : ''
-                      }`}
-                    >
-                      {getSubcategoriesForCategory(category).map((subCategory, index) => (
-                        <div
-                          key={subCategory}
-                          className={`mobile-subcategory-text ${
-                            selectedSubCategory === subCategory ? 'active' : ''
-                          }`}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleSubCategorySelect(subCategory);
-                          }}
-                          style={{ '--item-index': index }}
-                        >
-                          {subCategory}
-                        </div>
-                      ))}
-                    </div>
-                  )}
+                      ) : ''
+                    }`}
+                  >
+                    {getSubcategoriesForCategory(category).map((subCategory, index) => (
+                      <div
+                        key={subCategory}
+                        className={`mobile-subcategory-text ${
+                          selectedSubCategory === subCategory ? 'active' : ''
+                        }`}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleSubCategorySelect(subCategory);
+                        }}
+                        style={{ '--item-index': index }}
+                      >
+                        {subCategory}
+                      </div>
+                    ))}
+                  </div>
                 </div>
               ))}
             </div>

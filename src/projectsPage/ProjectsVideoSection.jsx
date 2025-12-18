@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import './ProjectsVideoSection.css';
 
-// Временная заглушка для видео (пока видео не загружены)
-import VideoPlaceholder from '../video/hero-video.mp4'; // Используем один файл как заглушку для всех
+// Временная заглушка для видео
+import VideoPlaceholder from '../video/hero-video.mp4';
 
 // Главные категории для десктопа (над чертой)
 const desktopMainCategories = [
@@ -20,7 +20,7 @@ const mobileMainCategories = [
   "3D",
 ];
 
-// Подкатегории для всех категорий (как на референсе)
+// Подкатегории для всех категорий
 const mainCategoryToSubcategories = {
   "VIDEO": ["Real Estate development", "Beauty", "Commercial", "Betting"],
   "HYPE & MARKETING": ["Real Estate development", "Beauty", "Commercial", "Betting"],
@@ -29,14 +29,14 @@ const mainCategoryToSubcategories = {
   "CELEBRITY APPEARANCES": ["Real Estate development", "Beauty", "Commercial", "Betting"]
 };
 
-// Данные для видео с правильной категоризацией
+// Данные для видео
 const videoData = [
   {
     id: 1,
     title: "BRUNELLO",
     description: "WE COMBINE FILM AND REAL ESTATE ADVERTISING. REAL ESTATE IS SOLD THROUGH EMOTION, THROUGH STORYTELLING, AND THROUGH THE EXPERIENCE OF BEING IN IT.",
     videoUrl: VideoPlaceholder,
-    previewImage: "/projectImage/BRUNELLO.png", // Добавлено фото превью
+    previewImage: "/projectImage/BRUNELLO.png",
     desktopMainCategory: "VIDEO",
     desktopSubCategory: "Real Estate development",
     mobileCategories: ["VIDEO"],
@@ -46,7 +46,7 @@ const videoData = [
     title: "VILLA DEL GAVI",
     description: "WE CREATED AN EMOTIONAL SALES VIDEO THAT SHOWCASES THE CONCEPT OF THE HOUSE. THE STORY AND CHARACTER OF THE HOUSE WERE CREATED. 3D RENDERINGS.",
     videoUrl: VideoPlaceholder,
-    previewImage: "/projectImage/VILLA DEL GAVI.png", // Добавлено фото превью
+    previewImage: "/projectImage/VILLA DEL GAVI.png",
     desktopMainCategory: "VIDEO", 
     desktopSubCategory: "Real Estate development",
     mobileCategories: ["VIDEO"],
@@ -56,7 +56,7 @@ const videoData = [
     title: "EYWA WAY OF WATER",
     description: "THEY CREATED A MAGICAL WORLD IN WHICH THE MAIN CHARACTERS ARE A FATHER AND SON.",
     videoUrl: VideoPlaceholder,
-    previewImage: "/projectImage/EYWA WAY OF WATER.png", // Добавлено фото превью
+    previewImage: "/projectImage/EYWA WAY OF WATER.png",
     desktopMainCategory: "VIDEO",
     desktopSubCategory: "Commercial",
     mobileCategories: ["VIDEO"],
@@ -66,7 +66,7 @@ const videoData = [
     title: "ELITE MERIT",
     description: "WE MAKE VIDEOS AND MARKETING THAT NO ONE ELSE DOES.",
     videoUrl: VideoPlaceholder,
-    previewImage: "/projectImage/ELITE MERIT.png", // Добавлено фото превью
+    previewImage: "/projectImage/ELITE MERIT.png",
     desktopMainCategory: "HYPE & MARKETING",
     desktopSubCategory: "Betting",
     mobileCategories: ["HYPE & MARKETING"],
@@ -76,7 +76,7 @@ const videoData = [
     title: "INTERSTELLAR",
     description: "WE COMBINED FILMING IN A STUDIO AND 3D GRAPHICS TO CONVEY THE FUTURE HOME AND ITS PHILOSOPHY AS ACCURATELY AS POSSIBLE.",
     videoUrl: VideoPlaceholder,
-    previewImage: "/projectImage/Interstellar.png", // Добавлено фото превью
+    previewImage: "/projectImage/Interstellar.png",
     desktopMainCategory: "VIDEO",
     desktopSubCategory: "Beauty",
     mobileCategories: ["VIDEO"],
@@ -86,7 +86,7 @@ const videoData = [
     title: "VILLA DEL DIVOS",
     description: "PARTICULAR ATTENTION IS PAID TO THE PHILOSOPHY BEHIND THE PROJECT AND ITS KEY ADVANTAGES: AN ATMOSPHERE OF COMFORT, AESTHETICS, AND SERVICE.",
     videoUrl: VideoPlaceholder,
-    previewImage: "/projectImage/Villa del Divos.png", // Добавлено фото превью
+    previewImage: "/projectImage/Villa del Divos.png",
     desktopMainCategory: "VIDEO",
     desktopSubCategory: "Commercial",
     mobileCategories: ["VIDEO"],
@@ -96,7 +96,7 @@ const videoData = [
     title: "MR.EIGHT | BRAND VIDEO",
     description: "«FOLLOW YOUR DREAM WHATEVER IT TAKES» - THIS THESIS REFLECTS THE COMPANY'S DETERMINATION AND UNWAVERING COMMITMENT TO WHICH IT MOVES FORWARD IN THE IMPLEMENTATION OF ITS PROJECTS.",
     videoUrl: VideoPlaceholder,
-    previewImage: "/projectImage/Mr.Eight  Brand video.png", // Добавлено фото превью
+    previewImage: "/projectImage/Mr.Eight  Brand video.png",
     desktopMainCategory: "HYPE & MARKETING",
     desktopSubCategory: "Real Estate development",
     mobileCategories: ["HYPE & MARKETING"],
@@ -106,7 +106,7 @@ const videoData = [
     title: "LAUNCH OF THE VILLA DEL GAVI",
     description: "1400 PEOPLE TURNKEY EVENT ORGANIZATION POWERFUL PR CAMPAIGN HOLLYWOOD STARS OSCAR WINNER ADRIEN BRODY",
     videoUrl: VideoPlaceholder,
-    previewImage: "/projectImage/Launch of the Villa del Gavi.png", // Добавлено фото превью
+    previewImage: "/projectImage/Launch of the Villa del Gavi.png",
     desktopMainCategory: "EVENTS & LAUNCHES",
     desktopSubCategory: "Beauty",
     mobileCategories: ["EVENTS & LAUNCHES"],
@@ -116,7 +116,7 @@ const videoData = [
     title: "LAUNCH OF THE EYWA",
     description: "700 PEOPLE TURNKEY EVENT ORGANIZATION POWERFUL PR CAMPAIGN CONTENT",
     videoUrl: VideoPlaceholder,
-    previewImage: "/projectImage/Launch of the EYWA.png", // Добавлено фото превью
+    previewImage: "/projectImage/Launch of the EYWA.png",
     desktopMainCategory: "EVENTS & LAUNCHES",
     desktopSubCategory: "Beauty",
     mobileCategories: ["EVENTS & LAUNCHES"],
@@ -126,7 +126,7 @@ const videoData = [
     title: "LAUNCH OF THE DIVOS",
     description: "900 PEOPLE TURNKEY EVENT ORGANIZATION POWERFUL PR CAMPAIGN CONTENT",
     videoUrl: VideoPlaceholder,
-    previewImage: "/projectImage/Launch of the DIVOS.png", // Добавлено фото превью
+    previewImage: "/projectImage/Launch of the DIVOS.png",
     desktopMainCategory: "EVENTS & LAUNCHES",
     desktopSubCategory: "Beauty",
     mobileCategories: ["EVENTS & LAUNCHES"],
@@ -136,7 +136,7 @@ const videoData = [
     title: "PR OF THE VILLA DEL GAVI",
     description: "PR CAMPAIGN WITH BRAND AMBASSADORS MR. THANK YOU & MR.GOODLUCK. A SERIES OF 98 REELS WAS PRODUCED, REACHING 195,000,000 VIEWS. AND 127 STORIES WERE PRODUCED, REACHING 48,500,000 VIEWS.",
     videoUrl: VideoPlaceholder,
-    previewImage: "/projectImage/PR of the Villa del Gavi.png", // Добавлено фото превью
+    previewImage: "/projectImage/PR of the Villa del Gavi.png",
     desktopMainCategory: "HYPE & MARKETING",
     desktopSubCategory: "Beauty",
     mobileCategories: ["HYPE & MARKETING"],
@@ -146,7 +146,7 @@ const videoData = [
     title: "CELEBRITY APPEARANCES",
     description: "WE CAN BRING ANY STAR FOR YOU. MATTHEW MCCONAUGHEY, ADRIAN BRODY, NICOLAS CAGE, MILA JOVOVICH, VINCENT CASSEL, ZENDAYA, QUENTIN TARANTINO, KEANU REEVES, JASON MAMOA AND OTHERS.",
     videoUrl: VideoPlaceholder,
-    previewImage: "/projectImage/Celebrity Appearances.png", // Добавлено фото превью
+    previewImage: "/projectImage/Celebrity Appearances.png",
     desktopMainCategory: "CELEBRITY APPEARANCES",
     desktopSubCategory: "Beauty",
     mobileCategories: ["CELEBRITY APPEARANCES"],
@@ -170,6 +170,7 @@ const ProjectsVideoSection = () => {
   // Состояния для мобильной версии
   const [openCategory, setOpenCategory] = useState(null);
   const [mobileAnimationState, setMobileAnimationState] = useState('closed');
+  const [mobileSubcategoriesVisible, setMobileSubcategoriesVisible] = useState(false);
 
   const videoRefs = useRef({});
   const popupVideoRef = useRef(null);
@@ -231,10 +232,11 @@ const ProjectsVideoSection = () => {
   // Открытие подкатегорий на десктопе
   const openDesktopSubcategories = () => {
     setDesktopAnimationState('opening');
-    setDesktopSubcategoriesOpen(true);
     
+    // Даем время для применения начальных стилей
     setTimeout(() => {
       setDesktopAnimationState('open');
+      setDesktopSubcategoriesOpen(true);
     }, 10);
   };
 
@@ -264,9 +266,7 @@ const ProjectsVideoSection = () => {
     } 
     else if (openCategory && openCategory !== category) {
       closeMobileSubcategories(() => {
-        setTimeout(() => {
-          openMobileSubcategories(category);
-        }, 50);
+        openMobileSubcategories(category);
       });
     }
     else {
@@ -274,32 +274,47 @@ const ProjectsVideoSection = () => {
     }
   };
 
-  // Открытие подкатегорий на мобильном
+  // Открытие подкатегорий на мобильном - ИСПРАВЛЕНО
   const openMobileSubcategories = (category) => {
-    setMobileAnimationState('opening');
+    // Сначала показываем элемент
+    setMobileSubcategoriesVisible(true);
     setOpenCategory(category);
     setSelectedMainCategory(category);
     setSelectedSubCategory(null);
     
+    // Ждем следующего рендера, чтобы элемент был в DOM
     setTimeout(() => {
-      setMobileAnimationState('open');
+      // Устанавливаем начальное состояние анимации
+      setMobileAnimationState('opening');
+      
+      // Ждем еще немного для применения начальных стилей
+      setTimeout(() => {
+        // Запускаем анимацию открытия
+        setMobileAnimationState('open');
+      }, 20);
     }, 10);
   };
 
-  // Закрытие подкатегорий на мобильном
+  // Закрытие подкатегорий на мобильном - ИСПРАВЛЕНО
   const closeMobileSubcategories = (callback = null) => {
     setMobileAnimationState('closing');
     
+    // Ждем завершения анимации закрытия
     setTimeout(() => {
       setMobileAnimationState('closed');
       setOpenCategory(null);
       setSelectedMainCategory(null);
       setSelectedSubCategory(null);
       
-      if (callback) {
-        callback();
-      }
-    }, 500);
+      // Ждем еще немного перед скрытием элемента
+      setTimeout(() => {
+        setMobileSubcategoriesVisible(false);
+        
+        if (callback) {
+          callback();
+        }
+      }, 50);
+    }, 400); // Увеличено время анимации закрытия
   };
 
   // Обработчик выбора подкатегории на мобильном
@@ -438,7 +453,7 @@ const ProjectsVideoSection = () => {
           {/* Десктопная фильтрация - подкатегории ПОД чертой */}
           {!isMobile && (
             <div className="desktop-subcategories-below">
-              {selectedMainCategory && (
+              {selectedMainCategory && desktopSubcategoriesOpen && (
                 <div className={`desktop-subcategories-below-inner ${desktopAnimationState}`}>
                   {getSubcategoriesForCategory(selectedMainCategory).map(subCategory => (
                     <button
@@ -474,11 +489,12 @@ const ProjectsVideoSection = () => {
                     {category}
                   </div>
                   
-                  {/* Подкатегории с анимацией */}
-                  {openCategory === category && getSubcategoriesForCategory(category).length > 0 && (
+                  {/* Подкатегории с анимацией - КЛЮЧЕВОЕ ИСПРАВЛЕНИЕ */}
+                  {mobileSubcategoriesVisible && openCategory === category && (
                     <div 
                       className={`mobile-subcategories ${
-                        mobileAnimationState === 'opening' || mobileAnimationState === 'open' ? 'open' : 
+                        mobileAnimationState === 'opening' ? 'opening' :
+                        mobileAnimationState === 'open' ? 'open' : 
                         mobileAnimationState === 'closing' ? 'closing' : ''
                       }`}
                     >

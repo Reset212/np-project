@@ -119,18 +119,30 @@
   transform: translateY(-20px);
   transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
   visibility: hidden;
+  pointer-events: none;
+}
+
+.desktop-subcategories-below-inner.opening {
+  opacity: 0;
+  transform: translateY(-20px);
+  visibility: visible;
+  pointer-events: none;
+  transition: none; /* Без transition для мгновенного применения */
 }
 
 .desktop-subcategories-below-inner.open {
   opacity: 1;
   transform: translateY(0);
   visibility: visible;
+  pointer-events: all;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .desktop-subcategories-below-inner.closing {
   opacity: 0;
   transform: translateY(-10px);
-  visibility: hidden;
+  visibility: visible;
+  pointer-events: none;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -226,7 +238,7 @@
   transform: scale(1.02);
 }
 
-/* Подкатегории */
+/* МОБИЛЬНАЯ ВЕРСИЯ - ПОДКАТЕГОРИИ */
 .mobile-subcategories {
   width: 100%;
   margin: 0;
@@ -234,21 +246,34 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  overflow: visible !important;
+  overflow: hidden;
   max-height: 0;
   opacity: 0;
   transform: translateY(-20px);
   transition: 
-    max-height 0.6s cubic-bezier(0.34, 1.56, 0.64, 1),
-    opacity 0.4s ease 0.1s,
-    transform 0.4s ease 0.1s,
-    visibility 0s linear 0.7s,
+    max-height 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
+    opacity 0.3s ease 0.1s,
+    transform 0.3s ease 0.1s,
     margin 0.3s ease;
   visibility: hidden;
   position: relative;
   z-index: 1;
+  pointer-events: none;
 }
 
+/* Начальное состояние для анимации открытия */
+.mobile-subcategories.opening {
+  max-height: 0;
+  opacity: 0;
+  transform: translateY(-20px);
+  visibility: visible;
+  pointer-events: none;
+  margin-top: 0;
+  margin-bottom: 0;
+  transition: none; /* Убираем transition для моментального применения начальных стилей */
+}
+
+/* Финальное состояние после анимации открытия */
 .mobile-subcategories.open {
   max-height: 400px;
   opacity: 1;
@@ -256,26 +281,27 @@
   visibility: visible;
   margin-top: 12px;
   margin-bottom: 20px;
+  pointer-events: all;
   transition: 
-    max-height 0.6s cubic-bezier(0.34, 1.56, 0.64, 1),
-    opacity 0.4s ease,
-    transform 0.4s ease,
-    visibility 0s linear,
+    max-height 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
+    opacity 0.3s ease 0.1s,
+    transform 0.3s ease 0.1s,
     margin 0.3s ease;
 }
 
+/* Состояние анимации закрытия */
 .mobile-subcategories.closing {
   max-height: 0;
   opacity: 0;
   transform: translateY(-20px);
   margin-top: 0;
   margin-bottom: 0;
-  visibility: hidden;
+  visibility: visible;
+  pointer-events: none;
   transition: 
-    max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+    max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1),
     opacity 0.2s ease,
     transform 0.2s ease,
-    visibility 0s linear 0.5s,
     margin 0.2s ease;
 }
 
@@ -297,23 +323,30 @@
   transform: translateY(-10px) scale(0.95);
 }
 
+/* Анимация появления подкатегорий */
+.mobile-subcategories.opening .mobile-subcategory-text {
+  opacity: 0;
+  transform: translateY(-10px) scale(0.95);
+  transition: none;
+}
+
 .mobile-subcategories.open .mobile-subcategory-text {
   opacity: 0.5;
   transform: translateY(0) scale(1);
-  transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-  transition-delay: calc(var(--item-index, 0) * 0.08s + 0.1s);
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition-delay: calc(var(--item-index, 0) * 0.05s + 0.1s);
 }
 
 .mobile-subcategories.closing .mobile-subcategory-text {
   opacity: 0;
   transform: translateY(-5px);
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  transition-delay: calc((3 - var(--item-index, 0)) * 0.03s);
+  transition-delay: calc((3 - var(--item-index, 0)) * 0.02s);
 }
 
 .mobile-subcategory-text.active {
   opacity: 1 !important;
-  font-weight: 700; /* Толще текст для активного элемента */
+  font-weight: 700;
 }
 
 .mobile-subcategory-text:hover {
@@ -368,8 +401,6 @@
     filter: brightness(1);
     transform: scale(1.05);
   }
-
-
 
   .video-card:hover .video-background:not(.mobile-static) {
     opacity: 0.95;
@@ -485,6 +516,221 @@
   background: rgba(255, 255, 255, 0.95);
   transform: scale(1.08) translateY(-2px);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Контейнер для изображения превью */
+.preview-image-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.preview-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.8);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Плейсхолдер при ошибке загрузки изображения */
+.image-error-placeholder {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  font-size: 24px;
+  color: #ffffff;
+  text-align: center;
+  padding: 20px;
+  opacity: 0.8;
+}
+
+/* На десктопе при наведении скрываем изображение и показываем видео */
+@media (min-width: 769px) {
+  .video-card:hover .preview-image {
+    opacity: 0;
+    transform: scale(1.05);
+  }
+
+  .video-card:not(:hover) .video-background {
+    opacity: 0 !important;
+  }
+  
+  .video-card:hover .video-background {
+    opacity: 1 !important;
+  }
+}
+
+/* На мобильных устройствах показываем только изображение */
+@media (max-width: 768px) {
+  .preview-image {
+    opacity: 1 !important;
+    filter: brightness(0.7);
+  }
+  
+  .video-background {
+    display: none;
+  }
+  
+  .preview-image-container {
+    z-index: 1;
+  }
+}
+
+/* Десктоп: при наведении усиливаем оверлей */
+@media (min-width: 769px) {
+  .video-card:hover .video-overlay {
+    background: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0) 0%,
+      rgba(0, 0, 0, 0.9) 100%
+    );
+  }
+}
+
+/* Попап стили */
+.video-popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.95);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+  padding: 20px;
+  animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    backdrop-filter: blur(0px);
+  }
+  to {
+    opacity: 1;
+    backdrop-filter: blur(10px);
+  }
+}
+
+.video-popup {
+  background: #000000;
+  width: 90%;
+  max-width: 1000px;
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+  animation: scaleIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  transform-origin: center;
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.close-popup {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: transparent;
+  border: none;
+  color: #FFFFFF;
+  font-size: 2.5rem;
+  cursor: pointer;
+  z-index: 10001;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+}
+
+.close-popup:hover {
+  opacity: 0.7;
+  transform: scale(1.1) rotate(90deg);
+}
+
+.popup-content h3 {
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 32px;
+  line-height: 1.2;
+  color: #FFFFFF;
+  margin: 0;
+  padding: 30px 30px 20px 30px;
+  text-transform: uppercase;
+  animation: slideInDown 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.popup-video-container {
+  width: 100%;
+  position: relative;
+  min-height: 400px;
+  background: #000000;
+  animation: fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  animation-delay: 0.1s;
+  opacity: 0;
+}
+
+.popup-video-container video {
+  width: 100%;
+  height: auto;
+  max-height: 70vh;
+  display: block;
+}
+
+.video-error-message {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #FFFFFF;
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  text-align: center;
+  padding: 20px;
+}
+
+.video-error-message p {
+  margin: 10px 0;
+  opacity: 0.8;
+  font-size: 16px;
 }
 
 /* ========== АДАПТИВНОСТЬ ========== */
@@ -711,143 +957,6 @@
   }
 }
 
-/* Попап стили */
-.video-popup-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.95);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 10000;
-  padding: 20px;
-  animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    backdrop-filter: blur(0px);
-  }
-  to {
-    opacity: 1;
-    backdrop-filter: blur(10px);
-  }
-}
-
-.video-popup {
-  background: #000000;
-  width: 90%;
-  max-width: 1000px;
-  border-radius: 4px;
-  overflow: hidden;
-  position: relative;
-  animation: scaleIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-  transform-origin: center;
-}
-
-@keyframes scaleIn {
-  from {
-    opacity: 0;
-    transform: scale(0.9);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-.close-popup {
-  position: absolute;
-  top: 15px;
-  right: 15px;
-  background: transparent;
-  border: none;
-  color: #FFFFFF;
-  font-size: 2.5rem;
-  cursor: pointer;
-  z-index: 10001;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  font-family: 'Helvetica Neue', Arial, sans-serif;
-}
-
-.close-popup:hover {
-  opacity: 0.7;
-  transform: scale(1.1) rotate(90deg);
-}
-
-.popup-content h3 {
-  font-family: 'Helvetica Neue', Arial, sans-serif;
-  font-style: normal;
-  font-weight: 500;
-  font-size: 32px;
-  line-height: 1.2;
-  color: #FFFFFF;
-  margin: 0;
-  padding: 30px 30px 20px 30px;
-  text-transform: uppercase;
-  animation: slideInDown 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-
-@keyframes slideInDown {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.popup-video-container {
-  width: 100%;
-  position: relative;
-  min-height: 400px;
-  background: #000000;
-  animation: fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-  animation-delay: 0.1s;
-  opacity: 0;
-}
-
-.popup-video-container video {
-  width: 100%;
-  height: auto;
-  max-height: 70vh;
-  display: block;
-}
-
-.video-error-message {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: #000;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  color: #FFFFFF;
-  font-family: 'Helvetica Neue', Arial, sans-serif;
-  text-align: center;
-  padding: 20px;
-}
-
-.video-error-message p {
-  margin: 10px 0;
-  opacity: 0.8;
-  font-size: 16px;
-}
-
 @media (max-width: 768px) {
   .popup-content h3 {
     font-size: 24px;
@@ -862,81 +971,5 @@
 
   .popup-video-container {
     min-height: 300px;
-  }
-}/* Контейнер для изображения превью */
-.preview-image-container {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 0;
-  overflow: hidden;
-}
-
-.preview-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  filter: brightness(0.8);
-  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* Плейсхолдер при ошибке загрузки изображения */
-.image-error-placeholder {
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: 'Helvetica Neue', Arial, sans-serif;
-  font-size: 24px;
-  color: #ffffff;
-  text-align: center;
-  padding: 20px;
-  opacity: 0.8;
-}
-
-/* На десктопе при наведении скрываем изображение и показываем видео */
-@media (min-width: 769px) {
-  .video-card:hover .preview-image {
-    opacity: 0;
-    transform: scale(1.05);
-  }
-
-  .video-card:not(:hover) .video-background {
-    opacity: 0 !important;
-  }
-  
-  .video-card:hover .video-background {
-    opacity: 1 !important;
-  }
-}
-
-/* На мобильных устройствах показываем только изображение */
-@media (max-width: 768px) {
-  .preview-image {
-    opacity: 1 !important;
-    filter: brightness(0.7);
-  }
-  
-  .video-background {
-    display: none;
-  }
-  
-  .preview-image-container {
-    z-index: 1;
-  }
-}
-
-/* Десктоп: при наведении усиливаем оверлей */
-@media (min-width: 769px) {
-  .video-card:hover .video-overlay {
-    background: linear-gradient(
-      to bottom,
-      rgba(0, 0, 0, 0) 0%,
-      rgba(0, 0, 0, 0.9) 100%
-    );
   }
 }
