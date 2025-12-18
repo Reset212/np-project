@@ -1,11 +1,12 @@
 .third-scroll-section {
   width: 100%;
-  background-color: #ffffff;
-  position: relative;
-  overflow: hidden;
+  background-color: #b80000 !important;
+  position: relative !important;
+  overflow: hidden !important;
   padding-bottom: 90px;
   padding-top: 100px;
   max-height: 90vh;
+  z-index: 99 !important;
 }
 
 /* ========== ЭФФЕКТ ПЛАВНОГО ПРЕВРАЩЕНИЯ В КОНТУР ========== */
