@@ -61,7 +61,7 @@
     width: 50%;
     height: 100vh;
     overflow: hidden;
-    z-index: 96;
+    z-index: 99;
     /* Убираем transition, так как управляем через JS */
     /* transition: width 0.1s linear, transform 0.1s linear; */
   }

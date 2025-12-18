@@ -137,9 +137,10 @@
 
 /* Кнопка CHAT WITH US - ПК версия */
 .chat-button {
-  background-color: rgba(255, 255, 255, 0.2);
+  margin-top: 3px;
+  background-color: #76767634;
   width: 165px !important;
-  height: 50px !important;
+  height: 48px !important;
   white-space: nowrap !important;
   display: flex;
   align-items: center;
@@ -147,7 +148,7 @@
   border-radius: 30px;
   border: 0px solid rgba(255, 255, 255, 0.3) !important;
   padding: 0 !important; /* Убираем все padding */
-  font-size: 14px !important;
+  font-size: 16px !important;
   color: white;
   cursor: none;
   transition: all 0.3s ease;
@@ -293,6 +294,7 @@
 
 /* Кнопка VIEW PROJECT - ПК версия */
 .view-project-button {
+  margin-bottom: 2px !important;
   background-color: #eeeeeecc;
   color: black;
   border: none;

@@ -203,7 +203,7 @@
 .chat-button {
   background-color: rgba(255, 255, 255, 0.2);
   width: 165px !important;
-  height: 50px !important;
+  height: 48px !important;
   white-space: nowrap !important;
   display: flex;
   align-items: center;
@@ -412,8 +412,9 @@
 }
 
 .view-project-button:hover {
-  background-color: #f0f0f0;
-  transform: translateY(-3px);
+  background-color: #000000 !important;
+  transform: translateY(-0px) !important;
+  color: rgb(212, 212, 212);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
 }
 
