@@ -65,7 +65,7 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 322px;
+  width: 322px !important;
   text-align: center;
   opacity: 0;
   visibility: hidden;
@@ -73,7 +73,7 @@
 }
 
 .text-section-block.active {
-  width: 322px;
+  width: 322px !important;
   opacity: 1;
   visibility: visible;
 }
@@ -171,7 +171,7 @@
   }
   
   .text-content-wrapper {
-    width: 322px;
+    width: 322px !important;
     padding: 0 20px;
   }
 }
