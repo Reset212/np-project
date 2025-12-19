@@ -20,8 +20,8 @@ function HomePageApp() {
       </div>
       
       <ScrollTextAnimation />
-      <div style={{height: '30vh', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-      </div>
+      {/* <div style={{height: '30vh', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+      </div> */}
       <ThirdScrollBlock />
       <HomeSection />
       <MensSection />

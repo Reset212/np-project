@@ -186,7 +186,7 @@
 
 @media (max-width: 480px) {
   .scroll-text-container {
-    min-height: 650vh !important;
+    min-height: 450vh !important;
   }
   
   .text-content-wrapper.mobile .text-word-item {
