@@ -132,19 +132,19 @@ const ThirdScrollBlock = () => {
   };
 
   const getItemTransform = (isAppearing) => {
-    return isAppearing ? "translateX(0)" : "translateX(-50px)";
+    return isAppearing ? "translateX(0)" : "translateX(-3.125em)";
   };
 
   const getTitleTransform = (isAppearing) => {
-    return isAppearing ? "translateX(0)" : "translateX(-50px)";
+    return isAppearing ? "translateX(0)" : "translateX(-3.125em)";
   };
 
   const getButtonTransform = (isAppearing) => {
-    return isAppearing ? "translateY(0)" : "translateY(30px)";
+    return isAppearing ? "translateY(0)" : "translateY(1.875em)";
   };
 
   const getOutlineTransform = (isAppearing) => {
-    return isAppearing ? "translateX(0)" : "translateX(-50px)";
+    return isAppearing ? "translateX(0)" : "translateX(-3.125em)";
   };
 
   const handleItemMouseEnter = (index) => {
@@ -333,7 +333,7 @@ const ThirdScrollBlock = () => {
                 className="outline-letter"
                 style={{
                   opacity: isVisible ? 0.9 : 0,
-                  transform: isVisible ? 'translateY(0)' : 'translateY(20px)',
+                  transform: isVisible ? 'translateY(0)' : 'translateY(1.25em)',
                   transitionDelay: `${index * 100 + 400}ms`,
                   transition: 'opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1)'
                 }}
@@ -353,7 +353,7 @@ const ThirdScrollBlock = () => {
                 className="outline-letter"
                 style={{
                   opacity: isVisible ? 0.9 : 0,
-                  transform: isVisible ? 'translateY(0)' : 'translateY(20px)',
+                  transform: isVisible ? 'translateY(0)' : 'translateY(1.25em)',
                   transitionDelay: `${index * 100 + 600}ms`,
                   transition: 'opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1)'
                 }}

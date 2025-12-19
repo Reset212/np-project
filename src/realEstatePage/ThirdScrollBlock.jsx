@@ -3,6 +3,7 @@ import "./ThirdScrollBlock.css";
 
 const ThirdScrollBlock = () => {
   const [isVisible, setIsVisible] = useState(false);
+  const [hoveredItem, setHoveredItem] = useState(null);
   const sectionRef = useRef(null);
 
   const title = "WE DO";
@@ -24,15 +25,11 @@ const ThirdScrollBlock = () => {
       const rect = section.getBoundingClientRect();
       const windowHeight = window.innerHeight;
 
-      // Анимация появления: когда блок входит в видимую область
-      const triggerIn = rect.top < windowHeight * 0.6 && rect.bottom > windowHeight * 0.4;
-      
-      // Анимация исчезновения: только когда блок полностью скрыт
-      const triggerOut = rect.bottom < 0 || rect.top > windowHeight;
+      const isInView = rect.top < windowHeight * 0.6 && rect.bottom > windowHeight * 0.4;
 
-      if (triggerIn) {
+      if (isInView) {
         setIsVisible(true);
-      } else if (triggerOut) {
+      } else {
         setIsVisible(false);
       }
     };
@@ -52,7 +49,7 @@ const ThirdScrollBlock = () => {
     };
   }, []);
 
-  // Функция для рендеринга текста с пробелами и специальными символами
+  // Функция для рендеринга текста с пробелами
   const renderTextWithSpaces = (text, getLetterDelay, type = "item", itemIndex = 0) => {
     const letters = [];
     
@@ -62,15 +59,29 @@ const ThirdScrollBlock = () => {
       
       if (char === " ") {
         letters.push(
-          <span key={key} className={`${type}-space text-space`}>
+          <span key={key} className="text-space">
             &nbsp;
+          </span>
+        );
+      } else if (char === "&") {
+        letters.push(
+          <span
+            key={key}
+            className="text-letter item-letter"
+            style={{
+              opacity: isVisible ? 1 : 0,
+              transitionDelay: `${getLetterDelay(itemIndex, i, isVisible)}ms`,
+              fontStyle: 'normal'
+            }}
+          >
+            {char}
           </span>
         );
       } else if (char === "/") {
         letters.push(
           <span
             key={key}
-            className={`${type}-letter text-letter item-letter`}
+            className="text-letter item-letter"
             style={{
               opacity: isVisible ? 1 : 0,
               transitionDelay: `${getLetterDelay(itemIndex, i, isVisible)}ms`,
@@ -84,7 +95,7 @@ const ThirdScrollBlock = () => {
         letters.push(
           <span
             key={key}
-            className={`${type}-letter text-letter item-letter`}
+            className="text-letter item-letter"
             style={{
               opacity: isVisible ? 1 : 0,
               transitionDelay: `${getLetterDelay(itemIndex, i, isVisible)}ms`
@@ -121,19 +132,27 @@ const ThirdScrollBlock = () => {
   };
 
   const getItemTransform = (isAppearing) => {
-    return isAppearing ? "translateX(0)" : "translateX(-50px)";
+    return isAppearing ? "translateX(0)" : "translateX(-3.125em)";
   };
 
   const getTitleTransform = (isAppearing) => {
-    return isAppearing ? "translateX(0)" : "translateX(-50px)";
+    return isAppearing ? "translateX(0)" : "translateX(-3.125em)";
   };
 
   const getButtonTransform = (isAppearing) => {
-    return isAppearing ? "translateY(0)" : "translateY(30px)";
+    return isAppearing ? "translateY(0)" : "translateY(1.875em)";
   };
 
   const getOutlineTransform = (isAppearing) => {
-    return isAppearing ? "translateX(0)" : "translateX(-50px)";
+    return isAppearing ? "translateX(0)" : "translateX(-3.125em)";
+  };
+
+  const handleItemMouseEnter = (index) => {
+    setHoveredItem(index);
+  };
+
+  const handleItemMouseLeave = () => {
+    setHoveredItem(null);
   };
 
   return (
@@ -141,7 +160,6 @@ const ThirdScrollBlock = () => {
       className={`third-scroll-section ${isVisible ? 'section-visible' : ''}`}
       ref={sectionRef}
     >
-
       <div className="third-scroll-container">
         {/* Левая часть - основной WE DO (заполненный) */}
         <div className="left-side">
@@ -218,8 +236,13 @@ const ThirdScrollBlock = () => {
                     transitionDelay: `${getItemDelay(index, isVisible)}ms`,
                     width: "100%",
                   }}
+                  onMouseEnter={() => handleItemMouseEnter(index)}
+                  onMouseLeave={handleItemMouseLeave}
                 >
-                  <span className="item-text" data-text={item}>
+                  <span 
+                    className="item-text"
+                    data-text={item}
+                  >
                     {renderTextWithSpaces(item, getItemLetterDelay, "item", index)}
                   </span>
                 </div>
@@ -237,7 +260,24 @@ const ThirdScrollBlock = () => {
               }}
             >
               <button className="third-button">
-                {renderTextWithSpaces(buttonText, getButtonLetterDelay, "button")}
+                {buttonText.split("").map((letter, index) => (
+                  <React.Fragment key={index}>
+                    {letter === " " ? (
+                      <span className="button-space"></span>
+                    ) : (
+                      <span
+                        key={index}
+                        className="button-letter"
+                        style={{
+                          opacity: isVisible ? 1 : 0,
+                          transitionDelay: `${getButtonLetterDelay(index, isVisible)}ms`
+                        }}
+                      >
+                        {letter}
+                      </span>
+                    )}
+                  </React.Fragment>
+                ))}
               </button>
             </div>
           </div>
@@ -284,7 +324,7 @@ const ThirdScrollBlock = () => {
           </h2>
         </div>
 
-        {/* Контур DO над кнопкой - МОБИЛЬНЫЙ */}
+        {/* Контур DO на уровне кнопки - МОБИЛЬНЫЙ */}
         <div className="outline-do-container mobile-outline do-above-button">
           <h2 className="outline-do">
             {"DO".split("").map((letter, index) => (
@@ -292,9 +332,10 @@ const ThirdScrollBlock = () => {
                 key={`mobile-outline-do-${index}`}
                 className="outline-letter"
                 style={{
-                  opacity: isVisible ? 1 : 0,
-                  transform: getOutlineTransform(isVisible),
-                  transitionDelay: `${index * 100 + 700}ms`
+                  opacity: isVisible ? 0.9 : 0,
+                  transform: isVisible ? 'translateY(0)' : 'translateY(1.25em)',
+                  transitionDelay: `${index * 100 + 400}ms`,
+                  transition: 'opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1)'
                 }}
               >
                 {letter}
@@ -311,9 +352,10 @@ const ThirdScrollBlock = () => {
                 key={`mobile-outline-we-${index}`}
                 className="outline-letter"
                 style={{
-                  opacity: isVisible ? 1 : 0,
-                  transform: getOutlineTransform(isVisible),
-                  transitionDelay: `${index * 100 + 500}ms`
+                  opacity: isVisible ? 0.9 : 0,
+                  transform: isVisible ? 'translateY(0)' : 'translateY(1.25em)',
+                  transitionDelay: `${index * 100 + 600}ms`,
+                  transition: 'opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1)'
                 }}
               >
                 {letter}

@@ -216,7 +216,7 @@ width: 240px !important;
     justify-content: center;
     cursor: pointer;
     z-index: 1001; /* Высокий z-index для бургер-меню */
-    border: 1px solid rgba(0, 0, 0, 0.3);
+    border: 0px solid rgba(0, 0, 0, 0.3);
     order: 1;
     transition: all 0.3s ease;
     position: relative;
@@ -243,7 +243,7 @@ width: 240px !important;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    border: 1px solid rgba(0, 0, 0, 0.3);
+    border: 0px solid rgba(0, 0, 0, 0.3);
     order: 3;
     transition: all 0.3s ease;
     z-index: 1001; /* Высокий z-index для кнопки чата */

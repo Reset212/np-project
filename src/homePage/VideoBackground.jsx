@@ -21,7 +21,6 @@ const VideoBackground = () => {
     setIsMenuOpen(false);
   };
 
-  // Функция для скролла к блоку Mens
   const scrollToMens = () => {
     closeMenu();
     
@@ -38,7 +37,6 @@ const VideoBackground = () => {
     }
   };
 
-  // Функция для скролла к Contact секции
   const scrollToContact = () => {
     closeMenu();
     
@@ -55,7 +53,6 @@ const VideoBackground = () => {
     }
   };
 
-  // Эффект для автоматического скролла при загрузке страницы с хэшем
   useEffect(() => {
     if (location.hash) {
       const id = location.hash.replace('#', '');
@@ -68,7 +65,6 @@ const VideoBackground = () => {
     }
   }, [location]);
 
-  // Закрытие меню при нажатии Escape
   useEffect(() => {
     const handleEscape = (e) => {
       if (e.key === 'Escape') {
@@ -99,9 +95,7 @@ const VideoBackground = () => {
           Your browser does not support the video tag.
         </video>
 
-        {/* НАВИГАЦИЯ */}
         <nav className="navigation">
-          {/* Десктопная навигация - ЛЕВАЯ ЧАСТЬ */}
           <div className="nav-left">
             <Link to="/real-estate" className="nav-item directions">
               DIRECTIONS
@@ -109,17 +103,17 @@ const VideoBackground = () => {
             <Link to="/projects" className="nav-item projects">
               PROJECTS
             </Link>
+            <div></div>
           </div>
           
-          {/* Логотип */}
           <div className="logo">
             <Link to="/home">
               <img src={logoImg} alt="Logo" className="logo-image" />
             </Link>
           </div>
           
-          {/* Десктопная навигация - ПРАВАЯ ЧАСТЬ */}
           <div className="nav-right">
+          <div></div>
             <Link 
               to="/home#mens-section" 
               className="nav-item about"
@@ -132,6 +126,7 @@ const VideoBackground = () => {
             >
               ABOUT
             </Link>
+
             <button 
               className="nav-item chat-button"
               onClick={scrollToContact}
@@ -140,7 +135,6 @@ const VideoBackground = () => {
             </button>
           </div>
           
-          {/* Мобильная навигация */}
           <button 
             className="burger-menu" 
             onClick={toggleMenu} 
@@ -148,11 +142,11 @@ const VideoBackground = () => {
             aria-expanded={isMenuOpen}
           >
             {isMenuOpen ? (
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <svg width="1.25em" height="1.25em" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M1 1L19 19M19 1L1 19" stroke="white" strokeWidth="2" strokeLinecap="round"/>
               </svg>
             ) : (
-              <svg width="18" height="12" viewBox="0 0 18 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <svg width="1.125em" height="0.75em" viewBox="0 0 18 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M0 12L0 10H18V12H0ZM0 7L0 5H18V7H0ZM0 2L0 0H18V2H0Z" fill="white"/>
               </svg>
             )}
@@ -166,12 +160,11 @@ const VideoBackground = () => {
               scrollToContact();
             }}
           >
-            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg width="1.125em" height="1.125em" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M16.2 0H1.8C0.81 0 0 0.81 0 1.8V18L3.6 14.4H16.2C17.19 14.4 18 13.59 18 12.6V1.8C18 0.81 17.19 0 16.2 0ZM16.2 12.6H2.88L1.8 13.68V1.8H16.2V12.6Z" fill="white"/>
             </svg>
           </button>
           
-          {/* Мобильное выпадающее меню */}
           <div className={`mobile-dropdown ${isMenuOpen ? 'active' : ''}`}>
             {isMenuOpen && (
               <>
@@ -207,52 +200,49 @@ const VideoBackground = () => {
           </div>
         </nav>
 
-        {/* КОНТЕНТ СНИЗУ */}
         <div className="content-wrapper">
-          {/* НАГРАДЫ */}
-        <div className="awards-row">
-  <div className="award-item">
-    <div className="award-icon-container icon-1">
-      <img src={taglineImg} alt="Tagline" className="award-icon" />
-    </div>
-    <p className="award-text">
-      <span className="award-count">1X GOLD</span>
-      <span className="award-description">Best video</span>
-    </p>
-  </div>
-  
-  <div className="award-item">
-    <div className="award-icon-container icon-2">
-      <img src={awardsImg} alt="Awards" className="award-icon" />
-    </div>
-    <p className="award-text">
-      <span className="award-count">3X SILVER</span>
-      <span className="award-description">Efficiency in business</span>
-    </p>
-  </div>
-  
-  <div className="award-item">
-    <div className="award-icon-container icon-3">
-      <img src={silverImg} alt="Mercury" className="award-icon" />
-    </div>
-    <p className="award-text">
-      <span className="award-count">2X BRONZE</span>
-      <span className="award-description">Situational marketing</span>
-    </p>
-  </div>
-  
-  <div className="award-item">
-    <div className="award-icon-container icon-4">
-      <img src={designfestivalImg} alt="Festival" className="award-icon" />
-    </div>
-    <p className="award-text">
-      <span className="award-count">3X SHORTLIST</span>
-      <span className="award-description">Visual solutions in video advertising</span>
-    </p>
-  </div>
-</div>
+          <div className="awards-row">
+            <div className="award-item">
+              <div className="award-icon-container icon-1">
+                <img src={taglineImg} alt="Tagline" className="award-icon" />
+              </div>
+              <p className="award-text">
+                <span className="award-count">1X GOLD</span>
+                <span className="award-description">Best video</span>
+              </p>
+            </div>
+            
+            <div className="award-item">
+              <div className="award-icon-container icon-2">
+                <img src={awardsImg} alt="Awards" className="award-icon" />
+              </div>
+              <p className="award-text">
+                <span className="award-count">3X SILVER</span>
+                <span className="award-description">Efficiency in business</span>
+              </p>
+            </div>
+            
+            <div className="award-item">
+              <div className="award-icon-container icon-3">
+                <img src={silverImg} alt="Mercury" className="award-icon" />
+              </div>
+              <p className="award-text">
+                <span className="award-count">2X BRONZE</span>
+                <span className="award-description">Situational marketing</span>
+              </p>
+            </div>
+            
+            <div className="award-item">
+              <div className="award-icon-container icon-4">
+                <img src={designfestivalImg} alt="Festival" className="award-icon" />
+              </div>
+              <p className="award-text">
+                <span className="award-count">3X SHORTLIST</span>
+                <span className="award-description">Visual solutions in video advertising</span>
+              </p>
+            </div>
+          </div>
 
-          {/* КНОПКА VIEW PROJECT */}
           <button 
             className="view-project-button"
             onClick={() => alert("Viewing project...")}
