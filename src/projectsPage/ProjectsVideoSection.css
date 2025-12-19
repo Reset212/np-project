@@ -4,7 +4,7 @@
   background-color: #ffffff;
   position: relative;
   overflow: hidden;
-  padding: 100px 0;
+  padding: 6.25em 0; /* 100px */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -12,8 +12,8 @@
 
 /* Разделительная линия */
 .section-divider {
-  width: 768px;
-  height: 2px;
+  width: 48em; /* 768px */
+  height: 0.125em; /* 2px */
   background: #D9D9D9;
 }
 
@@ -23,7 +23,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 0 80px;
+  padding: 0 5em; /* 80px */
   box-sizing: border-box;
 }
 
@@ -37,13 +37,13 @@
 
 .projects-header h1 {
   width: auto;
-  min-width: 468px;
-  height: 64px;
+  min-width: 29.25em; /* 468px */
+  height: 4em; /* 64px */
   font-family: 'Helvetica Neue', Arial, sans-serif;
   font-style: normal;
   font-weight: 700;
-  font-size: 64px;
-  line-height: 64px;
+  font-size: 4em; /* 64px */
+  line-height: 1em;
   letter-spacing: -0.02em;
   text-transform: uppercase;
   color: #000000;
@@ -61,11 +61,11 @@
 .desktop-main-categories-above {
   display: flex;
   flex-wrap: wrap;
-  gap: 30px;
+  gap: 1.875em; /* 30px */
   justify-content: center;
-  margin-top: 25px;
-  margin-bottom: 20px;
-  height: 32px; /* Фиксированная высота для предотвращения дёргания */
+  margin-top: 1.5625em; /* 25px */
+  margin-bottom: 1.25em; /* 20px */
+  height: 2em; /* 32px */
 }
 
 .desktop-category-btn-above {
@@ -74,8 +74,8 @@
   font-family: 'Helvetica Neue', Arial, sans-serif;
   font-style: normal;
   font-weight: 500;
-  font-size: 16px;
-  line-height: 16px;
+  font-size: 1em; /* 16px */
+  line-height: 1em;
   color: #000000;
   cursor: pointer;
   text-transform: uppercase;
@@ -87,7 +87,7 @@
 
 .desktop-category-btn-above:hover {
   opacity: 0.7;
-  transform: translateY(-1px);
+  transform: translateY(-0.0625em); /* -1px */
 }
 
 .desktop-category-btn-above.active {
@@ -104,20 +104,20 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-height: 0; /* Начальная высота */
+  min-height: 0;
   transition: min-height 0.3s ease;
-  margin-top: 48px; /* Отступ от линии 48px */
-  margin-bottom: 40px;
+  margin-top: 3em; /* 48px */
+  margin-bottom: 2.5em; /* 40px */
 }
 
 /* Контейнер для подкатегорий внутри */
 .desktop-subcategories-below-inner {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px;
+  gap: 1.25em; /* 20px */
   justify-content: center;
   opacity: 0;
-  transform: translateY(-10px);
+  transform: translateY(-0.625em); /* -10px */
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   max-height: 0;
   overflow: hidden;
@@ -126,20 +126,20 @@
 /* Открытое состояние подкатегорий */
 .desktop-subcategories-below-inner.opening {
   opacity: 0;
-  transform: translateY(-10px);
+  transform: translateY(-0.625em);
   max-height: 0;
 }
 
 .desktop-subcategories-below-inner.open {
   opacity: 1;
   transform: translateY(0);
-  max-height: 100px; /* Фиксированная высота для плавной анимации */
+  max-height: 6.25em; /* 100px */
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .desktop-subcategories-below-inner.closing {
   opacity: 0;
-  transform: translateY(-10px);
+  transform: translateY(-0.625em);
   max-height: 0;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -150,12 +150,12 @@
   font-family: 'Helvetica Neue', Arial, sans-serif;
   font-style: normal;
   font-weight: 500;
-  font-size: 14px;
-  line-height: 14px;
+  font-size: 0.875em; /* 14px */
+  line-height: 0.875em;
   color: #000000;
   cursor: pointer;
   text-transform: uppercase;
-  padding: 8px 0;
+  padding: 0.5em 0;
   transition: all 0.3s ease;
   white-space: nowrap;
   opacity: 0.3;
@@ -163,7 +163,7 @@
 
 .desktop-subcategory-btn-below:hover {
   opacity: 0.7;
-  transform: translateY(-1px);
+  transform: translateY(-0.0625em);
 }
 
 .desktop-subcategory-btn-below.active {
@@ -177,8 +177,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 0px !important;
-  max-width: 342px;
+  margin-top: 0 !important;
+  max-width: 21.375em; /* 342px */
 }
 
 .mobile-main-categories {
@@ -200,18 +200,18 @@
 
 .mobile-category-text {
   width: auto;
-  height: 32px;
+  height: 2em; /* 32px */
   font-family: 'Helvetica Neue', Arial, sans-serif;
   font-style: normal;
   font-weight: 700;
-  font-size: 32px;
-  line-height: 32px;
+  font-size: 2em; /* 32px */
+  line-height: 1em;
   text-align: center;
   letter-spacing: -0.02em;
   text-transform: uppercase;
   color: #000000;
   cursor: pointer;
-  padding: 16px 0;
+  padding: 1em 0; /* 16px */
   transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   white-space: nowrap;
   display: flex;
@@ -250,7 +250,7 @@
     max-height 1.5s cubic-bezier(0.34, 1.56, 0.64, 1),
     opacity 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s,
     visibility 0s linear 1.5s;
-  gap: 10px !important;
+  gap: 0.625em !important; /* 10px */
 }
 
 /* Состояние открытия */
@@ -260,7 +260,7 @@
   visibility: visible;
   margin-top: 0;
   margin-bottom: 0;
-  gap: 10px !important;
+  gap: 0.625em !important;
   transition: 
     max-height 1.5s cubic-bezier(0.34, 1.56, 0.64, 1),
     opacity 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s,
@@ -270,12 +270,12 @@
 
 /* Открытое состояние */
 .mobile-subcategories.open {
-  max-height: 400px !important;
+  max-height: 25em !important; /* 400px */
   opacity: 1;
   visibility: visible;
-  margin-top: 16px !important;
-  margin-bottom: 20px;
-  gap: 10px !important;
+  margin-top: 1em !important; /* 16px */
+  margin-bottom: 1.25em; /* 20px */
+  gap: 0.625em !important;
   transition: 
     max-height 1.5s cubic-bezier(0.34, 1.56, 0.64, 1),
     opacity 1s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s,
@@ -290,7 +290,7 @@
   visibility: visible;
   margin-top: 0;
   margin-bottom: 0;
-  gap: 10px !important;
+  gap: 0.625em !important;
   transition: 
     max-height 1.2s cubic-bezier(0.34, 1.56, 0.64, 1),
     opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1),
@@ -300,20 +300,20 @@
 
 .mobile-subcategory-text {
   width: auto;
-  min-height: 16px;
+  min-height: 1em; /* 16px */
   font-family: 'Helvetica Neue', Arial, sans-serif;
   font-style: normal;
   font-weight: 500;
-  font-size: 16px;
-  line-height: 16px;
+  font-size: 1em; /* 16px */
+  line-height: 1em;
   text-transform: uppercase;
   color: #000000;
   cursor: pointer;
-  padding: 6px 0;
+  padding: 0.375em 0; /* 6px */
   transition: all 1s cubic-bezier(0.34, 1.56, 0.64, 1);
   white-space: nowrap;
   opacity: 0;
-  transform: translateY(-12px) scale(0.95);
+  transform: translateY(-0.75em) scale(0.95); /* -12px */
   text-align: center;
   width: 100%;
   display: flex;
@@ -325,7 +325,7 @@
 /* Анимация появления подкатегорий при открытии */
 .mobile-subcategories.opening .mobile-subcategory-text {
   opacity: 0;
-  transform: translateY(-12px) scale(0.95);
+  transform: translateY(-0.75em) scale(0.95);
   transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
@@ -339,7 +339,7 @@
 /* Анимация исчезновения подкатегорий при закрытии */
 .mobile-subcategories.closing .mobile-subcategory-text {
   opacity: 0;
-  transform: translateY(-6px) scale(0.97);
+  transform: translateY(-0.375em) scale(0.97); /* -6px */
   transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   transition-delay: calc((var(--item-total, 4) - var(--item-index, 0) - 1) * 0.1s);
 }
@@ -351,84 +351,50 @@
 
 .mobile-subcategory-text:hover {
   opacity: 0.7 !important;
-  transform: translateY(-2px) scale(1.02) !important;
+  transform: translateY(-0.125em) scale(1.02) !important; /* -2px */
 }
 
-/* Сетка видео карточек */
+/* ========== СЕТКА ВИДЕО КАРТОЧЕК ========== */
 .video-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 40px;
+  gap: 2.5em; /* 40px */
   width: 100%;
-  max-width: 1800px;
-  margin-top: 40px;
+  max-width: 112.5em; /* 1800px */
+  margin-top: 2.5em; /* 40px */
 }
 
-/* Карточка видео */
+/* Карточка видео - УБРАНО ПОДПРЫГИВАНИЕ */
 .video-card {
   position: relative;
   overflow: hidden;
   cursor: pointer;
-  border-radius: 4px;
+  border-radius: 0.25em; /* 4px */
   width: 100%;
-  min-height: 481px;
-  max-height: 481px;
+  min-height: 30.0625em; /* 481px */
+  max-height: 30.0625em;
   background: #000000;
-  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: none;
 }
 
 .video-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+  transform: none;
+  box-shadow: none;
 }
 
-/* Видео фон - ИСПРАВЛЕНО: использование отдельного класса */
+/* Видео фон - СКРЫТ ВСЕГДА */
 .project-video-background {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  z-index: 1;
-  filter: brightness(0.8);
-  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-  opacity: 0; /* Начальное состояние - скрыто */
+  display: none !important;
 }
 
-/* Видео на десктопе (при наведении) - ИСПРАВЛЕНО */
-@media (min-width: 769px) {
-  .video-card:hover .project-video-background {
-    filter: brightness(1);
-    transform: scale(1.05);
-    opacity: 1; /* Показываем видео при наведении */
-  }
-  
-  /* Важно: видео должно быть всегда в DOM, просто скрыто */
-  .project-video-background {
-    display: block !important; /* Гарантируем, что видео элемент отображается */
-  }
-  
-  /* Яркое изображение по умолчанию на десктопе */
-  .preview-image {
-    filter: brightness(1); /* Изображение яркое по умолчанию */
-  }
-  
-  /* При наведении изображение становится прозрачным */
-  .video-card:hover .preview-image {
-    opacity: 0;
-    transform: scale(1.05);
-  }
-}
-
-/* Контейнер для изображения превью */
+/* Контейнер для изображения превью - ФИКС z-index */
 .preview-image-container {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 0;
+  z-index: 1;
   overflow: hidden;
 }
 
@@ -436,9 +402,16 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-  /* Изображение всегда видимо по умолчанию */
-  opacity: 1;
+  transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+  filter: brightness(0.9);
+  transform: scale(1);
+  opacity: 1 !important;
+}
+
+.video-card:hover .preview-image {
+  transform: scale(1.05);
+  filter: brightness(1);
+  opacity: 1 !important;
 }
 
 /* Плейсхолдер при ошибке загрузки изображения */
@@ -450,32 +423,15 @@
   align-items: center;
   justify-content: center;
   font-family: 'Helvetica Neue', Arial, sans-serif;
-  font-size: 24px;
+  font-size: 1.5em; /* 24px */
   color: #ffffff;
   text-align: center;
-  padding: 20px;
+  padding: 1.25em; /* 20px */
   opacity: 0.8;
+  z-index: 1;
 }
 
-/* На мобильных устройствах показываем только изображение */
-@media (max-width: 768px) {
-  .project-video-background {
-    display: none !important; /* Скрываем видео на мобильных */
-  }
-  
-  /* На мобильных изображение слегка затемнено */
-  .preview-image {
-    opacity: 1 !important;
-    filter: brightness(0.7);
-  }
-  
-  .video-card:hover .preview-image {
-    opacity: 1 !important;
-    transform: none !important;
-  }
-}
-
-/* Оверлей с контентом */
+/* Оверлей с контентом - ФИКС z-index */
 .video-overlay {
   position: relative;
   background: linear-gradient(
@@ -487,7 +443,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: flex-end;
-  padding: 40px;
+  padding: 2.5em; /* 40px */
   height: 100%;
   z-index: 2;
   transition: background 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -506,25 +462,25 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 20px;
+  gap: 1.25em; /* 20px */
   width: 100%;
   transform: translateY(0);
   transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .video-card:hover .video-content {
-  transform: translateY(-5px);
+  transform: translateY(-0.3125em); /* -5px */
 }
 
 /* Название видео */
 .video-title {
   width: 100%;
-  height: 32px;
+  height: 2em; /* 32px */
   font-family: 'Helvetica Neue', Arial, sans-serif;
   font-style: normal;
   font-weight: 500;
-  font-size: 32px;
-  line-height: 32px;
+  font-size: 2em; /* 32px */
+  line-height: 1em;
   text-align: center;
   letter-spacing: -0.03em;
   text-transform: uppercase;
@@ -540,13 +496,13 @@
 /* Описание видео */
 .video-description {
   width: 100%;
-  max-width: 483px;
-  min-height: 54px;
+  max-width: 30.1875em; /* 483px */
+  min-height: 3.375em; /* 54px */
   font-family: 'Helvetica Neue', Arial, sans-serif;
   font-style: normal;
   font-weight: 400;
-  font-size: 16px;
-  line-height: 18px;
+  font-size: 1em; /* 16px */
+  line-height: 1.125em; /* 18px */
   text-align: center;
   text-transform: uppercase;
   color: #FFFFFF;
@@ -562,14 +518,14 @@
 
 /* Кнопка "WATCH VIDEO" */
 .watch-btn {
-  width: 173px;
-  height: 48px;
+  width: 10.8125em; /* 173px */
+  height: 3em; /* 48px */
   background: rgba(238, 238, 238, 0.72);
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(0.5em); /* 8px */
   border: none;
-  border-radius: 32px;
+  border-radius: 2em; /* 32px */
   font-family: 'Helvetica Neue', Arial, sans-serif;
-  font-size: 16px;
+  font-size: 1em; /* 16px */
   font-weight: 500;
   color: #000000;
   cursor: pointer;
@@ -582,15 +538,15 @@
 
 .watch-btn:hover {
   background: rgba(255, 255, 255, 0.95);
-  transform: scale(1.08) translateY(-2px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  transform: scale(1.08) translateY(-0.125em); /* -2px */
+  box-shadow: 0 0.5em 1.25em rgba(0, 0, 0, 0.2); /* 8px 20px */
 }
 
 /* Анимации */
 @keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(-10px);
+    transform: translateY(-0.625em); /* -10px */
   }
   to {
     opacity: 1;
@@ -605,80 +561,80 @@
   }
   to {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(0.625em); /* 10px */
   }
 }
 
 /* ========== АДАПТИВНОСТЬ ========== */
 
 /* 1440px и меньше */
-@media (max-width: 1440px) {
+@media (max-width: 90em) { /* 1440px */
   .projects-video-container {
-    padding: 0 60px;
+    padding: 0 3.75em; /* 60px */
   }
 
   .section-divider {
     width: 90%;
-    max-width: 768px;
+    max-width: 48em;
   }
 
   .video-card {
-    min-height: 388px;
-    max-height: 388px;
+    min-height: 24.25em; /* 388px */
+    max-height: 24.25em;
   }
 }
 
 /* Планшеты (1024px) */
-@media (max-width: 1024px) {
+@media (max-width: 64em) { /* 1024px */
   .projects-video-section {
-    padding: 80px 0;
+    padding: 5em 0; /* 80px */
   }
 
   .projects-video-container {
-    padding: 0 40px;
+    padding: 0 2.5em; /* 40px */
   }
 
   .projects-header h1 {
-    font-size: 56px;
-    line-height: 56px;
-    min-width: 400px;
+    font-size: 3.5em; /* 56px */
+    line-height: 1em;
+    min-width: 25em; /* 400px */
   }
 
   .desktop-main-categories-above {
-    gap: 20px;
+    gap: 1.25em; /* 20px */
   }
 
   .desktop-category-btn-above {
-    font-size: 16px;
+    font-size: 1em;
   }
 
   .video-grid {
-    gap: 30px;
+    gap: 1.875em; /* 30px */
   }
 
   .video-card {
-    min-height: 350px;
-    max-height: 350px;
+    min-height: 21.875em; /* 350px */
+    max-height: 21.875em;
   }
 
   .video-overlay {
-    padding: 30px;
+    padding: 1.875em; /* 30px */
   }
 
   .video-title {
-    font-size: 28px;
-    line-height: 28px;
+    font-size: 1.75em; /* 28px */
+    line-height: 1em;
   }
 
   .video-description {
-    font-size: 14px;
-    line-height: 16px;
-    max-width: 400px;
+    font-size: 0.875em; /* 14px */
+    line-height: 1.1428571429em; /* 16px */
+    max-width: 25em; /* 400px */
   }
 }
 
 /* Мобильные (768px и меньше) - скрываем десктопную фильтрацию */
-@media (max-width: 768px) {
+@media (max-width: 48em) { /* 768px */
   .desktop-main-categories-above,
   .desktop-subcategories-below {
     display: none;
@@ -689,62 +645,67 @@
   }
 
   .projects-video-section {
-    padding: 60px 0;
+    padding: 3.75em 0; /* 60px */
   }
 
   .projects-video-container {
-    padding: 0 20px;
+    padding: 0 1.25em; /* 20px */
   }
 
   .projects-header h1 {
-    font-size: 48px;
-    line-height: 48px;
-    min-width: 320px;
-    height: 48px;
+    font-size: 3em; /* 48px */
+    line-height: 1em;
+    min-width: 20em; /* 320px */
+    height: 3em; /* 48px */
   }
 
+  /* ИЗМЕНЕНО: Уменьшен отступ между заголовком и линией до 8px (0.5em) */
   .section-divider {
     width: 90%;
-    margin: 40px auto;
+    margin: 0.5em auto 0.5em auto; /* 8px сверху и снизу вместо 40px */
   }
 
   .mobile-category-text {
-    font-size: 32px;
-    line-height: 32px;
-    height: 32px;
-    padding: 16px 0;
+    font-size: 2em; /* 32px */
+    line-height: 1em;
+    height: 2em;
+    padding: 0.5em 0; /* ИЗМЕНЕНО: 8px (0.5em) вместо 16px (1em) */
   }
 
   .mobile-subcategory-text {
-    font-size: 16px;
-    line-height: 16px;
-    min-height: 16px;
-    padding: 4px 0;
+    font-size: 1em; /* 16px */
+    line-height: 1em;
+    min-height: 1em;
+    padding: 0.25em 0; /* 4px */
   }
 
   /* 1 колонка на мобильных */
   .video-grid {
     grid-template-columns: 1fr;
-    gap: 30px;
-    margin-top: 30px;
+    gap: 1.875em; /* 30px */
+    margin-top: 1.875em;
+    /* ИЗМЕНЕНО: Видео расширяется по краям сайта */
+    width: 100%;
+    padding: 0;
   }
 
-  /* Размеры для телефона */
+  /* ИЗМЕНЕНО: Видеокарточка занимает всю ширину с отступами по краям */
   .video-card {
-    min-height: 438px;
-    max-height: 438px;
+    min-height: 27.375em; /* 438px */
+    max-height: 27.375em;
     width: 100%;
-    max-width: 342px;
+    max-width: none; /* Убрано ограничение по максимальной ширине */
     margin: 0 auto;
+    border-radius: 0.25em; /* 4px */
   }
 
   .video-overlay {
-    padding: 30px 20px;
+    padding: 1.875em 1.5em; /* ИЗМЕНЕНО: 30px 24px */
   }
 
   .video-title {
-    font-size: 24px;
-    line-height: 24px;
+    font-size: 1.5em; /* 24px */
+    line-height: 1em;
   }
 
   /* Скрываем описание видео на телефоне */
@@ -753,15 +714,15 @@
   }
 
   .watch-btn {
-    width: 160px;
-    height: 44px;
-    font-size: 14px;
-    margin-top: 10px;
+    width: 10em; /* 160px */
+    height: 2.75em; /* 44px */
+    font-size: 0.875em; /* 14px */
+    margin-top: 0.625em; /* 10px */
   }
 }
 
 /* Десктоп (769px и больше) - скрываем мобильную фильтрацию */
-@media (min-width: 769px) {
+@media (min-width: 48.0625em) { /* 769px */
   .mobile-category-filter {
     display: none;
   }
@@ -773,47 +734,62 @@
 }
 
 /* Маленькие телефоны (480px) */
-@media (max-width: 480px) {
+@media (max-width: 30em) { /* 480px */
   .projects-video-section {
-    padding: 40px 0;
+    padding: 2.5em 0; /* 40px */
   }
 
   .projects-header h1 {
-    font-size: 36px;
-    line-height: 36px;
-    min-width: 260px;
-    height: 36px;
+    font-size: 2.25em; /* 36px */
+    line-height: 1em;
+    min-width: 16.25em; /* 260px */
+    height: 2.25em; /* 36px */
+  }
+
+  .section-divider {
+    margin: 0.5em auto 0.5em auto; /* 8px сверху и снизу */
   }
 
   .mobile-category-text {
-    font-size: 28px;
-    line-height: 28px;
-    height: 28px;
-    padding: 12px 0;
+    font-size: 1.75em; /* 28px */
+    line-height: 1em;
+    height: 1.75em;
+    padding: 0.5em 0; /* 8px */
   }
 
   .mobile-subcategory-text {
-    font-size: 14px;
-    line-height: 14px;
-    min-height: 14px;
-    padding: 3px 0;
+    font-size: 0.875em; /* 14px */
+    line-height: 1em;
+    min-height: 0.875em;
+    padding: 0.1875em 0; /* 3px */
   }
 
   .video-card {
-    min-height: 400px;
-    max-height: 400px;
-    max-width: 300px;
+    min-height: 25em; /* 400px */
+    max-height: 25em;
   }
 
   .video-title {
-    font-size: 20px;
-    line-height: 20px;
+    font-size: 1.25em; /* 20px */
+    line-height: 1em;
   }
 
   .watch-btn {
-    width: 140px;
-    height: 40px;
-    font-size: 13px;
+    width: 8.75em; /* 140px */
+    height: 2.5em; /* 40px */
+    font-size: 0.8125em; /* 13px */
+  }
+}
+
+/* Очень маленькие телефоны (менее 375px) */
+@media (max-width: 23.4375em) { /* 375px */
+  .video-card {
+    min-height: 22.5em; /* 360px */
+    max-height: 22.5em;
+  }
+  
+  .video-overlay {
+    padding: 1.5em 1.25em; /* 24px 20px */
   }
 }
 
@@ -829,26 +805,26 @@
   justify-content: center;
   align-items: center;
   z-index: 10000;
-  padding: 20px;
+  padding: 1.25em; /* 20px */
   animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 @keyframes fadeIn {
   from {
     opacity: 0;
-    backdrop-filter: blur(0px);
+    backdrop-filter: blur(0);
   }
   to {
     opacity: 1;
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(0.625em); /* 10px */
   }
 }
 
 .video-popup {
   background: #000000;
   width: 90%;
-  max-width: 1000px;
-  border-radius: 4px;
+  max-width: 62.5em; /* 1000px */
+  border-radius: 0.25em; /* 4px */
   overflow: hidden;
   position: relative;
   animation: scaleIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
@@ -868,16 +844,16 @@
 
 .close-popup {
   position: absolute;
-  top: 15px;
-  right: 15px;
+  top: 0.9375em; /* 15px */
+  right: 0.9375em;
   background: transparent;
   border: none;
   color: #FFFFFF;
   font-size: 2.5rem;
   cursor: pointer;
   z-index: 10001;
-  width: 40px;
-  height: 40px;
+  width: 2.5em; /* 40px */
+  height: 2.5em;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -894,11 +870,11 @@
   font-family: 'Helvetica Neue', Arial, sans-serif;
   font-style: normal;
   font-weight: 500;
-  font-size: 32px;
+  font-size: 2em; /* 32px */
   line-height: 1.2;
   color: #FFFFFF;
   margin: 0;
-  padding: 30px 30px 20px 30px;
+  padding: 1.875em 1.875em 1.25em 1.875em; /* 30px 30px 20px 30px */
   text-transform: uppercase;
   animation: slideInDown 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
@@ -906,7 +882,7 @@
 @keyframes slideInDown {
   from {
     opacity: 0;
-    transform: translateY(-20px);
+    transform: translateY(-1.25em); /* -20px */
   }
   to {
     opacity: 1;
@@ -917,7 +893,7 @@
 .popup-video-container {
   width: 100%;
   position: relative;
-  min-height: 400px;
+  min-height: 25em; /* 400px */
   background: #000000;
   animation: fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
   animation-delay: 0.1s;
@@ -945,28 +921,33 @@
   color: #FFFFFF;
   font-family: 'Helvetica Neue', Arial, sans-serif;
   text-align: center;
-  padding: 20px;
+  padding: 1.25em; /* 20px */
 }
 
 .video-error-message p {
-  margin: 10px 0;
+  margin: 0.625em 0; /* 10px */
   opacity: 0.8;
-  font-size: 16px;
+  font-size: 1em; /* 16px */
 }
 
-@media (max-width: 768px) {
+@media (max-width: 48em) { /* 768px */
   .popup-content h3 {
-    font-size: 24px;
-    padding: 20px 20px 15px 20px;
+    font-size: 1.5em; /* 24px */
+    padding: 1.25em 1.25em 0.9375em 1.25em; /* 20px 20px 15px 20px */
   }
 
   .close-popup {
-    top: 10px;
-    right: 10px;
+    top: 0.625em; /* 10px */
+    right: 0.625em;
     font-size: 2rem;
   }
 
   .popup-video-container {
-    min-height: 300px;
+    min-height: 18.75em; /* 300px */
   }
+}
+
+/* Убираем все возможные перекрытия */
+.video-card * {
+  box-sizing: border-box;
 }

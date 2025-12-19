@@ -1,525 +1,436 @@
+/* Файл: Footer.css */
+/* Сброс */
 * {
-    text-decoration: none;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  text-decoration: none;
 }
 
+/* Базовые переменные */
 :root {
-  --base-width: 1440px;
-  --scale-factor: 1;
+  --font-primary: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --color-black: #000000;
+  --color-white: #ffffff;
+  --color-gray: #999797;
+  --color-border: #ddd;
+  --transition-speed: 0.3s;
 }
 
-/* Автоматическое вычисление масштаба для больших экранов */
-@media (min-width: 1441px) {
-  :root {
-    --scale-factor: min(1.5, calc(100vw / var(--base-width)));
-  }
-}
-
+/* Основные стили футера для ПК и планшета */
 .footer {
-  background-color: #ffff;
-  /* padding: 4px 0 !important; */
+  background-color: var(--color-white);
   display: flex;
   align-items: center;
+  justify-content: center;
   position: relative;
   bottom: 0;
-  height: 10vh !important;
   width: 100%;
-  border-top: 1px solid #ddd;
-  box-sizing: border-box;
-}
-
-/* Масштабирование для больших экранов */
-@media (min-width: 1441px) {
-
-}
-@media (min-width: 1441px) {
-  .footer {
-    /* padding: calc(49px * var(--scale-factor)) 0; */
-    border-top: calc(1px * var(--scale-factor)) solid #ddd;
-  }
+  height: 10vh;
+  min-height: 3.75em;
+  max-height: 5em;
+  border-top: 0.0625em solid var(--color-border);
 }
 
 .footer-content {
   display: flex;
-  justify-content: space-between; /* Это важно для распределения */
+  justify-content: space-between;
   align-items: center;
-  width: 100%; /* Изменили на 100% вместо max-width */
-  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 0 2.8125em; /* 45px от краев */
 }
 
+/* Левая часть - копирайт (16px все экраны) - ПРИЖАТ К ЛЕВОМУ КРАЮ */
 .footer-left {
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  font-style: normal;
+  font-family: var(--font-primary);
   font-weight: 300;
-  font-size: 16px;
-  line-height: 16px;
-  color: #000000;
+  font-size: 1em; /* 16px */
+  color: var(--color-black);
   white-space: nowrap;
-  margin-left: 40px; /* Отступ от левого края */
-  flex-shrink: 0; /* Запрещаем сжатие */
+  flex: 0 0 auto; /* Не растягивается, фиксированная ширина */
+  margin-right: auto; /* Прижимаем к левому краю */
 }
 
-/* Масштабирование для больших экранов */
-@media (min-width: 1441px) {
-  .footer-left {
-    font-size: calc(16px * var(--scale-factor));
-    line-height: calc(16px * var(--scale-factor));
-    margin-left: calc(40px * var(--scale-factor));
-  }
-}
-
+/* Центральные ссылки (16px все экраны) */
 .footer-links {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 88px; /* Отступ 88px между ссылками */
-  flex-grow: 1; /* Занимает все доступное пространство между крайними блоками */
+  gap: 5.5em; /* 88px */
+  flex: 0 1 auto; /* Авто размер, может сжиматься */
+  margin: 0 auto; /* Центрируем */
 }
 
 .footer-links a {
-  text-decoration: none;
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  font-style: normal;
+  font-family: var(--font-primary);
   font-weight: 400;
-  font-size: 16px;
-  line-height: 16px;
-  color: #000000;
-  transition: opacity 0.3s ease;
+  font-size: 1em; /* 16px */
+  color: var(--color-black);
+  transition: opacity var(--transition-speed) ease;
   white-space: nowrap;
-  flex-shrink: 0; /* Запрещаем сжатие ссылок */
-}
-
-/* Масштабирование для больших экранов */
-@media (min-width: 1441px) {
-  .footer-links a {
-    font-size: calc(16px * var(--scale-factor));
-    line-height: calc(16px * var(--scale-factor));
-  }
-  
-  .footer-links {
-    gap: calc(88px * var(--scale-factor));
-  }
 }
 
 .footer-links a:hover {
   opacity: 0.7;
 }
 
+/* Социальные иконки - ПРИЖАТЫ К ПРАВОМУ КРАЮ */
 .footer-social {
   display: flex;
   align-items: center;
-  margin-right: 40px; /* Отступ от правого края */
-  gap: 20px; /* Отступ между иконками */
-  flex-shrink: 0; /* Запрещаем сжатие */
+  gap: 1.25em; /* 20px */
+  flex: 0 0 auto; /* Не растягивается, фиксированная ширина */
+  margin-left: auto; /* Прижимаем к правому краю */
 }
 
 .footer-social a {
-  display: inline-block;
-  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .footer-social img {
-  width: 20px;
-  height: 20px;
-  transition: opacity 0.3s ease;
-  flex-shrink: 0;
-}
-
-/* Масштабирование для больших экранов */
-@media (min-width: 1441px) {
-  .footer-social img {
-    width: calc(20px * var(--scale-factor));
-    height: calc(20px * var(--scale-factor));
-  }
-  
-  .footer-social {
-    margin-right: calc(40px * var(--scale-factor));
-    gap: calc(20px * var(--scale-factor));
-  }
+  width: 1.25em; /* 20px */
+  height: 1.25em;
+  transition: opacity var(--transition-speed) ease;
 }
 
 .footer-social a:hover img {
   opacity: 0.7;
 }
 
+/* ========== МОБИЛЬНАЯ ВЕРСИЯ (СКРЫТА ПО УМОЛЧАНИЮ) ========== */
+.footer-mobile {
+  display: none;
+}
+
+.footer-mobile-social,
+.footer-mobile-links-row1,
+.footer-mobile-links-row2,
+.footer-mobile-copyright {
+  display: none;
+}
+
 /* ========== АДАПТИВНОСТЬ ========== */
 
-/* Планшеты и маленькие десктопы (1024px - 1440px) */
-@media (max-width: 1440px) {
-  .footer {
-    padding: 40px 0;
-  }
-  
-  .footer-links {
-    gap: 60px;
-  }
-  
-  .footer-left,
-  .footer-links a {
-    font-size: 15px;
-    line-height: 15px;
-  }
-  
-  .footer-left {
-    margin-left: 30px;
-  }
-  
-  .footer-social {
-    margin-right: 30px;
+/* ПК версия (1920px и больше) */
+@media (min-width: 120em) { /* 1920px */
+  .footer-content {
+    max-width: 120em; /* 1920px */
+    padding: 0 2.8125em; /* 45px от краев */
   }
   
   .footer-social img {
-    width: 18px;
-    height: 18px;
+    width: 1.5em;
+    height: 1.5em;
   }
 }
 
-/* Планшеты горизонтальные (1024px) */
-@media (max-width: 1024px) {
-  .footer {
-    padding: 35px 0;
+/* Планшетная версия (1440px) */
+@media (max-width: 90em) { /* 1440px */
+  .footer-content {
+    width: 100%;
+    max-width: 100%;
+    padding: 0 2.8125em; /* 45px от краев */
   }
   
   .footer-links {
-    gap: 40px;
-  }
-  
-  .footer-left,
-  .footer-links a {
-    font-size: 14px;
-    line-height: 14px;
-  }
-  
-  .footer-left {
-    margin-left: 25px;
+    gap: 3.75em; /* 60px */
   }
   
   .footer-social {
-    margin-right: 25px;
+    gap: 1em;
   }
   
   .footer-social img {
-    width: 16px;
-    height: 16px;
+    width: 1.125em; /* 18px */
+    height: 1.125em;
   }
 }
 
-/* Планшеты вертикальные (768px) */
-@media (max-width: 768px) {
+/* Планшетная версия (860px-1024px) */
+@media (min-width: 53.751em) and (max-width: 64em) { /* 860px-1024px */
+  .footer {
+    height: 12vh;
+    min-height: 4em;
+  }
+  
+  .footer-content {
+    padding: 0 2.25em; /* 36px от краев */
+  }
+  
+  .footer-links {
+    gap: 2.5em; /* 40px */
+  }
+  
+  .footer-social {
+    gap: 0.875em; /* 14px */
+  }
+  
+  .footer-social img {
+    width: 1em; /* 16px */
+    height: 1em;
+  }
+}
+
+/* ========== МОБИЛЬНАЯ ВЕРСИЯ (860px и меньше) ========== */
+@media (max-width: 53.75em) { /* 860px */
+  .footer {
+    height: auto;
+    min-height: 15em;
+    padding: 1.5em 0;
+    display: block;
+  }
+  
   .footer-content {
     flex-direction: column;
-    gap: 20px;
-    text-align: center;
-    padding: 0 20px;
-  }
-  
-  .footer {
-    height: 16vh !important;
-    padding: 3px 0 !important;
-  }
-  
-  .footer-left {
-    order: 3;
-    margin-top: 10px;
-    margin-left: 0;
-  }
-  
-  .footer-links {
-    order: 2;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 20px;
     align-items: center;
-    flex-grow: 0; /* Сбрасываем для мобильной версии */
-  }
-  
-  .footer-links a {
-    margin: 0;
-    font-size: 13px;
-    white-space: nowrap;
-  }
-  
-  .footer-social {
-    order: 1;
-    margin-right: 0;
-    gap: 15px;
-  }
-  
-  .footer-left,
-  .footer-links a {
-    font-size: 13px;
-  }
-  
-  .footer-social img {
-    width: 32px;
-    height: 32px;
-  }
-}
-
-/* Мобильные устройства (480px) */
-@media (max-width: 480px) {
-  .footer {
-    padding: 25px 0;
-    height: 20vh !important;
-  }
-  
-  .footer-content {
-    gap: 20px;
-    padding: 0 15px;
-  }
-  
-  .footer-links {
-    display: flex;
-    flex-wrap: wrap;
     justify-content: center;
-    gap: 15px;
+    width: 100%;
+    gap: 0;
+    padding: 0 1em; /* 16px для мобильных */
+  }
+  
+  /* Скрываем стандартные блоки */
+  .footer-left,
+  .footer-links,
+  .footer-social {
+    display: none;
+  }
+  
+  /* Показываем мобильные блоки */
+  .footer-mobile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    gap: 1.25em; /* 20px */
+  }
+  
+  /* 1 СТРОКА: SVG иконки - ПО ЦЕНТРУ */
+  .footer-mobile-social {
+    display: flex;
+    justify-content: center; /* Теперь по центру */
+    gap: 1.25em; /* 20px */
+    width: 100%;
+    margin-bottom: 0.5em;
+  }
+  
+  .footer-mobile-social a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .footer-mobile-social img {
+    width: 2em; /* 32px */
+    height: 2em;
+    transition: opacity var(--transition-speed) ease;
+  }
+  
+  .footer-mobile-social a:hover img {
+    opacity: 0.7;
+  }
+  
+  /* 2 СТРОКА: PRIVACY POLICY TERMS OF USE (16px) */
+  .footer-mobile-links-row1 {
+    display: flex;
+    justify-content: center;
+    gap: 1.875em; /* 30px */
+    width: 100%;
+    margin-bottom: 0.75em;
+  }
+  
+  .footer-mobile-links-row1 a {
+    font-family: var(--font-primary);
+    font-weight: 400;
+    font-size: 1em; /* 16px */
+    color: var(--color-black);
+    white-space: nowrap;
+    transition: opacity var(--transition-speed) ease;
+  }
+  
+  .footer-mobile-links-row1 a:hover {
+    opacity: 0.7;
+  }
+  
+  /* 3 СТРОКА: ACCESSIBILITY STATEMENT (16px) */
+  .footer-mobile-links-row2 {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-bottom: 0.75em;
+  }
+  
+  .footer-mobile-links-row2 a {
+    font-family: var(--font-primary);
+    font-weight: 400;
+    font-size: 1em; /* 16px */
+    color: var(--color-black);
+    white-space: nowrap;
+    transition: opacity var(--transition-speed) ease;
+  }
+  
+  .footer-mobile-links-row2 a:hover {
+    opacity: 0.7;
+  }
+  
+  /* 4 СТРОКА: © 2025 MOVIE PARK - ПО ЦЕНТРУ */
+  .footer-mobile-copyright {
+    display: flex;
+    justify-content: center; /* Теперь по центру */
+    align-items: center;
     width: 100%;
   }
   
-  .footer-links a {
-    margin: 0;
-    font-size: 12px;
-    display: block;
+  .footer-mobile-copyright span {
+    font-family: var(--font-primary);
+    font-weight: 300;
+    font-size: 1em; /* 16px */
+    color: var(--color-black);
     white-space: nowrap;
   }
-  
-  .footer-left {
-    font-size: 12px;
-    line-height: 1.4;
-    margin-top: 5px;
-  }
-  
-  .footer-social {
-    gap: 20px;
-  }
-  
-  .footer-social img {
-    width: 32px;
-    height: 32px;
-  }
 }
 
-/* Средние мобильные (400px - 480px) */
-@media (max-width: 480px) and (min-width: 401px) {
-  .footer-links {
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-  
-  .footer-links a:nth-child(1),
-  .footer-links a:nth-child(2) {
-    flex-shrink: 0;
-  }
-  
-  .footer-links a:nth-child(3) {
-    flex-basis: 100%;
-    text-align: center;
-    margin-top: 5px;
-  }
-}
+/* ========== АДАПТАЦИЯ ДЛЯ ОЧЕНЬ МАЛЕНЬКИХ ТЕЛЕФОНОВ ========== */
 
-/* Маленькие мобильные (360px - 400px) */
-@media (max-width: 400px) {
+/* Для телефонов до 390px */
+@media (max-width: 24.375em) { /* 390px */
   .footer {
-    padding: 20px 0;
+    min-height: 14em;
+    padding: 1em 0;
   }
   
   .footer-content {
-    gap: 15px;
-    padding: 0 10px;
+    padding: 0 0.75em; /* 12px */
   }
   
-  .footer-links {
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 8px 12px;
+  .footer-mobile {
+    gap: 1em;
   }
   
-  .footer-links a {
-    font-size: 11px;
+  .footer-mobile-social {
+    gap: 1em;
+    margin-bottom: 0.25em;
   }
   
-  .footer-links a:nth-child(1),
-  .footer-links a:nth-child(2) {
-    flex-shrink: 0;
+  .footer-mobile-social img {
+    width: 1.75em; /* 28px */
+    height: 1.75em;
   }
   
-  .footer-links a:nth-child(3) {
-    flex-basis: 100%;
-    text-align: center;
-    margin-top: 2px;
+  .footer-mobile-links-row1 {
+    gap: 1.25em; /* 20px */
+    margin-bottom: 0.5em;
   }
   
-  .footer-left {
-    font-size: 11px;
-    margin-top: 3px;
+  .footer-mobile-links-row1 a,
+  .footer-mobile-links-row2 a {
+    font-size: 0.875em; /* 14px для очень маленьких телефонов */
   }
   
-  .footer-social {
-    gap: 15px;
+  .footer-mobile-links-row2 {
+    margin-bottom: 0.5em;
   }
   
-  .footer-social img {
-    width: 32px;
-    height: 32px;
+  .footer-mobile-copyright span {
+    font-size: 0.875em; /* 14px для очень маленьких телефонов */
   }
 }
 
-/* Очень маленькие мобильные (320px - 360px) */
-@media (max-width: 360px) {
+/* Для телефонов до 320px */
+@media (max-width: 20em) { /* 320px */
+  .footer-content {
+    padding: 0 0.5em; /* 8px */
+  }
+  
+  .footer-mobile-links-row1 a,
+  .footer-mobile-links-row2 a {
+    font-size: 0.75em; /* 12px для 320px */
+  }
+  
+  .footer-mobile-copyright span {
+    font-size: 0.75em; /* 12px для 320px */
+  }
+}
+
+/* ========== ЛАНДШАФТНАЯ ОРИЕНТАЦИЯ ДЛЯ ТЕЛЕФОНОВ ========== */
+@media (max-height: 37.5em) and (orientation: landscape) and (max-width: 53.75em) {
   .footer {
-    padding: 15px 0;
+    min-height: 10em;
+    padding: 1em 0;
   }
   
   .footer-content {
-    gap: 12px;
-    padding: 0 8px;
+    padding: 0 1em;
   }
   
-  .footer-links {
-    gap: 6px 10px;
+  .footer-mobile {
+    gap: 0.75em;
   }
   
-  .footer-links a {
-    font-size: 10px;
+  .footer-mobile-social {
+    gap: 1em;
+    margin-bottom: 0.25em;
   }
   
-  .footer-links a:nth-child(3) {
-    font-size: 10px;
-    margin-top: 0;
+  .footer-mobile-social img {
+    width: 1.75em;
+    height: 1.75em;
   }
   
-  .footer-left {
-    font-size: 10px;
+  .footer-mobile-links-row1 {
+    gap: 1.5em;
+    margin-bottom: 0.25em;
   }
   
-  .footer-social {
-    gap: 12px;
+  .footer-mobile-links-row2 {
+    margin-bottom: 0.25em;
   }
 }
 
-/* Супер маленькие мобильные (менее 320px) */
-@media (max-width: 320px) {
-  .footer {
-    padding: 12px 0;
-  }
-  
-  .footer-content {
-    gap: 10px;
-    padding: 0 5px;
-  }
-  
-  .footer-links {
-    gap: 5px 8px;
-  }
-  
-  .footer-links a {
-    font-size: 9px;
-  }
-  
-  .footer-links a:nth-child(3) {
-    font-size: 9px;
-  }
-  
-  .footer-left {
-    font-size: 9px;
-  }
-  
-  .footer-social {
-    gap: 10px;
-  }
-  
-  .footer-social img {
-    width: 28px;
-    height: 28px;
-  }
-}
+/* ========== ДОСТУПНОСТЬ И ДОПОЛНИТЕЛЬНЫЕ СТИЛИ ========== */
 
-/* Ландшафтная ориентация на мобильных */
-@media (max-height: 600px) and (orientation: landscape) {
-  .footer-content {
-    flex-direction: row;
-    gap: 15px;
-    flex-wrap: wrap;
-    justify-content: center;
-    padding: 0 15px;
-  }
-  
-  .footer {
-    padding: 15px 0;
-  }
-  
-  .footer-left {
-    order: 1;
-    margin-top: 0;
-    flex: 1 0 100%;
-    text-align: center;
-  }
-  
-  .footer-links {
-    order: 2;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    gap: 20px;
-    justify-content: center;
-    flex-grow: 0;
-  }
-  
-  .footer-links a {
-    margin: 0;
-    font-size: 11px;
-    white-space: nowrap;
-  }
-  
-  .footer-social {
-    order: 3;
-    flex: 1 0 100%;
-    justify-content: center;
-    margin-top: 8px;
-    gap: 15px;
-  }
-  
-  .footer-social img {
-    width: 28px;
-    height: 28px;
-  }
-}
-
-/* Для очень больших экранов (более 2000px) */
-@media (min-width: 2000px) {
-  .footer-content {
-    max-width: 100%; /* Остается 100% */
-  }
-  
-  .footer {
-    padding: 60px 0;
-  }
-}
-
-/* Улучшение доступности */
+/* Фокус для доступности */
 .footer-links a:focus,
-.footer-social a:focus {
-  outline: 2px solid #007bff;
-  outline-offset: 2px;
-  border-radius: 2px;
+.footer-social a:focus,
+.footer-mobile-social a:focus,
+.footer-mobile-links-row1 a:focus,
+.footer-mobile-links-row2 a:focus {
+  outline: 0.125em solid #007bff;
+  outline-offset: 0.25em;
+  border-radius: 0.125em;
 }
 
-/* Плавные анимации */
+/* Плавные анимации для ховеров */
 .footer-links a,
 .footer-social a,
-.footer-social img {
+.footer-social img,
+.footer-mobile-social a,
+.footer-mobile-links-row1 a,
+.footer-mobile-links-row2 a {
   transition: all 0.2s ease;
 }
 
-/* Дополнительный медиа-запрос для очень специфичного поведения */
-@media (max-width: 380px) {
-  .footer-links {
-    flex-direction: column;
-    gap: 8px;
+/* Для очень больших экранов (более 2000px) */
+@media (min-width: 125em) { /* 2000px */
+  .footer-content {
+    max-width: 120em; /* 1920px */
+    padding: 0 3.5em; /* 56px от краев */
   }
   
-  .footer-links a:nth-child(3) {
-    flex-basis: auto;
-    margin-top: 0;
+  .footer-links {
+    gap: 6em; /* 96px */
+  }
+  
+  .footer-left,
+  .footer-links a {
+  }
+  
+  .footer-social img {
+    width: 1.75em; /* 28px */
+    height: 1.75em;
   }
 }

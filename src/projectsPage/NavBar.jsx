@@ -89,46 +89,7 @@ const NavBar = () => {
     <div className="header-wrapper">
       {/* НАВИГАЦИЯ */}
       <header className="main-header">
-        {/* Десктопная навигация - ЛЕВАЯ ЧАСТЬ */}
-        <div className="header-section header-section--left">
-          <Link to="/real-estate" className="nav-link nav-link--directions">
-            DIRECTIONS
-          </Link>
-          <Link to="/projects" className="nav-link nav-link--projects">
-            PROJECTS
-          </Link>
-        </div>
-        
-        {/* Логотип с ссылкой на домашнюю страницу */}
-        <div className="brand-logo">
-          <Link to="/home">
-            <img src={logoImg} alt="Logo" className="brand-logo__image" />
-          </Link>
-        </div>
-        
-        {/* Десктопная навигация - ПРАВАЯ ЧАСТЬ */}
-        <div className="header-section header-section--right">
-          <Link 
-            to="/home#mens-section" 
-            className="nav-link nav-link--about"
-            onClick={(e) => {
-              if (location.pathname === "/home" || location.pathname === "/") {
-                e.preventDefault();
-                scrollToMens();
-              }
-            }}
-          >
-            ABOUT
-          </Link>
-          <button 
-            className="chat-action-button"
-            onClick={scrollToContact}
-          >
-            CHAT WITH US
-          </button>
-        </div>
-        
-        {/* БУРГЕР-МЕНЮ ИЗ VideoBackground.js */}
+        {/* Бургер-меню для мобильных */}
         <button 
           className="burger-menu" 
           onClick={handleMenuToggle} 
@@ -146,6 +107,50 @@ const NavBar = () => {
           )}
         </button>
         
+        {/* Десктопная навигация - ЛЕВАЯ ЧАСТЬ */}
+        <div className="header-section header-section--left">
+          <div className="nav-links-container">
+            <Link to="/real-estate" className="nav-link">
+              DIRECTIONS
+            </Link>
+            <Link to="/projects" className="nav-link">
+              PROJECTS
+            </Link>
+          </div>
+        </div>
+        
+        {/* Логотип с ссылкой на домашнюю страницу */}
+        <div className="brand-logo">
+          <Link to="/home" className="brand-logo__link">
+            <img src={logoImg} alt="Logo" className="brand-logo__image" />
+          </Link>
+        </div>
+        
+        {/* Десктопная навигация - ПРАВАЯ ЧАСТЬ */}
+        <div className="header-section header-section--right">
+          <div className="nav-links-container">
+            <Link 
+              to="/home#mens-section" 
+              className="nav-link"
+              onClick={(e) => {
+                if (location.pathname === "/home" || location.pathname === "/") {
+                  e.preventDefault();
+                  scrollToMens();
+                }
+              }}
+            >
+              ABOUT
+            </Link>
+            <button 
+              className="chat-action-button"
+              onClick={scrollToContact}
+            >
+              CHAT WITH US
+            </button>
+          </div>
+        </div>
+        
+        {/* Мобильная кнопка чата */}
         <button 
           className="mobile-chat-button" 
           aria-label="Chat with us"
@@ -159,10 +164,20 @@ const NavBar = () => {
           </svg>
         </button>
         
-        {/* Мобильное выпадающее меню с эффектом стекла из VideoBackground.js */}
+        {/* Мобильное выпадающее меню */}
         <div className={`mobile-dropdown ${menuActive ? 'active' : ''}`}>
           {menuActive && (
             <>
+              <button 
+                className="close-menu" 
+                onClick={handleMenuClose}
+                aria-label="Close menu"
+              >
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M1 1L19 19M19 1L1 19" stroke="black" strokeWidth="2" strokeLinecap="round"/>
+                </svg>
+              </button>
+              
               <Link 
                 to="/real-estate" 
                 className="mobile-nav-item"
@@ -190,6 +205,16 @@ const NavBar = () => {
               >
                 ABOUT
               </Link>
+              <button 
+                className="mobile-nav-item"
+                onClick={() => {
+                  handleMenuClose();
+                  scrollToContact();
+                }}
+                style={{background: 'transparent', border: 'none', font: 'inherit'}}
+              >
+                CHAT WITH US
+              </button>
             </>
           )}
         </div>

@@ -354,7 +354,7 @@
   transform: translateY(-2px) scale(1.02) !important;
 }
 
-/* Сетка видео карточек */
+/* ========== СЕТКА ВИДЕО КАРТОЧЕК ========== */
 .video-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -364,7 +364,7 @@
   margin-top: 40px;
 }
 
-/* Карточка видео */
+/* Карточка видео - УБРАНО ПОДПРЫГИВАНИЕ */
 .video-card {
   position: relative;
   overflow: hidden;
@@ -374,61 +374,29 @@
   min-height: 481px;
   max-height: 481px;
   background: #000000;
-  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  /* Убраны transform и box-shadow при наведении */
+  transition: none;
 }
 
+/* Убрано подпрыгивание при наведении */
 .video-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+  transform: none;
+  box-shadow: none;
 }
 
-/* Видео фон - ИСПРАВЛЕНО: использование отдельного класса */
+/* Видео фон - СКРЫТ ВСЕГДА */
 .project-video-background {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  z-index: 1;
-  filter: brightness(0.8);
-  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-  opacity: 0; /* Начальное состояние - скрыто */
+  display: none !important; /* Полностью скрываем видео */
 }
 
-/* Видео на десктопе (при наведении) - ИСПРАВЛЕНО */
-@media (min-width: 769px) {
-  .video-card:hover .project-video-background {
-    filter: brightness(1);
-    transform: scale(1.05);
-    opacity: 1; /* Показываем видео при наведении */
-  }
-  
-  /* Важно: видео должно быть всегда в DOM, просто скрыто */
-  .project-video-background {
-    display: block !important; /* Гарантируем, что видео элемент отображается */
-  }
-  
-  /* Яркое изображение по умолчанию на десктопе */
-  .preview-image {
-    filter: brightness(1); /* Изображение яркое по умолчанию */
-  }
-  
-  /* При наведении изображение становится прозрачным */
-  .video-card:hover .preview-image {
-    opacity: 0;
-    transform: scale(1.05);
-  }
-}
-
-/* Контейнер для изображения превью */
+/* Контейнер для изображения превью - ФИКС z-index */
 .preview-image-container {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 0;
+  z-index: 1; /* z-index для изображения */
   overflow: hidden;
 }
 
@@ -436,9 +404,17 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-  /* Изображение всегда видимо по умолчанию */
-  opacity: 1;
+  transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+  filter: brightness(0.9); /* Немного затемняем изображение по умолчанию */
+  transform: scale(1); /* Начальный масштаб */
+  opacity: 1 !important; /* Гарантируем, что изображение видно */
+}
+
+/* При наведении фото просто приближается */
+.video-card:hover .preview-image {
+  transform: scale(1.05); /* Увеличение на 5% */
+  filter: brightness(1); /* Делаем немного ярче при наведении */
+  opacity: 1 !important; /* Гарантируем, что изображение остается видимым */
 }
 
 /* Плейсхолдер при ошибке загрузки изображения */
@@ -455,27 +431,10 @@
   text-align: center;
   padding: 20px;
   opacity: 0.8;
+  z-index: 1;
 }
 
-/* На мобильных устройствах показываем только изображение */
-@media (max-width: 768px) {
-  .project-video-background {
-    display: none !important; /* Скрываем видео на мобильных */
-  }
-  
-  /* На мобильных изображение слегка затемнено */
-  .preview-image {
-    opacity: 1 !important;
-    filter: brightness(0.7);
-  }
-  
-  .video-card:hover .preview-image {
-    opacity: 1 !important;
-    transform: none !important;
-  }
-}
-
-/* Оверлей с контентом */
+/* Оверлей с контентом - ФИКС z-index */
 .video-overlay {
   position: relative;
   background: linear-gradient(
@@ -489,7 +448,7 @@
   justify-content: flex-end;
   padding: 40px;
   height: 100%;
-  z-index: 2;
+  z-index: 2; /* z-index для оверлея выше, чем у изображения */
   transition: background 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -626,6 +585,15 @@
     min-height: 388px;
     max-height: 388px;
   }
+  
+  /* Адаптивное увеличение фото */
+  .preview-image {
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .video-card:hover .preview-image {
+    transform: scale(1.04);
+  }
 }
 
 /* Планшеты (1024px) */
@@ -737,6 +705,11 @@
     max-width: 342px;
     margin: 0 auto;
   }
+  
+  /* На мобильных также работаем с увеличением фото */
+  .video-card:hover .preview-image {
+    transform: scale(1.03);
+  }
 
   .video-overlay {
     padding: 30px 20px;
@@ -757,6 +730,11 @@
     height: 44px;
     font-size: 14px;
     margin-top: 10px;
+  }
+  
+  /* На мобильных устройствах делаем увеличение более деликатным */
+  .preview-image {
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   }
 }
 
@@ -803,6 +781,10 @@
     min-height: 400px;
     max-height: 400px;
     max-width: 300px;
+  }
+  
+  .video-card:hover .preview-image {
+    transform: scale(1.02);
   }
 
   .video-title {
@@ -969,4 +951,9 @@
   .popup-video-container {
     min-height: 300px;
   }
+}
+
+/* Убираем все возможные перекрытия */
+.video-card * {
+  box-sizing: border-box;
 }

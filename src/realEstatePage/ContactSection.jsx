@@ -1,3 +1,4 @@
+// Файл: ContactSection.jsx
 import React, { useState } from "react";
 import "./ContactSection.css";
 
@@ -70,10 +71,9 @@ const ContactSection = () => {
     }
   };
 
-  // ОБНОВЛЕНО: Добавлен id для навигации
   return (
     <section className="contact-section" id="contact-section">
-      {/* УДАЛЕНО: Разделительная полоса теперь находится ВНЕ этого компонента */}
+      <div className="global-divider"></div>
       <div className="contact-container">
         {/* ЛЕВАЯ КОЛОНКА */}
         <div className="left-column">
@@ -174,13 +174,14 @@ const ContactSection = () => {
 
             <div className="form-group">
               <label htmlFor="project" className="form-label">TELL US ABOUT YOUR PROJECT</label>
-              <textarea
+              {/* ЗАМЕНА textarea НА input */}
+              <input
+                type="text"
                 id="project"
                 name="project"
                 value={formData.project}
                 onChange={handleInputChange}
-                className="form-textarea"
-                rows="4"
+                className="form-input"
                 placeholder=""
                 required
               />
@@ -194,7 +195,7 @@ const ContactSection = () => {
               {isSubmitting ? "Отправка..." : "SEND"}
             </button>
 
-            {/* Мобильные email кнопки - ТОЛЬКО для мобильной версии */}
+            {/* Мобильные email кнопки */}
             <div className="mobile-emails-section">
               <div className="mobile-email-item">
                 <div className="mobile-email-label">WHAT TO BECOME OUR CLIENT?</div>

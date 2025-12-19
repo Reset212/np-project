@@ -1,414 +1,268 @@
+/* Файл: ContactSection.css */
+/* Базовые переменные */
 :root {
-  --base-width: 1440px;
-  --scale-factor: 1;
-  
+  --font-primary: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --color-black: #000000;
+  --color-white: #ffffff;
+  --color-gray: #999797;
+  --color-light-gray: #D9D9D9;
+  --color-green: #4CAF50;
+  --color-blue: #007bff;
+  --transition-speed: 0.3s;
+  --border-radius: 0.125em;
+  --section-height: 53.75em; /* 860px в em */
 }
 
-@media (min-width: 1441px) {
-  :root {
-    --scale-factor: min(1.5, calc(100vw / var(--base-width)));
-  }
-}
-
-/* Разделительная полоса теперь вне блока contact-section */
+/* Разделительная полоса */
 .global-divider {
-  height: 2px;
-  background: #D9D9D9;
+  height: 0.125em;
+  background: var(--color-light-gray);
   width: 100%;
   margin: 0 auto;
   display: block;
 }
 
-/* Удалены внутренние отступы сверху для правильного разделения блоков */
+/* Основная секция */
 .contact-section {
-  gap: 50px !important;
-  /* border-top: 1px solid #eee; */
-  position: relative;
-  min-height: 50vh;
-  background-color: white;
-  /* margin-left: 100px; */
+  min-height: var(--section-height); /* 860px = 53.75em */
+  background-color: var(--color-white);
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  /* padding: 80px 20px; Удален padding-top - полоса теперь снаружи */
-  /* z-index: 1; */
-  /* overflow-x: hidden; */
+  width: 100%;
+  position: relative;
+  overflow: hidden;
 }
 
-@media (min-width: 1440px) {
-  .contact-section {
-    /* padding: calc(80px * var(--scale-factor)) calc(20px * var(--scale-factor)); */
-
-  }
-
-}
-
+/* Контейнер - ПК: 140px от краев, ПЛАНШЕТ: 85px от краев */
 .contact-container {
   width: 100%;
-  max-width: 1200px ;
+  max-width: 100%;
   display: flex;
-  gap: 0;
+  gap: 3em;
   height: 100%;
-  position: relative;
-  z-index: 2;
+  flex: 1;
+  align-items: center;
+  margin: 0 auto;
+  padding: 0 8.75em; /* 140px для ПК */
+  min-height: calc(var(--section-height) - 4em); /* Высота контейнера */
 }
 
-@media (min-width: 1441px) {
-  .contact-container {
-    max-width: calc(1200px * var(--scale-factor));
-  }
-}
-
+/* Левая колонка */
 .left-column {
   width: 50%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding-right: 60px;
-  height: 600px;
-  position: relative;
-  z-index: 1;
+  padding-right: 3.75em; /* 60px внутренний отступ */
+  height: 100%;
+  min-height: calc(var(--section-height) - 10em); /* Адаптивная высота */
 }
 
-@media (min-width: 1441px) {
-  .left-column {
-    padding-right: calc(60px * var(--scale-factor));
-    height: calc(600px * var(--scale-factor));
-  }
+/* Правая колонка - ШИРИНА 785px ДЛЯ ПК */
+.right-column {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  padding-left: 3.75em; /* 60px внутренний отступ */
+  height: 100%;
+  min-height: calc(var(--section-height) - 10em); /* Адаптивная высота */
+  max-width: 49.0625em; /* 785px для ПК */
 }
 
+/* Текстовый блок над формой - ШИРИНА 785px ДЛЯ ПК */
+.text-section {
+  margin-bottom: 2.5em;
+  width: 100%;
+  max-width: 49.0625em; /* 785px для ПК */
+}
+
+/* ПК: 32px, ПЛАНШЕТ: 32px, ТЕЛЕФОН: 20px */
+.contact-text {
+  font-family: var(--font-primary);
+  font-weight: 300;
+  font-size: 2em; /* 32px - ПК и планшет */
+  line-height: 1.25;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  color: var(--color-black);
+  width: 100%;
+  max-width: 49.0625em; /* 785px для ПК */
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+  -webkit-hyphens: auto;
+  -moz-hyphens: auto;
+  -ms-hyphens: auto;
+}
+
+/* Форма - ШИРИНА 785px ДЛЯ ПК */
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 3.5em;
+  flex-grow: 1;
+  width: 100%;
+  max-width: 49.0625em; /* 785px для ПК */
+}
+
+/* Email секция */
 .emails-section {
   width: 100%;
+  margin-top: 2em;
 }
 
 .email-row {
   display: flex;
-  align-items: flex-start;
-  gap: 120px !important;
+  gap: 7.5em; /* 120px */
   width: 100%;
-}
-
-@media (min-width: 1441px) {
-  .email-row {
-    gap: calc(30px * var(--scale-factor));
-  }
+  justify-content: space-between;
 }
 
 .email-item {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  min-width: 0;
-}
-
-@media (min-width: 1441px) {
-  .email-item {
-    gap: calc(10px * var(--scale-factor));
-  }
+  gap: 0.625em; /* 10px */
 }
 
 .email-label {
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  font-style: normal;
+  font-family: var(--font-primary);
   font-weight: 400;
-  font-size: 16px;
-  line-height: 16px;
+  font-size: 0.875em; /* 14px */
   text-transform: uppercase;
-  color: #999797;
+  color: var(--color-gray);
   letter-spacing: -0.02em;
   white-space: nowrap;
 }
 
-@media (min-width: 1441px) {
-  .email-label {
-    font-size: calc(16px * var(--scale-factor));
-    line-height: calc(16px * var(--scale-factor));
-    letter-spacing: calc(-0.02em * var(--scale-factor));
-  }
-}
-
 .email-value {
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  font-style: normal;
+  font-family: var(--font-primary);
   font-weight: 300;
-  font-size: 18px;
-  color: #000000;
+  font-size: 1em; /* 16px */
+  color: var(--color-black);
   cursor: pointer;
-  transition: all 0.3s ease;
-  position: relative;
-  display: inline-block;
-  padding: 5px 0;
+  transition: opacity var(--transition-speed) ease;
+  padding: 0.3125em 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  z-index: 2;
-}
-
-@media (min-width: 1441px) {
-  .email-value {
-    font-size: calc(18px * var(--scale-factor));
-    padding: calc(5px * var(--scale-factor)) 0;
-  }
 }
 
 .email-value:hover {
   opacity: 0.7;
 }
 
-/* Уведомление о копировании для десктопной версии */
 .copy-notification {
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  font-style: normal;
+  font-family: var(--font-primary);
   font-weight: 400;
-  font-size: 14px;
-  color: #4CAF50;
-  margin-left: 10px;
+  font-size: 0.75em; /* 12px */
+  color: var(--color-green);
+  margin-left: 0.625em;
   background-color: rgba(76, 175, 80, 0.1);
-  padding: 4px 12px;
-  border-radius: 3px;
+  padding: 0.25em 0.75em;
+  border-radius: 0.1875em;
   animation: fadeIn 0.3s ease;
   white-space: nowrap;
-  position: relative;
-  z-index: 3;
 }
 
-@media (min-width: 1441px) {
-  .copy-notification {
-    font-size: calc(14px * var(--scale-factor));
-    padding: calc(4px * var(--scale-factor)) calc(12px * var(--scale-factor));
-  }
-}
-
+/* Chat секция */
 .chat-section {
   margin-top: auto;
+  margin-bottom: 2em;
 }
 
 .chat-text {
-  padding-bottom: 124px ;
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  font-style: normal;
+  font-family: var(--font-primary);
   font-weight: 700;
-  font-size: 140px;
-  line-height: 132px;
-  white-space: nowrap;
+  font-size: 8.75em; /* 140px - ПК и планшет */
   line-height: 0.85;
   text-transform: uppercase;
-  color: #000000;
+  color: var(--color-black);
   letter-spacing: -0.05em;
-  position: relative;
-  z-index: 1;
-}
-
-@media (max-width: 1441px) {
-  .chat-text {
-     font-size: 140px;
-    padding-bottom: 81px;
-  }
-}
-
-.right-column {
-  width: 50%;
-  display: flex;
-  flex-direction: column;
-  padding-left: 60px;
-  position: relative;
-  z-index: 3;
-  height: auto;
-  min-height: 600px;
-}
-
-@media (min-width: 1441px) {
-  .right-column {
-    padding-left: calc(60px * var(--scale-factor));
-    min-height: calc(600px * var(--scale-factor));
-  }
-}
-
-.text-section {
-  /* margin-bottom: 40px; */
-  position: relative;
-  z-index: 2;
-}
-
-@media (min-width: 1441px) {
-  .text-section {
-    margin-bottom: calc(40px * var(--scale-factor));
-  }
-}
-
-.contact-text {
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  font-style: normal;
-  font-weight: 300;
-  font-size: 32px;
-  line-height: 40px;
-  letter-spacing: -0.03em;
-  text-transform: uppercase;
-  color: #000000;
-  display: block;
-  opacity: 1;
-  visibility: visible;
-}
-
-@media (min-width: 1441px) {
-  .contact-text {
-    font-size: calc(32px * var(--scale-factor));
-    line-height: calc(40px * var(--scale-factor));
-    letter-spacing: calc(-0.03em * var(--scale-factor));
-  }
-}
-
-.contact-form {
-  display: flex;
-  flex-direction: column;
-  gap: 56px;
-  flex-grow: 1;
-  position: relative;
-  z-index: 4;
-  height: 100%;
-  overflow: visible;
-}
-
-@media (min-width: 1441px) {
-  
+  white-space: nowrap;
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 0.3125em;
   width: 100%;
-  position: relative;
-  z-index: 4;
-}
-
-@media (min-width: 1441px) {
-  .form-group {
-    gap: calc(5px * var(--scale-factor));
-  }
 }
 
 .form-row {
   display: flex;
-  gap: 30px;
+  gap: 1.875em;
   width: 100%;
-  position: relative;
-  z-index: 4;
-}
-
-@media (min-width: 1441px) {
-  .form-row {
-    gap: calc(30px * var(--scale-factor));
-  }
 }
 
 .form-group-half {
   flex: 1;
-  min-width: 0;
-  position: relative;
-  z-index: 4;
 }
 
+/* ВСЕ ЭКРАНЫ: ИМЕНА ПОЛЕЙ 16px */
 .form-label {
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  font-style: normal;
+  font-family: var(--font-primary);
   font-weight: 300;
-  font-size: 16px;
-  color: #000000;
-  letter-spacing: 0.5px;
+  font-size: 1em; /* 16px - все экраны */
+  color: var(--color-black);
+  letter-spacing: 0.03125em;
   text-transform: uppercase;
-  position: relative;
-  z-index: 4;
 }
 
-@media (min-width: 1441px) {
-  .form-label {
-    font-size: calc(16px * var(--scale-factor));
-    letter-spacing: calc(0.5px * var(--scale-factor));
-  }
-}
-
+/* ОБЫЧНЫЙ INPUT вместо textarea - ВАЖНО: убираем все textarea стили */
 .form-input,
-.form-textarea {
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  font-style: normal;
+.form-input-single {
+  font-family: var(--font-primary);
   font-weight: 300;
-  font-size: 16px;
-  color: #000000;
-  padding: 10px 0;
+  font-size: 1em; /* 16px */
+  color: var(--color-black);
+  padding: 0.625em 0;
   border: none;
-  border-bottom: 1px solid #000000;
+  border-bottom: 0.0625em solid var(--color-black);
   background: transparent;
   outline: none;
-  transition: border-color 0.3s ease;
+  transition: border-color var(--transition-speed) ease;
   width: 100%;
-  position: relative;
-  z-index: 5;
+  height: auto; /* Убираем высоту textarea */
+  resize: none; /* Запрещаем изменение размера */
+  min-height: auto; /* Убираем min-height */
 }
 
-@media (min-width: 1441px) {
- 
-}
-
-.form-input::placeholder,
-.form-textarea::placeholder {
-  color: #999999;
-  opacity: 0.7;
+/* УБИРАЕМ ВСЕ СТИЛИ ДЛЯ TEXTAREA */
+textarea.form-input,
+textarea.form-input-single,
+textarea {
+  display: none !important; /* Скрываем textarea если они появляются */
 }
 
 .form-input:focus,
-.form-textarea:focus {
-  border-bottom-color: #007bff;
+.form-input-single:focus {
+  border-bottom-color: var(--color-blue);
 }
 
-.form-textarea {
-  resize: vertical;
-  min-height: 80px;
-  max-height: 200px;
-  position: relative;
-  z-index: 5;
-  /* overflow-y: auto; */
-}
-
-
-
+/* Кнопка отправки - ПО ПРАВОМУ КРАЮ для ПК и планшета */
 .submit-button {
- 
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  font-style: normal;
+  font-family: var(--font-primary);
   font-weight: 300;
-  font-size: 16px;
-  color: #000000;
+  font-size: 0.875em;
+  color: var(--color-black);
   text-transform: uppercase;
-  padding: 0;
+  padding: 0.875em 2.5em;
   border: none;
   background: rgba(230, 230, 230, 0.72);
   cursor: pointer;
-  transition: all 0.3s ease;
-  align-self: flex-end;
-  letter-spacing: 0.5px;
-  border-radius: 32px;
-  width: 102px !important; 
-  height: 35px !important;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-top: 20px;
-  position: relative;
-  z-index: 5;
-}
-
-@media (min-width: 1441px) {
- 
+  transition: all var(--transition-speed) ease;
+  align-self: flex-end; /* Кнопка справа для ПК и планшета */
+  border-radius: 2em;
+  min-width: 6.375em;
+  min-height: 2.1875em;
+  margin-top: 1em;
 }
 
 .submit-button:hover {
   background: rgba(200, 200, 200, 0.8);
-}
-
-.submit-button:active {
-  transform: translateY(1px);
 }
 
 .submit-button:disabled {
@@ -416,577 +270,437 @@
   cursor: not-allowed;
 }
 
-.submit-button:disabled:hover {
-  background: rgba(230, 230, 230, 0.72);
+/* Мобильные email блоки (скрыты по умолчанию) */
+.mobile-emails-section {
+  display: none;
+  flex-direction: column;
+  gap: 1.5em;
+  margin-top: 3em;
+  width: 100%;
 }
 
-.success-message {
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  font-style: normal;
+.mobile-email-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.5em;
+}
+
+.mobile-email-label {
+  font-family: var(--font-primary);
+  font-weight: 500;
+  font-size: 1em; /* Изменено: 16px для телефона (было 0.75em) */
+  text-transform: uppercase;
+  color: var(--color-gray);
+  letter-spacing: -0.02em;
+}
+
+.mobile-email-value {
+  font-family: var(--font-primary);
   font-weight: 400;
-  font-size: 14px;
-  color: #4CAF50;
+  font-size: 1em; /* Изменено: 16px для телефона (было 0.875em) */
+  color: var(--color-black);
+  cursor: pointer;
+  transition: opacity var(--transition-speed) ease;
+}
+
+.mobile-copy-notification {
+  font-family: var(--font-primary);
+  font-weight: 400;
+  font-size: 0.875em; /* 14px */
+  color: var(--color-green);
+  margin-left: 0.5em;
   background-color: rgba(76, 175, 80, 0.1);
-  padding: 10px 15px;
-  border-radius: 4px;
-  margin-bottom: 20px;
+  padding: 0.1875em 0.625em;
+  border-radius: 0.1875em;
   animation: fadeIn 0.3s ease;
-  position: relative;
-  z-index: 4;
 }
 
-@media (min-width: 1441px) {
-  .success-message {
-    font-size: calc(14px * var(--scale-factor));
-    padding: calc(10px * var(--scale-factor)) calc(15px * var(--scale-factor));
-    border-radius: calc(4px * var(--scale-factor));
-    margin-bottom: calc(20px * var(--scale-factor));
-  }
-}
-
+/* Анимации */
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
 }
 
-/* Мобильные email кнопки - ПОСЛЕ кнопки SEND */
-.mobile-emails-section {
-  display: none;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  gap: 25px;
-  margin-top: 40px; /* Отступ от кнопки SEND */
-  padding-top: 30px;
-  
-}
+/* ========== АДАПТИВНОСТЬ ========== */
 
-.mobile-email-item {
- 
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  width: 100%;
-}
-
-.mobile-email-label {
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  font-style: normal;
-  font-weight: 500;
-  font-size: 14px;
-  line-height: 14px;
-  text-transform: uppercase;
-  color: #999797;
-  letter-spacing: -0.02em;
-  margin-bottom: 8px;
-  white-space: nowrap;
-}
-
-.mobile-email-value {
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  font-style: normal;
-  font-weight: 400;
-  font-size: 16px;
-  color: #000000;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  position: relative;
-  display: inline-block;
-  padding: 5px 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  z-index: 2;
-}
-
-.mobile-email-value:hover {
-  opacity: 0.7;
-}
-
-.mobile-copy-notification {
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  font-style: normal;
-  font-weight: 400;
-  font-size: 12px;
-  color: #4CAF50;
-  margin-left: 8px;
-  background-color: rgba(76, 175, 80, 0.1);
-  padding: 3px 10px;
-  border-radius: 3px;
-  animation: fadeIn 0.3s ease;
-  white-space: nowrap;
-  position: relative;
-  z-index: 3;
-}
-
-/* Адаптивность для 1440px и меньше */
-@media (max-width: 1440px) {
+/* ПК версия (1920px и больше) */
+@media (min-width: 120em) { /* 1920px */
   .contact-container {
-    max-width: 1100px;
+    max-width: 100%;
+    padding: 0 8.75em; /* 140px */
+    min-height: calc(var(--section-height) - 4em);
   }
-      .contact-container {
-  width: 100%;
-  max-width: 1200px !important;
-
-  /* margin-left: 100px; */
-  /* display:  !important; */
-  gap: 50px;
-  height: 100%;
-  position: relative;
-  z-index: 2;
-}
-  .left-column {
-    padding-right: 50px;
-    height: 550px;
-  }
-
+  
+  .left-column,
   .right-column {
-    padding-left: 35px;
-    min-height: 550px;
+    min-height: calc(var(--section-height) - 10em);
   }
-
+  
   .chat-text {
-    padding-bottom: 81px ;
-    font-size: 140px;
-    line-height: 110px;
+    font-size: 8.75em; /* 140px */
   }
-
+  
   .contact-text {
-    padding-bottom: 40px;
-    font-weight: 300;
-    font-size: 28px;
-    line-height: 36px;
+    font-size: 2em; /* 32px */
+    line-height: 1.3;
+    max-width: 49.0625em; /* 785px */
   }
-
-  .email-row {
-    gap: 25px;
+  
+  .email-label {
+    font-size: 1em;
   }
-
-  .form-row {
-    gap: 25px;
+  
+  .email-value {
+    font-size: 1.125em;
   }
-
-  .contact-form {
-    gap: 35px;
+  
+  /* Кнопка справа для ПК */
+  .submit-button {
+    align-self: flex-end;
   }
 }
 
-/* ОСНОВНЫЕ ИЗМЕНЕНИЯ: Для размера до 1040px делаем мобильное расположение */
-@media (max-width: 1040px) {
+/* Планшетная версия (1440px) */
+@media (max-width: 90em) { /* 1440px */
+  .contact-section {
+    min-height: var(--section-height); /* 860px = 53.75em */
+  }
+  
+  .contact-container {
+    width: 100%;
+    max-width: 100%;
+    gap: 2em;
+    padding: 0 5.3125em; /* 85px для планшета */
+    min-height: calc(var(--section-height) - 4em);
+  }
+  
+  .left-column {
+    padding-right: 2.5em;
+    min-height: calc(var(--section-height) - 12em);
+  }
+  
+  /* ПЛАНШЕТ: ШИРИНА 555px */
+  .right-column {
+    padding-left: 2.5em;
+    min-height: calc(var(--section-height) - 12em);
+    max-width: 34.6875em; /* 555px для планшета */
+  }
+  
+  /* ПЛАНШЕТ: ШИРИНА 555px для текстового блока */
+  .text-section {
+    max-width: 34.6875em; /* 555px для планшета */
+  }
+  
+  /* ПЛАНШЕТ: ШИРИНА 555px для формы */
+  .contact-form {
+    max-width: 34.6875em; /* 555px для планшета */
+  }
+  
+  /* ПЛАНШЕТ: ШИРИНА 555px для текста */
+  .contact-text {
+    max-width: 34.6875em; /* 555px для планшета */
+    font-size: 2em; /* 32px для планшета */
+  }
+  
+  .chat-text {
+    font-size: 8.75em; /* 140px */
+  }
+  
+  .email-row {
+    gap: 5em;
+  }
+  
+  .form-row {
+    gap: 1.5em;
+  }
+  
+  .contact-form {
+    gap: 2.5em;
+  }
+  
+  /* Кнопка справа для планшета */
+  .submit-button {
+    align-self: flex-end;
+  }
+  
+  /* ИМЕНА ПОЛЕЙ: 16px для планшета */
+  .form-label {
+    font-size: 1em; /* 16px */
+  }
+}
+
+/* Переход на мобильную версию (1040px и меньше) */
+@media (max-width: 65em) { /* 1040px */
+  .contact-section {
+    min-height: auto; /* Убираем фиксированную высоту для мобильных */
+  }
+  
   .contact-container {
     flex-direction: column;
-    gap: 60px;
+    gap: 2em; /* Уменьшено: было 4em, стало 2em - убирает отступ между колонками */
+    width: 100%;
+    margin: 2em auto; /* Уменьшено: было 3em, стало 2em */
+    padding: 0 1.5em; /* 24px для мобильных */
+    min-height: auto;
   }
-
+  
   .left-column,
   .right-column {
     width: 100%;
-    height: auto;
     padding: 0;
+    min-height: auto;
+    max-width: 100% !important; /* Сбрасываем ограничения ширины */
   }
-
+  
   .left-column {
     order: 1;
-    padding-top: 0;
-    border-top: none;
-    height: auto;
-    display: flex;
-    flex-direction: column;
+    margin-bottom: 0; /* Убираем отступ снизу */
   }
-
+  
   .right-column {
     order: 2;
-    padding-left: 0;
-    min-height: auto;
+    margin-top: 0; /* Убираем отступ сверху */
   }
-
-  .chat-text {
-       padding-bottom: 81px;
-    font-size: 100px;
-    line-height: 90px;
-    text-align: center;
-    margin-bottom: 30px;
-    margin-top: 0;
-  }
-
-  /* Скрываем десктопные email блоки уже на 1040px */
-  .emails-section {
-    display: none;
-  }
-
+  
+  /* УБИРАЕМ ОТСТУП МЕЖДУ CHAT WITH US И ТЕКСТОМ */
   .chat-section {
-    /* margin-bottom: 40px; */
-    margin-top: 0;
-    order: -1;
+    margin-bottom: 1em; /* Уменьшено: было 2em, стало 1em */
   }
-
-  .contact-text {
-    text-align: center;
-    font-size: 28px;
-    line-height: 36px;
-    margin-bottom: 30px;
+  
+  .text-section {
+    margin-bottom: 1.5em; /* Уменьшено: было 2.5em, стало 1.5em */
   }
-
-  .form-row {
-    flex-direction: column;
-    gap: 25px;
-  }
-
+  
+  /* Сбрасываем ширину для мобильных */
+  .text-section,
+  .contact-text,
   .contact-form {
-    gap: 35px;
+    max-width: 100% !important;
   }
-
-  .submit-button {
-    margin-top: 30px;
-    align-self: center;
-  }
-
-  /* ПОКАЗЫВАЕМ мобильные email блоки на 1040px и меньше */
-  .mobile-emails-section {
-    display: flex;
-  }
-}
-
-/* НОВЫЕ ИЗМЕНЕНИЯ: Делаем мобильные email блоки видимыми уже на 768px */
-@media (max-width: 768px) {
-  .contact-section {
-    /* padding: 60px 15px; */
-    min-height: auto;
-  }
-
-  .contact-container {
-    gap: 50px;
-  }
-
-  .left-column {
-    padding-top: 0;
-    order: 1;
-  }
-
-  .right-column {
-    order: 2;
-  }
-
-  .chat-text {
-    font-size: 80px;
-    line-height: 70px;
-    letter-spacing: -0.03em;
-    margin-bottom: 0px;
-    padding-bottom: 20px;
-  }
-
+  
+  /* ТЕЛЕФОН: ТЕКСТ 20px */
   .contact-text {
-    font-size: 24px;
-    line-height: 30px;
+    font-size: 1.25em; /* 20px для телефона */
     text-align: center;
-    margin-bottom: 30px;
+    margin-bottom: 1.5em; /* Уменьшено отступ снизу */
+    line-height: 1.3;
   }
-
+  
   /* Скрываем десктопные email блоки */
   .emails-section {
     display: none;
   }
-
+  
   /* Показываем мобильные email блоки */
   .mobile-emails-section {
-    padding-bottom: 50px;
     display: flex;
   }
-
-  .contact-form {
-    gap: 35px;
-  }
-
-  .form-label {
-    font-size: 14px;
-    text-align: center;
-  }
-
-  .form-input,
-  .form-textarea {
-    font-size: 16px;
-  }
-
-  .submit-button {
-    width: 120px;
-    height: 55px;
-    font-size: 14px;
-    margin-top: 25px;
-    align-self: center;
-  }
-}
-
-/* Мобильные устройства (480px и меньше) */
-@media (max-width: 480px) {
-  .contact-section {
-    padding: 40px 15px;
-    min-height: auto;
-  }
-
-  .contact-container {
-    flex-direction: column;
-    gap: 40px;
-  }
-
-  .left-column {
-    order: 1;
-    width: 100%;
-    padding: 0;
-    border-top: none;
-    padding-bottom: 0px;
-    height: auto;
-  }
-
-  .right-column {
-    order: 2;
-    width: 100%;
-    padding: 0;
-    padding-top: 20px;
-    min-height: auto;
-  }
-
-  /* Мобильные email кнопки уже видны */
-  .mobile-emails-section {
-    display: flex;
-  }
-
-  .submit-button {
-    width: 120px !important;
-    max-width: 120px !important;
-    height: 50px;
-    font-size: 14px;
-    align-self: center !important;
-    margin-top: 20px;
-  }
-
+  
+  /* ТЕЛЕФОН: CHAT WITH US 48px */
   .chat-text {
-    padding-bottom: 0px !important;
-    font-size: 50px;
-    line-height: 45px;
+    font-size: 3em; /* 48px - телефоны */
+    line-height: 0.9;
     text-align: center;
-    margin-bottom: 0 !important;
+    margin-bottom: 0.5em; /* Уменьшено: убираем большой отступ */
   }
-
-  .contact-text {
-    font-size: 18px;
-    line-height: 24px;
-    text-align: center;
-    margin-bottom: 25px;
-  }
-
-  .contact-form {
-    gap: 25px;
-  }
-
-  .form-label {
-    font-size: 12px;
-    text-align: center;
-  }
-
-  .form-input,
-  .form-textarea {
-    font-size: 14px;
-    padding: 8px 0;
-    text-align: center;
-  }
-
-  .form-textarea {
-    min-height: 60px;
-    text-align: left;
-  }
-
-  .mobile-email-label {
-    font-size: 14px;
-  }
-
-  .mobile-email-value {
-    font-size: 16px;
-  }
-
-  .success-message {
-    font-size: 12px;
-    padding: 8px 12px;
-    text-align: center;
-  }
-
-  .mobile-copy-notification {
-    font-size: 12px;
-    padding: 3px 8px;
-  }
-
+  
   .form-row {
     flex-direction: column;
-    gap: 20px;
+    gap: 1.5em; /* Немного уменьшено */
   }
-}
-
-@media (max-width: 360px) {
-  .contact-section {
-    padding: 30px 10px;
+  
+  /* В мобильной версии кнопка по центру и label по центру */
+  .form-label {
+    text-align: center;
+    font-size: 1em; /* 16px для телефона */
   }
-
-  .chat-text {
-    margin-bottom: 0px;
-    padding-bottom: 0px !important;
-    font-size: 45px;
-    line-height: 40px;
+  
+  .contact-form {
+    gap: 2em; /* Немного уменьшено */
   }
-
-  .contact-text {
-    font-size: 16px;
-    line-height: 22px;
-  }
-
+  
   .submit-button {
-    width: 110px !important;
-    height: 45px;
-    font-size: 14px;
-  }
-
-  .mobile-email-label {
-    font-size: 12px;
-  }
-
-  .mobile-email-value {
-    font-size: 14px;
+    align-self: center;
+    margin-top: 1em;
   }
 }
 
-/* Особенности для ландшафтной ориентации */
-@media (max-height: 600px) and (orientation: landscape) {
+/* Телефонная версия (390px) */
+@media (max-width: 24.375em) { /* 390px */
+  .contact-container {
+    width: 100%;
+    gap: 1.5em; /* Уменьшено: было 2.5em, стало 1.5em */
+    margin: 1em auto; /* Уменьшено: было 1.5em, стало 1em */
+    padding: 0 1em; /* 16px для маленьких телефонов */
+  }
+  
+  /* ТЕЛЕФОН: CHAT WITH US 48px */
+  .chat-text {
+    font-size: 3em; /* 48px */
+    line-height: 0.9;
+    margin-bottom: 0.5em; /* Уменьшено отступ */
+  }
+  
+  /* ТЕЛЕФОН: ТЕКСТ 20px */
+  .contact-text {
+    font-size: 1.25em; /* 20px */
+    line-height: 1.3;
+    margin-bottom: 1em; /* Уменьшено отступ */
+  }
+  
+  .contact-form {
+    gap: 1.5em; /* Уменьшено: было 2em, стало 1.5em */
+  }
+  
+  /* LABEL ПО ЦЕНТРУ В ТЕЛЕФОННОЙ ВЕРСИИ */
+  .form-label {
+    font-size: 1em; /* 16px */
+    text-align: center;
+    display: block;
+    width: 100%;
+  }
+  
+  .form-input,
+  .form-input-single {
+    font-size: 1em; /* 16px */
+    padding: 0.5em 0;
+    text-align: center;
+  }
+  
+  .submit-button {
+    width: 100%;
+    max-width: 7.5em;
+    padding: 0.75em 1em;
+    font-size: 0.875em;
+    align-self: center;
+  }
+  
+  .mobile-emails-section {
+    gap: 1em;
+    margin-top: 2em;
+  }
+  
+  /* 16px для мобильных email элементов */
+  .mobile-email-label {
+    font-size: 1em; /* 16px (было 0.625em) */
+  }
+  
+  .mobile-email-value {
+    font-size: 1em; /* 16px (было 0.75em) */
+  }
+}
+
+/* Очень маленькие телефоны */
+@media (max-width: 20em) { /* 320px */
+  .chat-text {
+    font-size: 2.5em; /* 40px */
+  }
+  
+  .contact-text {
+    font-size: 1.125em; /* 18px */
+  }
+  
+  .submit-button {
+    max-width: 6.875em;
+    font-size: 0.75em;
+  }
+  
+  /* 16px для очень маленьких телефонов */
+  .mobile-email-label {
+    font-size: 0.875em; /* 14px для очень маленьких экранов */
+  }
+  
+  .mobile-email-value {
+    font-size: 0.875em; /* 14px для очень маленьких экранов */
+  }
+}
+
+/* Ландшафтная ориентация */
+@media (max-height: 37.5em) and (orientation: landscape) {
   .contact-section {
-    /* padding: 30px 20px; */
     min-height: auto;
   }
-
+  
   .contact-container {
     flex-direction: row;
-    gap: 40px;
+    gap: 2em;
+    padding: 0 2em; /* 32px для ландшафта */
+    min-height: auto;
   }
-
+  
   .left-column,
   .right-column {
     width: 50%;
-    height: auto;
-    padding: 0;
+    padding: 0 1em;
+    max-width: 50% !important;
+    min-height: auto;
   }
-
-  .left-column {
-    padding-right: 20px;
-    order: 1;
+  
+  .emails-section {
+    display: block;
   }
-
-  .right-column {
-    padding-left: 20px;
-    order: 2;
+  
+  .mobile-emails-section {
+    display: none;
   }
-
+  
   .chat-text {
-    font-size: 60px;
-    line-height: 55px;
+    font-size: 5em; /* 80px для ландшафта */
   }
-
+  
   .contact-text {
-    font-size: 20px;
-    line-height: 26px;
+    font-size: 1.5em; /* 24px для ландшафта */
   }
-
-  .email-row {
-    flex-direction: column;
-    gap: 15px;
-  }
-
+  
   .form-row {
     flex-direction: column;
-    gap: 15px;
+    gap: 1em;
   }
-
+  
   .contact-form {
-    gap: 25px;
-    overflow: hidden;
+    gap: 1.5em;
   }
-
+  
+  /* В ландшафтной ориентации кнопка справа */
   .submit-button {
     align-self: flex-end;
   }
-
-  /* В ландшафтной ориентации показываем десктопные email блоки */
-  .emails-section {
-    display: block !important;
-  }
   
-  /* Скрываем мобильные email блоки в ландшафтной ориентации */
-  .mobile-emails-section {
-    /* display: none !important; */
+  /* ИМЕНА ПОЛЕЙ: 16px для ландшафта */
+  .form-label {
+    font-size: 1em; /* 16px */
   }
 }
 
-/* Большие экраны */
-@media (min-width: 2000px) {
-  .contact-container {
-    max-width: 1600px;
-  }
+/* Улучшение доступности */
+.form-input:focus-visible,
+.form-input-single:focus-visible,
+.submit-button:focus-visible,
+.email-value:focus-visible {
+  outline: 0.125em solid var(--color-blue);
+  outline-offset: 0.25em;
+  border-radius: var(--border-radius);
+}
 
-  .left-column {
-    padding-right: 80px;
-    height: 700px;
-  }
+/* Уведомление об успешной отправке */
+.success-message {
+  font-family: var(--font-primary);
+  font-weight: 400;
+  font-size: 0.875em;
+  color: var(--color-green);
+  background-color: rgba(76, 175, 80, 0.1);
+  padding: 0.625em 0.9375em;
+  border-radius: 0.25em;
+  margin-bottom: 1.25em;
+  text-align: center;
+  animation: fadeIn 0.3s ease;
+}
 
+/* ПК и планшет: опустить правую колонку на 30px (1.875em) */
+@media (min-width: 65em) { /* 1040px и выше - десктоп и планшет */
   .right-column {
-    padding-left: 80px;
-    min-height: 700px;
-  }
-}
-
-@media (min-height: 1200px) {
-  .left-column,
-  .right-column {
-    height: auto;
-    min-height: 700px;
-  }
-
-  .contact-form {
-    justify-content: space-between;
-  }
-}
-
-.contact-section * {
-  pointer-events: auto;
-}
-
-.contact-form,
-.form-group,
-.form-input,
-.form-textarea,
-.submit-button {
-  pointer-events: auto !important;
-}
-
-.text-section {
-  opacity: 1 !important;
-  visibility: visible !important;
-  display: block !important;
-}
-
-.contact-form {
-  -webkit-overflow-scrolling: touch;
-  /* overflow-y: visible; */
-}
-
-@media (max-width: 1040px) {
-  .email-item,
-  .form-group,
-  .form-group-half {
-    align-items: center;
-    text-align: center;
-  }
-
-  .form-input {
-    text-align: center;
-  }
-
-  .form-textarea {
-    text-align: left;
+    margin-top: 3em; /* 30px */
   }
 }
