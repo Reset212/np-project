@@ -532,10 +532,10 @@ const ProjectsVideoSection = () => {
                 )}
               </div>
               
-              {/* Видео (воспроизводится только при наведении на десктопе) */}
+              {/* Видео (воспроизводится только при наведении на десктопе) - ИСПРАВЛЕННЫЙ КЛАСС */}
               <video
                 ref={el => videoRefs.current[video.id] = el}
-                className={`video-background ${isMobile ? 'mobile-static' : ''}`}
+                className="project-video-background"
                 muted
                 loop
                 playsInline

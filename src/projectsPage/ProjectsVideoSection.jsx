@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import './ProjectsVideoSection.css';
 
-// Временная заглушка для видео
+// Заглушка для видео (используется для самого видео)
 import VideoPlaceholder from '../video/hero-video.mp4';
 
 // Главные категории для десктопа (над чертой)
@@ -20,7 +20,7 @@ const mobileMainCategories = [
   "3D",
 ];
 
-// Подкатегории для всех категорий
+// Подкатегории для всех категорий (как на референсе)
 const mainCategoryToSubcategories = {
   "VIDEO": ["Real Estate development", "Beauty", "Commercial", "Betting"],
   "HYPE & MARKETING": ["Real Estate development", "Beauty", "Commercial", "Betting"],
@@ -29,7 +29,7 @@ const mainCategoryToSubcategories = {
   "CELEBRITY APPEARANCES": ["Real Estate development", "Beauty", "Commercial", "Betting"]
 };
 
-// Данные для видео
+// Данные для видео с правильной категоризацией и изображениями превью
 const videoData = [
   {
     id: 1,
@@ -167,7 +167,7 @@ const ProjectsVideoSection = () => {
   const [desktopSubcategoriesOpen, setDesktopSubcategoriesOpen] = useState(false);
   const [desktopAnimationState, setDesktopAnimationState] = useState('closed');
   
-  // Состояния для мобильной версии
+  // Состояния для мобильной версии - ИСПРАВЛЕННЫЕ
   const [openCategory, setOpenCategory] = useState(null);
   const [mobileAnimationState, setMobileAnimationState] = useState('closed');
   const [mobileSubcategoriesVisible, setMobileSubcategoriesVisible] = useState(false);
@@ -232,11 +232,10 @@ const ProjectsVideoSection = () => {
   // Открытие подкатегорий на десктопе
   const openDesktopSubcategories = () => {
     setDesktopAnimationState('opening');
+    setDesktopSubcategoriesOpen(true);
     
-    // Даем время для применения начальных стилей
     setTimeout(() => {
       setDesktopAnimationState('open');
-      setDesktopSubcategoriesOpen(true);
     }, 10);
   };
 
@@ -259,14 +258,16 @@ const ProjectsVideoSection = () => {
     setSelectedSubCategory(subCategory === selectedSubCategory ? null : subCategory);
   };
 
-  // Обработчик выбора главной категории на мобильном
+  // Обработчик выбора главной категории на мобильном - ИСПРАВЛЕННЫЙ
   const handleMobileCategoryClick = (category) => {
     if (openCategory === category && mobileAnimationState === 'open') {
       closeMobileSubcategories();
     } 
     else if (openCategory && openCategory !== category) {
       closeMobileSubcategories(() => {
-        openMobileSubcategories(category);
+        setTimeout(() => {
+          openMobileSubcategories(category);
+        }, 50);
       });
     }
     else {
@@ -274,39 +275,35 @@ const ProjectsVideoSection = () => {
     }
   };
 
-  // Открытие подкатегорий на мобильном - ИСПРАВЛЕНО
+  // Открытие подкатегорий на мобильном - ИСПРАВЛЕННОЕ
   const openMobileSubcategories = (category) => {
-    // Сначала показываем элемент
-    setMobileSubcategoriesVisible(true);
     setOpenCategory(category);
     setSelectedMainCategory(category);
     setSelectedSubCategory(null);
     
-    // Ждем следующего рендера, чтобы элемент был в DOM
+    // Даем время для рендера элемента с начальным состоянием
     setTimeout(() => {
-      // Устанавливаем начальное состояние анимации
       setMobileAnimationState('opening');
+      setMobileSubcategoriesVisible(true);
       
-      // Ждем еще немного для применения начальных стилей
+      // Даем время для применения начальных стилей
       setTimeout(() => {
-        // Запускаем анимацию открытия
         setMobileAnimationState('open');
       }, 20);
     }, 10);
   };
 
-  // Закрытие подкатегорий на мобильном - ИСПРАВЛЕНО
+  // Закрытие подкатегорий на мобильном - ИСПРАВЛЕННОЕ
   const closeMobileSubcategories = (callback = null) => {
     setMobileAnimationState('closing');
     
-    // Ждем завершения анимации закрытия
     setTimeout(() => {
       setMobileAnimationState('closed');
       setOpenCategory(null);
       setSelectedMainCategory(null);
       setSelectedSubCategory(null);
       
-      // Ждем еще немного перед скрытием элемента
+      // Даем время для завершения анимации закрытия
       setTimeout(() => {
         setMobileSubcategoriesVisible(false);
         
@@ -314,7 +311,7 @@ const ProjectsVideoSection = () => {
           callback();
         }
       }, 50);
-    }, 400); // Увеличено время анимации закрытия
+    }, 400); // Длительность анимации закрытия
   };
 
   // Обработчик выбора подкатегории на мобильном
@@ -375,7 +372,7 @@ const ProjectsVideoSection = () => {
     setHoveredCard(videoId);
     const videoElement = videoRefs.current[videoId];
     if (videoElement) {
-      videoElement.currentTime = 7;
+      videoElement.currentTime = 0;
       videoElement.muted = true;
       const playPromise = videoElement.play();
       if (playPromise !== undefined) {
@@ -395,26 +392,8 @@ const ProjectsVideoSection = () => {
     const videoElement = videoRefs.current[videoId];
     if (videoElement) {
       videoElement.pause();
-      videoElement.currentTime = 7;
+      videoElement.currentTime = 0;
     }
-  };
-
-  // Инициализация видео с 7-й секунды
-  const handleVideoLoaded = (videoId) => {
-    const videoElement = videoRefs.current[videoId];
-    if (videoElement && videoElement.readyState >= 1) {
-      if (videoElement.duration > 7) {
-        videoElement.currentTime = 7;
-      } else {
-        videoElement.currentTime = videoElement.duration / 2;
-      }
-    }
-  };
-
-  // Обработчик ошибки загрузки видео
-  const handleVideoError = () => {
-    setVideoLoadError(true);
-    console.error('Ошибка загрузки видео');
   };
 
   // Обработчик ошибки загрузки изображения
@@ -423,6 +402,12 @@ const ProjectsVideoSection = () => {
       ...prev,
       [videoId]: true
     }));
+  };
+
+  // Обработчик ошибки загрузки видео в попапе
+  const handleVideoError = () => {
+    setVideoLoadError(true);
+    console.error('Ошибка загрузки видео в попапе');
   };
 
   return (
@@ -453,7 +438,7 @@ const ProjectsVideoSection = () => {
           {/* Десктопная фильтрация - подкатегории ПОД чертой */}
           {!isMobile && (
             <div className="desktop-subcategories-below">
-              {selectedMainCategory && desktopSubcategoriesOpen && (
+              {selectedMainCategory && (
                 <div className={`desktop-subcategories-below-inner ${desktopAnimationState}`}>
                   {getSubcategoriesForCategory(selectedMainCategory).map(subCategory => (
                     <button
@@ -472,7 +457,7 @@ const ProjectsVideoSection = () => {
           )}
         </div>
 
-        {/* Мобильная фильтрация */}
+        {/* Мобильная фильтрация - ИСПРАВЛЕННЫЙ КОД */}
         {isMobile && (
           <div className="mobile-category-filter">
             <div className="mobile-main-categories">
@@ -489,32 +474,32 @@ const ProjectsVideoSection = () => {
                     {category}
                   </div>
                   
-                  {/* Подкатегории с анимацией - КЛЮЧЕВОЕ ИСПРАВЛЕНИЕ */}
-                  {mobileSubcategoriesVisible && openCategory === category && (
-                    <div 
-                      className={`mobile-subcategories ${
+                  {/* Подкатегории с анимацией - ВСЕГДА В DOM, но скрыты */}
+                  <div 
+                    className={`mobile-subcategories ${
+                      mobileSubcategoriesVisible && openCategory === category ? (
                         mobileAnimationState === 'opening' ? 'opening' :
                         mobileAnimationState === 'open' ? 'open' : 
                         mobileAnimationState === 'closing' ? 'closing' : ''
-                      }`}
-                    >
-                      {getSubcategoriesForCategory(category).map((subCategory, index) => (
-                        <div
-                          key={subCategory}
-                          className={`mobile-subcategory-text ${
-                            selectedSubCategory === subCategory ? 'active' : ''
-                          }`}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleSubCategorySelect(subCategory);
-                          }}
-                          style={{ '--item-index': index }}
-                        >
-                          {subCategory}
-                        </div>
-                      ))}
-                    </div>
-                  )}
+                      ) : ''
+                    }`}
+                  >
+                    {getSubcategoriesForCategory(category).map((subCategory, index) => (
+                      <div
+                        key={subCategory}
+                        className={`mobile-subcategory-text ${
+                          selectedSubCategory === subCategory ? 'active' : ''
+                        }`}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleSubCategorySelect(subCategory);
+                        }}
+                        style={{ '--item-index': index }}
+                      >
+                        {subCategory}
+                      </div>
+                    ))}
+                  </div>
                 </div>
               ))}
             </div>
@@ -547,15 +532,14 @@ const ProjectsVideoSection = () => {
                 )}
               </div>
               
-              {/* Видео (воспроизводится только при наведении на десктопе) */}
+              {/* Видео (воспроизводится только при наведении на десктопе) - ИСПРАВЛЕННЫЙ КЛАСС */}
               <video
                 ref={el => videoRefs.current[video.id] = el}
-                className={`video-background ${isMobile ? 'mobile-static' : ''}`}
+                className="project-video-background"
                 muted
                 loop
                 playsInline
                 preload="metadata"
-                onLoadedData={() => handleVideoLoaded(video.id)}
                 onError={(e) => {
                   console.error(`Ошибка загрузки видео ${video.title}:`, e);
                 }}
