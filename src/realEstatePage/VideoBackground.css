@@ -1,10 +1,23 @@
 /* VideoBackground.css */
 
 :root {
-  --base-width: 1440px;
-  --scale-factor: 1;
+  --base-font-size: 16px;
+  --max-width-pc: 1920px;
+  --max-width-tablet: 1440px;
+  --max-width-mobile: 390px;
 }
 
+/* Базовые настройки */
+html {
+  font-size: var(--base-font-size);
+  box-sizing: border-box;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+/* ОСНОВНОЙ КОНТЕЙНЕР */
 .video-background-container {
   position: relative;
   width: 100%;
@@ -23,191 +36,198 @@
   z-index: -1;
 }
 
-/* Автоматическое вычисление масштаба для больших экранов */
-@media (min-width: 1441px) {
-  :root {
-    --scale-factor: min(1.5, calc(100vw / var(--base-width)));
-    /* Ограничиваем максимальное увеличение до 1.5x */
-  }
+.video-background-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.2) 100%);
+  z-index: 0;
 }
 
-/* НАВИГАЦИЯ - ПК ВЕРСИЯ (КОРРЕКТНАЯ) */
+/* КАСТОМНЫЙ КУРСОР */
+.cursor-dot {
+  width: 1em;
+  height: 1em;
+  background-color: white;
+  border-radius: 50%;
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  mix-blend-mode: difference;
+  transition: transform 0.15s ease, background-color 0.3s ease;
+}
+
+.cursor-dot.dark {
+  background-color: black;
+}
+
+.cursor-ring {
+  width: 4.875em;
+  height: 4.875em;
+  border: 0.0625em solid white;
+  border-radius: 50%;
+  position: fixed;
+  pointer-events: none;
+  z-index: 9998;
+  mix-blend-mode: difference;
+  backdrop-filter: blur(0.25em);
+  -webkit-backdrop-filter: blur(0.25em);
+  transition: transform 0.25s ease, border-color 0.3s ease, border-width 0.3s ease;
+  transform: translate(-50%, -50%);
+}
+
+.cursor-ring.dark {
+  border-color: black;
+}
+
+.cursor-ring.expanded {
+  transform: translate(-50%, -50%) scale(1.2);
+  border-width: 0.125em;
+}
+
+.cursor-dot.expanded {
+  transform: scale(0.7);
+}
+
+.cursor-ring.clicked {
+  transform: translate(-50%, -50%) scale(0.8);
+  border-width: 0.125em;
+}
+
+.cursor-dot.clicked {
+  transform: scale(1.2);
+}
+
+/* Отключаем стандартный курсор */
+* {
+  cursor: none !important;
+}
+
+/* НАВИГАЦИЯ - ПК ВЕРСИЯ (1920px и больше) */
 .navigation {
   position: absolute;
-  top: 20px;
+  padding-top: 1.65em !important;
   width: 100%;
-  max-width: 1440px;
-  z-index: 1;
+  max-width: var(--max-width-pc);
+  z-index: 100;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-sizing: border-box;
-  padding: 0 40px;
-}
-
-/* Масштабирование навигации для больших экранов */
-@media (min-width: 1441px) {
-  .navigation {
-    top: calc(20px * var(--scale-factor));
-    padding: 0 calc(40px * var(--scale-factor));
-    max-width: calc(1440px * var(--scale-factor));
-  }
+  padding: 0 2.5em; /* 40px / 16px = 2.5em */
+  padding-bottom: 1em;
+  -webkit-box-shadow: 0px 78px 37px -42px rgba(2, 2, 2, 0.47) inset;
+  -moz-box-shadow: 0px 78px 37px -42px rgba(2, 2, 2, 0.47) inset;
+  box-shadow: 0px 78px 37px -42px rgba(2, 2, 2, 0.47) inset;
 }
 
 /* ЛЕВАЯ ЧАСТЬ НАВИГАЦИИ */
 .nav-left {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
-  gap: 220px;
-  width: calc(50% - 52.5px);
-}
-
-@media (min-width: 1441px) {
-  .nav-left {
-    width: calc(50% - calc(52.5px * var(--scale-factor)));
-    gap: calc(220px * var(--scale-factor));
-  }
+  justify-content: space-between;
+  flex: 1;
+  padding-right: 2em; /* Отступ от центра */
 }
 
 /* ПРАВАЯ ЧАСТЬ НАВИГАЦИИ */
 .nav-right {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
-  gap: 179px;
-  width: calc(50% - 52.5px);
+  justify-content: space-between;
+  flex: 1;
+  padding-left: 2em; /* Отступ от центра */
 }
 
-@media (min-width: 1441px) {
-  .nav-right {
-    width: calc(50% - calc(52.5px * var(--scale-factor)));
-    gap: calc(179px * var(--scale-factor));
-  }
+/* Центральный логотип */
+.logo {
+  flex: 0 0 auto;
+  margin: 0 auto;
 }
 
+.logo-image {
+  width: 15em !important; /* 240px / 16px = 15em */
+  height: 5em !important; /* 80px / 16px = 5em */
+  object-fit: contain;
+}
+
+/* Настройки для элементов навигации */
 .nav-item {
-  font-weight: 300;
   color: white;
-  font-size: 14px;
-  cursor: pointer;
+  font-size: 1em; /* 14px / 16px = 0.875em */
+  cursor: none;
   text-align: center;
   white-space: nowrap;
   transition: opacity 0.3s ease;
+  text-decoration: none;
+  font-family: inherit;
+  background: none;
+  border: none;
+  padding: 0;
 }
-
-
 
 .nav-item:hover {
   opacity: 0.8;
 }
 
-/* Отступы для элементов навигации */
+/* Позиционирование элементов в левой части */
 .nav-left .nav-item.directions {
-  margin-right: 48px;
+  margin-right: 2em;
 }
 
-@media (min-width: 1441px) {
-  .nav-left .nav-item.directions {
-    margin-right: calc(48px * var(--scale-factor));
-  }
-}
-
-/* Логотип в центре */
-.logo {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.logo-image {
-  /* width: 105px; */
-  /* height: 40px; */
-  object-fit: contain;
-}
-
-@media (min-width: 1441px) {
-  .logo-image {
-    width: calc(105px * var(--scale-factor));
-    height: calc(40px * var(--scale-factor));
-  }
+/* Позиционирование элементов в правой части */
+.nav-right .nav-item.about {
+  margin-right: 2em;
 }
 
 /* Кнопка CHAT WITH US - ПК версия */
 .chat-button {
-  padding-top: 4px !important;
-  margin-top: 3px !important;
-  background-color: #76767634;
-  width: 165px !important;
-  height: 48px !important;
+  background-color: rgba(255, 255, 255, 0.2);
+  width: 11.25em !important; /* 180px / 16px = 11.25em */
+  height: 3.75em !important; /* 60px / 16px = 3.75em */
   white-space: nowrap !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  border-radius: 30px;
-  border: 0px solid rgba(255, 255, 255, 0.3) !important;
-  font-size: 16px !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1.875em; /* 30px / 16px = 1.875em */
+  border: none !important;
+  padding: 0;
+  font-size: 0.875em !important;
   color: white;
   cursor: none;
   transition: all 0.3s ease;
-  backdrop-filter: blur(5px);
-  white-space: nowrap;
-  line-height: 1 !important; /* Добавляем line-height */
-  text-decoration: none !important;
-}
-
-@media (min-width: 1441px) {
-  .chat-button {
-    width: calc(176px * var(--scale-factor));
-    height: calc(60px * var(--scale-factor));
-    border-radius: calc(30px * var(--scale-factor));
-    font-size: calc(14px * var(--scale-factor));
-  }
+  backdrop-filter: blur(0.3125em);
+  font-family: inherit;
 }
 
 .chat-button:hover {
   background-color: rgba(255, 255, 255, 0.3);
-  transform: translateY(-2px);
+  transform: translateY(-0.125em);
 }
 
 /* КОНТЕНТ СНИЗУ - ПК ВЕРСИЯ */
 .content-wrapper {
   position: absolute;
-  bottom: 20px;
+  bottom: 1.525em; /* 50px / 16px = 3.125em */
   left: 50%;
   transform: translateX(-50%);
   width: 100%;
-  max-width: 1440px;
-  z-index: 1;
+  max-width: var(--max-width-pc);
+  z-index: 100;
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  padding: 0 40px;
-  box-sizing: border-box;
-}
-
-/* Масштабирование контента для больших экранов */
-@media (min-width: 1441px) {
-  .content-wrapper {
-    bottom: calc(20px * var(--scale-factor));
-    padding: 0 calc(40px * var(--scale-factor));
-    max-width: calc(1440px * var(--scale-factor));
-  }
+  padding: 0 2.5em;
 }
 
 /* НАГРАДЫ - ПК ВЕРСИЯ */
 .awards-row {
   display: flex;
-  gap: 60px;
+  gap: 3.75em; /* 60px / 16px = 3.75em */
   align-items: flex-end;
-}
-
-@media (min-width: 1441px) {
-  .awards-row {
-    gap: calc(60px * var(--scale-factor));
-  }
 }
 
 .award-item {
@@ -217,111 +237,90 @@
   flex-shrink: 0;
 }
 
-/* Контейнеры для иконок с точными размерами */
+/* Контейнеры для иконок */
 .award-icon-container {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 10px;
+  margin-bottom: 0.625em; /* 10px / 16px = 0.625em */
 }
 
+/* Адаптивные размеры иконок в em */
 .icon-1 {
-  width: 65px;
-  height: 27px;
+  width: 4.0625em; /* 65px / 16px = 4.0625em */
+  height: 1.6875em; /* 27px / 16px = 1.6875em */
 }
 
 .icon-2 {
-  width: 100px;
-  height: 28px;
+  width: 6.25em; /* 100px / 16px = 6.25em */
+  height: 1.75em; /* 28px / 16px = 1.75em */
 }
 
 .icon-3 {
-  width: 77px;
-  height: 28px;
+  width: 4.8125em; /* 77px / 16px = 4.8125em */
+  height: 1.75em;
 }
 
 .icon-4 {
-  width: 119px;
-  height: 30px;
-}
-
-@media (min-width: 1441px) {
-  .award-icon-container {
-    margin-bottom: calc(10px * var(--scale-factor));
-  }
-  
-  .icon-1 {
-    height: calc(27px * var(--scale-factor));
-  }
-  
-  .icon-2 {
-    height: calc(28px * var(--scale-factor));
-  }
-  
-  .icon-3 {
-    height: calc(28px * var(--scale-factor));
-  }
-  
-  .icon-4 {
-    height: calc(30px * var(--scale-factor));
-  }
+  width: 7.4375em; /* 119px / 16px = 7.4375em */
+  height: 1.875em; /* 30px / 16px = 1.875em */
 }
 
 .award-icon {
-  max-width: 100%;
-  max-height: 100%;
   width: auto;
   height: auto;
   object-fit: contain;
 }
 
+/* Стили для наград */
 .award-text {
-  font-weight: 300;
   color: white;
-  font-size: 14px;
-  line-height: 1.4;
   margin: 0;
   text-align: left;
   white-space: nowrap;
+  display: flex;
+  flex-direction: column;
+  gap: 0.125em; /* 2px / 16px = 0.125em */
 }
 
-@media (min-width: 1441px) {
-  .award-text {
-    font-size: calc(14px * var(--scale-factor));
-    line-height: calc(1.4 * var(--scale-factor));
-  }
+.award-count {
+  font-weight: 500;
+  font-size: 1em; /* 15px / 16px = 0.9375em */
+  line-height: 1.2;
+}
+
+.award-description {
+  font-weight: 400;
+  font-size: 0.8125em; /* 13px / 16px = 0.8125em */
+  line-height: 1.3;
+  opacity: 0.9;
 }
 
 /* Кнопка VIEW PROJECT - ПК версия */
 .view-project-button {
-  margin-bottom: 2px !important;
-  background-color: #eeeeeecc;
+  background-color: white;
   color: black;
   border: none;
-  padding: 15px 30px;
-  font-size: 16px;
-  font-weight: bold;
-  border-radius: 25px;
-  cursor: pointer;
+  width: 10.9375em; /* 175px / 16px = 10.9375em */
+  height: 2.1875em; /* 35px / 16px = 2.1875em */
+  padding: 0.0625em 0 !important; /* 1px / 16px = 0.0625em */
+  font-size: 1.0625em !important; /* 17px / 16px = 1.0625em */
+  font-weight: 400 !important;
+  border-radius: 1.5625em; /* 25px / 16px = 1.5625em */
+  cursor: none;
   transition: all 0.3s ease;
   flex-shrink: 0;
-  margin-left: 40px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-}
-
-@media (min-width: 1441px) {
-  .view-project-button {
-    padding: calc(15px * var(--scale-factor)) calc(30px * var(--scale-factor));
-    font-size: calc(16px * var(--scale-factor));
-    border-radius: calc(25px * var(--scale-factor));
-    margin-left: calc(40px * var(--scale-factor));
-  }
+  margin-left: 2.5em;
+  white-space: nowrap !important;
+  box-shadow: 0 0.25em 0.9375em rgba(0, 0, 0, 0.1);
+  font-family: inherit;
 }
 
 .view-project-button:hover {
-  background-color: #eeee;
-  transform: translateY(-3px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  background-color: #000000 !important;
+  transform: translateY(-0.125em) !important;
+  color: rgb(212, 212, 212);
+  box-shadow: 0 0.375em 1.25em rgba(0, 0, 0, 0.15);
 }
 
 /* ============================================= */
@@ -330,26 +329,219 @@
 .burger-menu,
 .mobile-chat-button,
 .mobile-dropdown {
-  /* display: none; */
+  display: none;
 }
 
 /* ============================================= */
-/* МОБИЛЬНАЯ ВЕРСИЯ (768px и меньше) */
+/* ПЛАНШЕТНАЯ ВЕРСИЯ (до 1440px) */
+/* ============================================= */
+@media (max-width: 1440px) {
+  html {
+    font-size: calc(var(--base-font-size) * 0.9375); /* 15px */
+  }
+  
+  .navigation {
+    max-width: 100%;
+    padding-bottom: 1em !important;
+    padding: 0 1.875em;
+  }
+  
+  .nav-left {
+    padding-right: 1.5em;
+  }
+  
+  .nav-right {
+    padding-left: 1.5em;
+  }
+  
+  .logo-image {
+    width: 12em !important;
+    height: 4em !important;
+  }
+  
+  .nav-left .nav-item.directions {
+    margin-right: 1.5em;
+  }
+  
+  .nav-right .nav-item.about {
+    margin-right: 1.5em;
+  }
+  
+  .chat-button {
+    width: 10em !important;
+    height: 3em !important;
+    font-size: 1em !important;
+    padding: 0 1em  !important;
+  }
+  
+  .content-wrapper {
+    max-width: 100%;
+    padding: 0 1.875em;
+    bottom: 2.5em;
+  }
+  
+  .awards-row {
+    gap: 2.5em;
+  }
+  
+  .view-project-button {
+    width: 9em;
+    height: 2.5em;
+    font-size: 0.9375em !important;
+    margin-left: 1.5em;
+  }
+  
+  /* Регулируем размеры иконок */
+  .icon-1 {
+    width: 3.5em;
+    height: 1.5em;
+  }
+  
+  .icon-2 {
+    width: 5.5em;
+    height: 1.6em;
+  }
+  
+  .icon-3 {
+    width: 4.2em;
+    height: 1.6em;
+  }
+  
+  .icon-4 {
+    width: 6.5em;
+    height: 1.7em;
+  }
+}
+
+/* ============================================= */
+/* АДАПТИВ ДЛЯ 860PX */
+/* ============================================= */
+@media (max-width: 53.75em) { /* 860px = 53.75em */
+  html {
+    font-size: calc(var(--base-font-size) * 0.9375); /* 15px */
+  }
+  
+  .navigation {
+    max-width: 100%;
+    padding: 0 1.5em;
+    padding-bottom: 1em !important;
+  }
+  
+  .nav-left {
+    padding-right: 1em;
+  }
+  
+  .nav-right {
+    padding-left: 1em;
+  }
+  
+  .logo-image {
+    width: 10em !important;
+    height: 3.333em !important;
+  }
+  
+  .nav-left .nav-item.directions {
+    margin-right: 1em;
+  }
+  
+  .nav-right .nav-item.about {
+    margin-right: 1em;
+  }
+  
+  .chat-button {
+    width: 9em !important;
+    height: 3em !important;
+    font-size: 0.875em !important;
+    padding: 0 0.875em !important;
+  }
+  
+  .content-wrapper {
+    padding: 0 1.5em;
+    bottom: 2em;
+  }
+  
+  .awards-row {
+    gap: 2em;
+  }
+  
+  .icon-1 {
+    width: 3.2em;
+    height: 1.35em;
+  }
+  
+  .icon-2 {
+    width: 4.8em;
+    height: 1.45em;
+  }
+  
+  .icon-3 {
+    width: 3.7em;
+    height: 1.45em;
+  }
+  
+  .icon-4 {
+    width: 5.8em;
+    height: 1.55em;
+  }
+  
+  .award-text {
+    gap: 0.1em;
+  }
+  
+  .award-count {
+    font-size: 0.9em;
+  }
+  
+  .award-description {
+    font-size: 0.75em;
+  }
+  
+  .view-project-button {
+    width: 9em;
+    height: 2.25em;
+    font-size: 1em !important;
+    margin-left: 1em;
+  }
+  
+  .nav-item {
+    font-size: 0.875em;
+  }
+}
+
+/* ============================================= */
+/* МОБИЛЬНАЯ ВЕРСИЯ (до 768px) */
 /* ============================================= */
 @media (max-width: 768px) {
-  /* НАВИГАЦИЯ - МОБИЛЬНАЯ */
-  .navigation {
-    top: 16px;
-    padding: 0 16px;
-    height: 48px;
-    justify-content: space-between;
-    align-items: center;
+  html {
+    font-size: calc(var(--base-font-size) * 0.875); /* 14px */
   }
-    .video-background {
-    display: block !important; /* Принудительно показываем видео */
+  
+  * {
+    cursor: auto !important;
+  }
+  
+  .video-background {
+    display: block !important;
     opacity: 1 !important;
     visibility: visible !important;
   }
+  
+  .cursor-dot,
+  .cursor-ring {
+    display: none !important;
+  }
+  
+  /* НАВИГАЦИЯ - МОБИЛЬНАЯ */
+  .navigation {
+    padding-top: 3em !important;
+    padding: 0 1em;
+    padding-bottom: 2em !important;
+    height: 3em;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 100%;
+  }
+  
   /* Скрываем десктопную навигацию в мобильной версии */
   .nav-left, 
   .nav-right,
@@ -361,188 +553,144 @@
   .burger-menu,
   .mobile-chat-button {
     display: flex;
+    cursor: pointer;
   }
   
   /* Логотип в центре */
   .logo {
-    position: static;
-    left: auto;
-    transform: none;
+    flex: 0 0 auto;
+    margin: 0 auto;
     order: 2;
   }
   
-  .logo-image {
-    width: 80px;
-    height: 30px;
-  }
-    .view-project-button {
-     font-weight: 400 !important;
-    max-width: 160px !important;
-    height: 35px !important;
-    font-size: 15px !important;
-    padding: 5px 0px !important;
-  }
   /* БУРГЕР-МЕНЮ С ЭФФЕКТОМ СТЕКЛА */
   .burger-menu {
-    width: 48px;
-    height: 48px;
+    width: 3em;
+    height: 3em;
     background: rgba(185, 185, 185, 0.32);
-    backdrop-filter: blur(8px);
-    border-radius: 52px; /* Более мягкие углы как у кнопок */
+    backdrop-filter: blur(0.5em);
+    border-radius: 0.75em;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    z-index: 101; /* Выше чем меню */
-    border: 1px solid rgba(255, 255, 255, 0.3); /* Граница как у кнопки CHAT WITH US */
+    z-index: 101;
+    border: 0.0625em solid rgba(255, 255, 255, 0.3);
     order: 1;
-    transition: all 0.3s ease; /* Плавный переход */
+    transition: all 0.3s ease;
   }
   
   .burger-menu:hover {
     background-color: rgba(255, 255, 255, 0.2);
-    transform: translateY(-2px); /* Эффект подъема как у кнопок */
+    transform: translateY(-0.125em);
   }
   
   .burger-menu svg {
-    width: 18px;
-    height: 12px;
+    width: 1.125em;
+    height: 0.75em;
     transition: transform 0.3s ease;
   }
   
-  /* КНОПКА ЧАТА СПРАВА (ЭФФЕКТ СТЕКЛА) */
+  /* КНОПКА ЧАТА СПРАВА */
   .mobile-chat-button {
-    width: 48px;
-    height: 48px;
+    width: 3em;
+    height: 3em;
     background: rgba(185, 185, 185, 0.32);
-    backdrop-filter: blur(8px);
-    border-radius: 52px;
+    backdrop-filter: blur(0.5em);
+    border-radius: 0.75em;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    border: 0.0625em solid rgba(255, 255, 255, 0.3);
     order: 3;
     transition: all 0.3s ease;
-    z-index: 101; /* Выше чем меню */
+    z-index: 101;
   }
   
   .mobile-chat-button:hover {
     background-color: rgba(255, 255, 255, 0.2);
-    transform: translateY(-2px);
+    transform: translateY(-0.125em);
   }
   
   .mobile-chat-button svg {
-    width: 18px;
-    height: 18px;
+    width: 1.125em;
+    height: 1.125em;
   }
   
-  /* ВЫПАДАЮЩЕЕ МЕНЮ С ЭФФЕКТОМ СТЕКЛА - ИСПРАВЛЕНО */
+  /* МОБИЛЬНОЕ ВЫПАДАЮЩЕЕ МЕНЮ */
   .mobile-dropdown {
-    display: flex !important; /* Важно: принудительно показываем когда active */
     position: fixed;
     top: 0;
     left: 0;
-    right: 0;
-    bottom: 0;
-    width: 30vh;
-    height: 50vh;
-
-    z-index: 100 !important; /* Ниже кнопок бургера/чата */
+    width: 100%;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.9);
+    backdrop-filter: blur(1.25em);
+    display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
-    gap: 16px;
-    padding: 80px 20px;
+    justify-content: center;
+    gap: 1.5em;
+    z-index: 100;
     opacity: 0;
     visibility: hidden;
-    transform: translateY(-20px);
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: opacity 0.3s ease, visibility 0.3s ease;
   }
   
   .mobile-dropdown.active {
     opacity: 1;
     visibility: visible;
-    z-index: 1;
-    /* transform: translateY(0); */
   }
   
-  /* ЭЛЕМЕНТЫ МЕНЮ С ЭФФЕКТОМ СТЕКЛА */
+  /* ЭЛЕМЕНТЫ МЕНЮ */
   .mobile-nav-item {
     color: white;
-    font-size: 18px;
+    font-size: 1.125em;
     font-weight: 500;
     text-decoration: none;
-    padding: 16px 32px;
+    padding: 1em 2em;
     transition: all 0.3s ease;
-    background: rgba(255, 255, 255, 0.15); /* Полупрозрачный белый фон */
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border-radius: 12px;
-    width: 250px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(0.625em);
+    -webkit-backdrop-filter: blur(0.625em);
+    border-radius: 0.75em;
+    width: 15.625em;
     max-width: 80%;
     text-align: center;
-    border: 1px solid rgba(255, 255, 255, 0.2); /* Легкая граница */
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* Тень для объема */
+    border: 0.0625em solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 0.25em 1.25em rgba(0, 0, 0, 0.2);
     cursor: pointer;
   }
   
   .mobile-nav-item:hover {
     color: rgba(255, 255, 255, 0.95);
     background: rgba(255, 255, 255, 0.25);
-    transform: translateY(-3px); /* Эффект подъема */
-    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.3);
-  }
-  
-  /* КРЕСТИК ДЛЯ ЗАКРЫТИЯ */
-  .close-menu {
-    position: absolute;
-    top: 24px;
-    right: 24px;
-    width: 40px;
-    height: 40px;
-    background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(10px);
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    transition: all 0.3s ease;
-    z-index: 102;
-  }
-  
-  .close-menu:hover {
-    background: rgba(255, 255, 255, 0.25);
-    transform: translateY(-2px);
-  }
-  
-  .close-menu svg {
-    width: 20px;
-    height: 20px;
+    transform: translateY(-0.1875em);
+    box-shadow: 0 0.375em 1.5625em rgba(0, 0, 0, 0.3);
   }
   
   /* КОНТЕНТ СНИЗУ - МОБИЛЬНАЯ ВЕРСИЯ */
   .content-wrapper {
     position: absolute;
-    bottom: 40px;
+    bottom: 2.5em;
     left: 50%;
     transform: translateX(-50%);
     width: 100%;
-    padding: 0 16px;
+    padding: 0 1em;
+    padding-bottom: 3em !important;
     flex-direction: column;
     align-items: center;
-    gap: 32px;
+    gap: 3em;
     max-width: 100%;
-    z-index: 1; /* Над видео, но под меню */
+    z-index: 1;
   }
   
   /* Награды в 2 колонки */
   .awards-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 32px 20px;
+    gap: 2em 1.25em;
     width: 100%;
-    order: 1; /* Награды сверху */
+    order: 1;
   }
   
   .award-item {
@@ -554,163 +702,220 @@
   }
   
   .award-icon-container {
-    margin-bottom: 8px;
+    margin-bottom: 0.5em;
   }
   
+  /* Размеры иконок для мобильных */
+  .icon-1 {
+    width: 3.5em;
+    height: 1.5em;
+  }
+  
+  .icon-2 {
+    width: 5.5em;
+    height: 1.6em;
+  }
+  
+  .icon-3 {
+    width: 4.2em;
+    height: 1.6em;
+  }
+  
+  .icon-4 {
+    width: 6.5em;
+    height: 1.7em;
+  }
+  
+  /* Мобильные стили для наград */
   .award-text {
-    font-size: 12px;
-    line-height: 1.3;
+    font-size: 1em;
     white-space: normal;
     text-align: center;
+    gap: 0.0625em;
   }
   
-  /* Кнопка VIEW PROJECT под наградами */
+  .award-count {
+    font-size: 0.875em;
+  }
+  
+  .award-description {
+    font-size: 0.75em;
+  }
+  
+  /* Кнопка VIEW PROJECT */
   .view-project-button {
-    background-color: #eeeeeecc ;
     margin-left: 0;
-    width: 180px;
-    height: 48px;
-    max-width: 180px;
-    font-size: 16px;
-    padding: 12px 24px;
-    order: 2; /* Кнопка снизу */
+    width: 100%;
+    max-width: 10.5em;
+    font-size: 1em;
+    padding: 0.75em 1.5em;
+    height: 2.5em;
+    order: 2;
+    cursor: pointer;
   }
 }
 
-/* ДЛЯ ПЛАНШЕТОВ (769px - 1024px) */
-@media (min-width: 769px) and (max-width: 1024px) {
+/* ============================================= */
+/* МАЛЕНЬКИЕ ТЕЛЕФОНЫ (до 390px) */
+/* ============================================= */
+@media (max-width: 390px) {
+  html {
+    font-size: calc(var(--base-font-size) * 0.8125); /* 13px */
+  }
+  
   .navigation {
-    padding: 0 24px;
-  }
-  
-  .nav-left, .nav-right {
-    width: auto;
-  }
-  
-  .nav-left {
-    gap: 100px;
-  }
-  
-  .nav-right {
-    gap: 80px;
-  }
-  
-  .content-wrapper {
-    padding: 0 24px;
-  }
-  
-  .awards-row {
-    gap: 40px;
-  }
-}
-
-/* ДЛЯ ОЧЕНЬ БОЛЬШИХ ЭКРАНОВ */
-@media (min-width: 2000px) {
-  :root {
-    --scale-factor: 1.2;
-  }
-}
-
-@media (min-width: 2500px) {
-  :root {
-    --scale-factor: 1.3;
-  }
-}
-
-@media (min-width: 3000px) {
-  :root {
-    --scale-factor: 1.4;
-  }
-}
-
-@media (min-width: 3500px) {
-  :root {
-    --scale-factor: 1.5;
-  }
-}
-
-/* ДЛЯ ОЧЕНЬ МАЛЕНЬКИХ ТЕЛЕФОНОВ */
-@media (max-width: 360px) {
-  .awards-row {
-    gap: 24px 16px;
-  }
-  
-
-  
-  .view-project-button {
-    max-width: 240px;
-    font-size: 13px;
-    padding: 10px 20px;
+    padding: 0 0.75em;
+    padding-top: 3em !important;
+    padding-bottom: 3em !important;
   }
   
   .logo-image {
-    width: 70px;
-    height: 26px;
-  }
-  
-  .mobile-nav-item {
-    width: 200px;
-    padding: 14px 24px;
-    font-size: 18px;
+    width: 11.5em !important;
+    height: 4.5em !important;
   }
   
   .burger-menu,
   .mobile-chat-button {
-    width: 44px;
-    height: 44px;
+    width: 2.5em;
+    height: 2.5em;
   }
   
-  .mobile-dropdown {
-    padding: 60px 20px;
-    width: 90% !important;
-    gap: 12px;
+  .content-wrapper {
+    bottom: 2em;
   }
-}  
-
-
-.award-text {
-    font-size: 14px;
-    width: 120px;
+  
+  .awards-row {
+    gap: 1.5em;
   }
-  @supports (-webkit-touch-callout: none) {
+  
+  .mobile-nav-item {
+    width: 13em;
+    padding: 0.75em 1.5em;
+    font-size: 1em;
+  }
+  
+  /* Уменьшаем иконки для очень маленьких экранов */
+  .icon-1 {
+    width: 3em;
+    height: 1.3em;
+  }
+  
+  .icon-2 {
+    width: 4.5em;
+    height: 1.4em;
+  }
+  
+  .icon-3 {
+    width: 3.5em;
+    height: 1.4em;
+  }
+  
+  .icon-4 {
+    width: 5.5em;
+    height: 1.5em;
+  }
+  
+  .award-text {
+    font-size: 0.6875em;
+  }
+  
+  .award-count {
+    font-size: 1.8em;
+  }
+  
+  .award-description {
+    font-size: 1.8em;
+  }
+  
+  .view-project-button {
+    max-width: 11em;
+    font-size: 1.231em !important;
+    height: 2.25em;
+  }
+}
+
+/* ============================================= */
+/* СТИЛИ ДЛЯ ОЧЕНЬ БОЛЬШИХ ЭКРАНОВ (больше 1920px) */
+/* ============================================= */
+@media (min-width: 1921px) {
+  html {
+    font-size: calc(var(--base-font-size) * 1.2);
+  }
+  
+  .navigation {
+    max-width: 100%;
+  }
+  
+  .content-wrapper {
+    max-width: 100%;
+  }
+}
+
+/* Стили для состояний курсора */
+.cursor-dot.hidden {
+  opacity: 0;
+  transform: scale(0);
+}
+
+.cursor-ring.hidden {
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.5);
+}
+
+/* Плавные переходы */
+button,
+.nav-item,
+.burger-menu,
+.mobile-chat-button,
+.mobile-nav-item,
+.view-project-button,
+.chat-button {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Улучшенные стили для текста наград */
+@media (min-width: 769px) {
+  .award-item {
+    min-width: 7.5em;
+  }
+  
+  .award-text {
+    min-height: 3.75em;
+  }
+}
+
+/* Специфичные стили для iOS */
+@supports (-webkit-touch-callout: none) {
   body, html, .App {
     -webkit-tap-highlight-color: transparent;
     -webkit-font-smoothing: antialiased;
   }
   
-  /* Фиксы для всех кнопок в приложении */
-
   .view-project-button{
-    padding-top: 8px !important;
+    padding-top: 0.5em !important;
   }
+  
   .nav-item, .chat-button{
-    padding-top: 20px !important;
+    padding-top: 1.25em !important;
   }
-.chat-button {
-  padding-top: 6px !important;
-  margin-top: 3px !important;
-  background-color: #76767634;
-  width: 165px !important;
-  height: 48px !important;
-  white-space: nowrap !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  border-radius: 30px;
-  border: 0px solid rgba(255, 255, 255, 0.3) !important;
-  font-size: 16px !important;
-  color: white;
-  cursor: none;
-  transition: all 0.3s ease;
-  backdrop-filter: blur(5px);
-  white-space: nowrap;
-  line-height: 1 !important; /* Добавляем line-height */
-  text-decoration: none !important;
-}
+  
   @media (max-width: 480px) {
-   .view-project-button{
-    padding-top: 16px !important;
+    .view-project-button{
+      padding-top: 0.75em !important;
+    }
   }
-  }
+}
 
+/* Гарантируем, что видео всегда видно */
+.video-background {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  min-width: 100%;
+  min-height: 101%;
+  width: auto;
+  height: auto;
+  transform: translate(-50%, -50%);
+  padding: 0px;
+  margin: 0px;
 }

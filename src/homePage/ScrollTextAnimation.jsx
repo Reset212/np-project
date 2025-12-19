@@ -4,22 +4,22 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import "./ScrollTextAnimation.css";
 
 const ScrollTextAnimation = () => {
-  const [activeSection, setActiveSection] = useState(0);
-  const [wordStates, setWordStates] = useState({});
-  const [isMobile, setIsMobile] = useState(false);
-  const [isFixedActive, setIsFixedActive] = useState(false);
-  const [scrollProgress, setScrollProgress] = useState(0);
+  const [activeSection, setActiveSection] = useState(0); // Какая секция текста сейчас активна (0 - первая, 1 - вторая)
+  const [wordStates, setWordStates] = useState({}); // Состояние каждого слова (видимо/невидимо)
+  const [isMobile, setIsMobile] = useState(false); // Флаг мобильной версии
+  const [isFixedActive, setIsFixedActive] = useState(false); // Активен ли фиксированный контейнер
+  const [scrollProgress, setScrollProgress] = useState(0); // Прогресс скролла от 0 до 1
   
-  const containerRef = useRef(null);
-  const fixedContainerRef = useRef(null);
-  const animationFrameRef = useRef(null);
+  const containerRef = useRef(null); // Реф на основной контейнер
+  const fixedContainerRef = useRef(null); // Реф на фиксированный контейнер
+  const animationFrameRef = useRef(null); // Реф для requestAnimationFrame
   
   // Рефы для оптимизации
-  const lastScrollYRef = useRef(0);
-  const lastWordStatesRef = useRef({});
-  const isInViewRef = useRef(false);
-  const blockTopRef = useRef(0);
-  const blockHeightRef = useRef(0);
+  const lastScrollYRef = useRef(0); // Последняя позиция скролла
+  const lastWordStatesRef = useRef({}); // Предыдущее состояние слов
+  const isInViewRef = useRef(false); // Находится ли блок в зоне видимости
+  const blockTopRef = useRef(0); // Верхняя граница блока
+  const blockHeightRef = useRef(0); // Высота блока
 
   // Данные для текста
   const sections = [
@@ -50,18 +50,20 @@ const ScrollTextAnimation = () => {
     }
   ];
 
+  // Генерация уникального ключа для каждого слова
   const getWordKey = useCallback((sectionIdx, lineIdx, wordIdx) =>
     `${sectionIdx}-${lineIdx}-${wordIdx}`, []);
 
-  // Инициализация
+  // Инициализация - определение мобильной версии и начальных состояний
   useEffect(() => {
     const checkMobile = () => {
-      const mobile = window.innerWidth <= 480;
+      const mobile = window.innerWidth <= 480; // БРЕЙКПОИНТ ДЛЯ МОБИЛЬНОЙ ВЕРСИИ (можно изменить)
       setIsMobile(mobile);
 
       const initialWordStates = {};
       const currentSections = mobile ? mobileSections : sections;
       
+      // Инициализация всех слов как неактивных
       currentSections.forEach((section, sectionIdx) => {
         section.lines.forEach((line, lineIdx) => {
           line.forEach((_, wordIdx) => {
@@ -103,30 +105,30 @@ const ScrollTextAnimation = () => {
       
       // Получаем позицию блока
       const containerRect = container.getBoundingClientRect();
-      const containerTop = containerRect.top + currentScrollY;
-      const containerHeight = container.offsetHeight;
-      const containerBottom = containerTop + containerHeight;
+      const containerTop = containerRect.top + currentScrollY; // Верх блока относительно документа
+      const containerHeight = container.offsetHeight; // Высота блока
+      const containerBottom = containerTop + containerHeight; // Низ блока
       
       // Сохраняем для быстрого доступа
       blockTopRef.current = containerTop;
       blockHeightRef.current = containerHeight;
       
       // Проверяем, находится ли блок в видимой области экрана
-      // Блок активен, когда он пересекает центральную часть экрана
-      const viewportTop = currentScrollY;
-      const viewportBottom = currentScrollY + windowHeight;
-      const viewportCenter = currentScrollY + windowHeight * 0.5;
+      const viewportTop = currentScrollY; // Верх viewport
+      const viewportBottom = currentScrollY + windowHeight; // Низ viewport
+      const viewportCenter = currentScrollY + windowHeight * 0.5; // Центр viewport
       
-      // Блок считается "в зоне видимости", когда его центральная часть
-      // пересекается с центральной частью экрана
+      // Центр блока
       const containerCenter = containerTop + containerHeight * 0.5;
       const distanceToCenter = Math.abs(containerCenter - viewportCenter);
       
       // Активируем фиксированный контейнер, когда блок входит в зону видимости
+      // МЕНЯЙ ЭТИ ПАРАМЕТРЫ ДЛЯ НАСТРОЙКИ АКТИВАЦИИ:
+      const distanceThreshold = windowHeight * 2.5; // На каком расстоянии от центра активируется (можно изменить)
       const shouldBeActive = (
         containerTop <= viewportBottom && 
         containerBottom >= viewportTop &&
-        distanceToCenter < windowHeight * 1.5
+        distanceToCenter < distanceThreshold
       );
       
       // Обновляем состояние активности
@@ -165,7 +167,6 @@ const ScrollTextAnimation = () => {
       let progress = 0;
       
       // Рассчитываем, насколько далеко мы проскроллили блок
-      // relativeScroll - сколько пикселей от верха блока до верха viewport
       const relativeScroll = Math.max(0, viewportTop - containerTop);
       
       // Максимально возможный скролл через блок
@@ -181,8 +182,11 @@ const ScrollTextAnimation = () => {
       setScrollProgress(progress);
       
       // ОПРЕДЕЛЯЕМ АКТИВНУЮ СЕКЦИЮ
+      // МЕНЯЙ ЭТОТ ПАРАМЕТР ДЛЯ НАСТРОЙКИ МОМЕНТА ПЕРЕКЛЮЧЕНИЯ СЕКЦИЙ:
+      const sectionSwitchPoint = 0.55; // При каком прогрессе переключаемся на вторую секцию (0-1)
+      
       let targetSection = 0;
-      if (progress < 0.5) {
+      if (progress < sectionSwitchPoint) {
         targetSection = 0;
       } else {
         targetSection = 1;
@@ -200,9 +204,11 @@ const ScrollTextAnimation = () => {
       // Рассчитываем прогресс внутри активной секции
       let sectionProgress = 0;
       if (targetSection === 0) {
-        sectionProgress = Math.min(1, progress / 0.5);
+        // Прогресс внутри первой секции от 0 до 1
+        sectionProgress = Math.min(1, progress / sectionSwitchPoint);
       } else {
-        sectionProgress = Math.min(1, Math.max(0, (progress - 0.5) / 0.5));
+        // Прогресс внутри второй секции от 0 до 1
+        sectionProgress = Math.min(1, Math.max(0, (progress - sectionSwitchPoint) / (1 - sectionSwitchPoint)));
       }
       
       // Для каждой секции
@@ -214,16 +220,20 @@ const ScrollTextAnimation = () => {
           const totalWords = section.lines.flat().length;
           
           // Сколько слов должно быть активно
-          // Ускоряем появление слов (умножаем на 1.5)
+          // МЕНЯЙ ЭТИ ПАРАМЕТРЫ ДЛЯ НАСТРОЙКИ АНИМАЦИИ СЛОВ:
+          const wordAppearMultiplier = 1.55; // Множитель скорости появления слов (чем больше, тем быстрее)
+          const fadeOutStartPoint = 0.9; // При каком прогрессе секции начинается исчезновение (0.9 = 90%)
+          const fadeOutDuration = 0.1; // Длительность исчезновения (0.1 = 10% прогресса секции)
+          
           let activeWordsCount = 0;
           
           // Разная логика для появления и исчезновения
-          if (sectionProgress <= 0.9) {
-            // Появление слов (0-90% прогресса секции)
-            activeWordsCount = Math.floor(sectionProgress * totalWords * 1.5);
+          if (sectionProgress <= fadeOutStartPoint) {
+            // Появление слов
+            activeWordsCount = Math.floor(sectionProgress * totalWords * wordAppearMultiplier);
           } else {
-            // Исчезновение слов (последние 10%)
-            const fadeOutProgress = (1 - sectionProgress) / 0.1;
+            // Исчезновение слов
+            const fadeOutProgress = (1 - sectionProgress) / fadeOutDuration;
             activeWordsCount = Math.floor(fadeOutProgress * totalWords);
           }
           
@@ -300,7 +310,8 @@ const ScrollTextAnimation = () => {
                   <span
                     className={`text-word-item ${isWordActive ? 'active' : ''}`}
                     style={{
-                      transitionDelay: `${(lineIdx * line.length + wordIdx) * 0.02}s`,
+                      // МЕНЯЙ ЭТОТ ПАРАМЕТР ДЛЯ НАСТРОЙКИ ЗАДЕРЖКИ МЕЖДУ СЛОВАМИ:
+                      transitionDelay: `${(lineIdx * line.length + wordIdx) * 0.02}s`, // 0.02s задержка между словами
                     }}
                   >
                     {word}
@@ -333,7 +344,8 @@ const ScrollTextAnimation = () => {
           </div>
         </div>
         
-        {/* ПУСТОЕ ПРОСТРАНСТВО ДЛЯ СКРОЛЛА */}
+        {/* ПУСТОЕ ПРОСТРАНСТВО ДЛЯ СКРОЛЛА
+            МЕНЯЙ ВЫСОТУ ЗДЕСЬ ДЛЯ НАСТРОЙКИ ДЛИТЕЛЬНОСТИ СКРОЛЛА: */}
         <div style={{ height: '150vh' }}></div>
       </div>
     </div>

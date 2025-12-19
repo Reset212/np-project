@@ -1,557 +1,574 @@
-/* ============================================
-   БАЗОВЫЕ СТИЛИ
-   ============================================ */
+/* MensSection.css */
+
+:root {
+  --base-font-size: 16px;
+  --max-width-pc: 1920px;
+  --max-width-tablet: 1440px;
+  --max-width-mobile: 390px;
+}
+
+/* Базовые настройки */
+html {
+  font-size: var(--base-font-size);
+  box-sizing: border-box;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+/* ОСНОВНОЙ КОНТЕЙНЕР */
 .mens-section {
   position: relative;
   width: 100%;
+  /* min-height: 100vh; */
+  background-color: #ffffff;
   overflow: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
 }
 
-/* ============================================
-   ДЕСКТОПНАЯ ВЕРСИЯ С АНИМАЦИЕЙ
-   ============================================ */
-@media (min-width: 1025px) {
-  .mens-section.desktop {
-    position: relative;
-    min-height: 100vh;
-  }
-  
-  .desktop-animation-wrapper {
-    position: relative;
-    width: 100%;
-  }
-  
-  .animation-background {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100vh;
-    z-index: 90;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s ease;
-  }
-  
-  .mens-section[data-fixed="true"] .animation-background {
-    opacity: 1;
-    pointer-events: all;
-  }
-  
-  /* Фиксированный контейнер для анимации */
-  .animation-container {
-    position: relative;
-    width: 100%;
-    z-index: 95;
-  }
-  
-  .animation-container.fixed {
-    position: fixed;
-    top: 0;
-    left: 0;
-  }
-  
-  /* Контейнер для фото - всегда справа */
-  .photo-container {
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 50%;
-    height: 100vh;
-    overflow: hidden;
-    z-index: 99;
-    /* Убираем transition, так как управляем через JS */
-    /* transition: width 0.1s linear, transform 0.1s linear; */
-  }
-  
-  .animation-photo {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
-    display: block;
-  }
-  /* Контейнер для текста СЛЕВА от фото */
-  .text-container-left {
-    position: absolute;
-    margin-top: 145px;
-    top: 60% !important;
-    left: calc(100%); /* Начинаем справа, чтобы фото могло толкать */
-    transform: translateY(-50%);
-    width: 810px;
-    z-index: 97;
-    transition: transform 0.1s linear;
-    opacity: 1 !important;
-    overflow: visible;
-    will-change: left;
-  }
-
-  .text-content-left {
-    text-align: left;
-  }
-  
-  .text-date-left {
-    margin-top: 80px;
-    margin-bottom: 40px;
-    margin-left: 230px;
-  }
-  
-  .date-text-left {
-    font-family: 'Helvetica Neue', sans-serif;
-    font-size: 16px;
-    line-height: 24px;
-    color: #000000;
-    margin: 0;
-    padding: 0;
-    text-align: left;
-  }
-  
-  .highlight-left {
-    /* font-weight: 500; */
-  }
-  
-  .text-main-left {
-    margin-bottom: 50px;
-  }
-  
-  .main-text-left {
-    font-family: 'Helvetica Neue', sans-serif;
-    font-size: 31px;
-    line-height: 40px;
-    letter-spacing: -3%;
-    text-transform: uppercase;
-    color: #282525;
-    margin: 0;
-    padding: 0;
-    text-align: left;
-  }
-  
-  .reveal-left {
-    display: inline-block;
-  }
-  
-  .text-button-left {
-    text-align: left;
-  }
-  
-  .action-button-left {
-    position: relative;
-    width: 160px;
-    height: 40px;
-    background: rgba(230, 230, 230, 0.72);
-    border-radius: 32px;
-    border: none;
-    font-family: 'Helvetica Neue', sans-serif;
-    font-size: 16px;
-    font-weight: 300;
-    color: #000000;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    transition: all 0.3s ease;
-    -webkit-appearance: none;
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    user-select: none;
-  }
-  
-  .btn-text-left {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-    width: 100%;
-    line-height: 1;
-    position: relative;
-    z-index: 2;
-  }
-  
-  .action-button-left:hover {
-    background: rgba(0, 0, 0, 0.85);
-    transform: translateY(-2px);
-    color: #ffffff;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  }
-  
-  /* Контент после анимации */
-  .content-after-animation {
-    position: relative;
-    z-index: 80;
-  }
-  
-  .animation-space {
-    width: 100%;
-  }
-  
-  .rest-of-content {
-    padding: 100px 0;
-    min-height: 100vh;
-  }
+/* КОНТЕЙНЕР СОДЕРЖИМОГО - 50% текст | 50% фото */
+.mens-content {
+  padding-left: 3em;
+  width: 100%;
+  max-width: var(--max-width-pc);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  opacity: 0;
+  transform: translateX(30vw);
+  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* ============================================
-   ПЛАНШЕТНАЯ И МОБИЛЬНАЯ ВЕРСИЯ 
-   (оригинальные стили без анимации)
-   ============================================ */
-@media (max-width: 1024px) {
-  .mens-section.mobile {
-    height: 100vh;
-    min-height: 100vh;
-    background: #ffffff;
-  }
-  
-  /* Скрываем анимированные элементы */
-  .desktop-animation-wrapper,
-  .animation-background,
-  .animation-container,
-  .animation-space {
-    display: none !important;
-  }
-  
-  /* Оригинальные стили остаются без изменений */
-  .original-content {
-    position: relative;
-    height: 100vh;
-    width: 100%;
-    background: #ffffff;
-  }
-  
-  .mens-photo-container {
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 50%;
-    height: 100vh;
-    z-index: 3;
-    overflow: hidden;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-  }
-  
-  .mens-photo {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: left center;
-    display: block;
-  }
-  
-  .mens-date-container {
-    position: absolute;
-    right: calc(55%);
-    top: calc(15%);
-    width: 550px;
-    z-index: 2;
-    text-align: left;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-  }
-  
-  .mens-date {
-    font-family: 'Helvetica Neue', sans-serif;
-    font-size: 15px !important;
-    line-height: 24px !important;
-    color: #000000;
-    margin: 0;
-    padding: 0;
-    text-align: left;
-    word-break: break-word;
-    hyphens: auto;
-    width: 100%;
-  }
-  
-  .text-highlight {
-    font-weight: 500;
-  }
-  
-  .mens-text-container {
-    position: absolute;
-    right: calc(52%);
-    top: 50%;
-    transform: translateY(-50%);
-    width: 820px;
-    z-index: 2;
-    text-align: left;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-  }
-  
-  .mens-text-bold {
-    font-family: 'Helvetica Neue', sans-serif;
-    font-size: 28px !important;
-    line-height: 40px !important;
-    letter-spacing: -0.02em;
-    text-transform: uppercase;
-    width: 500px;
-    color: #282525;
-    margin: 0;
-    padding: 0;
-    text-align: left !important;
-    word-break: break-word;
-    hyphens: auto;
-  }
-  
-  .text-reveal {
-    display: inline-block;
-  }
-  
-  .mens-secondary-container {
-    position: absolute;
-    right: calc(63%);
-    top: calc(55%);
-    width: 600px;
-    z-index: 2;
-    text-align: left;
-  }
-  
-  .mens-button {
-    position: relative;
-    width: 160px;
-    height: 34px;
-    background: rgba(230, 230, 230, 0.72);
-    border-radius: 32px;
-    border: none;
-    font-family: 'Helvetica Neue', sans-serif;
-    font-size: 16px;
-    font-weight: 500;
-    color: #000000;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    cursor: pointer;
+.mens-content.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* ЛЕВАЯ ЧАСТЬ - ТЕКСТ (50%) */
+.mens-text-part {
+  width: 50%;
+  padding-right: 2em; /* 32px = 2em */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+/* ПРАВАЯ ЧАСТЬ - ФОТО (50%) */
+.mens-photo-part {
+  width: 50%;
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+
+.photo-wrapper {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.mens-photo {
+  /* width: 100%; */
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+/* ============================================= */
+/* СТИЛИ ТЕКСТА - ВОССТАНАВЛИВАЕМ ИСХОДНЫЕ */
+/* ============================================= */
+.text-content {
+  width: 100%;
+  max-width: 50.625em; /* 810px = 50.625em */
+}
+
+.text-main {
+  margin-bottom: 3.125em; /* 50px = 3.125em */
+}
+
+.main-text {
+  font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+  font-size: 1.9375em; /* 31px = 1.9375em */
+  line-height: 1.29; /* 40px / 31px = 1.29 */
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  color: #282525;
+  margin: 0;
+  padding: 0;
+  font-weight: 400;
+}
+
+.reveal {
+  font-weight: 700;
+}
+
+.text-date {
+  margin-bottom: 3.125em; /* 50px = 3.125em */
+  margin-left: 14.375em; /* 230px = 14.375em */
+}
+
+.date-text {
+  font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+  font-size: 1em; /* 16px = 1em */
+  line-height: 1.5; /* 24px / 16px = 1.5 */
+  color: #000000;
+  margin-left: 20em !important;
+  margin: 0;
+  padding: 0;
+  font-weight: 300;
+}
+
+.highlight {
+  font-weight: 500;
+}
+
+.text-button {
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.action-button {
+  width: 10em; /* 160px = 10em */
+  height: 2.5em; /* 40px = 2.5em */
+  background: rgba(230, 230, 230, 0.72);
+  border-radius: 2em; /* 32px = 2em */
+  border: none;
+  font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+  font-size: 1em; /* 16px = 1em */
+  font-weight: 300;
+  color: #000000;
+  letter-spacing: 0.03125em; /* 0.5px = 0.03125em */
+  text-transform: uppercase;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  -webkit-appearance: none;
+  -webkit-touch-callout: none;
+  user-select: none;
+  padding: 0;
+}
+
+.btn-text {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  line-height: 1;
+}
+
+.action-button:hover {
+  background: rgba(0, 0, 0, 0.85);
+  transform: translateY(-0.125em); /* -2px = -0.125em */
+  color: #ffffff;
+  box-shadow: 0 0.25em 0.75em rgba(0, 0, 0, 0.1); /* 4px = 0.25em, 12px = 0.75em */
+}
+
+/* ============================================= */
+/* ИЗМЕНЕНИЕ: Текст даты над основным текстом для всех экранов кроме телефонов */
+/* ============================================= */
+@media (min-width: 48.0625em) { /* 769px и выше - не мобильные */
+  .text-content {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    transition: all 0.3s ease;
-    margin-top: 100px;
-    padding: 0;
+    flex-direction: column;
+  }
+  
+  .text-date {
+    order: -1; /* Перемещаем дату выше основного текста */
     margin-left: 0;
-    -webkit-appearance: none;
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    user-select: none;
+    margin-bottom: 2.5em; /* 40px = 2.5em */
   }
   
-  .button-text {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
+  .text-main {
+    order: 1;
+    margin-bottom: 3.125em; /* 50px = 3.125em */
+  }
+  
+  .text-button {
+    order: 2;
+  }
+}
+
+/* ============================================= */
+/* ПК ВЕРСИЯ (1920px и больше) - Текущие стили выше */
+/* ============================================= */
+
+/* ============================================= */
+/* ПЛАНШЕТНАЯ ВЕРСИЯ (до 1440px) */
+/* ============================================= */
+@media (max-width: 90em) { /* 1440px = 90em */
+  .mens-content {
+    max-width: var(--max-width-tablet);
+  }
+  
+  .mens-text-part {
+    padding-right: 1.5em; /* 24px = 1.5em */
+  }
+  
+  .text-content {
+    max-width: 45em; /* 720px = 45em */
+  }
+  
+  /* Восстанавливаем исходные планшетные размеры */
+  .main-text {
+    font-size: 1.75em; /* 28px = 1.75em */
+    line-height: 1.3;
+  }
+  
+  .date-text {
+    font-size: 0.9375em; /* 15px = 0.9375em */
+  }
+  
+  .text-main {
+    margin-bottom: 2.5em; /* 40px = 2.5em */
+  }
+  
+  .text-date {
+    margin-bottom: 2.5em; /* 40px = 2.5em */
+  }
+  
+  .action-button {
+    width: 9em; /* 144px = 9em */
+    height: 2.25em; /* 36px = 2.25em */
+    font-size: 0.9375em; /* 15px = 0.9375em */
+  }
+}
+
+/* ============================================= */
+/* ПЕРЕХОДНЫЙ АДАПТИВ (768px - 1024px) */
+/* ============================================= */
+@media (min-width: 48em) and (max-width: 64em) { /* 768px = 48em, 1024px = 64em */
+  .mens-content {
+    /* Оставляем как есть */
+  }
+  
+  .text-content {
+    max-width: 40em; /* 640px = 40em */
+  }
+  
+  .main-text {
+    font-size: 1.5em; /* 24px = 1.5em */
+  }
+  
+  .date-text {
+    font-size: 0.875em; /* 14px = 0.875em */
+    margin-left: 10em !important;
+  }
+  
+  .action-button {
+    width: 8.5em; /* 136px = 8.5em */
+    height: 2.125em; /* 34px = 2.125em */
+  }
+
+  .mens-photo-part {
+    height: 90vh;
+  }
+  
+  /* ============================================= */
+  /* ИЗМЕНЕНИЕ: Кнопка уходит влево на 768px-577px */
+  /* ============================================= */
+  @media (min-width: 36.0625em) and (max-width: 48em) { /* 577px - 768px */
+    .text-button {
+      margin-left: -3.125em; /* -50px = -3.125em */
+    }
+        .mens-photo {
+      width: 100% !important;
+  }
+  }
+}
+
+/* ============================================= */
+/* ИЗМЕНЕНИЕ: Текст даты левее для диапазона 768px-577px */
+/* ============================================= */
+@media (min-width: 36.0625em) and (max-width: 48em) { /* 577px - 768px */
+  .text-date {
+    margin-left: 15em; /* -50px = -3.125em */
+
+  }
+      .mens-photo {
+      width: 100% !important;
+  }
+}
+
+/* ============================================= */
+/* ТЕЛЕФОННАЯ ВЕРСИЯ (до 768px) - ВЕРТИКАЛЬНАЯ КОМПОНОВКА */
+/* ============================================= */
+@media (max-width: 48em) { /* 768px = 48em */
+  .mens-section {
+    min-height: auto;
+    padding: 5em 0; /* 80px = 5em */
+  }
+      .mens-photo {
+      width: 100% !important;
+  }
+  .mens-content {
+    flex-direction: column;
+    padding: 0 1.25em; /* 20px = 1.25em */
+    gap: 3em; /* 48px = 3em */
+    transform: translateY(5em);
+  }
+  
+  .mens-content.visible {
+    transform: translateY(0);
+  }
+  
+  /* Текст - теперь 100% ширины */
+  .mens-text-part {
     width: 100%;
-    line-height: 1;
-    position: relative;
-    z-index: 2;
+    padding-right: 0;
+    order: 2; /* Текст после фото на мобильных */
   }
   
-  .mens-button:hover {
-    background: rgba(210, 210, 210, 0.85);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  }
-}
-
-/* ============================================
-   АДАПТИВНОСТЬ ДЛЯ ПЛАНШЕТОВ
-   ============================================ */
-@media (max-width: 1024px) and (min-width: 769px) {
-  .mens-date-container {
-    top: 60px !important;
-    width: 350px !important;
-    right: calc(50% + 20px) !important;
+  .text-content {
+    max-width: 100%;
   }
   
-  .mens-date {
-    font-size: 13px !important;
-    line-height: 18px !important;
-  }
-
-  .mens-text-container {
-    top: 45% !important;
-    right: calc(50% + 20px) !important;
-    width: 500px !important;
+  /* Восстанавливаем исходные мобильные стили */
+  .text-date {
+    margin-left: 0;
+    text-align: left;
+    margin-top: 0.625em; /* 10px = 0.625em */
   }
   
-  .mens-text-bold {
-    font-size: 24px !important;
-    margin-left: 40px;
-    width: 440px;
-    line-height: 34px !important;
-  }
-
-  .mens-secondary-container {
-    top: calc(63%) !important;
-    width: 350px !important;
-    right: calc(50% + 20px) !important;
-  }
-
-  .mens-button {
-    width: 150px;
-    height: 35px;
-    margin-left: -110px;
-    margin-top: 30px !important;
-    font-size: 15px !important;
-  }
-}
-
-/* ============================================
-   АДАПТИВНОСТЬ ДЛЯ ТЕЛЕФОНОВ
-   ============================================ */
-@media (max-width: 768px) {
-  .mens-section.mobile {
-    height: auto;
-    min-height: 100vh;
-    display: block;
-  }
-  
-  .original-content {
-    height: auto;
-    min-height: 100vh;
-    padding: 20px;
-  }
-  
-  .mens-photo-container {
-    position: relative;
+  .main-text {
+    font-size: 1.75em; /* 28px = 1.75em */
+    line-height: 1.25;
+    text-align: left;
     width: 100% !important;
-    height: 40vh !important;
-    margin-bottom: 30px;
-    box-shadow: none;
   }
   
-  .mens-photo {
-    object-position: center;
+  .date-text {
+    font-size: 0.9375em; /* 15px = 0.9375em */
+    line-height: 1.5;
+    text-align: left;
+
   }
   
-  .mens-date-container {
-    position: relative;
-    width: 100% !important;
-    top: auto !important;
-    right: auto !important;
-    margin-bottom: 30px;
+  .text-main {
+    margin-bottom: 1.875em; /* 30px = 1.875em */
   }
   
-  .mens-date {
-    font-size: 18px !important;
-    width: 300px;
-    margin-left: 60px;
-    line-height: 20px !important;
+  .text-date {
+    margin-bottom: 1.875em; /* 30px = 1.875em */
   }
   
-  .mens-text-container {
-    position: relative;
-    width: 100% !important;
-    top: auto !important;
-    right: auto !important;
-    transform: none !important;
-    margin-bottom: 30px;
+  .text-button {
+    justify-content: flex-start;
+
+    margin-top: 1.875em; /* 30px = 1.875em */
   }
   
-  .mens-text-bold {
-    font-size: 27px !important;
-    width: 500px !important;
-    line-height: 30px !important;
+  .action-button {
+    width: 9.375em; /* 150px = 9.375em */
+    height: 2.1875em; /* 35px = 2.1875em */
+    font-size: 0.9375em; /* 15px = 0.9375em */
   }
   
-  .mens-secondary-container {
-    position: relative;
-    width: 100% !important;
-    top: auto !important;
-    right: auto !important;
-    /* text-align: center; */
-  }
-  
-  .mens-button {
-    margin-top: 20px !important;
-    width: 140px;
-    height: 35px;
-    font-size: 14px !important;
+  /* Фото - теперь 100% ширины */
+  .mens-photo-part {
+    width: 100%;
+    height: 25em; /* 400px = 25em */
+    order: 1; /* Фото перед текстом на мобильных */
   }
 }
 
-/* ============================================
-   ОЧЕНЬ МАЛЕНЬКИЕ ЭКРАНЫ
-   ============================================ */
-@media (max-width: 480px) {
-  .mens-date {
-    font-size: 16px !important;
-    line-height: 18px !important;
+/* ============================================= */
+/* МАЛЕНЬКИЕ ТЕЛЕФОНЫ (до 576px) */
+/* ============================================= */
+@media (max-width: 36em) { /* 576px = 36em */
+  .mens-section {
+    padding: 4em 0; /* 64px = 4em */
   }
   
-  .mens-text-bold {
-    width: 370px !important;
-    font-size: 20px !important;
-    line-height: 26px !important;
+  .mens-content {
+    padding: 0 1em; /* 16px = 1em */
+    gap: 2.5em; /* 40px = 2.5em */
   }
   
-  .mens-button {
-    width: 130px;
-    height: 45px;
-    font-size: 13px !important;
+  .main-text {
+    font-size: 1.6875em; /* 27px = 1.6875em */
+    width: 31.25em; /* 500px = 31.25em */
+  }
+  
+  .date-text {
+    font-size: 1.125em; /* 18px = 1.125em */
+    width: 80%; /* 300px = 18.75em */
+    margin-left: 5em !important; /* 60px = 3.75em */
+
+  }
+  
+  .mens-photo-part {
+    height: 20em; /* 320px = 20em */
+  }
+  
+  .action-button {
+    width: 8.75em; /* 140px = 8.75em */
+    height: 2.1875em; /* 35px = 2.1875em */
+    font-size: 0.875em; /* 14px = 0.875em */
+  }
+  
+  .text-button {
+    margin-left: 0;
   }
 }
 
-@media (max-width: 360px) {
-  .mens-date {
-    margin-left: 18px;
-    font-size: 14px !important;
-    line-height: 16px !important;
+/* ============================================= */
+/* ОЧЕНЬ МАЛЕНЬКИЕ ТЕЛЕФОНЫ (до 390px) */
+/* ============================================= */
+@media (max-width: 24.375em) { /* 390px = 24.375em */
+  .mens-section {
+    padding: 3em 0; /* 48px = 3em */
   }
   
-  .mens-text-bold {
-    width: 320px !important;
-    font-size: 18px !important;
-    line-height: 24px !important;
+  .mens-content {
+    padding: 0 0.75em; /* 12px = 0.75em */
+    gap: 2em; /* 32px = 2em */
   }
   
-  .mens-button {
-    width: 130px;
-    height: 45px;
-    font-size: 13px !important;
+  .main-text {
+    font-size: 1.25em; /* 20px = 1.25em */
+    line-height: 1.3;
+    width: 23.125em; /* 370px = 23.125em */
+  }
+  
+  .date-text {
+    font-size: 0.875em; /* 14px = 0.875em */
+    line-height: 1.35;
+    margin-left: 1.125em; /* 18px = 1.125em */
+  }
+  
+  .mens-photo-part {
+    height: 16em; /* 256px = 16em */
+  }
+  
+  .action-button {
+    width: 8.125em; /* 130px = 8.125em */
+    height: 2.8125em; /* 45px = 2.8125em */
+    font-size: 0.8125em; /* 13px = 0.8125em */
+  }
+  
+  .text-main,
+  .text-date {
+    margin-bottom: 1.5em; /* 24px = 1.5em */
   }
 }
 
-/* ============================================
-   СПЕЦИФИЧНЫЕ ФИКСЫ ДЛЯ iOS
-   ============================================ */
+/* ============================================= */
+/* ЛАНДШАФТНАЯ ОРИЕНТАЦИЯ НА МОБИЛЬНЫХ */
+/* ============================================= */
+@media (max-height: 31.25em) and (orientation: landscape) { /* 500px = 31.25em */
+  .mens-section {
+    padding: 2em 0; /* 32px = 2em */
+  }
+  
+  .mens-content {
+    flex-direction: row;
+    gap: 1.5em; /* 24px = 1.5em */
+  }
+  
+  .mens-text-part {
+    width: 50%;
+    order: 1;
+    padding-right: 1em; /* 16px = 1em */
+  }
+  
+  .mens-photo-part {
+    width: 50%;
+    height: 20em; /* 320px = 20em */
+    order: 2;
+  }
+  
+  /* В ландшафтной ориентации сохраняем исходные стили */
+  .main-text {
+    font-size: 1.125em; /* 18px = 1.125em */
+    line-height: 1.25;
+    text-align: left;
+  }
+  
+  .date-text {
+    font-size: 0.75em; /* 12px = 0.75em */
+    line-height: 1.3;
+    text-align: left;
+  }
+  
+  .text-button {
+    justify-content: flex-start;
+    margin-left: 0;
+    margin-top: 0;
+  }
+}
+
+/* ============================================= */
+/* БОЛЬШИЕ ЭКРАНЫ (больше 1920px) */
+/* ============================================= */
+@media (min-width: 120em) { /* 1920px = 120em */
+  .mens-content {
+    /* Оставляем как есть */
+  }
+  
+  .text-content {
+    max-width: 56.25em; /* 900px = 56.25em */
+  }
+  
+  .main-text {
+    font-size: 2.25em; /* 36px = 2.25em */
+  }
+  
+  .date-text {
+    font-size: 1.125em; /* 18px = 1.125em */
+  }
+  
+  .action-button {
+    width: 11em; /* 176px = 11em */
+    height: 2.75em; /* 44px = 2.75em */
+    font-size: 1.125em; /* 18px = 1.125em */
+  }
+}
+
+/* ============================================= */
+/* СПЕЦИФИЧНЫЕ ФИКСЫ ДЛЯ iOS */
+/* ============================================= */
 @supports (-webkit-touch-callout: none) {
   .mens-section {
     -webkit-tap-highlight-color: transparent;
   }
   
-  .action-button-left,
-  .mens-button {
-
-    display: -webkit-flex !important;
-    display: flex !important;
-    -webkit-align-items: center !important;
-    align-items: center !important;
-    -webkit-justify-content: center !important;
-    justify-content: center !important;
-    -webkit-font-smoothing: antialiased;
-
+  .action-button {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
+    -webkit-justify-content: center;
+    justify-content: center;
   }
   
-  .btn-text-left,
-  .button-text {
-    
-    display: -webkit-flex !important;
-    display: flex !important;
-    -webkit-align-items: center !important;
-    align-items: center !important;
-    -webkit-justify-content: center !important;
-    justify-content: center !important;
-    -webkit-box-align: center !important;
-    -webkit-box-pack: center !important;
-    padding-top: 1px !important;
+  .btn-text {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
+    -webkit-justify-content: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    -webkit-box-pack: center;
+    padding-top: 0.0625em; /* 1px = 0.0625em */
   }
 }
 
-/* Фикс для старых Safari */
-_::-webkit-full-page-media, _:future, :root .action-button-left,
-_::-webkit-full-page-media, _:future, :root .mens-button {
-  line-height: 40px !important;
+/* ============================================= */
+/* ФИКС ДЛЯ СТАРЫХ SAFARI */
+/* ============================================= */
+_::-webkit-full-page-media, _:future, :root .action-button {
+  line-height: 2.5em !important; /* 40px = 2.5em */
 }

@@ -1,3 +1,25 @@
+/* HomeSection.css */
+
+:root {
+  --base-font-size: 16px;
+  --max-width-pc: 1920px;
+  --max-width-tablet: 1440px;
+  --max-width-mobile: 390px;
+}
+
+/* Базовые настройки */
+html {
+  font-size: var(--base-font-size);
+  box-sizing: border-box;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+/* ============================================= */
+/* ПК ВЕРСИЯ (1920px и больше) */
+/* ============================================= */
 .home-section {
   position: relative;
   width: 100%;
@@ -30,16 +52,15 @@
   align-items: center;
   color: white;
   text-align: center;
-  padding: 0 20px;
+  padding: 0 1.25em; /* 20px = 1.25em */
   -webkit-tap-highlight-color: transparent;
 }
 
 /* Анимация для логотипа */
 .home-logo {
-  margin-bottom: 30px;
-  margin-left: 50px !important;
+  margin-bottom: 1.875em; /* 30px = 1.875em */
   opacity: 0;
-  transform: translateY(-20px) scale(0.95);
+  transform: translateY(-1.25em) scale(0.95); /* -20px = -1.25em */
   transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -50,25 +71,27 @@
 
 .home-logo.animate-out {
   opacity: 0;
-  transform: translateY(-20px) scale(0.95);
+  transform: translateY(-1.25em) scale(0.95); /* -20px = -1.25em */
 }
 
 .home-logo img {
-  max-width: 150px;
+  max-width: 9.375em; /* 150px = 9.375em */
+  width: 100%;
   height: auto;
+  object-fit: contain;
 }
 
 /* Анимация для текста */
 .home-text {
   max-width: 100%;
   overflow: hidden;
+  width: 100%;
 }
 
 .home-title {
   font-family: 'Montserrat', sans-serif;
-  font-size: 64px;
+  font-size: 4em; /* 64px = 4em */
   font-weight: 500;
-  margin-bottom: 24px;
   text-transform: uppercase;
   line-height: 1.2;
   display: flex;
@@ -85,7 +108,7 @@
   display: block;
   overflow: hidden;
   line-height: 1.1;
-  margin-bottom: 5px;
+  margin-bottom: 0.3125em; /* 5px = 0.3125em */
 }
 
 .title-line:last-child {
@@ -128,22 +151,23 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 20px;
+  margin-top: 1.25em; /* 20px = 1.25em */
+  width: 100%;
 }
 
-/* Кнопка read more - теперь это div */
+/* Кнопка read more */
 .read-more-button {
-  width: 160px;
-  height: 40px;
+  width: 10em; /* 160px = 10em */
+  height: 2.5em; /* 40px = 2.5em */
   background: rgba(118, 118, 118, 0.16);
-  border: 1.5px solid rgba(156, 156, 156, 0.32);
-  backdrop-filter: blur(8px);
-  border-radius: 32px;
+  border: 0.09375em solid rgba(156, 156, 156, 0.32); /* 1.5px = 0.09375em */
+  backdrop-filter: blur(0.5em); /* 8px = 0.5em */
+  border-radius: 2em; /* 32px = 2em */
   color: white;
   font-family: 'Inter', sans-serif;
-  font-size: 16px;
+  font-size: 1em; /* 16px = 1em */
   font-weight: 300;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.03125em; /* 0.5px = 0.03125em */
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none;
@@ -151,18 +175,15 @@
   align-items: center;
   justify-content: center;
   
-  /* Фикс для iOS */
   -webkit-appearance: none;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   user-select: none;
   
-  /* Начальное состояние */
   opacity: 0;
-  transform: scale(0.95) translateY(15px);
+  transform: scale(0.95) translateY(0.9375em); /* 15px = 0.9375em */
 }
 
-/* Контейнер для текста кнопки - фиксим выравнивание */
 .read-more-button .button-text {
   display: flex;
   align-items: center;
@@ -171,10 +192,8 @@
   width: 100%;
   padding: 0;
   margin: 0;
-  
-  /* Фикс для iOS */
   line-height: 1;
-  transform: translateY(0); /* Убираем лишние трансформации */
+  transform: translateY(0);
 }
 
 .read-more-button.animate-in {
@@ -185,42 +204,327 @@
 
 .read-more-button.animate-out {
   opacity: 0;
-  transform: scale(0.95) translateY(15px);
+  transform: scale(0.95) translateY(0.9375em); /* 15px = 0.9375em */
   transition: opacity 0.3s ease 0.1s, transform 0.4s ease 0.1s;
 }
 
 .read-more-button:hover,
 .read-more-button:active {
   background: rgba(118, 118, 118, 0.25);
-  border: 1.5px solid rgba(200, 200, 200, 0.4);
-  transform: translateY(-2px) scale(1.05);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  border: 0.09375em solid rgba(200, 200, 200, 0.4); /* 1.5px = 0.09375em */
+  transform: translateY(-0.125em) scale(1.05); /* -2px = -0.125em */
+  box-shadow: 0 0.625em 1.875em rgba(0, 0, 0, 0.2); /* 10px = 0.625em, 30px = 1.875em */
 }
 
-/* Фокус состояния для accessibility */
 .read-more-button:focus {
-  outline: 2px solid rgba(255, 255, 255, 0.5);
-  outline-offset: 2px;
+  outline: 0.125em solid rgba(255, 255, 255, 0.5); /* 2px = 0.125em */
+  outline-offset: 0.125em; /* 2px = 0.125em */
 }
 
-/* Адаптивность */
-@media (max-width: 1024px) {
+/* ============================================= */
+/* ПЛАНШЕТНАЯ ВЕРСИЯ (до 1440px) */
+/* ============================================= */
+@media (max-width: 90em) { /* 1440px = 90em */
   .home-title {
-    font-size: 48px;
+    font-size: 3em; /* 48px = 3em */
+
+  }
+  
+  .home-logo {
+    margin-bottom: 1.5em; /* 24px = 1.5em */
+
+  }
+  
+  .home-logo img {
+    max-width: 8em; /* 128px = 8em */
+  }
+  
+  .read-more-button {
+    width: 9em; /* 144px = 9em */
+    height: 2.25em; /* 36px = 2.25em */
+    font-size: 0.9375em; /* 15px = 0.9375em */
+  }
+  
+  .home-section-content {
+    padding: 0 1.5em; /* 24px = 1.5em */
   }
 }
 
-@media (max-width: 768px) {
+/* ============================================= */
+/* ТЕЛЕФОННАЯ ВЕРСИЯ (до 768px) - ПОЛНОСТЬЮ ПЕРЕРАБОТАНА */
+/* ============================================= */
+@media (max-width: 48em) { /* 768px = 48em */
   .home-section {
-    display: none;
+    display: block !important; /* Показываем на мобильных */
+    height: 100vh;
+    min-height: 37.5em; /* 600px = 37.5em */
+  }
+  
+  .home-section-content {
+    padding: 0 1em; /* 16px = 1em */
+    justify-content: flex-start;
+    padding-top: 25vh;
+  }
+  
+  .home-logo {
+    margin-bottom: 3em !important; /* 48px = 3em */
+    margin-left: 0 !important; /* Убираем левый отступ */
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .home-logo img {
+    max-width: 7em; /* 112px = 7em */
+    width: auto;
+  }
+  
+  .home-text {
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    /* flex-grow: 1; */
   }
   
   .home-title {
-    font-size: 36px;
-  }                                                                                                                                             
+    font-size: 1.5em !important; /* 24px = 1.5em */
+    margin-bottom: 2em; /* 32px = 2em */
+    line-height: 1.3;
+    text-align: center;
+    width: 100%;
+  }
+  
+  .title-line {
+    white-space: normal;
+    text-align: center;
+    margin-bottom: 0.5em; /* 8px = 0.5em */
+    overflow: visible;
+    width: 100%;
+  }
+  
+  .title-line span {
+    display: inline;
+    text-align: center;
+  }
+  
+  .home-button-container {
+    margin-top: auto;
+    margin-bottom: 5em; /* 80px = 5em */
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .read-more-button {
+    width: 11em; /* 176px = 11em */
+    height: 3em; /* 48px = 3em */
+    font-size: 0.875em; /* 14px = 0.875em */
+    border-radius: 1.875em; /* 30px = 1.875em */
+    backdrop-filter: blur(0.625em); /* 10px = 0.625em */
+  }
+  
+  .read-more-button:hover,
+  .read-more-button:active {
+    transform: translateY(-0.0625em) scale(1.02); /* -1px = -0.0625em */
+  }
+  
+  .home-logo.animate-in {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  
+  .home-logo.animate-out {
+    opacity: 0;
+    transform: translateY(-1.25em) scale(0.95); /* -20px = -1.25em */
+  }
+  
+  .title-line.animate-in span {
+    transform: translateY(0);
+    transition-delay: 0.3s;
+  }
+  
+  .title-line:nth-child(2).animate-in span {
+    transition-delay: 0.4s;
+  }
 }
 
+/* ============================================= */
+/* МАЛЕНЬКИЕ ТЕЛЕФОНЫ (до 576px) */
+/* ============================================= */
+@media (max-width: 36em) { /* 576px = 36em */
+  .home-section {
+    min-height: 34.375em; /* 550px = 34.375em */
+  }
+  
+  .home-section-content {
+    padding-top: 32vh;
+  }
+  
+  .home-logo {
+    margin-bottom: 2.5em !important; /* 40px = 2.5em */
+  }
+  
+  .home-logo img {
+    max-width: 6em; /* 96px = 6em */
+  }
+  
+  .home-title {
+    font-size: 1.375em !important; /* 22px = 1.375em */
+    margin-bottom: 1.75em; /* 28px = 1.75em */
+  }
+  
+  .home-button-container {
+    margin-bottom: 4em; /* 64px = 4em */
+  }
+  
+  .read-more-button {
+    width: 10em; /* 160px = 10em */
+    height: 2.75em; /* 44px = 2.75em */
+  }
+}
+
+/* ============================================= */
+/* ОЧЕНЬ МАЛЕНЬКИЕ ТЕЛЕФОНЫ (до 390px) */
+/* ============================================= */
+@media (max-width: 24.375em) { /* 390px = 24.375em */
+  .home-section {
+    min-height: 31.25em; /* 500px = 31.25em */
+  }
+  
+  .home-section-content {
+    padding: 0 0.75em; /* 12px = 0.75em */
+    padding-top: 35vh;
+  }
+  
+  .home-logo {
+    margin-bottom: 2em !important; /* 32px = 2em */
+  }
+  
+  .home-logo img {
+    max-width: 5em; /* 80px = 5em */
+  }
+  
+  .home-title {
+    font-size: 1.25em !important; /* 20px = 1.25em */
+    margin-bottom: 1.5em; /* 24px = 1.5em */
+  }
+  
+  .title-line {
+    margin-bottom: 0.375em; /* 6px = 0.375em */
+  }
+  
+  .home-button-container {
+    margin-bottom: 3em; /* 48px = 3em */
+  }
+  
+  .read-more-button {
+    width: 9em; /* 144px = 9em */
+    height: 2.5em; /* 40px = 2.5em */
+    font-size: 0.8125em; /* 13px = 0.8125em */
+  }
+}
+
+/* ============================================= */
+/* ПЕРЕХОДНЫЕ ВЕРСИИ (1024px - 1440px) */
+/* ============================================= */
+@media (min-width: 64em) and (max-width: 90em) { /* 1024px = 64em, 1440px = 90em */
+  .home-title {
+    font-size: 4em; /* 40px = 2.5em */
+  }
+  
+  .home-logo {
+    margin-bottom: 1.75em; /* 28px = 1.75em */
+  }
+  
+  .home-logo img {
+    max-width: 7.5em; /* 120px = 7.5em */
+  }
+  
+  .read-more-button {
+    width: 9.5em; /* 152px = 9.5em */
+    height: 2.375em; /* 38px = 2.375em */
+  }
+}
+
+/* ============================================= */
+/* ПЛАНШЕТЫ ПОРТРЕТ (768px - 1024px) */
+/* ============================================= */
+@media (min-width: 48em) and (max-width: 64em) { /* 768px = 48em, 1024px = 64em */
+  .home-section {
+    height: 90vh;
+  }
+  
+  .home-title {
+    font-size: 2em; /* 32px = 2em */
+  }
+  
+  .home-logo {
+    margin-bottom: 2em; /* 32px = 2em */
+  }
+  
+  .home-logo img {
+    max-width: 7em; /* 112px = 7em */
+  }
+  
+  .read-more-button {
+    width: 10.5em; /* 168px = 10.5em */
+    height: 2.625em; /* 42px = 2.625em */
+  }
+}
+
+/* ============================================= */
+/* ЛАНДШАФТНАЯ ОРИЕНТАЦИЯ НА МОБИЛЬНЫХ */
+/* ============================================= */
+@media (max-height: 31.25em) and (orientation: landscape) { /* 500px = 31.25em */
+  .home-section {
+    min-height: 50vh;
+    height: 100vh;
+  }
+  
+  .home-section-content {
+    padding-top: 5vh;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 2em 1em 1em 1em; /* 32px 16px 16px 16px */
+  }
+  
+  .home-logo {
+    margin-bottom: 0;
+    margin-left: 0 !important;
+    align-self: flex-start;
+  }
+  
+  .home-logo img {
+    max-width: 4em; /* 64px = 4em */
+  }
+  
+  .home-text {
+    text-align: left;
+    align-items: flex-start;
+    justify-content: center;
+    padding-left: 1em; /* 16px = 1em */
+  }
+  
+  .home-title {
+    font-size: 1.25em; /* 20px = 1.25em */
+    margin-bottom: 1em; /* 16px = 1em */
+    align-items: flex-start;
+  }
+  
+  .home-button-container {
+    margin-top: 1em; /* 16px = 1em */
+    justify-content: flex-start;
+    margin-bottom: 0;
+  }
+}
+
+/* ============================================= */
 /* Специфичные фиксы для iOS */
+/* ============================================= */
 @supports (-webkit-touch-callout: none) {
   .home-section-content {
     padding-top: env(safe-area-inset-top);
@@ -228,7 +532,6 @@
   }
   
   .read-more-button {
-    /* Исправляем вертикальное выравнивание текста на iOS */
     display: -webkit-flex;
     display: flex;
     -webkit-align-items: center;
@@ -238,15 +541,35 @@
   }
   
   .read-more-button .button-text {
-    /* Фиксим отображение текста на iOS */
     -webkit-font-smoothing: antialiased;
     -webkit-box-align: center;
     -webkit-box-pack: center;
-    padding-top: 1px; /* Микро-фикс для выравнивания */
+    padding-top: 0.0625em; /* 1px = 0.0625em */
   }
 }
 
+/* ============================================= */
 /* Фикс для старых Safari */
+/* ============================================= */
 _::-webkit-full-page-media, _:future, :root .read-more-button {
-  line-height: 35px !important;
+  line-height: 2.1875em !important; /* 35px = 2.1875em */
+}
+
+/* ============================================= */
+/* БОЛЬШИЕ ЭКРАНЫ (больше 1920px) */
+/* ============================================= */
+@media (min-width: 120em) { /* 1920px = 120em */
+  .home-title {
+    font-size: 5em; /* 80px = 5em */
+  }
+  
+  .home-logo img {
+    max-width: 11.25em; /* 180px = 11.25em */
+  }
+  
+  .read-more-button {
+    width: 12em; /* 192px = 12em */
+    height: 3em; /* 48px = 3em */
+    font-size: 1.125em; /* 18px = 1.125em */
+  }
 }
