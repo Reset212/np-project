@@ -81,11 +81,16 @@ const HomeSection = () => {
     };
   }, []); // Пустой массив зависимостей - эффект выполняется один раз
 
+  // Определяем, iOS ли это
+  const isIOS = () => {
+    return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  };
+
   return (
     <section className="home-section" ref={sectionRef}>
       <div className="home-section-background"></div>
       
-      <div className="home-section-content">
+      <div className={`home-section-content ${isIOS() ? 'ios-device' : ''}`}>
         <div className={`home-logo ${isVisible ? 'animate-in' : 'animate-out'}`}>
           <img src={logo} alt="Home Logo" />
         </div>
