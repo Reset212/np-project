@@ -4,10 +4,12 @@ import HomePageApp from "./homePage/App";
 import RealEstatePageApp from "./realEstatePage/App";
 import ProjectsPageApp from "./projectsPage/App"; // Добавьте эту строку
 import "./MainApp.css";
+import ScrollToTop from "./ScrollToTop";
 
 function MainApp() {
   return (
     <Router>
+      <ScrollToTop />
       <div className="MainApp">
         <Routes>
           <Route path="/" element={<HomePageApp />} />

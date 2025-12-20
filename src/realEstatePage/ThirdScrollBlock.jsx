@@ -250,7 +250,7 @@ const ThirdScrollBlock = () => {
             </div>
           </div>
 
-          <div className="button-container">
+          {/* <div className="button-container">
             <div
               className="third-button-wrapper"
               style={{
@@ -280,7 +280,7 @@ const ThirdScrollBlock = () => {
                 ))}
               </button>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
 

@@ -132,7 +132,7 @@ const VideoBackground = () => {
         <nav className="navigation">
           <div className="nav-left">
             <Link to="/real-estate" className="nav-item directions">
-              DIRECTIONS
+              REAL ESTATE
             </Link>
             <Link to="/projects" className="nav-item projects">
               PROJECTS
@@ -210,7 +210,7 @@ const VideoBackground = () => {
                     className="mobile-nav-item"
                     onClick={closeMenu}
                   >
-                    DIRECTIONS
+                    REAL ESTATE
                   </Link>
                   <Link 
                     to="/projects" 

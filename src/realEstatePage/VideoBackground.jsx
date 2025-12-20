@@ -1,9 +1,9 @@
-// VideoBackground.jsx - ОБНОВЛЕННЫЙ ФАЙЛ
+// VideoBackground.jsx - ИСПРАВЛЕННАЯ ВЕРСИЯ
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import "./VideoBackground.css";
 import videoSrc from "../video/hero-video.mp4";
-import mobileVideoSrc from "../video/gevi vert.mp4"; // Добавлено для мобильных
+import mobileVideoSrc from "../video/gevi vert.mp4";
 import logoImg from "../image/logo.png";
 import taglineImg from "../image/tagline.png";
 import awardsImg from "../image/awards.png";
@@ -23,9 +23,11 @@ const VideoBackground = () => {
     setIsMenuOpen(false);
   };
 
+  // ИСПРАВЛЕННАЯ ФУНКЦИЯ: скролл к секции About/Mens
   const scrollToMens = () => {
     closeMenu();
     
+    // Если мы на home странице, ищем секцию на текущей странице
     if (location.pathname === "/home" || location.pathname === "/") {
       const mensSection = document.getElementById('mens-section');
       if (mensSection) {
@@ -35,22 +37,36 @@ const VideoBackground = () => {
         });
       }
     } else {
-      navigate('/home#mens-section');
-    }
-  };
-
-  const scrollToContact = () => {
-    closeMenu();
-    
-    if (location.pathname === "/home" || location.pathname === "/") {
-      const contactSection = document.getElementById('contact-section');
-      if (contactSection) {
-        contactSection.scrollIntoView({ 
+      // Если мы на другой странице (projects, real-estate),
+      // ищем секцию на ТЕКУЩЕЙ странице
+      const mensSection = document.getElementById('mens-section');
+      if (mensSection) {
+        mensSection.scrollIntoView({ 
           behavior: 'smooth',
           block: 'start'
         });
+      } else {
+        // Если на текущей странице нет такой секции,
+        // переходим на home
+        navigate('/home#mens-section');
       }
+    }
+  };
+
+  // ИСПРАВЛЕННАЯ ФУНКЦИЯ: скролл к контактной форме
+  const scrollToContact = () => {
+    closeMenu();
+    
+    // Ищем контактную форму на ТЕКУЩЕЙ странице
+    const contactSection = document.getElementById('contact-section');
+    if (contactSection) {
+      contactSection.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'start'
+      });
     } else {
+      // Если на текущей странице нет формы (маловероятно),
+      // переходим на home
       navigate('/home#contact-section');
     }
   };
@@ -68,6 +84,7 @@ const VideoBackground = () => {
     window.location.href = 'mailto:info@moviepark.com';
   };
 
+  // Хэш-скроллинг при загрузке страницы
   useEffect(() => {
     if (location.hash) {
       const id = location.hash.replace('#', '');
@@ -80,6 +97,7 @@ const VideoBackground = () => {
     }
   }, [location]);
 
+  // Обработка ESC для закрытия меню
   useEffect(() => {
     const handleEscape = (e) => {
       if (e.key === 'Escape') {
@@ -132,7 +150,7 @@ const VideoBackground = () => {
         <nav className="navigation">
           <div className="nav-left">
             <Link to="/real-estate" className="nav-item directions">
-              DIRECTIONS
+              REAL ESTATE
             </Link>
             <Link to="/projects" className="nav-item projects">
               PROJECTS
@@ -147,20 +165,16 @@ const VideoBackground = () => {
           </div>
           
           <div className="nav-right">
-          <div></div>
-            <Link 
-              to="/home#mens-section" 
+            <div></div>
+            {/* ИСПРАВЛЕННАЯ ССЫЛКА ABOUT */}
+            <button 
               className="nav-item about"
-              onClick={(e) => {
-                if (location.pathname === "/home" || location.pathname === "/") {
-                  e.preventDefault();
-                  scrollToMens();
-                }
-              }}
+              onClick={scrollToMens}
             >
               ABOUT
-            </Link>
+            </button>
 
+            {/* ИСПРАВЛЕННАЯ КНОПКА CHAT WITH US */}
             <button 
               className="nav-item chat-button"
               onClick={scrollToContact}
@@ -169,7 +183,7 @@ const VideoBackground = () => {
             </button>
           </div>
           
-          {/* ОБНОВЛЕННОЕ БУРГЕР-МЕНЮ */}
+          {/* БУРГЕР-МЕНЮ */}
           <button 
             className="burger-menu" 
             onClick={toggleMenu} 
@@ -190,17 +204,14 @@ const VideoBackground = () => {
           <button 
             className="mobile-chat-button" 
             aria-label="Chat with us"
-            onClick={() => {
-              closeMenu();
-              scrollToContact();
-            }}
+            onClick={scrollToContact}
           >
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M16.2 0H1.8C0.81 0 0 0.81 0 1.8V18L3.6 14.4H16.2C17.19 14.4 18 13.59 18 12.6V1.8C18 0.81 17.19 0 16.2 0ZM16.2 12.6H2.88L1.8 13.68V1.8H16.2V12.6Z" fill="white"/>
             </svg>
           </button>
           
-          {/* ОБНОВЛЕННОЕ ВЫПАДАЮЩЕЕ МЕНЮ */}
+          {/* ВЫПАДАЮЩЕЕ МЕНЮ */}
           <div className={`mobile-dropdown ${isMenuOpen ? 'active' : ''}`}>
             {isMenuOpen && (
               <>
@@ -210,7 +221,7 @@ const VideoBackground = () => {
                     className="mobile-nav-item"
                     onClick={closeMenu}
                   >
-                    DIRECTIONS
+                    REAL ESTATE
                   </Link>
                   <Link 
                     to="/projects" 
@@ -219,19 +230,12 @@ const VideoBackground = () => {
                   >
                     PROJECTS
                   </Link>
-                  <Link 
-                    to="/home#mens-section" 
+                  <button 
                     className="mobile-nav-item"
-                    onClick={(e) => {
-                      closeMenu();
-                      if (location.pathname === "/home" || location.pathname === "/") {
-                        e.preventDefault();
-                        scrollToMens();
-                      }
-                    }}
+                    onClick={scrollToMens}
                   >
                     ABOUT
-                  </Link>
+                  </button>
                 </div>
                 
                 {/* Кнопка CHAT WITH US и соцсети */}
@@ -276,10 +280,7 @@ const VideoBackground = () => {
                   {/* Кнопка CHAT WITH US */}
                   <button 
                     className="mobile-nav-item"
-                    onClick={() => {
-                      closeMenu();
-                      scrollToContact();
-                    }}
+                    onClick={scrollToContact}
                   >
                     CHAT WITH US
                   </button>

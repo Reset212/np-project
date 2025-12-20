@@ -1,4 +1,4 @@
-// NavBar.jsx
+// NavBar.jsx - ИСПРАВЛЕННАЯ ВЕРСИЯ (About в старом состоянии)
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import "./NavBar.css";
@@ -17,36 +17,38 @@ const NavBar = () => {
     setMenuActive(false);
   };
 
-  // Функция для скролла к блоку Mens
+  // ИСПРАВЛЕННАЯ ФУНКЦИЯ для скролла к блоку Mens/About
   const scrollToMens = () => {
     handleMenuClose();
     
-    if (location.pathname === "/home" || location.pathname === "/") {
-      const mensSection = document.getElementById('mens-section');
-      if (mensSection) {
-        mensSection.scrollIntoView({ 
-          behavior: 'smooth',
-          block: 'start'
-        });
-      }
+    // Сначала ищем секцию на ТЕКУЩЕЙ странице
+    const mensSection = document.getElementById('mens-section');
+    if (mensSection) {
+      mensSection.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'start'
+      });
     } else {
+      // Если на текущей странице нет такой секции,
+      // переходим на home
       navigate('/home#mens-section');
     }
   };
 
-  // Функция для скролла к Contact секции
+  // ИСПРАВЛЕННАЯ ФУНКЦИЯ для скролла к Contact секции
   const scrollToContact = () => {
     handleMenuClose();
     
-    if (location.pathname === "/home" || location.pathname === "/") {
-      const contactSection = document.getElementById('contact-section');
-      if (contactSection) {
-        contactSection.scrollIntoView({ 
-          behavior: 'smooth',
-          block: 'start'
-        });
-      }
+    // Сначала ищем форму на ТЕКУЩЕЙ странице
+    const contactSection = document.getElementById('contact-section');
+    if (contactSection) {
+      contactSection.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'start'
+      });
     } else {
+      // Если на текущей странице нет формы,
+      // переходим на home
       navigate('/home#contact-section');
     }
   };
@@ -125,7 +127,7 @@ const NavBar = () => {
         <div className="header-section header-section--left">
           <div className="nav-links-container">
             <Link to="/real-estate" className="nav-link">
-              DIRECTIONS
+              REAL ESTATE
             </Link>
             <Link to="/projects" className="nav-link">
               PROJECTS
@@ -143,6 +145,7 @@ const NavBar = () => {
         {/* Десктопная навигация - ПРАВАЯ ЧАСТЬ */}
         <div className="header-section header-section--right">
           <div className="nav-links-container">
+            {/* ССЫЛКА ABOUT в исходном состоянии */}
             <Link 
               to="/home#mens-section" 
               className="nav-link"
@@ -155,6 +158,8 @@ const NavBar = () => {
             >
               ABOUT
             </Link>
+            
+            {/* ИСПРАВЛЕННАЯ КНОПКА CHAT WITH US */}
             <button 
               className="chat-action-button"
               onClick={scrollToContact}
@@ -168,10 +173,7 @@ const NavBar = () => {
         <button 
           className="mobile-chat-button" 
           aria-label="Chat with us"
-          onClick={() => {
-            handleMenuClose();
-            scrollToContact();
-          }}
+          onClick={scrollToContact}
         >
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M16.2 0H1.8C0.81 0 0 0.81 0 1.8V18L3.6 14.4H16.2C17.19 14.4 18 13.59 18 12.6V1.8C18 0.81 17.19 0 16.2 0ZM16.2 12.6H2.88L1.8 13.68V1.8H16.2V12.6Z" fill="black"/>
@@ -188,7 +190,7 @@ const NavBar = () => {
                   className="mobile-nav-item"
                   onClick={handleMenuClose}
                 >
-                  DIRECTIONS
+                  REAL ESTATE
                 </Link>
                 <Link 
                   to="/projects" 
@@ -197,6 +199,8 @@ const NavBar = () => {
                 >
                   PROJECTS
                 </Link>
+                
+                {/* ССЫЛКА ABOUT в мобильном меню */}
                 <Link 
                   to="/home#mens-section" 
                   className="mobile-nav-item"
@@ -251,13 +255,10 @@ const NavBar = () => {
                   </button>
                 </div>
                 
-                {/* Кнопка CHAT WITH US */}
+                {/* ИСПРАВЛЕННАЯ КНОПКА CHAT WITH US */}
                 <button 
                   className="mobile-nav-item"
-                  onClick={() => {
-                    handleMenuClose();
-                    scrollToContact();
-                  }}
+                  onClick={scrollToContact}
                 >
                   CHAT WITH US
                 </button>

@@ -14,6 +14,7 @@ import "./App.css";
 function HomePageApp() {
   return (
     <div className="App">
+      
        <GlobalCursor />
       <VideoBackground />
       <div style={{height: '0vh', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>

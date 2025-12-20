@@ -83,10 +83,10 @@ const ContactSection = () => {
                 <div className="email-label">WHAT TO BECOME OUR CLIENT?</div>
                 <div
                   className="email-value"
-                  onClick={() => copyEmailToClipboard("info@novlepships.com", "client")}
+                  onClick={() => copyEmailToClipboard("hello@movieparkpro.com", "client")}
                   title="Нажмите чтобы скопировать"
                 >
-                  info@novlepships.com
+                  hello@movieparkpro.com
                   {copiedEmail === "client" && <span className="copy-notification">copied!</span>}
                 </div>
               </div>
@@ -95,10 +95,10 @@ const ContactSection = () => {
                 <div className="email-label">WHAT TO WORK FOR US?</div>
                 <div
                   className="email-value"
-                  onClick={() => copyEmailToClipboard("job@novlepships.com", "work")}
+                  onClick={() => copyEmailToClipboard("job@movieparkpro.com", "work")}
                   title="Нажмите чтобы скопировать"
                 >
-                  job@novlepships.com
+                  job@movieparkpro.com
                   {copiedEmail === "work" && <span className="copy-notification">copied!</span>}
                 </div>
               </div>
@@ -201,10 +201,10 @@ const ContactSection = () => {
                 <div className="mobile-email-label">WHAT TO BECOME OUR CLIENT?</div>
                 <div
                   className="mobile-email-value"
-                  onClick={() => copyEmailToClipboard("info@novlepships.com", "client-mobile")}
+                  onClick={() => copyEmailToClipboard("hello@movieparkpro.com", "client-mobile")}
                   title="Нажмите чтобы скопировать"
                 >
-                  info@novlepships.com
+                  hello@movieparkpro.com
                   {copiedEmail === "client-mobile" && <span className="mobile-copy-notification">copied!</span>}
                 </div>
               </div>
@@ -212,10 +212,10 @@ const ContactSection = () => {
                 <div className="mobile-email-label">WHAT TO WORK FOR US?</div>
                 <div
                   className="mobile-email-value"
-                  onClick={() => copyEmailToClipboard("job@novlepships.com", "work-mobile")}
+                  onClick={() => copyEmailToClipboard("job@movieparkpro.com", "work-mobile")}
                   title="Нажмите чтобы скопировать"
                 >
-                  job@novlepships.com
+                  job@movieparkpro.com
                   {copiedEmail === "work-mobile" && <span className="mobile-copy-notification">copied!</span>}
                 </div>
               </div>
