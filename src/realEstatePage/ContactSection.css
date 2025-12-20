@@ -7,6 +7,7 @@
   --color-gray: #999797;
   --color-light-gray: #D9D9D9;
   --color-green: #4CAF50;
+  --color-blue: #2196F3;
   --transition-speed: 0.3s;
   --border-radius: 0.125em;
   --section-height: 53.75em; /* 860px в em */
@@ -227,6 +228,9 @@
   height: auto; /* Убираем высоту textarea */
   resize: none; /* Запрещаем изменение размера */
   min-height: auto; /* Убираем min-height */
+  -webkit-appearance: none; /* Убираем iOS стили */
+  -moz-appearance: none;
+  appearance: none;
 }
 
 /* УБИРАЕМ ВСЕ СТИЛИ ДЛЯ TEXTAREA */
@@ -258,15 +262,42 @@ textarea {
   min-width: 6.375em;
   min-height: 2.1875em;
   margin-top: 1em;
+  
+  /* Исправление для iOS */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  
+  /* Убираем iOS tap highlight */
+  -webkit-tap-highlight-color: transparent;
+  
+  /* Сбрасываем iOS тени */
+  -webkit-box-shadow: none;
+  box-shadow: none;
+  
+  /* Фиксируем box-sizing для кнопки */
+  box-sizing: border-box;
+  
+  /* Убираем iOS градиенты */
+  background-image: none;
 }
 
+/* Ховер состояния */
 .submit-button:hover {
   background: rgba(200, 200, 200, 0.8);
 }
 
+/* Активное состояние (клик) */
+.submit-button:active {
+  background: rgba(180, 180, 180, 0.8);
+  transform: scale(0.98);
+}
+
+/* Отключенное состояние */
 .submit-button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+  transform: none !important;
 }
 
 /* Мобильные email блоки (скрыты по умолчанию) */
@@ -302,6 +333,7 @@ textarea {
   color: var(--color-black);
   cursor: pointer;
   transition: opacity var(--transition-speed) ease;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .mobile-copy-notification {
@@ -523,6 +555,18 @@ textarea {
   .submit-button {
     align-self: center;
     margin-top: 1em;
+    padding: 0.875em 2em; /* Слегка уменьшаем padding для мобильных */
+    
+    /* Дополнительные iOS фиксы для мобильных */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    -webkit-tap-highlight-color: transparent;
+    
+    /* Убираем iOS градиенты и тени */
+    background-image: none;
+    -webkit-box-shadow: none;
+    box-shadow: none;
   }
 }
 
@@ -574,6 +618,17 @@ textarea {
     padding: 0.75em 1em;
     font-size: 0.875em;
     align-self: center;
+    
+    /* iOS фикс для маленьких экранов */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    
+    /* Убираем iOS градиенты */
+    background-image: none;
+    
+    /* Фиксируем box-sizing */
+    box-sizing: border-box;
   }
   
   .mobile-emails-section {
@@ -604,6 +659,7 @@ textarea {
   .submit-button {
     max-width: 6.875em;
     font-size: 0.75em;
+    padding: 0.625em 0.875em; /* Уменьшаем padding для очень маленьких экранов */
   }
   
   /* 16px для очень маленьких телефонов */
@@ -665,11 +721,55 @@ textarea {
   /* В ландшафтной ориентации кнопка справа */
   .submit-button {
     align-self: flex-end;
+    
+    /* iOS фиксы для ландшафта */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
   }
   
   /* ИМЕНА ПОЛЕЙ: 16px для ландшафта */
   .form-label {
     font-size: 1em; /* 16px */
+  }
+}
+
+/* Safari и iOS специфичные фиксы */
+@supports (-webkit-touch-callout: none) {
+  .submit-button {
+    /* Убираем iOS градиенты */
+    background-image: none;
+    
+    /* Сбрасываем iOS тени */
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    
+    /* Убираем закругления по умолчанию */
+    border-radius: 2em;
+    
+    /* Фиксируем padding */
+    padding: 0.875em 2.5em !important;
+    
+    /* Убираем iOS подсветку при нажатии */
+    -webkit-tap-highlight-color: transparent;
+    
+    /* Убираем iOS text size adjust */
+    -webkit-text-size-adjust: 100%;
+  }
+  
+  /* Для старых iOS */
+  .submit-button::-webkit-outer-spin-button,
+  .submit-button::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+}
+
+/* Firefox специфичные фиксы */
+@-moz-document url-prefix() {
+  .submit-button {
+    /* Firefox padding фикс */
+    padding: calc(0.875em - 1px) 2.5em;
   }
 }
 
