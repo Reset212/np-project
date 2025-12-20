@@ -566,6 +566,7 @@ html {
   }
 
   .third-scroll-container {
+    display: flex;
     flex-direction: column;
     align-items: flex-start;
     padding: 0 !important;
@@ -654,7 +655,7 @@ html {
 
   /* КНОПКА */
   .button-container {
-    margin-top: 3.571em !important;
+
     margin-bottom: 2.143em !important;
     justify-content: center !important; /* Центрируем кнопку */
     width: 100%;
@@ -809,7 +810,8 @@ html {
     font-size: calc(var(--base-font-size) * 0.8125); /* 13px */
   }
   .third-scroll-container {
-    width: 103%;
+    width: 110%;
+    
   }
   .title-word:first-child {
     transform: translateX(-22px) !important;
@@ -871,7 +873,7 @@ html {
   }
 
   .third-title {
-    font-size: 8em !important; /* 104px / 13px = 8em */
+    font-size: 5em !important; /* 104px / 13px = 8em */
     line-height: 0.85 !important;
   }
 
