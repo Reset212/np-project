@@ -702,4 +702,26 @@ textarea {
   .right-column {
     margin-top: 3em; /* 30px */
   }
+}button, input[type="button"], input[type="submit"] {
+    -webkit-appearance: none; /* Отключает стандартный вид iOS */
+    appearance: none;
+    border-radius: 0; /* Сбрасывает скругления */
+    padding: 0; /* Сбрасывает внутренние отступы */
+    margin: 0; /* Сбрасывает внешние отступы */
+    border: none; /* Убирает границы */
+    background: none; /* Сбрасывает фон */
+    font-family: inherit; /* Наследует шрифт */
+    font-size: inherit;
+    color: inherit;
+    cursor: pointer;
+}
+
+/* Дополнительно для элементов форм на iOS */
+input, textarea, select {
+    -webkit-appearance: none;
+    appearance: none;
+    border-radius: 0;
+}button {
+    -webkit-appearance: none !important;
+    appearance: none !important;
 }
