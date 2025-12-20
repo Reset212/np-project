@@ -11,7 +11,7 @@
 html {
   font-size: var(--base-font-size);
   box-sizing: border-box;
-  -webkit-text-size-adjust: 100%; /* Предотвращает авто-масштабирование текста на iOS */
+  -webkit-text-size-adjust: 100%;
 }
 
 *, *:before, *:after {
@@ -37,8 +37,10 @@ _::-webkit-full-page-media, _:future, :root .home-section {
   }
   
   .home-section-content {
-    padding-top: max(env(safe-area-inset-top), 25vh);
-    padding-bottom: env(safe-area-inset-bottom);
+    /* Центрируем по вертикали для iOS */
+    padding-top: 0 !important;
+    justify-content: center !important;
+    transform: translateY(0);
   }
   
   .read-more-button {
@@ -66,15 +68,34 @@ _::-webkit-full-page-media, _:future, :root .home-section {
   }
 }
 
-/* Отключение некоторых эффектов на iOS для производительности */
-@supports (-webkit-touch-callout: none) and (not (-webkit-hyphens: none)) {
-  .read-more-button:hover {
-    transform: none !important;
+/* Windows/Linux/Android стили - контент чуть ниже центра */
+.home-section-content {
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  text-align: center;
+  padding: 0 1.25em;
+  -webkit-tap-highlight-color: transparent;
+  /* Смещаем контент вниз на 10% для не-iOS устройств */
+  transform: translateY(10%);
+  transition: transform 0.3s ease;
+}
+
+/* Для iOS убираем смещение */
+@supports (-webkit-touch-callout: none) {
+  .home-section-content {
+    transform: translateY(0) !important;
+    justify-content: center !important;
+    padding-top: 0 !important;
   }
 }
 
 /* ============================================= */
-/* ПК ВЕРСИЯ (1920px и больше) */
+/* ПК ВЕРСИЯ (1920px и больше) - WINDOWS/ANDROID */
 /* ============================================= */
 .home-section {
   position: relative;
@@ -103,22 +124,6 @@ _::-webkit-full-page-media, _:future, :root .home-section {
   /* iOS оптимизация фона */
   -webkit-backface-visibility: hidden;
   -webkit-transform: translate3d(0,0,0);
-}
-
-.home-section-content {
-  position: relative;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  color: white;
-  text-align: center;
-  padding: 0 1.25em;
-  -webkit-tap-highlight-color: transparent;
-  /* iOS оптимизация */
-  -webkit-user-select: none;
-  user-select: none;
 }
 
 /* Анимация для логотипа */
@@ -158,6 +163,15 @@ _::-webkit-full-page-media, _:future, :root .home-section {
   max-width: 100%;
   overflow: hidden;
   width: 100%;
+  /* Для Windows - меньше отступ сверху */
+  margin-top: -1em;
+}
+
+/* Для iOS - нормальные отступы */
+@supports (-webkit-touch-callout: none) {
+  .home-text {
+    margin-top: 0 !important;
+  }
 }
 
 .home-title {
@@ -171,6 +185,8 @@ _::-webkit-full-page-media, _:future, :root .home-section {
   align-items: center;
   justify-content: center;
   width: 100%;
+  /* Для Windows - меньше отступ снизу */
+  margin-bottom: 0.5em;
   /* iOS оптимизация */
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
@@ -231,6 +247,15 @@ _::-webkit-full-page-media, _:future, :root .home-section {
   align-items: center;
   margin-top: 1.25em;
   width: 100%;
+  /* Для Windows - меньше отступ снизу */
+  margin-bottom: 2em;
+}
+
+/* Для iOS - нормальные отступы */
+@supports (-webkit-touch-callout: none) {
+  .home-button-container {
+    margin-bottom: 0 !important;
+  }
 }
 
 /* Кнопка read more */
@@ -317,23 +342,6 @@ _::-webkit-full-page-media, _:future, :root .home-section {
 }
 
 /* ============================================= */
-/* iOS-SPECIFIC ФИКСЫ ДЛЯ КНОПКИ */
-/* ============================================= */
-/* Фикс для старых Safari с высотой текста */
-_::-webkit-full-page-media, _:future, :root .read-more-button {
-  line-height: 2.5em !important;
-  -webkit-line-height: 2.5em !important;
-}
-
-/* Фикс для backdrop-filter на iOS */
-@supports (-webkit-touch-callout: none) {
-  .read-more-button {
-    background: rgba(118, 118, 118, 0.25);
-    border-color: rgba(156, 156, 156, 0.4);
-  }
-}
-
-/* ============================================= */
 /* ТЕЛЕФОННАЯ ВЕРСИЯ (до 768px) */
 /* ============================================= */
 @media (max-width: 48em) {
@@ -350,8 +358,17 @@ _::-webkit-full-page-media, _:future, :root .read-more-button {
     padding: 0 1em;
     justify-content: flex-start;
     padding-top: 25vh;
-    /* iOS оптимизация */
-    padding-top: max(env(safe-area-inset-top), 25vh);
+    /* Для Windows - корректируем отступ */
+    transform: translateY(5%);
+  }
+  
+  /* Для iOS - центрируем */
+  @supports (-webkit-touch-callout: none) {
+    .home-section-content {
+      padding-top: 0 !important;
+      justify-content: center !important;
+      transform: translateY(0) !important;
+    }
   }
   
   .home-logo {
@@ -432,6 +449,16 @@ _::-webkit-full-page-media, _:future, :root .read-more-button {
   
   .home-section-content {
     padding-top: 32vh;
+    transform: translateY(3%);
+  }
+  
+  /* Для iOS - центрируем */
+  @supports (-webkit-touch-callout: none) {
+    .home-section-content {
+      padding-top: 0 !important;
+      justify-content: center !important;
+      transform: translateY(0) !important;
+    }
   }
   
   .home-logo {
@@ -468,6 +495,16 @@ _::-webkit-full-page-media, _:future, :root .read-more-button {
   .home-section-content {
     padding: 0 0.75em;
     padding-top: 35vh;
+    transform: translateY(2%);
+  }
+  
+  /* Для iOS - центрируем */
+  @supports (-webkit-touch-callout: none) {
+    .home-section-content {
+      padding-top: 0 !important;
+      justify-content: center !important;
+      transform: translateY(0) !important;
+    }
   }
   
   .home-logo {
@@ -515,8 +552,19 @@ _::-webkit-full-page-media, _:future, :root .read-more-button {
     justify-content: space-between;
     align-items: flex-start;
     padding: 2em 1em 1em 1em;
+    /* Для Windows - корректируем */
+    transform: translateY(0);
     /* iOS оптимизация */
     padding-top: max(env(safe-area-inset-top), 5vh);
+  }
+  
+  /* Для iOS - отдельная настройка для landscape */
+  @supports (-webkit-touch-callout: none) {
+    .home-section-content {
+      padding-top: max(env(safe-area-inset-top), 2vh) !important;
+      justify-content: space-between !important;
+      align-items: center !important;
+    }
   }
   
   .home-logo {
@@ -550,45 +598,54 @@ _::-webkit-full-page-media, _:future, :root .read-more-button {
 }
 
 /* ============================================= */
-/* iOS ФИКС ДЛЯ БОЛЬШИХ ЭКРАНОВ (iPhone X и новее) */
+/* ДОПОЛНИТЕЛЬНЫЕ СТИЛИ ДЛЯ WINDOWS/ANDROID */
 /* ============================================= */
-@supports (padding: max(0px)) {
+
+/* Определяем не-iOS устройства */
+@supports not (-webkit-touch-callout: none) {
   .home-section-content {
-    padding-top: max(25vh, env(safe-area-inset-top));
-    padding-left: max(1em, env(safe-area-inset-left));
-    padding-right: max(1em, env(safe-area-inset-right));
+    /* Смещаем контент вниз на 15% для лучшего визуального баланса */
+    transform: translateY(15%);
+    justify-content: flex-start;
+    padding-top: 15vh;
+  }
+  
+  .home-text {
+    margin-top: 0;
+  }
+  
+  .home-title {
+    margin-bottom: 1em;
   }
   
   .home-button-container {
-    margin-bottom: max(5em, env(safe-area-inset-bottom));
+    margin-top: 2em;
+    margin-bottom: 5em;
   }
 }
 
-/* ============================================= */
-/* ОТКЛЮЧЕНИЕ АНИМАЦИЙ ПРИ ПРЕДПОЧТЕНИИ СИСТЕМЫ */
-/* ============================================= */
-@media (prefers-reduced-motion: reduce) {
-  .home-logo,
-  .title-line span,
-  .read-more-button {
-    transition: none !important;
-    animation: none !important;
+/* Специальные настройки для Windows браузеров */
+@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+  .home-section-content {
+    transform: translateY(12%);
+    padding-top: 20vh;
   }
-  
-  .home-logo {
-    opacity: 1;
-    transform: none;
-    -webkit-transform: none;
+}
+
+/* Для Firefox */
+@-moz-document url-prefix() {
+  .home-section-content {
+    transform: translateY(12%);
+    padding-top: 18vh;
   }
-  
-  .title-line span {
-    transform: none;
-    -webkit-transform: none;
-  }
-  
-  .read-more-button {
-    opacity: 1;
-    transform: none;
-    -webkit-transform: none;
+}
+
+/* Для Chrome/Edge на Windows */
+@media all and (-webkit-min-device-pixel-ratio:0) and (min-resolution: .001dpcm) {
+  @supports not (-webkit-touch-callout: none) {
+    .home-section-content {
+      transform: translateY(15%);
+      padding-top: 15vh;
+    }
   }
 }
