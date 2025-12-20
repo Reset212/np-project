@@ -16,12 +16,7 @@ function HomePageApp() {
     <div className="App">
       <GlobalCursor />
       <VideoBackground />
-      <div style={{height: '20vh', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-      </div>
-      
       <ScrollTextAnimation />
-   <div style={{height: '30vh', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-      </div>
       <ThirdScrollBlock />
       
       {/* Добавляем новый блок с видео и сортировкой */}

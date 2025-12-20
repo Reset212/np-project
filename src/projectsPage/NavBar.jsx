@@ -1,3 +1,4 @@
+// NavBar.jsx
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import "./NavBar.css";
@@ -85,6 +86,19 @@ const NavBar = () => {
     }
   }, [location]);
 
+  // Функции для соцсетей
+  const handleInstagramClick = () => {
+    window.open('https://instagram.com/moviepark', '_blank');
+  };
+
+  const handleVimeoClick = () => {
+    window.open('https://vimeo.com/moviepark', '_blank');
+  };
+
+  const handleEmailClick = () => {
+    window.location.href = 'mailto:info@moviepark.com';
+  };
+
   return (
     <div className="header-wrapper">
       {/* НАВИГАЦИЯ */}
@@ -168,36 +182,86 @@ const NavBar = () => {
         <div className={`mobile-dropdown ${menuActive ? 'active' : ''}`}>
           {menuActive && (
             <>
-
+              <div className="mobile-dropdown-content">
+                <Link 
+                  to="/real-estate" 
+                  className="mobile-nav-item"
+                  onClick={handleMenuClose}
+                >
+                  DIRECTIONS
+                </Link>
+                <Link 
+                  to="/projects" 
+                  className="mobile-nav-item"
+                  onClick={handleMenuClose}
+                >
+                  PROJECTS
+                </Link>
+                <Link 
+                  to="/home#mens-section" 
+                  className="mobile-nav-item"
+                  onClick={(e) => {
+                    handleMenuClose();
+                    if (location.pathname === "/home" || location.pathname === "/") {
+                      e.preventDefault();
+                      scrollToMens();
+                    }
+                  }}
+                >
+                  ABOUT
+                </Link>
+              </div>
               
-              <Link 
-                to="/real-estate" 
-                className="mobile-nav-item"
-                onClick={handleMenuClose}
-              >
-                DIRECTIONS
-              </Link>
-              <Link 
-                to="/projects" 
-                className="mobile-nav-item"
-                onClick={handleMenuClose}
-              >
-                PROJECTS
-              </Link>
-              <Link 
-                to="/home#mens-section" 
-                className="mobile-nav-item"
-                onClick={(e) => {
-                  handleMenuClose();
-                  if (location.pathname === "/home" || location.pathname === "/") {
-                    e.preventDefault();
-                    scrollToMens();
-                  }
-                }}
-              >
-                ABOUT
-              </Link>
-
+              {/* Кнопка CHAT WITH US и соцсети */}
+              <div className="mobile-dropdown-bottom">
+                {/* Иконки соцсетей */}
+                <div className="social-icons-container">
+                  <button 
+                    className="social-icon"
+                    onClick={handleInstagramClick}
+                    aria-label="Instagram"
+                  >
+                    <img 
+                      src={require("../image/instagram-icon.svg").default} 
+                      alt="Instagram" 
+                      style={{ width: '32px', height: '32px' }}
+                    />
+                  </button>
+                  <button 
+                    className="social-icon"
+                    onClick={handleVimeoClick}
+                    aria-label="Vimeo"
+                  >
+                    <img 
+                      src={require("../image/vimeo-icon.svg").default} 
+                      alt="Vimeo" 
+                      style={{ width: '38px', height: '32px' }}
+                    />
+                  </button>
+                  <button 
+                    className="social-icon"
+                    onClick={handleEmailClick}
+                    aria-label="Email"
+                  >
+                    <img 
+                      src={require("../image/email-icon.svg").default} 
+                      alt="Email" 
+                      style={{ width: '30px', height: '24px' }}
+                    />
+                  </button>
+                </div>
+                
+                {/* Кнопка CHAT WITH US */}
+                <button 
+                  className="mobile-nav-item"
+                  onClick={() => {
+                    handleMenuClose();
+                    scrollToContact();
+                  }}
+                >
+                  CHAT WITH US
+                </button>
+              </div>
             </>
           )}
         </div>

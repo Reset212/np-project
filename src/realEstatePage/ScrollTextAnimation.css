@@ -1,0 +1,243 @@
+/* ScrollTextAnimation2.css */
+
+/* ОСНОВНОЙ БЛОК */
+.scroll-text-container-2 {
+  position: relative;
+  width: 100%;
+  height: 786px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ffffff;
+  /* border: 1px solid red; */
+  overflow: hidden;
+  /* padding: 40px 60px; */
+}
+
+/* КОНТЕЙНЕР ТЕКСТА - РАСТЯНУТ НА ВСЮ ШИРИНУ */
+.text-block-2 {
+  width: 100%;
+  max-width: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* СОДЕРЖИМОЕ ТЕКСТА - ЦЕНТРИРОВАНИЕ */
+.text-content-2 {
+  text-align: center;
+  width: 100%;
+  max-width: 1600px;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.text-content-2.visible-2 {
+  opacity: 1;
+  transform: translateY(0);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* СТРОКИ ТЕКСТА */
+.text-line-2 {
+  display: block;
+  width: 90%;
+  line-height: 1.1;
+}
+
+/* Отступ между строками */
+.second-line-2 {
+  margin-top: 30px;
+}
+
+/* ОТДЕЛЬНЫЕ СЛОВА - РАСТЯНУТЫ */
+.text-word-2 {
+  display: inline-block;
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  font-size: 90px;
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -2px;
+  color: #000000;
+  text-transform: uppercase;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: wordAppear2 0.6s ease forwards;
+  white-space: nowrap;
+}
+
+/* АНИМАЦИЯ ПОЯВЛЕНИЯ СЛОВ */
+@keyframes wordAppear2 {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ПРОБЕЛЫ */
+.space-2 {
+  display: inline-block;
+  width: 20px;
+  height: 1px;
+}
+
+/* ПЛАНШЕТНАЯ ВЕРСИЯ */
+@media (max-width: 1440px) {
+  .scroll-text-container-2 {
+    padding: 40px 50px;
+  }
+  
+  .text-word-2 {
+    font-size: 75px;
+    letter-spacing: -1.8px;
+  }
+  
+  .space-2 {
+    width: 16px;
+  }
+  
+  .second-line-2 {
+    margin-top: 25px;
+  }
+}
+
+@media (max-width: 1200px) {
+  .text-word-2 {
+    font-size: 65px;
+    letter-spacing: -1.5px;
+  }
+  
+  .space-2 {
+    width: 14px;
+  }
+  
+  .second-line-2 {
+    margin-top: 22px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .scroll-text-container-2 {
+    padding: 40px 30px;
+  }
+  
+  .text-word-2 {
+    font-size: 55px;
+    letter-spacing: -1.2px;
+  }
+  
+  .space-2 {
+    width: 12px;
+  }
+  
+  .second-line-2 {
+    margin-top: 20px;
+  }
+}
+
+/* МОБИЛЬНАЯ ВЕРСИЯ */
+@media (max-width: 768px) {
+  .scroll-text-container-2 {
+    height: auto;
+    min-height: 100vh;
+    padding: 60px 20px;
+  }
+  
+  .text-word-2 {
+    font-size: 42px;
+    letter-spacing: -0.9px;
+    line-height: 1.2;
+    white-space: normal;
+    display: inline;
+  }
+  
+  .space-2 {
+    width: 8px;
+  }
+  
+  .text-line-2 {
+    line-height: 1.25;
+  }
+  
+  .second-line-2 {
+    margin-top: 25px;
+  }
+}
+
+/* МАЛЕНЬКИЕ ТЕЛЕФОНЫ */
+@media (max-width: 480px) {
+  .scroll-text-container-2 {
+    padding: 50px 16px;
+  }
+  
+  .text-word-2 {
+    font-size: 34px;
+    letter-spacing: -0.7px;
+    line-height: 1.3;
+  }
+  
+  .space-2 {
+    width: 6px;
+  }
+  
+  .second-line-2 {
+    margin-top: 20px;
+  }
+}
+
+/* ОЧЕНЬ МАЛЕНЬКИЕ ТЕЛЕФОНЫ */
+@media (max-width: 360px) {
+  .text-word-2 {
+    font-size: 28px;
+    letter-spacing: -0.5px;
+    line-height: 1.35;
+  }
+  
+  .space-2 {
+    width: 5px;
+  }
+  
+  .second-line-2 {
+    margin-top: 18px;
+  }
+}
+
+/* ЛАНДШАФТНАЯ ОРИЕНТАЦИЯ */
+@media (max-height: 600px) and (orientation: landscape) {
+  .scroll-text-container-2 {
+    height: auto;
+    min-height: 100vh;
+    padding: 40px 30px;
+  }
+  
+  .text-word-2 {
+    font-size: 48px;
+  }
+  
+  .second-line-2 {
+    margin-top: 20px;
+  }
+}
+
+/* БОЛЬШИЕ ЭКРАНЫ */
+@media (max-width: 1920px) {
+  .text-word-2 {
+    font-size: 64px;
+    letter-spacing: -2.5px;
+  }
+  
+  .space-2 {
+    width: 25px;
+  }
+  
+  .second-line-2 {
+    margin-top: 76px;
+  }
+}
