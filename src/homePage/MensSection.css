@@ -21,7 +21,6 @@ html {
 .mens-section {
   position: relative;
   width: 100%;
-  /* min-height: 100vh; */
   background-color: #ffffff;
   overflow: hidden;
   -webkit-font-smoothing: antialiased;
@@ -75,11 +74,43 @@ html {
 }
 
 .mens-photo {
-  /* width: 100%; */
+  width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: center;
   display: block;
+}
+
+/* ============================================= */
+/* ИЗМЕНЕНИЕ: Фото смещается вправо при уменьшении экрана */
+/* ============================================= */
+
+/* На больших экранах - фото по центру */
+@media (min-width: 90.0625em) { /* 1441px и больше */
+  .mens-photo {
+    object-position: center;
+  }
+}
+
+/* На планшетах (до 1440px) - смещаем фото немного вправо */
+@media (max-width: 90em) { /* 1440px = 90em */
+  .mens-photo {
+    object-position: 90% center; /* Смещаем к правой стороне */
+  }
+}
+
+/* На переходных размерах (1024px-768px) - еще больше вправо */
+@media (max-width: 64em) and (min-width: 48.0625em) { /* 1024px-769px */
+  .mens-photo {
+    object-position: 90% center;
+  }
+}
+
+/* На переходных размерах (768px-577px) - максимально вправо */
+@media (min-width: 36.0625em) and (max-width: 48em) { /* 577px - 768px */
+  .mens-photo {
+    object-position: 90% center;
+  }
 }
 
 /* ============================================= */
@@ -120,10 +151,12 @@ html {
   font-size: 1em; /* 16px = 1em */
   line-height: 1.5; /* 24px / 16px = 1.5 */
   color: #000000;
-  margin-left: 20em !important;
+  margin-left: 5em !important;
+  margin-right: 3em !important;
   margin: 0;
   padding: 0;
   font-weight: 300;
+  
 }
 
 .highlight {
@@ -280,11 +313,11 @@ html {
   /* ============================================= */
   @media (min-width: 36.0625em) and (max-width: 48em) { /* 577px - 768px */
     .text-button {
-      margin-left: -3.125em; /* -50px = -3.125em */
+
     }
-        .mens-photo {
+    .mens-photo {
       width: 100% !important;
-  }
+    }
   }
 }
 
@@ -294,10 +327,9 @@ html {
 @media (min-width: 36.0625em) and (max-width: 48em) { /* 577px - 768px */
   .text-date {
     margin-left: 15em; /* -50px = -3.125em */
-
   }
-      .mens-photo {
-      width: 100% !important;
+  .mens-photo {
+    width: 100% !important;
   }
 }
 
@@ -309,9 +341,12 @@ html {
     min-height: auto;
     padding: 5em 0; /* 80px = 5em */
   }
-      .mens-photo {
-      width: 100% !important;
+  .mens-photo {
+    width: 100% !important;
+    /* На мобильных фото снова по центру для вертикальной компоновки */
+    object-position: center;
   }
+  
   .mens-content {
     flex-direction: column;
     padding: 0 1.25em; /* 20px = 1.25em */
@@ -334,6 +369,12 @@ html {
     max-width: 100%;
   }
   
+  /* ИЗМЕНЕНИЕ: Скрываем блок main-text на телефонах */
+  .text-main {
+    display: none; /* Скрываем основной текст на мобильных */
+    margin-bottom: 1.875em; /* 30px = 1.875em */
+  }
+  
   /* Восстанавливаем исходные мобильные стили */
   .text-date {
     margin-left: 0;
@@ -346,17 +387,14 @@ html {
     line-height: 1.25;
     text-align: left;
     width: 100% !important;
+    display: none; /* Скрываем на мобильных */
   }
   
   .date-text {
-    font-size: 0.9375em; /* 15px = 0.9375em */
+    font-size: 1.2em; /* 15px = 0.9375em */
     line-height: 1.5;
     text-align: left;
-
-  }
-  
-  .text-main {
-    margin-bottom: 1.875em; /* 30px = 1.875em */
+    /* ИСХОДНЫЙ ТЕКСТ для десктопа будет заменен через React компонент */
   }
   
   .text-date {
@@ -365,7 +403,6 @@ html {
   
   .text-button {
     justify-content: flex-start;
-
     margin-top: 1.875em; /* 30px = 1.875em */
   }
   
@@ -405,7 +442,6 @@ html {
     font-size: 1.125em; /* 18px = 1.125em */
     width: 80%; /* 300px = 18.75em */
     margin-left: 5em !important; /* 60px = 3.75em */
-
   }
   
   .mens-photo-part {
@@ -489,7 +525,11 @@ html {
     order: 2;
   }
   
-  /* В ландшафтной ориентации сохраняем исходные стили */
+  /* В ландшафтной ориентации фото также смещаем вправо */
+  .mens-photo {
+    object-position: 80% center;
+  }
+  
   .main-text {
     font-size: 1.125em; /* 18px = 1.125em */
     line-height: 1.25;
