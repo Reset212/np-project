@@ -1,10 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 import './ProjectsVideoSection.css';
 
-// Заглушка для видео (используется для самого видео)
+// Заглушка для видео превью
 import VideoPlaceholder from '../video/hero-video.mp4';
 
-// Главные категории для десктопа (над чертой)
+// Главные категории для десктопа
 const desktopMainCategories = [
   "VIDEO",
   "HYPE & MARKETING", 
@@ -20,7 +20,7 @@ const mobileMainCategories = [
   "3D",
 ];
 
-// Подкатегории для всех категорий (как на референсе)
+// Подкатегории
 const mainCategoryToSubcategories = {
   "VIDEO": ["Real Estate development", "Beauty", "Commercial", "Betting"],
   "HYPE & MARKETING": ["Real Estate development", "Beauty", "Commercial", "Betting"],
@@ -29,258 +29,259 @@ const mainCategoryToSubcategories = {
   "CELEBRITY APPEARANCES": ["Real Estate development", "Beauty", "Commercial", "Betting"]
 };
 
-// Данные для видео с правильной категоризацией и изображениями превью
+// Данные для видео с Vimeo ID
 const videoData = [
   {
     id: 1,
     title: "BRUNELLO",
     description: "WE COMBINE FILM AND REAL ESTATE ADVERTISING. REAL ESTATE IS SOLD THROUGH EMOTION, THROUGH STORYTELLING, AND THROUGH THE EXPERIENCE OF BEING IN IT.",
-    videoUrl: VideoPlaceholder,
+    vimeoId: "1135673984",
     previewImage: "/projectImage/BRUNELLO.png",
-    desktopMainCategory: "VIDEO",
+    desktopMainCategory: "3D",
     desktopSubCategory: "Real Estate development",
-    mobileCategories: ["VIDEO"],
+    mobileCategories: ["3D"],
   },
   {
     id: 2,
     title: "VILLA DEL GAVI",
     description: "WE CREATED AN EMOTIONAL SALES VIDEO THAT SHOWCASES THE CONCEPT OF THE HOUSE. THE STORY AND CHARACTER OF THE HOUSE WERE CREATED. 3D RENDERINGS.",
-    videoUrl: VideoPlaceholder,
+    vimeoId: "1083958501",
     previewImage: "/projectImage/VILLA DEL GAVI.png",
-    desktopMainCategory: "VIDEO", 
+    desktopMainCategory: "3D", 
     desktopSubCategory: "Real Estate development",
-    mobileCategories: ["VIDEO"],
+    mobileCategories: ["3D"],
   },
   {
     id: 3,
     title: "EYWA WAY OF WATER",
     description: "THEY CREATED A MAGICAL WORLD IN WHICH THE MAIN CHARACTERS ARE A FATHER AND SON.",
-    videoUrl: VideoPlaceholder,
+    vimeoId: "1135702706",
     previewImage: "/projectImage/EYWA WAY OF WATER.png",
-    desktopMainCategory: "VIDEO",
-    desktopSubCategory: "Commercial",
-    mobileCategories: ["VIDEO"],
+    desktopMainCategory: "3D",
+    desktopSubCategory: "Real Estate development",
+    mobileCategories: ["3D"],
   },
   {
     id: 4,
     title: "ELITE MERIT",
     description: "WE MAKE VIDEOS AND MARKETING THAT NO ONE ELSE DOES.",
-    videoUrl: VideoPlaceholder,
+    vimeoId: "1102229342",
     previewImage: "/projectImage/ELITE MERIT.png",
-    desktopMainCategory: "HYPE & MARKETING",
-    desktopSubCategory: "Betting",
-    mobileCategories: ["HYPE & MARKETING"],
+    desktopMainCategory: "VIDEO",
+    desktopSubCategory: "Real Estate development",
+    mobileCategories: ["VIDEO"],
   },
   {
     id: 5,
     title: "INTERSTELLAR",
     description: "WE COMBINED FILMING IN A STUDIO AND 3D GRAPHICS TO CONVEY THE FUTURE HOME AND ITS PHILOSOPHY AS ACCURATELY AS POSSIBLE.",
-    videoUrl: VideoPlaceholder,
+    vimeoId: "1021703237",
     previewImage: "/projectImage/Interstellar.png",
-    desktopMainCategory: "VIDEO",
-    desktopSubCategory: "Beauty",
-    mobileCategories: ["VIDEO"],
+    desktopMainCategory: "3D",
+    desktopSubCategory: "Real Estate development",
+    mobileCategories: ["3D"],
   },
   {
     id: 6,
     title: "VILLA DEL DIVOS",
     description: "PARTICULAR ATTENTION IS PAID TO THE PHILOSOPHY BEHIND THE PROJECT AND ITS KEY ADVANTAGES: AN ATMOSPHERE OF COMFORT, AESTHETICS, AND SERVICE.",
-    videoUrl: VideoPlaceholder,
+    vimeoId: "1055145071",
     previewImage: "/projectImage/Villa del Divos.png",
-    desktopMainCategory: "VIDEO",
-    desktopSubCategory: "Commercial",
-    mobileCategories: ["VIDEO"],
+    desktopMainCategory: "3D",
+    desktopSubCategory: "Real Estate development",
+    mobileCategories: ["3D"],
   },
   {
     id: 7,
     title: "MR.EIGHT | BRAND VIDEO",
     description: "«FOLLOW YOUR DREAM WHATEVER IT TAKES» - THIS THESIS REFLECTS THE COMPANY'S DETERMINATION AND UNWAVERING COMMITMENT TO WHICH IT MOVES FORWARD IN THE IMPLEMENTATION OF ITS PROJECTS.",
-    videoUrl: VideoPlaceholder,
+    vimeoId: "1055261671",
     previewImage: "/projectImage/Mr.Eight  Brand video.png",
-    desktopMainCategory: "HYPE & MARKETING",
+    desktopMainCategory: "VIDEO",
     desktopSubCategory: "Real Estate development",
-    mobileCategories: ["HYPE & MARKETING"],
+    mobileCategories: ["VIDEO"],
   },
   {
     id: 8,
     title: "LAUNCH OF THE VILLA DEL GAVI",
     description: "1400 PEOPLE TURNKEY EVENT ORGANIZATION POWERFUL PR CAMPAIGN HOLLYWOOD STARS OSCAR WINNER ADRIEN BRODY",
-    videoUrl: VideoPlaceholder,
+    vimeoId: "1060106406",
     previewImage: "/projectImage/Launch of the Villa del Gavi.png",
     desktopMainCategory: "EVENTS & LAUNCHES",
-    desktopSubCategory: "Beauty",
+    desktopSubCategory: "Real Estate development",
     mobileCategories: ["EVENTS & LAUNCHES"],
   },
   {
     id: 9,
     title: "LAUNCH OF THE EYWA",
     description: "700 PEOPLE TURNKEY EVENT ORGANIZATION POWERFUL PR CAMPAIGN CONTENT",
-    videoUrl: VideoPlaceholder,
+    vimeoId: "1148259441",
     previewImage: "/projectImage/Launch of the EYWA.png",
     desktopMainCategory: "EVENTS & LAUNCHES",
-    desktopSubCategory: "Beauty",
+    desktopSubCategory: "Real Estate development",
     mobileCategories: ["EVENTS & LAUNCHES"],
   },
   {
     id: 10,
     title: "LAUNCH OF THE DIVOS",
     description: "900 PEOPLE TURNKEY EVENT ORGANIZATION POWERFUL PR CAMPAIGN CONTENT",
-    videoUrl: VideoPlaceholder,
+    vimeoId: "1060106406", // Замените на правильный ID
     previewImage: "/projectImage/Launch of the DIVOS.png",
     desktopMainCategory: "EVENTS & LAUNCHES",
-    desktopSubCategory: "Beauty",
+    desktopSubCategory: "Real Estate development",
     mobileCategories: ["EVENTS & LAUNCHES"],
   },
   {
     id: 11,
     title: "PR OF THE VILLA DEL GAVI",
     description: "PR CAMPAIGN WITH BRAND AMBASSADORS MR. THANK YOU & MR.GOODLUCK. A SERIES OF 98 REELS WAS PRODUCED, REACHING 195,000,000 VIEWS. AND 127 STORIES WERE PRODUCED, REACHING 48,500,000 VIEWS.",
-    videoUrl: VideoPlaceholder,
+    vimeoId: "1060106406", // Замените на правильный ID
     previewImage: "/projectImage/PR of the Villa del Gavi.png",
     desktopMainCategory: "HYPE & MARKETING",
-    desktopSubCategory: "Beauty",
+    desktopSubCategory: "Real Estate development",
     mobileCategories: ["HYPE & MARKETING"],
   },
   {
     id: 12,
     title: "CELEBRITY APPEARANCES",
     description: "WE CAN BRING ANY STAR FOR YOU. MATTHEW MCCONAUGHEY, ADRIAN BRODY, NICOLAS CAGE, MILA JOVOVICH, VINCENT CASSEL, ZENDAYA, QUENTIN TARANTINO, KEANU REEVES, JASON MAMOA AND OTHERS.",
-    videoUrl: VideoPlaceholder,
+    vimeoId: "1060106406", // Замените на правильный ID
     previewImage: "/projectImage/Celebrity Appearances.png",
-    desktopMainCategory: "CELEBRITY APPEARANCES",
-    desktopSubCategory: "Beauty",
-    mobileCategories: ["CELEBRITY APPEARANCES"],
+    desktopMainCategory: "HYPE & MARKETING",
+    desktopSubCategory: "Real Estate development",
+    mobileCategories: ["HYPE & MARKETING"],
   },
    {
     id: 13,
     title: "VIVIENNE SABO",
     description: "EVERYDAY LIFE VS CELEBRATION, MODESTY VS BOLDNESS, FAMILIARITY VS DARING SELF-EXPRESSION",
-    videoUrl: VideoPlaceholder,
+    vimeoId: "1115458742",
     previewImage: "/projectImage/Vivienne sabo.png",
     desktopMainCategory: "VIDEO",
-    desktopSubCategory: "Commercial",
+    desktopSubCategory: "Beauty",
     mobileCategories: ["VIDEO"],
   },
   {
     id: 14,
     title: "STELLARY",
     description: "ONE PRODUCT, ONE CELEBRITY, 12 HOURS OF FILMING, AND OVER 80 VERSIONS FOR A POWERFUL MARKETING CAMPAIGN",
-    videoUrl: VideoPlaceholder,
+    vimeoId: "1061972276",
     previewImage: "/projectImage/Stellary.png",
-    desktopMainCategory: "HYPE & MARKETING",
-    desktopSubCategory: "Real Estate development",
-    mobileCategories: ["HYPE & MARKETING"],
+    desktopMainCategory: "VIDEO",
+    desktopSubCategory: "Beauty",
+    mobileCategories: ["VIDEO"],
   },
   {
     id: 15,
-    title: "VIVIENNE SABO",
+    title: "VIVIENNE SABO 2",
     description: "WE FILMED IN MARRAKECH TO CAPTURE THE AUTHENTIC ATMOSPHERE AND REFLECT THE IDENTITY OF THE PRODUCT",
-    videoUrl: VideoPlaceholder,
+    vimeoId: "1061972276", // Замените на правильный ID
     previewImage: "/projectImage/Vivienne sabo (2).png",
-    desktopMainCategory: "EVENTS & LAUNCHES",
+    desktopMainCategory: "VIDEO",
     desktopSubCategory: "Beauty",
-    mobileCategories: ["EVENTS & LAUNCHES"],
+    mobileCategories: ["VIDEO"],
   },
   {
     id: 16,
     title: "INFLUENCE",
     description: "WE USED CG AND MOTION CONTROL TO CREATE DYNAMIC TRANSITIONS THAT HIGHLIGHT THE PRODUCT'S QUALITY.",
-    videoUrl: VideoPlaceholder,
+    vimeoId: "1021687160",
     previewImage: "/projectImage/influence.png",
-    desktopMainCategory: "EVENTS & LAUNCHES",
+    desktopMainCategory: "VIDEO",
     desktopSubCategory: "Beauty",
-    mobileCategories: ["EVENTS & LAUNCHES"],
+    mobileCategories: ["VIDEO"],
   },
   {
     id: 17,
     title: "VAVADA",
     description: "FILMING AND CG FOR A NEW YEAR'S CAMPAIGN IN JUST 21 DAYS",
-    videoUrl: VideoPlaceholder,
+    vimeoId: "1055152643",
     previewImage: "/projectImage/VAVADA.png",
-    desktopMainCategory: "EVENTS & LAUNCHES",
-    desktopSubCategory: "Beauty",
-    mobileCategories: ["EVENTS & LAUNCHES"],
+    desktopMainCategory: "VIDEO",
+    desktopSubCategory: "Betting",
+    mobileCategories: ["VIDEO"],
   },
   {
     id: 18,
-    title: "FONBET",
+    title: "FONBET 1",
     description: "AN IMAGE VIDEO TO BUILD TRUST IN THE COMPANY",
-    videoUrl: VideoPlaceholder,
+    vimeoId: "837838383",
     previewImage: "/projectImage/FONBET.png",
-    desktopMainCategory: "HYPE & MARKETING",
-    desktopSubCategory: "Beauty",
-    mobileCategories: ["HYPE & MARKETING"],
+    desktopMainCategory: "VIDEO",
+    desktopSubCategory: "Betting",
+    mobileCategories: ["VIDEO"],
   },
   {
     id: 19,
-    title: "FONBET",
+    title: "FONBET 2",
     description: "WE DEVELOPED THE VIDEO FROM CONCEPT TO COMPLETION IN 45 DAYS. THE PROJECT WAS LAUNCHED ON TELEVISION.",
-    videoUrl: VideoPlaceholder,
+    vimeoId: "912201122",
     previewImage: "/projectImage/FONBET (2).png",
-    desktopMainCategory: "CELEBRITY APPEARANCES",
-    desktopSubCategory: "Beauty",
-    mobileCategories: ["CELEBRITY APPEARANCES"],
+    desktopMainCategory: "VIDEO",
+    desktopSubCategory: "Betting",
+    mobileCategories: ["VIDEO"],
   },
   {
     id: 20,
-    title: "FONBET",
+    title: "FONBET 3",
     description: "WE SHOWED THE COMPANY'S PRECISION BY CAPTURING EVERY DETAIL OF THE GAME, PRESENTING IT AS A RELIABLE BOOKMAKER THAT ACCOUNTS FOR EVERY MOMENT.",
-    videoUrl: VideoPlaceholder,
+    vimeoId: "912892750",
     previewImage: "/projectImage/FONBET (3).png",
-    desktopMainCategory: "CELEBRITY APPEARANCES",
-    desktopSubCategory: "Beauty",
-    mobileCategories: ["CELEBRITY APPEARANCES"],
+    desktopMainCategory: "3D",
+    desktopSubCategory: "Betting",
+    mobileCategories: ["3D"],
   },
    {
     id: 21,
     title: "SYNTEC",
     description: "PRODUCTION AT ALL STAGES, FROM CREATIVE CONCEPTS TO MOTION CONTROL FILMING AND 3D GRAPHICS",
-    videoUrl: VideoPlaceholder,
+    vimeoId: "583046568",
     previewImage: "/projectImage/syntec.png",
-    desktopMainCategory: "CELEBRITY APPEARANCES",
-    desktopSubCategory: "Beauty",
-    mobileCategories: ["CELEBRITY APPEARANCES"],
+    desktopMainCategory: "VIDEO",
+    desktopSubCategory: "Commercial",
+    mobileCategories: ["VIDEO"],
   },
    {
     id: 22,
     title: "STREET BEAT",
     description: "A COMMERCIAL FOR UNION SNEAKERS, FEATURING CHILDREN AND ADULTS WHO HAVE SWITCHED ROLES.",
-    videoUrl: VideoPlaceholder,
+    vimeoId: "1112509843",
     previewImage: "/projectImage/street beat.png",
-    desktopMainCategory: "CELEBRITY APPEARANCES",
-    desktopSubCategory: "Beauty",
-    mobileCategories: ["CELEBRITY APPEARANCES"],
+    desktopMainCategory: "VIDEO",
+    desktopSubCategory: "Commercial",
+    mobileCategories: ["VIDEO"],
   },
    {
     id: 23,
     title: "KUPIBILET",
     description: "A SERIES OF WES ANDERSON-STYLE COMMERCIALS FOR THE FIRST MAJOR MARKETING CAMPAIGN",
-    videoUrl: VideoPlaceholder,
+    vimeoId: "1098147082",
     previewImage: "/projectImage/kupibilet.png",
-    desktopMainCategory: "CELEBRITY APPEARANCES",
-    desktopSubCategory: "Beauty",
-    mobileCategories: ["CELEBRITY APPEARANCES"],
+    desktopMainCategory: "VIDEO",
+    desktopSubCategory: "Commercial",
+    mobileCategories: ["VIDEO"],
   },
   {
     id: 24,
-    title: "RESTORE",
+    title: "RESTORE 1",
     description: "WE USED SINGLE-SHOT FILMING TO CONVEY THE BRAND'S DYNAMIC ENERGY AND CONNECTION WITH TODAY'S YOUTH.",
-    videoUrl: VideoPlaceholder,
+    vimeoId: "863926399",
     previewImage: "/projectImage/Restore.png",
-    desktopMainCategory: "CELEBRITY APPEARANCES",
-    desktopSubCategory: "Beauty",
-    mobileCategories: ["CELEBRITY APPEARANCES"],
+    desktopMainCategory: "VIDEO",
+    desktopSubCategory: "Commercial",
+    mobileCategories: ["VIDEO"],
   },
 {
     id: 25,
-    title: "RESTORE",
+    title: "RESTORE 2",
     description: "WE CREATED AND IMPLEMENTED THE IDEA OF SELLING SEVERAL PRODUCTS AT ONCE WITH A SINGLE VIDEO.",
-    videoUrl: VideoPlaceholder,
+    vimeoId: "837843106",
     previewImage: "/projectImage/Restore (2).png",
-    desktopMainCategory: "CELEBRITY APPEARANCES",
-    desktopSubCategory: "Beauty",
-    mobileCategories: ["CELEBRITY APPEARANCES"],
-  }
+    desktopMainCategory: "VIDEO",
+    desktopSubCategory: "Commercial",
+    mobileCategories: ["VIDEO"],
+  },
+  // Остальные видео...
 ];
 
 const ProjectsVideoSection = () => {
@@ -288,22 +289,22 @@ const ProjectsVideoSection = () => {
   const [selectedSubCategory, setSelectedSubCategory] = useState(null);
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const [videoLoadError, setVideoLoadError] = useState(false);
   const [hoveredCard, setHoveredCard] = useState(null);
   const [isMobile, setIsMobile] = useState(false);
   const [imageLoadError, setImageLoadError] = useState({});
+  const [cursorHidden, setCursorHidden] = useState(false);
   
   // Состояния для анимации подкатегорий (десктоп)
   const [desktopSubcategoriesOpen, setDesktopSubcategoriesOpen] = useState(false);
   const [desktopAnimationState, setDesktopAnimationState] = useState('closed');
   
-  // Состояния для мобильной версии - ИСПРАВЛЕННЫЕ
+  // Состояния для мобильной версии
   const [openCategory, setOpenCategory] = useState(null);
   const [mobileAnimationState, setMobileAnimationState] = useState('closed');
   const [mobileSubcategoriesVisible, setMobileSubcategoriesVisible] = useState(false);
 
   const videoRefs = useRef({});
-  const popupVideoRef = useRef(null);
+  const popupTimeoutRef = useRef(null);
 
   // Определяем мобильное устройство
   useEffect(() => {
@@ -315,36 +316,58 @@ const ProjectsVideoSection = () => {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  // Фильтрация видео
-  const filteredVideos = videoData.filter(video => {
-    if (selectedMainCategory === null && selectedSubCategory === null) return true;
+  // Очистка таймера при размонтировании
+  useEffect(() => {
+    return () => {
+      if (popupTimeoutRef.current) {
+        clearTimeout(popupTimeoutRef.current);
+      }
+    };
+  }, []);
 
-    if (isMobile) {
-      if (selectedSubCategory) {
-        return video.mobileCategories.includes(selectedMainCategory) && video.desktopSubCategory === selectedSubCategory;
-      } else if (selectedMainCategory) {
-        return video.mobileCategories.includes(selectedMainCategory);
-      }
-    } else {
-      // Десктопная фильтрация
-      if (selectedSubCategory) {
-        return video.desktopMainCategory === selectedMainCategory && video.desktopSubCategory === selectedSubCategory;
-      } else if (selectedMainCategory) {
-        return video.desktopMainCategory === selectedMainCategory;
-      }
+  // Функция для получения уникальных видео
+  const getFilteredVideos = () => {
+    if (selectedMainCategory !== null || selectedSubCategory !== null) {
+      return videoData.filter(video => {
+        if (isMobile) {
+          if (selectedSubCategory) {
+            return video.mobileCategories.includes(selectedMainCategory) && video.desktopSubCategory === selectedSubCategory;
+          } else if (selectedMainCategory) {
+            return video.mobileCategories.includes(selectedMainCategory);
+          }
+        } else {
+          if (selectedSubCategory) {
+            return video.desktopMainCategory === selectedMainCategory && video.desktopSubCategory === selectedSubCategory;
+          } else if (selectedMainCategory) {
+            return video.desktopMainCategory === selectedMainCategory;
+          }
+        }
+        return false;
+      });
     }
-    return false;
-  });
+    
+    const uniqueVideos = [];
+    const seenImages = new Set();
+    
+    videoData.forEach(video => {
+      if (!seenImages.has(video.previewImage)) {
+        seenImages.add(video.previewImage);
+        uniqueVideos.push(video);
+      }
+    });
+    
+    return uniqueVideos;
+  };
+
+  const filteredVideos = getFilteredVideos();
 
   // Обработчик выбора главной категории на десктопе
   const handleDesktopMainCategoryClick = (category) => {
-    // Если кликаем на уже выбранную категорию - закрываем всё
     if (selectedMainCategory === category && desktopSubcategoriesOpen) {
       closeDesktopSubcategories();
       setSelectedMainCategory(null);
       setSelectedSubCategory(null);
     } 
-    // Если выбираем новую категорию
     else {
       if (selectedMainCategory !== category) {
         closeDesktopSubcategories(() => {
@@ -353,13 +376,11 @@ const ProjectsVideoSection = () => {
           openDesktopSubcategories();
         });
       } else {
-        // Просто открываем подкатегории, если категория уже выбрана
         openDesktopSubcategories();
       }
     }
   };
 
-  // Открытие подкатегорий на десктопе
   const openDesktopSubcategories = () => {
     setDesktopAnimationState('opening');
     setDesktopSubcategoriesOpen(true);
@@ -369,7 +390,6 @@ const ProjectsVideoSection = () => {
     }, 10);
   };
 
-  // Закрытие подкатегорий на десктопе
   const closeDesktopSubcategories = (callback = null) => {
     setDesktopAnimationState('closing');
     
@@ -383,12 +403,10 @@ const ProjectsVideoSection = () => {
     }, 300);
   };
 
-  // Обработчик выбора подкатегории на десктопе
   const handleDesktopSubCategoryClick = (subCategory) => {
     setSelectedSubCategory(subCategory === selectedSubCategory ? null : subCategory);
   };
 
-  // Обработчик выбора главной категории на мобильном - ИСПРАВЛЕННЫЙ
   const handleMobileCategoryClick = (category) => {
     if (openCategory === category && mobileAnimationState === 'open') {
       closeMobileSubcategories();
@@ -405,25 +423,21 @@ const ProjectsVideoSection = () => {
     }
   };
 
-  // Открытие подкатегорий на мобильном - ИСПРАВЛЕННОЕ
   const openMobileSubcategories = (category) => {
     setOpenCategory(category);
     setSelectedMainCategory(category);
     setSelectedSubCategory(null);
     
-    // Даем время для рендера элемента с начальным состоянием
     setTimeout(() => {
       setMobileAnimationState('opening');
       setMobileSubcategoriesVisible(true);
       
-      // Даем время для применения начальных стилей
       setTimeout(() => {
         setMobileAnimationState('open');
       }, 20);
     }, 10);
   };
 
-  // Закрытие подкатегорий на мобильном - ИСПРАВЛЕННОЕ
   const closeMobileSubcategories = (callback = null) => {
     setMobileAnimationState('closing');
     
@@ -433,7 +447,6 @@ const ProjectsVideoSection = () => {
       setSelectedMainCategory(null);
       setSelectedSubCategory(null);
       
-      // Даем время для завершения анимации закрытия
       setTimeout(() => {
         setMobileSubcategoriesVisible(false);
         
@@ -441,27 +454,25 @@ const ProjectsVideoSection = () => {
           callback();
         }
       }, 50);
-    }, 400); // Длительность анимации закрытия
+    }, 400);
   };
 
-  // Обработчик выбора подкатегории на мобильном
   const handleSubCategorySelect = (subCategory) => {
     setSelectedSubCategory(subCategory === selectedSubCategory ? null : subCategory);
   };
 
-  // Получение подкатегорий для категории
   const getSubcategoriesForCategory = (category) => {
     return mainCategoryToSubcategories[category] || [];
   };
 
-  // Открытие попапа с видео
+  // Открытие попапа с Vimeo видео
   const openVideoPopup = (video) => {
     setSelectedVideo(video);
-    setVideoLoadError(false);
     setIsPopupOpen(true);
+    setCursorHidden(true);
     document.body.style.overflow = 'hidden';
     
-    // Останавливаем все видео на карточках
+    // Останавливаем все локальные видео на карточках
     Object.values(videoRefs.current).forEach(videoElement => {
       if (videoElement) {
         videoElement.pause();
@@ -469,34 +480,29 @@ const ProjectsVideoSection = () => {
       }
     });
     
-    // Автовоспроизведение в попапе
-    setTimeout(() => {
-      if (popupVideoRef.current) {
-        const playPromise = popupVideoRef.current.play();
-        if (playPromise !== undefined) {
-          playPromise.catch(error => {
-            if (error.name !== 'AbortError') {
-              console.warn('Автовоспроизведение в попапе не удалось:', error);
-            }
-          });
-        }
-      }
-    }, 300);
+    // Показываем курсор через 2 секунды
+    if (popupTimeoutRef.current) {
+      clearTimeout(popupTimeoutRef.current);
+    }
+    
+    popupTimeoutRef.current = setTimeout(() => {
+      setCursorHidden(false);
+    }, 2000);
   };
 
-  // Закрытие попапа с видео
+  // Закрытие попапа
   const closeVideoPopup = () => {
-    if (popupVideoRef.current) {
-      popupVideoRef.current.pause();
-      popupVideoRef.current.currentTime = 0;
+    if (popupTimeoutRef.current) {
+      clearTimeout(popupTimeoutRef.current);
     }
+    
     setIsPopupOpen(false);
     setSelectedVideo(null);
-    setVideoLoadError(false);
+    setCursorHidden(false);
     document.body.style.overflow = 'auto';
   };
 
-  // Наведение на карточку видео (только для десктопа)
+  // Наведение на карточку видео
   const handleMouseEnter = (videoId) => {
     if (isMobile) return;
     setHoveredCard(videoId);
@@ -515,7 +521,6 @@ const ProjectsVideoSection = () => {
     }
   };
 
-  // Уход с карточки видео (только для десктопа)
   const handleMouseLeave = (videoId) => {
     if (isMobile) return;
     setHoveredCard(null);
@@ -526,7 +531,6 @@ const ProjectsVideoSection = () => {
     }
   };
 
-  // Обработчик ошибки загрузки изображения
   const handleImageError = (videoId) => {
     setImageLoadError(prev => ({
       ...prev,
@@ -534,10 +538,11 @@ const ProjectsVideoSection = () => {
     }));
   };
 
-  // Обработчик ошибки загрузки видео в попапе
-  const handleVideoError = () => {
-    setVideoLoadError(true);
-    console.error('Ошибка загрузки видео в попапе');
+  // Обработчик движения мыши в попапе
+  const handlePopupMouseMove = () => {
+    if (cursorHidden) {
+      setCursorHidden(false);
+    }
   };
 
   return (
@@ -546,7 +551,6 @@ const ProjectsVideoSection = () => {
         <div className="projects-header">
           <h1>ALL PROJECTS</h1>
           
-          {/* Десктопная фильтрация - главные категории НАД чертой */}
           {!isMobile && (
             <div className="desktop-main-categories-above">
               {desktopMainCategories.map(category => (
@@ -565,7 +569,6 @@ const ProjectsVideoSection = () => {
           
           <div className="section-divider"></div>
           
-          {/* Десктопная фильтрация - подкатегории ПОД чертой */}
           {!isMobile && (
             <div className="desktop-subcategories-below">
               {selectedMainCategory && (
@@ -587,7 +590,6 @@ const ProjectsVideoSection = () => {
           )}
         </div>
 
-        {/* Мобильная фильтрация - ИСПРАВЛЕННЫЙ КОД */}
         {isMobile && (
           <div className="mobile-category-filter">
             <div className="mobile-main-categories">
@@ -604,7 +606,6 @@ const ProjectsVideoSection = () => {
                     {category}
                   </div>
                   
-                  {/* Подкатегории с анимацией - ВСЕГДА В DOM, но скрыты */}
                   <div 
                     className={`mobile-subcategories ${
                       mobileSubcategoriesVisible && openCategory === category ? (
@@ -636,7 +637,6 @@ const ProjectsVideoSection = () => {
           </div>
         )}
 
-        {/* Сетка видео карточек */}
         <div className="video-grid">
           {filteredVideos.map(video => (
             <div
@@ -646,7 +646,6 @@ const ProjectsVideoSection = () => {
               onMouseEnter={() => handleMouseEnter(video.id)}
               onMouseLeave={() => handleMouseLeave(video.id)}
             >
-              {/* Превью изображение (постоянно видимое) */}
               <div className="preview-image-container">
                 {!imageLoadError[video.id] ? (
                   <img
@@ -662,7 +661,6 @@ const ProjectsVideoSection = () => {
                 )}
               </div>
               
-              {/* Видео (воспроизводится только при наведении на десктопе) - ИСПРАВЛЕННЫЙ КЛАСС */}
               <video
                 ref={el => videoRefs.current[video.id] = el}
                 className="project-video-background"
@@ -670,13 +668,10 @@ const ProjectsVideoSection = () => {
                 loop
                 playsInline
                 preload="metadata"
-                onError={(e) => {
-                  console.error(`Ошибка загрузки видео ${video.title}:`, e);
-                }}
               >
-                <source src={video.videoUrl} type="video/mp4" />
-                Ваш браузер не поддерживает видео тег.
+                <source src={VideoPlaceholder} type="video/mp4" />
               </video>
+              
               <div className="video-overlay">
                 <div className="video-content">
                   <h2 className="video-title">{video.title}</h2>
@@ -695,34 +690,36 @@ const ProjectsVideoSection = () => {
             </div>
           ))}
         </div>
+        
+        {filteredVideos.length === 0 && (
+          <div className="no-results">
+            <p>No projects found for the selected filter.</p>
+          </div>
+        )}
       </div>
 
-      {/* Попап с видео */}
+      {/* Попап с Vimeo плеером */}
       {isPopupOpen && selectedVideo && (
-        <div className="video-popup-overlay" onClick={closeVideoPopup}>
-          <div className="video-popup" onClick={e => e.stopPropagation()}>
-            <button className="close-popup" onClick={closeVideoPopup}>
-              ×
-            </button>
+        <div 
+          className={`video-popup-overlay ${cursorHidden ? 'cursor-hidden' : ''}`} 
+          onClick={closeVideoPopup}
+          onMouseMove={handlePopupMouseMove}
+        >
+          <div className="video-popup vimeo-popup" onClick={e => e.stopPropagation()}>
+         
             <div className="popup-content">
-              <h3>{selectedVideo.title}</h3>
-              <div className="popup-video-container">
-                <video
-                  ref={popupVideoRef}
-                  controls
-                  onError={handleVideoError}
-                  key={selectedVideo.id}
-                >
-                  <source src={selectedVideo.videoUrl} type="video/mp4" />
-                  Ваш браузер не поддерживает видео тег.
-                </video>
-                {videoLoadError && (
-                  <div className="video-error-message">
-                    <p>⚠️ Video failed to load</p>
-                    <p>Пожалуйста, проверьте наличие файла видео</p>
-                  </div>
-                )}
+              <div className="popup-video-container vimeo-container">
+                <iframe
+                  src={`https://player.vimeo.com/video/${selectedVideo.vimeoId}?autoplay=1&title=0&byline=0&portrait=0&badge=0&autopause=0`}
+                  width="100%"
+                  height="100%"
+                  frameBorder="0"
+                  allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
+                  allowFullScreen
+                  title={selectedVideo.title}
+                ></iframe>
               </div>
+           
             </div>
           </div>
         </div>
