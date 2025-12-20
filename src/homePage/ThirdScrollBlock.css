@@ -810,7 +810,7 @@ html {
     font-size: calc(var(--base-font-size) * 0.8125); /* 13px */
   }
   .third-scroll-container {
-    width: 110%;
+    width: 100%;
     
   }
   .title-word:first-child {
@@ -820,7 +820,7 @@ html {
     transform: translateX(22px) !important;
   }
   .third-scroll-section {
-    padding: 4em !important;
+    padding: 0em !important;
   }
   
   .item-text {
@@ -865,7 +865,7 @@ html {
   }
   
   .third-scroll-section {
-    padding: 3em !important; /* 40px / 13px = 3.077em, 16px / 13px = 1.231em, 130px / 13px = 10em */
+    padding: 0em !important; /* 40px / 13px = 3.077em, 16px / 13px = 1.231em, 130px / 13px = 10em */
   }
 
   .third-scroll-container {
