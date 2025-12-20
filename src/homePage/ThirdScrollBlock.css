@@ -644,7 +644,7 @@ html {
   }
 
   .item-text {
-    font-size: 3em !important;
+    font-size: 2em !important;
     line-height: 1 !important;
     text-align: center !important; /* Центрируем текст */
     white-space: normal;
@@ -674,7 +674,7 @@ html {
   .third-button {
     width: 13.714em !important;
     height: 2.586em !important;
-    font-size: 1.286em !important;
+    font-size: 1em !important;
     border-radius: 2.5em;
     background: rgba(230, 230, 230, 0.85);
     position: relative;
@@ -876,7 +876,7 @@ html {
   }
 
   .item-text {
-    font-size: 1.846em !important; /* 24px / 13px = 1.846em */
+    font-size: 1.5em !important; /* 24px / 13px = 1.846em */
     line-height: 1 !important;
     font-weight: 500 !important;
   }
