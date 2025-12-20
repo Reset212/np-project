@@ -1,6 +1,5 @@
 import React from "react";
 import { HashRouter as Router, Routes, Route } from "react-router-dom";
-import './reset.css';
 import HomePageApp from "./homePage/App";
 import RealEstatePageApp from "./realEstatePage/App";
 import ProjectsPageApp from "./projectsPage/App"; // Добавьте эту строку
