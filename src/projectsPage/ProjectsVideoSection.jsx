@@ -173,7 +173,7 @@ const videoData = [
   },
   {
     id: 15,
-    title: "VIVIENNE SABO 2",
+    title: "VIVIENNE SABO",
     description: "WE FILMED IN MARRAKECH TO CAPTURE THE AUTHENTIC ATMOSPHERE AND REFLECT THE IDENTITY OF THE PRODUCT",
     vimeoId: "1061972276", // Замените на правильный ID
     previewImage: "/projectImage/Vivienne sabo (2).png",
@@ -203,7 +203,7 @@ const videoData = [
   },
   {
     id: 18,
-    title: "FONBET 1",
+    title: "FONBET",
     description: "AN IMAGE VIDEO TO BUILD TRUST IN THE COMPANY",
     vimeoId: "837838383",
     previewImage: "/projectImage/FONBET.png",
@@ -213,7 +213,7 @@ const videoData = [
   },
   {
     id: 19,
-    title: "FONBET 2",
+    title: "FONBET",
     description: "WE DEVELOPED THE VIDEO FROM CONCEPT TO COMPLETION IN 45 DAYS. THE PROJECT WAS LAUNCHED ON TELEVISION.",
     vimeoId: "912201122",
     previewImage: "/projectImage/FONBET (2).png",
@@ -223,7 +223,7 @@ const videoData = [
   },
   {
     id: 20,
-    title: "FONBET 3",
+    title: "FONBET",
     description: "WE SHOWED THE COMPANY'S PRECISION BY CAPTURING EVERY DETAIL OF THE GAME, PRESENTING IT AS A RELIABLE BOOKMAKER THAT ACCOUNTS FOR EVERY MOMENT.",
     vimeoId: "912892750",
     previewImage: "/projectImage/FONBET (3).png",
@@ -263,7 +263,7 @@ const videoData = [
   },
   {
     id: 24,
-    title: "RESTORE 1",
+    title: "RESTORE",
     description: "WE USED SINGLE-SHOT FILMING TO CONVEY THE BRAND'S DYNAMIC ENERGY AND CONNECTION WITH TODAY'S YOUTH.",
     vimeoId: "863926399",
     previewImage: "/projectImage/Restore.png",
@@ -273,7 +273,7 @@ const videoData = [
   },
 {
     id: 25,
-    title: "RESTORE 2",
+    title: "RESTORE",
     description: "WE CREATED AND IMPLEMENTED THE IDEA OF SELLING SEVERAL PRODUCTS AT ONCE WITH A SINGLE VIDEO.",
     vimeoId: "837843106",
     previewImage: "/projectImage/Restore (2).png",
