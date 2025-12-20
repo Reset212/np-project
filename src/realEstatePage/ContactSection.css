@@ -261,7 +261,7 @@ textarea {
   border-radius: 2em;
   min-width: 6.375em;
   min-height: 2.1875em;
-  margin-top: 1em;
+  margin-top: 0;
   
   /* Исправление для iOS */
   -webkit-appearance: none;
@@ -305,7 +305,8 @@ textarea {
   display: none;
   flex-direction: column;
   gap: 1.5em;
-  margin-top: 3em;
+  margin-top: 2em; /* Уменьшено с 3em */
+  margin-bottom: 0; /* Убираем отступ снизу */
   width: 100%;
 }
 
@@ -466,13 +467,14 @@ textarea {
 @media (max-width: 65em) { /* 1040px */
   .contact-section {
     min-height: auto; /* Убираем фиксированную высоту для мобильных */
+    padding: 0; /* Убираем padding секции */
   }
   
   .contact-container {
     flex-direction: column;
-    gap: 2em; /* Уменьшено: было 4em, стало 2em - убирает отступ между колонками */
+    gap: 0; /* УБИРАЕМ gap между колонками */
     width: 100%;
-    margin: 2em auto; /* Уменьшено: было 3em, стало 2em */
+    margin: 0 auto;
     padding: 0 1.5em; /* 24px для мобильных */
     min-height: auto;
   }
@@ -487,21 +489,21 @@ textarea {
   
   .left-column {
     order: 1;
-    margin-bottom: 0; /* Убираем отступ снизу */
+    margin-bottom: 1em; /* Уменьшено отступ */
   }
   
   .right-column {
     order: 2;
-    margin-top: 0; /* Убираем отступ сверху */
+    margin-top: 0;
   }
   
   /* УБИРАЕМ ОТСТУП МЕЖДУ CHAT WITH US И ТЕКСТОМ */
   .chat-section {
-    margin-bottom: 1em; /* Уменьшено: было 2em, стало 1em */
+    margin-bottom: 0.5em; /* Уменьшено: было 1em */
   }
   
   .text-section {
-    margin-bottom: 1.5em; /* Уменьшено: было 2.5em, стало 1.5em */
+    margin-bottom: 1em; /* Уменьшено: было 1.5em */
   }
   
   /* Сбрасываем ширину для мобильных */
@@ -515,7 +517,7 @@ textarea {
   .contact-text {
     font-size: 1.25em; /* 20px для телефона */
     text-align: center;
-    margin-bottom: 1.5em; /* Уменьшено отступ снизу */
+    margin-bottom: 1em; /* Уменьшено отступ снизу */
     line-height: 1.3;
   }
   
@@ -527,6 +529,7 @@ textarea {
   /* Показываем мобильные email блоки */
   .mobile-emails-section {
     display: flex;
+    margin-top: 1.5em; /* Уменьшено с 3em */
   }
   
   /* ТЕЛЕФОН: CHAT WITH US 48px */
@@ -534,7 +537,7 @@ textarea {
     font-size: 3em; /* 48px - телефоны */
     line-height: 0.9;
     text-align: center;
-    margin-bottom: 0.5em; /* Уменьшено: убираем большой отступ */
+    margin-bottom: 0; /* Убираем отступ */
   }
   
   .form-row {
@@ -549,13 +552,16 @@ textarea {
   }
   
   .contact-form {
-    gap: 2em; /* Немного уменьшено */
+    gap: 1.5em; /* Уменьшено с 2em */
+    margin-top: 0;
   }
   
+  /* Кнопка - центрируем по центру и добавляем отступы */
   .submit-button {
     align-self: center;
-    margin-top: 1em;
-    padding: 0.875em 2em; /* Слегка уменьшаем padding для мобильных */
+    margin: 1em auto 0 auto; /* auto по бокам для центрирования */
+    display: block;
+    padding: 0.75em 2em; /* Немного уменьшаем padding для мобильных */
     
     /* Дополнительные iOS фиксы для мобильных */
     -webkit-appearance: none;
@@ -572,52 +578,64 @@ textarea {
 
 /* Телефонная версия (390px) */
 @media (max-width: 24.375em) { /* 390px */
+  .contact-section {
+    min-height: auto;
+    padding: 0;
+  }
+  
   .contact-container {
     width: 100%;
-    gap: 1.5em; /* Уменьшено: было 2.5em, стало 1.5em */
-    margin: 1em auto; /* Уменьшено: было 1.5em, стало 1em */
+    gap: 0; /* Убираем gap */
+    margin: 0 auto;
     padding: 0 1em; /* 16px для маленьких телефонов */
+    min-height: auto;
+  }
+  
+  .left-column {
+    margin-bottom: 0.5em;
   }
   
   /* ТЕЛЕФОН: CHAT WITH US 48px */
   .chat-text {
-    font-size: 3em; /* 48px */
+    font-size: 2.5em; /* Уменьшено с 3em до 2.5em для маленьких телефонов */
     line-height: 0.9;
-    margin-bottom: 0.5em; /* Уменьшено отступ */
+    margin-bottom: 0;
   }
   
   /* ТЕЛЕФОН: ТЕКСТ 20px */
   .contact-text {
-    font-size: 1.25em; /* 20px */
+    font-size: 1.125em; /* 18px для маленьких телефонов */
     line-height: 1.3;
-    margin-bottom: 1em; /* Уменьшено отступ */
+    margin-bottom: 0.75em;
   }
   
   .contact-form {
-    gap: 1.5em; /* Уменьшено: было 2em, стало 1.5em */
+    gap: 1.25em; /* Уменьшено: было 1.5em */
   }
   
   /* LABEL ПО ЦЕНТРУ В ТЕЛЕФОННОЙ ВЕРСИИ */
   .form-label {
-    font-size: 1em; /* 16px */
+    font-size: 0.9375em; /* 15px для маленьких телефонов */
     text-align: center;
     display: block;
     width: 100%;
+    margin-bottom: 0.25em;
   }
   
   .form-input,
   .form-input-single {
     font-size: 1em; /* 16px */
-    padding: 0.5em 0;
+    padding: 0.375em 0;
     text-align: center;
   }
   
   .submit-button {
-    width: 100%;
+    width: auto;
     max-width: 7.5em;
-    padding: 0.75em 1em;
+    padding: 0.625em 1.5em;
     font-size: 0.875em;
     align-self: center;
+    margin: 0.5em auto 0 auto;
     
     /* iOS фикс для маленьких экранов */
     -webkit-appearance: none;
@@ -633,33 +651,39 @@ textarea {
   
   .mobile-emails-section {
     gap: 1em;
-    margin-top: 2em;
+    margin-top: 1em; /* Уменьшено с 2em */
   }
   
   /* 16px для мобильных email элементов */
   .mobile-email-label {
-    font-size: 1em; /* 16px (было 0.625em) */
+    font-size: 0.9375em; /* 15px */
   }
   
   .mobile-email-value {
-    font-size: 1em; /* 16px (было 0.75em) */
+    font-size: 1em; /* 16px */
   }
 }
 
 /* Очень маленькие телефоны */
 @media (max-width: 20em) { /* 320px */
   .chat-text {
-    font-size: 2.5em; /* 40px */
+    font-size: 2em; /* 32px */
   }
   
   .contact-text {
-    font-size: 1.125em; /* 18px */
+    font-size: 1em; /* 16px */
+    margin-bottom: 0.5em;
+  }
+  
+  .form-label {
+    font-size: 0.875em; /* 14px */
   }
   
   .submit-button {
-    max-width: 6.875em;
+    max-width: 6.5em;
     font-size: 0.75em;
-    padding: 0.625em 0.875em; /* Уменьшаем padding для очень маленьких экранов */
+    padding: 0.5em 1em;
+    margin-top: 0.25em;
   }
   
   /* 16px для очень маленьких телефонов */
@@ -676,19 +700,21 @@ textarea {
 @media (max-height: 37.5em) and (orientation: landscape) {
   .contact-section {
     min-height: auto;
+    padding: 1em 0;
   }
   
   .contact-container {
     flex-direction: row;
-    gap: 2em;
-    padding: 0 2em; /* 32px для ландшафта */
+    gap: 1em;
+    padding: 0 1.5em;
     min-height: auto;
+    margin: 0 auto;
   }
   
   .left-column,
   .right-column {
     width: 50%;
-    padding: 0 1em;
+    padding: 0 0.5em;
     max-width: 50% !important;
     min-height: auto;
   }
@@ -702,25 +728,27 @@ textarea {
   }
   
   .chat-text {
-    font-size: 5em; /* 80px для ландшафта */
+    font-size: 3.5em; /* 56px для ландшафта */
   }
   
   .contact-text {
-    font-size: 1.5em; /* 24px для ландшафта */
+    font-size: 1.25em; /* 20px для ландшафта */
+    margin-bottom: 1em;
   }
   
   .form-row {
     flex-direction: column;
-    gap: 1em;
+    gap: 0.75em;
   }
   
   .contact-form {
-    gap: 1.5em;
+    gap: 1em;
   }
   
   /* В ландшафтной ориентации кнопка справа */
   .submit-button {
     align-self: flex-end;
+    margin: 0.5em 0 0 auto;
     
     /* iOS фиксы для ландшафта */
     -webkit-appearance: none;
@@ -730,7 +758,7 @@ textarea {
   
   /* ИМЕНА ПОЛЕЙ: 16px для ландшафта */
   .form-label {
-    font-size: 1em; /* 16px */
+    font-size: 0.875em; /* 14px для ландшафта */
   }
 }
 
@@ -748,7 +776,7 @@ textarea {
     border-radius: 2em;
     
     /* Фиксируем padding */
-    padding: 0.875em 2.5em !important;
+    padding: 0.75em 2em !important;
     
     /* Убираем iOS подсветку при нажатии */
     -webkit-tap-highlight-color: transparent;
@@ -769,7 +797,7 @@ textarea {
 @-moz-document url-prefix() {
   .submit-button {
     /* Firefox padding фикс */
-    padding: calc(0.875em - 1px) 2.5em;
+    padding: calc(0.75em - 1px) 2em;
   }
 }
 
@@ -792,7 +820,7 @@ textarea {
   background-color: rgba(76, 175, 80, 0.1);
   padding: 0.625em 0.9375em;
   border-radius: 0.25em;
-  margin-bottom: 1.25em;
+  margin-bottom: 1em; /* Уменьшено с 1.25em */
   text-align: center;
   animation: fadeIn 0.3s ease;
 }
