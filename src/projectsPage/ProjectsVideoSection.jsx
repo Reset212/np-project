@@ -37,9 +37,9 @@ const videoData = [
     description: "WE COMBINE FILM AND REAL ESTATE ADVERTISING. REAL ESTATE IS SOLD THROUGH EMOTION, THROUGH STORYTELLING, AND THROUGH THE EXPERIENCE OF BEING IN IT.",
     videoUrl: VideoPlaceholder,
     previewImage: "/projectImage/BRUNELLO.png",
-    desktopMainCategory: "VIDEO",
+    desktopMainCategory: "3D",
     desktopSubCategory: "Real Estate development",
-    mobileCategories: ["VIDEO"],
+    mobileCategories: ["3D"],
   },
   {
     id: 2,
@@ -47,9 +47,9 @@ const videoData = [
     description: "WE CREATED AN EMOTIONAL SALES VIDEO THAT SHOWCASES THE CONCEPT OF THE HOUSE. THE STORY AND CHARACTER OF THE HOUSE WERE CREATED. 3D RENDERINGS.",
     videoUrl: VideoPlaceholder,
     previewImage: "/projectImage/VILLA DEL GAVI.png",
-    desktopMainCategory: "VIDEO", 
+    desktopMainCategory: "3D", 
     desktopSubCategory: "Real Estate development",
-    mobileCategories: ["VIDEO"],
+    mobileCategories: ["3D"],
   },
   {
     id: 3,
@@ -57,9 +57,9 @@ const videoData = [
     description: "THEY CREATED A MAGICAL WORLD IN WHICH THE MAIN CHARACTERS ARE A FATHER AND SON.",
     videoUrl: VideoPlaceholder,
     previewImage: "/projectImage/EYWA WAY OF WATER.png",
-    desktopMainCategory: "VIDEO",
-    desktopSubCategory: "Commercial",
-    mobileCategories: ["VIDEO"],
+    desktopMainCategory: "3D",
+    desktopSubCategory: "Real Estate development",
+    mobileCategories: ["3D"],
   },
   {
     id: 4,
@@ -67,9 +67,9 @@ const videoData = [
     description: "WE MAKE VIDEOS AND MARKETING THAT NO ONE ELSE DOES.",
     videoUrl: VideoPlaceholder,
     previewImage: "/projectImage/ELITE MERIT.png",
-    desktopMainCategory: "HYPE & MARKETING",
-    desktopSubCategory: "Betting",
-    mobileCategories: ["HYPE & MARKETING"],
+    desktopMainCategory: "VIDEO",
+    desktopSubCategory: "Real Estate development",
+    mobileCategories: ["VIDEO"],
   },
   {
     id: 5,
@@ -77,9 +77,9 @@ const videoData = [
     description: "WE COMBINED FILMING IN A STUDIO AND 3D GRAPHICS TO CONVEY THE FUTURE HOME AND ITS PHILOSOPHY AS ACCURATELY AS POSSIBLE.",
     videoUrl: VideoPlaceholder,
     previewImage: "/projectImage/Interstellar.png",
-    desktopMainCategory: "VIDEO",
-    desktopSubCategory: "Beauty",
-    mobileCategories: ["VIDEO"],
+    desktopMainCategory: "3D",
+    desktopSubCategory: "Real Estate development",
+    mobileCategories: ["3D"],
   },
   {
     id: 6,
@@ -87,9 +87,9 @@ const videoData = [
     description: "PARTICULAR ATTENTION IS PAID TO THE PHILOSOPHY BEHIND THE PROJECT AND ITS KEY ADVANTAGES: AN ATMOSPHERE OF COMFORT, AESTHETICS, AND SERVICE.",
     videoUrl: VideoPlaceholder,
     previewImage: "/projectImage/Villa del Divos.png",
-    desktopMainCategory: "VIDEO",
-    desktopSubCategory: "Commercial",
-    mobileCategories: ["VIDEO"],
+    desktopMainCategory: "3D",
+    desktopSubCategory: "Real Estate development",
+    mobileCategories: ["3D"],
   },
   {
     id: 7,
@@ -97,9 +97,9 @@ const videoData = [
     description: "«FOLLOW YOUR DREAM WHATEVER IT TAKES» - THIS THESIS REFLECTS THE COMPANY'S DETERMINATION AND UNWAVERING COMMITMENT TO WHICH IT MOVES FORWARD IN THE IMPLEMENTATION OF ITS PROJECTS.",
     videoUrl: VideoPlaceholder,
     previewImage: "/projectImage/Mr.Eight  Brand video.png",
-    desktopMainCategory: "HYPE & MARKETING",
+    desktopMainCategory: "VIDEO",
     desktopSubCategory: "Real Estate development",
-    mobileCategories: ["HYPE & MARKETING"],
+    mobileCategories: ["VIDEO"],
   },
   {
     id: 8,
@@ -108,7 +108,7 @@ const videoData = [
     videoUrl: VideoPlaceholder,
     previewImage: "/projectImage/Launch of the Villa del Gavi.png",
     desktopMainCategory: "EVENTS & LAUNCHES",
-    desktopSubCategory: "Beauty",
+    desktopSubCategory: "Real Estate development",
     mobileCategories: ["EVENTS & LAUNCHES"],
   },
   {
@@ -118,7 +118,7 @@ const videoData = [
     videoUrl: VideoPlaceholder,
     previewImage: "/projectImage/Launch of the EYWA.png",
     desktopMainCategory: "EVENTS & LAUNCHES",
-    desktopSubCategory: "Beauty",
+    desktopSubCategory: "Real Estate development",
     mobileCategories: ["EVENTS & LAUNCHES"],
   },
   {
@@ -128,7 +128,7 @@ const videoData = [
     videoUrl: VideoPlaceholder,
     previewImage: "/projectImage/Launch of the DIVOS.png",
     desktopMainCategory: "EVENTS & LAUNCHES",
-    desktopSubCategory: "Beauty",
+    desktopSubCategory: "Real Estate development",
     mobileCategories: ["EVENTS & LAUNCHES"],
   },
   {
@@ -138,7 +138,7 @@ const videoData = [
     videoUrl: VideoPlaceholder,
     previewImage: "/projectImage/PR of the Villa del Gavi.png",
     desktopMainCategory: "HYPE & MARKETING",
-    desktopSubCategory: "Beauty",
+    desktopSubCategory: "Real Estate development",
     mobileCategories: ["HYPE & MARKETING"],
   },
   {
@@ -147,9 +147,9 @@ const videoData = [
     description: "WE CAN BRING ANY STAR FOR YOU. MATTHEW MCCONAUGHEY, ADRIAN BRODY, NICOLAS CAGE, MILA JOVOVICH, VINCENT CASSEL, ZENDAYA, QUENTIN TARANTINO, KEANU REEVES, JASON MAMOA AND OTHERS.",
     videoUrl: VideoPlaceholder,
     previewImage: "/projectImage/Celebrity Appearances.png",
-    desktopMainCategory: "CELEBRITY APPEARANCES",
-    desktopSubCategory: "Beauty",
-    mobileCategories: ["CELEBRITY APPEARANCES"],
+    desktopMainCategory: "HYPE & MARKETING",
+    desktopSubCategory: "Real Estate development",
+    mobileCategories: ["HYPE & MARKETING"],
   },
    {
     id: 13,
@@ -158,7 +158,7 @@ const videoData = [
     videoUrl: VideoPlaceholder,
     previewImage: "/projectImage/Vivienne sabo.png",
     desktopMainCategory: "VIDEO",
-    desktopSubCategory: "Commercial",
+    desktopSubCategory: "Beauty",
     mobileCategories: ["VIDEO"],
   },
   {
@@ -167,9 +167,9 @@ const videoData = [
     description: "ONE PRODUCT, ONE CELEBRITY, 12 HOURS OF FILMING, AND OVER 80 VERSIONS FOR A POWERFUL MARKETING CAMPAIGN",
     videoUrl: VideoPlaceholder,
     previewImage: "/projectImage/Stellary.png",
-    desktopMainCategory: "HYPE & MARKETING",
-    desktopSubCategory: "Real Estate development",
-    mobileCategories: ["HYPE & MARKETING"],
+    desktopMainCategory: "VIDEO",
+    desktopSubCategory: "Beauty",
+    mobileCategories: ["VIDEO"],
   },
   {
     id: 15,
@@ -177,9 +177,9 @@ const videoData = [
     description: "WE FILMED IN MARRAKECH TO CAPTURE THE AUTHENTIC ATMOSPHERE AND REFLECT THE IDENTITY OF THE PRODUCT",
     videoUrl: VideoPlaceholder,
     previewImage: "/projectImage/Vivienne sabo (2).png",
-    desktopMainCategory: "EVENTS & LAUNCHES",
+    desktopMainCategory: "VIDEO",
     desktopSubCategory: "Beauty",
-    mobileCategories: ["EVENTS & LAUNCHES"],
+    mobileCategories: ["VIDEO"],
   },
   {
     id: 16,
@@ -187,9 +187,9 @@ const videoData = [
     description: "WE USED CG AND MOTION CONTROL TO CREATE DYNAMIC TRANSITIONS THAT HIGHLIGHT THE PRODUCT'S QUALITY.",
     videoUrl: VideoPlaceholder,
     previewImage: "/projectImage/influence.png",
-    desktopMainCategory: "EVENTS & LAUNCHES",
+    desktopMainCategory: "VIDEO",
     desktopSubCategory: "Beauty",
-    mobileCategories: ["EVENTS & LAUNCHES"],
+    mobileCategories: ["VIDEO"],
   },
   {
     id: 17,
@@ -197,9 +197,9 @@ const videoData = [
     description: "FILMING AND CG FOR A NEW YEAR'S CAMPAIGN IN JUST 21 DAYS",
     videoUrl: VideoPlaceholder,
     previewImage: "/projectImage/VAVADA.png",
-    desktopMainCategory: "EVENTS & LAUNCHES",
-    desktopSubCategory: "Beauty",
-    mobileCategories: ["EVENTS & LAUNCHES"],
+    desktopMainCategory: "VIDEO",
+    desktopSubCategory: "Betting",
+    mobileCategories: ["VIDEO"],
   },
   {
     id: 18,
@@ -207,9 +207,9 @@ const videoData = [
     description: "AN IMAGE VIDEO TO BUILD TRUST IN THE COMPANY",
     videoUrl: VideoPlaceholder,
     previewImage: "/projectImage/FONBET.png",
-    desktopMainCategory: "HYPE & MARKETING",
-    desktopSubCategory: "Beauty",
-    mobileCategories: ["HYPE & MARKETING"],
+    desktopMainCategory: "VIDEO",
+    desktopSubCategory: "Betting",
+    mobileCategories: ["VIDEO"],
   },
   {
     id: 19,
@@ -217,9 +217,9 @@ const videoData = [
     description: "WE DEVELOPED THE VIDEO FROM CONCEPT TO COMPLETION IN 45 DAYS. THE PROJECT WAS LAUNCHED ON TELEVISION.",
     videoUrl: VideoPlaceholder,
     previewImage: "/projectImage/FONBET (2).png",
-    desktopMainCategory: "CELEBRITY APPEARANCES",
-    desktopSubCategory: "Beauty",
-    mobileCategories: ["CELEBRITY APPEARANCES"],
+    desktopMainCategory: "VIDEO",
+    desktopSubCategory: "Betting",
+    mobileCategories: ["VIDEO"],
   },
   {
     id: 20,
@@ -227,9 +227,9 @@ const videoData = [
     description: "WE SHOWED THE COMPANY'S PRECISION BY CAPTURING EVERY DETAIL OF THE GAME, PRESENTING IT AS A RELIABLE BOOKMAKER THAT ACCOUNTS FOR EVERY MOMENT.",
     videoUrl: VideoPlaceholder,
     previewImage: "/projectImage/FONBET (3).png",
-    desktopMainCategory: "CELEBRITY APPEARANCES",
-    desktopSubCategory: "Beauty",
-    mobileCategories: ["CELEBRITY APPEARANCES"],
+    desktopMainCategory: "3D",
+    desktopSubCategory: "Betting",
+    mobileCategories: ["3D"],
   },
    {
     id: 21,
@@ -237,9 +237,9 @@ const videoData = [
     description: "PRODUCTION AT ALL STAGES, FROM CREATIVE CONCEPTS TO MOTION CONTROL FILMING AND 3D GRAPHICS",
     videoUrl: VideoPlaceholder,
     previewImage: "/projectImage/syntec.png",
-    desktopMainCategory: "CELEBRITY APPEARANCES",
-    desktopSubCategory: "Beauty",
-    mobileCategories: ["CELEBRITY APPEARANCES"],
+    desktopMainCategory: "VIDEO",
+    desktopSubCategory: "Commercial",
+    mobileCategories: ["VIDEO"],
   },
    {
     id: 22,
@@ -247,9 +247,9 @@ const videoData = [
     description: "A COMMERCIAL FOR UNION SNEAKERS, FEATURING CHILDREN AND ADULTS WHO HAVE SWITCHED ROLES.",
     videoUrl: VideoPlaceholder,
     previewImage: "/projectImage/street beat.png",
-    desktopMainCategory: "CELEBRITY APPEARANCES",
-    desktopSubCategory: "Beauty",
-    mobileCategories: ["CELEBRITY APPEARANCES"],
+    desktopMainCategory: "VIDEO",
+    desktopSubCategory: "Commercial",
+    mobileCategories: ["VIDEO"],
   },
    {
     id: 23,
@@ -257,9 +257,9 @@ const videoData = [
     description: "A SERIES OF WES ANDERSON-STYLE COMMERCIALS FOR THE FIRST MAJOR MARKETING CAMPAIGN",
     videoUrl: VideoPlaceholder,
     previewImage: "/projectImage/kupibilet.png",
-    desktopMainCategory: "CELEBRITY APPEARANCES",
-    desktopSubCategory: "Beauty",
-    mobileCategories: ["CELEBRITY APPEARANCES"],
+    desktopMainCategory: "VIDEO",
+    desktopSubCategory: "Commercial",
+    mobileCategories: ["VIDEO"],
   },
   {
     id: 24,
@@ -267,9 +267,9 @@ const videoData = [
     description: "WE USED SINGLE-SHOT FILMING TO CONVEY THE BRAND'S DYNAMIC ENERGY AND CONNECTION WITH TODAY'S YOUTH.",
     videoUrl: VideoPlaceholder,
     previewImage: "/projectImage/Restore.png",
-    desktopMainCategory: "CELEBRITY APPEARANCES",
-    desktopSubCategory: "Beauty",
-    mobileCategories: ["CELEBRITY APPEARANCES"],
+    desktopMainCategory: "VIDEO",
+    desktopSubCategory: "Commercial",
+    mobileCategories: ["VIDEO"],
   },
 {
     id: 25,
@@ -277,10 +277,70 @@ const videoData = [
     description: "WE CREATED AND IMPLEMENTED THE IDEA OF SELLING SEVERAL PRODUCTS AT ONCE WITH A SINGLE VIDEO.",
     videoUrl: VideoPlaceholder,
     previewImage: "/projectImage/Restore (2).png",
-    desktopMainCategory: "CELEBRITY APPEARANCES",
-    desktopSubCategory: "Beauty",
-    mobileCategories: ["CELEBRITY APPEARANCES"],
-  }
+    desktopMainCategory: "VIDEO",
+    desktopSubCategory: "Commercial",
+    mobileCategories: ["VIDEO"],
+  },
+  {
+    id: 26,
+    title: "BRUNELLO",
+    description: "WE COMBINE FILM AND REAL ESTATE ADVERTISING. REAL ESTATE IS SOLD THROUGH EMOTION, THROUGH STORYTELLING, AND THROUGH THE EXPERIENCE OF BEING IN IT.",
+    videoUrl: VideoPlaceholder,
+    previewImage: "/projectImage/BRUNELLO.png",
+    desktopMainCategory: "VIDEO",
+    desktopSubCategory: "Real Estate development",
+    mobileCategories: ["VIDEO"],
+  },
+  {
+    id: 27,
+    title: "VILLA DEL GAVI",
+    description: "WE CREATED AN EMOTIONAL SALES VIDEO THAT SHOWCASES THE CONCEPT OF THE HOUSE. THE STORY AND CHARACTER OF THE HOUSE WERE CREATED. 3D RENDERINGS.",
+    videoUrl: VideoPlaceholder,
+    previewImage: "/projectImage/VILLA DEL GAVI.png",
+    desktopMainCategory: "VIDEO", 
+    desktopSubCategory: "Real Estate development",
+    mobileCategories: ["VIDEO"],
+  },
+  {
+    id: 28,
+    title: "EYWA WAY OF WATER",
+    description: "THEY CREATED A MAGICAL WORLD IN WHICH THE MAIN CHARACTERS ARE A FATHER AND SON.",
+    videoUrl: VideoPlaceholder,
+    previewImage: "/projectImage/EYWA WAY OF WATER.png",
+    desktopMainCategory: "VIDEO",
+    desktopSubCategory: "Real Estate development",
+    mobileCategories: ["VIDEO"],
+  },
+  {
+    id: 29,
+    title: "VILLA DEL DIVOS",
+    description: "PARTICULAR ATTENTION IS PAID TO THE PHILOSOPHY BEHIND THE PROJECT AND ITS KEY ADVANTAGES: AN ATMOSPHERE OF COMFORT, AESTHETICS, AND SERVICE.",
+    videoUrl: VideoPlaceholder,
+    previewImage: "/projectImage/Villa del Divos.png",
+    desktopMainCategory: "VIDEO",
+    desktopSubCategory: "Real Estate development",
+    mobileCategories: ["VIDEO"],
+  },
+  {
+    id: 30,
+    title: "FONBET",
+    description: "WE DEVELOPED THE VIDEO FROM CONCEPT TO COMPLETION IN 45 DAYS. THE PROJECT WAS LAUNCHED ON TELEVISION.",
+    videoUrl: VideoPlaceholder,
+    previewImage: "/projectImage/FONBET (2).png",
+    desktopMainCategory: "3D",
+    desktopSubCategory: "Betting",
+    mobileCategories: ["3D"],
+  },
+  {
+    id: 31,
+    title: "FONBET",
+    description: "WE SHOWED THE COMPANY'S PRECISION BY CAPTURING EVERY DETAIL OF THE GAME, PRESENTING IT AS A RELIABLE BOOKMAKER THAT ACCOUNTS FOR EVERY MOMENT.",
+    videoUrl: VideoPlaceholder,
+    previewImage: "/projectImage/FONBET (3).png",
+    desktopMainCategory: "3D",
+    desktopSubCategory: "Betting",
+    mobileCategories: ["3D"],
+  },
 ];
 
 const ProjectsVideoSection = () => {
@@ -315,26 +375,45 @@ const ProjectsVideoSection = () => {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  // Фильтрация видео
-  const filteredVideos = videoData.filter(video => {
-    if (selectedMainCategory === null && selectedSubCategory === null) return true;
-
-    if (isMobile) {
-      if (selectedSubCategory) {
-        return video.mobileCategories.includes(selectedMainCategory) && video.desktopSubCategory === selectedSubCategory;
-      } else if (selectedMainCategory) {
-        return video.mobileCategories.includes(selectedMainCategory);
-      }
-    } else {
-      // Десктопная фильтрация
-      if (selectedSubCategory) {
-        return video.desktopMainCategory === selectedMainCategory && video.desktopSubCategory === selectedSubCategory;
-      } else if (selectedMainCategory) {
-        return video.desktopMainCategory === selectedMainCategory;
-      }
+  // Функция для получения уникальных видео (без дубликатов при отключенных фильтрах)
+  const getFilteredVideos = () => {
+    // При активных фильтрах показываем все соответствующие видео
+    if (selectedMainCategory !== null || selectedSubCategory !== null) {
+      return videoData.filter(video => {
+        if (isMobile) {
+          if (selectedSubCategory) {
+            return video.mobileCategories.includes(selectedMainCategory) && video.desktopSubCategory === selectedSubCategory;
+          } else if (selectedMainCategory) {
+            return video.mobileCategories.includes(selectedMainCategory);
+          }
+        } else {
+          // Десктопная фильтрация
+          if (selectedSubCategory) {
+            return video.desktopMainCategory === selectedMainCategory && video.desktopSubCategory === selectedSubCategory;
+          } else if (selectedMainCategory) {
+            return video.desktopMainCategory === selectedMainCategory;
+          }
+        }
+        return false;
+      });
     }
-    return false;
-  });
+    
+    // При отключенных фильтрах показываем только уникальные видео (без дубликатов)
+    // Определяем уникальность по previewImage (так как одинаковые названия но разные фото)
+    const uniqueVideos = [];
+    const seenImages = new Set();
+    
+    videoData.forEach(video => {
+      if (!seenImages.has(video.previewImage)) {
+        seenImages.add(video.previewImage);
+        uniqueVideos.push(video);
+      }
+    });
+    
+    return uniqueVideos;
+  };
+
+  const filteredVideos = getFilteredVideos();
 
   // Обработчик выбора главной категории на десктопе
   const handleDesktopMainCategoryClick = (category) => {
@@ -695,6 +774,12 @@ const ProjectsVideoSection = () => {
             </div>
           ))}
         </div>
+        
+        {filteredVideos.length === 0 && (
+          <div className="no-results">
+            <p>No projects found for the selected filter.</p>
+          </div>
+        )}
       </div>
 
       {/* Попап с видео */}
@@ -723,6 +808,7 @@ const ProjectsVideoSection = () => {
                   </div>
                 )}
               </div>
+              <p className="popup-description">{selectedVideo.description}</p>
             </div>
           </div>
         </div>

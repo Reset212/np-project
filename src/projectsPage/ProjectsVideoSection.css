@@ -198,9 +198,10 @@
   overflow: visible !important;
 }
 
+/* ИЗМЕНЕНО: Убраны все отступы между главными категориями */
 .mobile-category-text {
   width: auto;
-  height: 2em; /* 32px */
+  height: 1.3em; /* 32px */
   font-family: 'Helvetica Neue', Arial, sans-serif;
   font-style: normal;
   font-weight: 700;
@@ -211,7 +212,9 @@
   text-transform: uppercase;
   color: #000000;
   cursor: pointer;
-  padding: 1em 0; /* 16px */
+  /* ИЗМЕНЕНО: Убраны padding, чтобы не было отступов между категориями */
+  padding: 0;
+  margin: 0;
   transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   white-space: nowrap;
   display: flex;
@@ -475,7 +478,6 @@
 /* Название видео */
 .video-title {
   width: 100%;
-  height: 2em; /* 32px */
   font-family: 'Helvetica Neue', Arial, sans-serif;
   font-style: normal;
   font-weight: 500;
@@ -496,8 +498,8 @@
 /* Описание видео */
 .video-description {
   width: 100%;
-  max-width: 30.1875em; /* 483px */
-  min-height: 3.375em; /* 54px */
+  max-width: 34em; /* 483px */
+  min-height: 1em; /* 54px */
   font-family: 'Helvetica Neue', Arial, sans-serif;
   font-style: normal;
   font-weight: 400;
@@ -668,8 +670,10 @@
   .mobile-category-text {
     font-size: 2em; /* 32px */
     line-height: 1em;
-    height: 2em;
-    padding: 0.5em 0; /* ИЗМЕНЕНО: 8px (0.5em) вместо 16px (1em) */
+    height: 1.3em;
+    /* ИЗМЕНЕНО: Убраны все отступы */
+    padding: 0;
+    margin: 0;
   }
 
   .mobile-subcategory-text {
@@ -754,7 +758,8 @@
     font-size: 1.75em; /* 28px */
     line-height: 1em;
     height: 1.75em;
-    padding: 0.5em 0; /* 8px */
+    padding: 0; /* Убраны отступы */
+    margin: 0; /* Убраны отступы */
   }
 
   .mobile-subcategory-text {
