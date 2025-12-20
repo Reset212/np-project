@@ -407,12 +407,12 @@
   object-fit: cover;
   transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
   filter: brightness(0.9);
-  transform: scale(1);
+  transform: scale(1.02);
   opacity: 1 !important;
 }
 
 .video-card:hover .preview-image {
-  transform: scale(1.05);
+  transform: scale(1.07);
   filter: brightness(1);
   opacity: 1 !important;
 }
