@@ -168,15 +168,7 @@ const NavBar = () => {
         <div className={`mobile-dropdown ${menuActive ? 'active' : ''}`}>
           {menuActive && (
             <>
-              <button 
-                className="close-menu" 
-                onClick={handleMenuClose}
-                aria-label="Close menu"
-              >
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M1 1L19 19M19 1L1 19" stroke="black" strokeWidth="2" strokeLinecap="round"/>
-                </svg>
-              </button>
+
               
               <Link 
                 to="/real-estate" 
@@ -205,16 +197,7 @@ const NavBar = () => {
               >
                 ABOUT
               </Link>
-              <button 
-                className="mobile-nav-item"
-                onClick={() => {
-                  handleMenuClose();
-                  scrollToContact();
-                }}
-                style={{background: 'transparent', border: 'none', font: 'inherit'}}
-              >
-                CHAT WITH US
-              </button>
+
             </>
           )}
         </div>

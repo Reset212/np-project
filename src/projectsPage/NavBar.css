@@ -240,20 +240,52 @@ html {
     display: flex !important;
   }
   
-  /* Центрируем логотип */
+  /* Переопределяем структуру для мобильной версии */
+  .main-header {
+    display: grid;
+    /* grid-template-columns: auto 1fr auto; */
+    align-items: center;
+    gap: 1em;
+    justify-content: space-between;
+  }
+  
+  /* Бургер-меню - левая часть */
+  .burger-menu {
+    grid-column: 1;
+    justify-self: start;
+    margin-right: 0;
+  }
+  
+  /* Логотип - центр */
   .brand-logo {
-    position: static;
+    /* position: static; */
     left: auto;
-    transform: none;
-    margin: 0 auto;
-    flex: 1;
+    /* transform: none; */
+    margin: 0;
+    grid-column: 2;
     display: flex;
     justify-content: center;
+    align-items: center;
+    height: 100%;
+  }
+  
+  .brand-logo__link {
+    display: flex;
+    align-items: center;
+    height: 100%;
   }
   
   .brand-logo__image {
-    width: 5em; /* 80px */
-    height: 1.875em; /* 30px */
+    width: auto;
+    height: 3.5em; /* Высота логотипа */
+    /* max-height: 80%; */
+  }
+  
+  /* Кнопка чата - правая часть */
+  .mobile-chat-button {
+    grid-column: 3;
+    justify-self: end;
+    margin-left: 0;
   }
 }
 
@@ -267,11 +299,11 @@ html {
   
   .main-header {
     padding: 0 0.75em;
+    gap: 0.75em;
   }
   
   .brand-logo__image {
-    width: 4.375em; /* 70px */
-    height: 1.625em; /* 26px */
+    height: 2em; /* Меньшая высота для маленьких экранов */
   }
 }
 
@@ -291,10 +323,8 @@ html {
     justify-content: center;
     cursor: pointer;
     z-index: 1002;
-    /* border: 0.0625em solid rgba(0, 0, 0, 0.3); */
     transition: all var(--transition-speed) ease;
     flex-shrink: 0;
-    margin-right: 0.5em;
   }
   
   .burger-menu:hover {
@@ -319,11 +349,9 @@ html {
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    /* border: 0.0625em solid rgba(0, 0, 0, 0.3); */
     transition: all var(--transition-speed) ease;
     z-index: 1002;
     flex-shrink: 0;
-    margin-left: 0.5em;
   }
   
   .mobile-chat-button:hover {
@@ -345,7 +373,7 @@ html {
     right: 0;
     bottom: 0;
     width: 60%;
-    /* height: 100%; */
+    height: 100%;
     z-index: 1001;
     flex-direction: column;
     justify-content: center;
@@ -354,17 +382,18 @@ html {
     padding: 5em 1.25em;
     opacity: 0;
     visibility: hidden;
-    /* transform: translateY(-1.25em); */
-    /* transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); */
     pointer-events: none;
-    /* background: rgba(255, 255, 255, 0.95); */
-    /* backdrop-filter: blur(0.625em); */
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(0.625em);
+    -webkit-backdrop-filter: blur(0.625em);
+    transform: translateX(-100%);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   }
   
   .mobile-dropdown.active {
     opacity: 1;
     visibility: visible;
-    transform: translateY(0);
+    transform: translateX(0);
     pointer-events: auto;
   }
   
@@ -430,12 +459,17 @@ html {
 @media (max-width: 22.5em) { /* 360px */
   .main-header {
     padding: 0 0.5em;
+    gap: 0.5em;
   }
   
   .burger-menu,
   .mobile-chat-button {
     width: 2.75em;
     height: 2.75em;
+  }
+  
+  .brand-logo__image {
+    height: 1.8em;
   }
   
   .mobile-nav-item {
