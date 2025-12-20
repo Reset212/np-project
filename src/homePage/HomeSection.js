@@ -1,93 +1,150 @@
+// Обновленный компонент HomeSection.js
 import React, { useState, useEffect, useRef } from "react";
 import "./HomeSection.css";
 import logo from "../image/logo.png";
 
 const HomeSection = () => {
   const [isVisible, setIsVisible] = useState(false);
+  const [isIOS, setIsIOS] = useState(false);
   const sectionRef = useRef(null);
   const observerRef = useRef(null);
 
   useEffect(() => {
-    // Функция для создания нового observer
-    const createObserver = () => {
-      // Определяем rootMargin в зависимости от размера экрана
-      let rootMargin;
-      if (window.innerWidth <= 390) { // 390px - мобильные
-        rootMargin = "20px";
-      } else if (window.innerWidth <= 768) { // 768px - планшеты
-        rootMargin = "30px";
-      } else {
-        rootMargin = "50px";
-      }
+    // Определяем iOS устройство
+    const checkIOS = () => {
+      const userAgent = window.navigator.userAgent.toLowerCase();
+      const isIOSDevice = /iphone|ipad|ipod/.test(userAgent);
+      const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+      setIsIOS(isIOSDevice || (isSafari && !window.MSStream));
+    };
 
-      // Если уже есть observer, отключаем его
+    checkIOS();
+
+    // Функция для создания Intersection Observer
+    const createObserver = () => {
+      // Разные настройки для iOS и других устройств
+      const threshold = isIOS ? 0.1 : 0.2;
+      const rootMargin = isIOS ? "100px" : "50px";
+
       if (observerRef.current) {
         observerRef.current.disconnect();
       }
 
-      // Создаем новый observer
-      const newObserver = new IntersectionObserver(
+      const observer = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
-            setIsVisible(entry.isIntersecting);
+            // На iOS используем requestAnimationFrame для плавности
+            if (isIOS) {
+              requestAnimationFrame(() => {
+                setIsVisible(entry.isIntersecting);
+              });
+            } else {
+              setIsVisible(entry.isIntersecting);
+            }
           });
         },
         {
-          threshold: 0.2,
-          rootMargin: rootMargin
+          threshold,
+          rootMargin,
+          root: null
         }
       );
 
-      // Сохраняем ссылку
-      observerRef.current = newObserver;
+      observerRef.current = observer;
 
-      // Начинаем наблюдение
       if (sectionRef.current) {
-        newObserver.observe(sectionRef.current);
+        observer.observe(sectionRef.current);
       }
 
-      return newObserver;
+      return observer;
     };
 
-    // Создаем первый observer
     const observer = createObserver();
 
-    // Обработчик изменения размера окна
-    const handleResize = () => {
-      createObserver();
-    };
-
-    // Добавляем обработчик с debounce для производительности
-    let resizeTimer;
-    const debouncedHandleResize = () => {
-      clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(() => {
-        handleResize();
-      }, 100);
-    };
-
-    window.addEventListener('resize', debouncedHandleResize);
-
-    return () => {
-      // Убираем обработчик
-      window.removeEventListener('resize', debouncedHandleResize);
-      clearTimeout(resizeTimer);
-      
-      // Отключаем observer
-      if (observerRef.current) {
-        observerRef.current.disconnect();
-        observerRef.current = null;
+    // Обработчик для изменения ориентации на iOS
+    const handleOrientationChange = () => {
+      if (isIOS) {
+        // Пересоздаем observer при смене ориентации на iOS
+        setTimeout(() => {
+          createObserver();
+        }, 300);
       }
     };
-  }, []); // Пустой массив зависимостей - эффект выполняется один раз
+
+    // Обработчик изменения размера с debounce
+    let resizeTimer;
+    const handleResize = () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        createObserver();
+      }, 150);
+    };
+
+    // iOS-specific обработчики
+    if (isIOS) {
+      window.addEventListener('orientationchange', handleOrientationChange);
+      window.addEventListener('resize', handleResize);
+      
+      // Предотвращаем bounce-scroll на iOS
+      document.body.style.overscrollBehaviorY = 'none';
+    }
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      if (isIOS) {
+        window.removeEventListener('orientationchange', handleOrientationChange);
+        document.body.style.overscrollBehaviorY = 'auto';
+      }
+      window.removeEventListener('resize', handleResize);
+      clearTimeout(resizeTimer);
+      
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+      }
+    };
+  }, [isIOS]);
+
+  // Обработчик клика для iOS с улучшенной обратной связью
+  const handleButtonClick = (e) => {
+    if (isIOS) {
+      // Добавляем визуальную обратную связь для iOS
+      const button = e.currentTarget;
+      button.style.transform = 'scale(0.95)';
+      button.style.transition = 'transform 0.1s ease';
+      
+      setTimeout(() => {
+        button.style.transform = '';
+        window.location.href = "#/real-estate";
+      }, 100);
+    } else {
+      window.location.href = "#/real-estate";
+    }
+  };
 
   return (
-    <section className="home-section" ref={sectionRef}>
+    <section 
+      className="home-section" 
+      ref={sectionRef}
+      // iOS-specific атрибуты
+      {...(isIOS && {
+        'data-ios': 'true',
+        style: { 
+          WebkitOverflowScrolling: 'touch',
+          overflowX: 'hidden'
+        }
+      })}
+    >
       <div className="home-section-background"></div>
       
       <div className="home-section-content">
         <div className={`home-logo ${isVisible ? 'animate-in' : 'animate-out'}`}>
-          <img src={logo} alt="Home Logo" />
+          <img 
+            src={logo} 
+            alt="Home Logo" 
+            loading="lazy"
+            decoding="async"
+          />
         </div>
         
         <div className="home-text">
@@ -102,19 +159,24 @@ const HomeSection = () => {
           </h1>
         
           <div className="home-button-container">
-            <div 
+            <button 
               className={`read-more-button ${isVisible ? 'animate-in' : 'animate-out'}`}
-              onClick={() => window.location.href = "#/real-estate"}
-              role="button"
-              tabIndex={0}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  window.location.href = "#/real-estate";
+              onClick={handleButtonClick}
+              aria-label="Read more about real estate developers in Dubai"
+              // iOS-specific атрибуты
+              {...(isIOS && {
+                'data-ios-button': 'true',
+                onTouchStart: (e) => {
+                  // Улучшенная обратная связь при касании на iOS
+                  e.currentTarget.style.opacity = '0.8';
+                },
+                onTouchEnd: (e) => {
+                  e.currentTarget.style.opacity = '';
                 }
-              }}
+              })}
             >
               <span className="button-text">READ MORE</span>
-            </div>
+            </button>
           </div>
         </div>
       </div>
