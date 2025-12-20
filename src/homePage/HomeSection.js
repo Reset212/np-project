@@ -1,4 +1,4 @@
-// Обновленный компонент HomeSection.js
+// Обновленный компонент HomeSection.js с улучшенной детекцией iOS
 import React, { useState, useEffect, useRef } from "react";
 import "./HomeSection.css";
 import logo from "../image/logo.png";
@@ -10,12 +10,43 @@ const HomeSection = () => {
   const observerRef = useRef(null);
 
   useEffect(() => {
-    // Определяем iOS устройство
+    // Улучшенная детекция iOS устройств
     const checkIOS = () => {
+      const platform = window.navigator.platform;
       const userAgent = window.navigator.userAgent.toLowerCase();
-      const isIOSDevice = /iphone|ipad|ipod/.test(userAgent);
+      
+      // Проверяем различные признаки iOS
+      const isIPad = /ipad/.test(userAgent);
+      const isIPhone = /iphone/.test(userAgent);
+      const isIPod = /ipod/.test(userAgent);
+      const isIOSDevice = isIPad || isIPhone || isIPod;
+      
+      // Проверяем Safari (только на iOS)
       const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-      setIsIOS(isIOSDevice || (isSafari && !window.MSStream));
+      
+      // Проверяем платформу
+      const isAppleDevice = /(Mac|iPhone|iPod|iPad)/i.test(platform);
+      
+      // Если это iOS устройство или Safari на Apple устройстве
+      const detectedIOS = isIOSDevice || (isSafari && isAppleDevice && !window.MSStream);
+      
+      console.log('iOS detection:', {
+        platform,
+        userAgent,
+        isIOSDevice,
+        isSafari,
+        isAppleDevice,
+        detectedIOS
+      });
+      
+      setIsIOS(detectedIOS);
+      
+      // Добавляем класс к body для CSS-детекции
+      if (detectedIOS) {
+        document.body.classList.add('ios-device');
+      } else {
+        document.body.classList.add('non-ios-device');
+      }
     };
 
     checkIOS();
@@ -33,7 +64,6 @@ const HomeSection = () => {
       const observer = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
-            // На iOS используем requestAnimationFrame для плавности
             if (isIOS) {
               requestAnimationFrame(() => {
                 setIsVisible(entry.isIntersecting);
@@ -61,32 +91,37 @@ const HomeSection = () => {
 
     const observer = createObserver();
 
-    // Обработчик для изменения ориентации на iOS
+    // Добавляем класс к section для стилизации
+    if (sectionRef.current) {
+      if (isIOS) {
+        sectionRef.current.classList.add('ios-platform');
+        sectionRef.current.classList.remove('windows-platform');
+      } else {
+        sectionRef.current.classList.add('windows-platform');
+        sectionRef.current.classList.remove('ios-platform');
+      }
+    }
+
     const handleOrientationChange = () => {
       if (isIOS) {
-        // Пересоздаем observer при смене ориентации на iOS
         setTimeout(() => {
           createObserver();
         }, 300);
       }
     };
 
-    // Обработчик изменения размера с debounce
     let resizeTimer;
     const handleResize = () => {
       clearTimeout(resizeTimer);
       resizeTimer = setTimeout(() => {
         createObserver();
+        // Перепроверяем iOS при ресайзе (может измениться user agent в эмуляторе)
+        checkIOS();
       }, 150);
     };
 
-    // iOS-specific обработчики
     if (isIOS) {
       window.addEventListener('orientationchange', handleOrientationChange);
-      window.addEventListener('resize', handleResize);
-      
-      // Предотвращаем bounce-scroll на iOS
-      document.body.style.overscrollBehaviorY = 'none';
     }
 
     window.addEventListener('resize', handleResize);
@@ -94,7 +129,6 @@ const HomeSection = () => {
     return () => {
       if (isIOS) {
         window.removeEventListener('orientationchange', handleOrientationChange);
-        document.body.style.overscrollBehaviorY = 'auto';
       }
       window.removeEventListener('resize', handleResize);
       clearTimeout(resizeTimer);
@@ -102,13 +136,14 @@ const HomeSection = () => {
       if (observerRef.current) {
         observerRef.current.disconnect();
       }
+      
+      // Убираем классы с body
+      document.body.classList.remove('ios-device', 'non-ios-device');
     };
   }, [isIOS]);
 
-  // Обработчик клика для iOS с улучшенной обратной связью
   const handleButtonClick = (e) => {
     if (isIOS) {
-      // Добавляем визуальную обратную связь для iOS
       const button = e.currentTarget;
       button.style.transform = 'scale(0.95)';
       button.style.transition = 'transform 0.1s ease';
@@ -124,16 +159,9 @@ const HomeSection = () => {
 
   return (
     <section 
-      className="home-section" 
+      className={`home-section ${isIOS ? 'ios-platform' : 'windows-platform'}`} 
       ref={sectionRef}
-      // iOS-specific атрибуты
-      {...(isIOS && {
-        'data-ios': 'true',
-        style: { 
-          WebkitOverflowScrolling: 'touch',
-          overflowX: 'hidden'
-        }
-      })}
+      data-platform={isIOS ? 'ios' : 'windows'}
     >
       <div className="home-section-background"></div>
       
@@ -163,17 +191,7 @@ const HomeSection = () => {
               className={`read-more-button ${isVisible ? 'animate-in' : 'animate-out'}`}
               onClick={handleButtonClick}
               aria-label="Read more about real estate developers in Dubai"
-              // iOS-specific атрибуты
-              {...(isIOS && {
-                'data-ios-button': 'true',
-                onTouchStart: (e) => {
-                  // Улучшенная обратная связь при касании на iOS
-                  e.currentTarget.style.opacity = '0.8';
-                },
-                onTouchEnd: (e) => {
-                  e.currentTarget.style.opacity = '';
-                }
-              })}
+              data-platform={isIOS ? 'ios' : 'windows'}
             >
               <span className="button-text">READ MORE</span>
             </button>
