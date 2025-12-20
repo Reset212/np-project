@@ -28,37 +28,7 @@ html {
   z-index: 99 !important;
 }
 
-/* ========== ЭФФЕКТ ПЛАВНОГО ПРЕВРАЩЕНИЯ В КОНТУР ========== */
-.third-item {
-  position: relative;
-  cursor: pointer;
-  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-  overflow: visible;
-  will-change: transform, opacity;
-}
 
-.item-text {
-  position: relative;
-  display: inline-block;
-  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-/* Основной текст */
-.item-text .text-letter {
-  display: inline-block;
-  opacity: 0;
-  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-  will-change: color, -webkit-text-stroke;
-}
-
-/* Эффект при наведении - плавный переход в контур */
-.third-item:hover .item-text .text-letter {
-  color: transparent !important;
-  -webkit-text-stroke: 0.09375em #282525; /* 1.5px / 16px = 0.09375em */
-  text-stroke: 0.09375em #282525;
-}
 
 /* Убираем стандартное подчеркивание */
 .third-item:hover {
@@ -68,20 +38,14 @@ html {
 /* Для мобильных устройств - уменьшаем толщину контура */
 @media (max-width: 768px) { /* 768px / 16px = 48em */
   .third-item:hover .item-text .text-letter {
-    -webkit-text-stroke: 0.0625em #282525; /* 1px / 16px = 0.0625em */
-    text-stroke: 0.0625em #282525;
+
   }
 }
 
 /* Fallback для браузеров без поддержки text-stroke */
 @supports not (-webkit-text-stroke: 0.0625em #282525) {
   .third-item:hover .item-text .text-letter {
-    color: transparent !important;
-    text-shadow: 
-      -0.03125em -0.03125em 0 #282525, /* 0.5px / 16px = 0.03125em */
-      0.03125em -0.03125em 0 #282525,
-      -0.03125em 0.03125em 0 #282525,
-      0.03125em 0.03125em 0 #282525;
+
   }
 }
 
@@ -411,9 +375,63 @@ html {
 }
 
 /* ============================================= */
-/* ПК ВЕРСИЯ (1920px и больше) - Текущие стили выше */
+/* ПРОМЕЖУТОЧНЫЕ РАЗМЕРЫ (1441px - 1760px) */
 /* ============================================= */
-
+@media (min-width: 90.0625em) and (max-width: 110em) { /* 1441px = 90.0625em, 1760px = 110em */
+  html {
+    font-size: calc(var(--base-font-size) * 0.9375); /* 15px */
+  }
+  
+  .third-scroll-section {
+    padding-top: 5em; /* 80px / 16px = 5em */
+    padding-bottom: 4.375em; /* 70px / 16px = 4.375em */
+    max-height: 95vh;
+  }
+  
+  .third-scroll-container {
+    padding: 0 3.75em; /* 60px / 16px = 3.75em */
+  }
+  
+  .left-side {
+    margin-right: 4em; /* 64px / 16px = 4em */
+  }
+  
+  .third-title {
+    font-size: 13em; /* 208px / 16px = 13em */
+    line-height: 0.85;
+  }
+  
+  .item-text {
+    font-size: 3.25em; /* 52px / 16px = 3.25em */
+    line-height: 1;
+  }
+  
+  .third-items-list {
+    gap: 1em !important; /* 16px / 16px = 1em */
+  }
+  
+  .button-container {
+    margin-top: 2em; /* 32px / 16px = 2em */
+  }
+  
+  .third-button {
+    width: 14em !important; /* 224px / 16px = 14em */
+    font-size: 1em !important; /* 16px / 16px = 1em */
+  }
+  
+  /* Контурные буквы для промежуточных размеров */
+  .outline-we-container.desktop-outline .outline-we {
+    font-size: 13em; /* 208px / 16px = 13em */
+  }
+  
+  .outline-do-container.desktop-outline .outline-do {
+    font-size: 15em; /* 240px / 16px = 15em */
+  }
+  
+  .outline-do-container.desktop-outline {
+    top: 5em; /* 80px / 16px = 5em */
+  }
+}
 /* ============================================= */
 /* ПЛАНШЕТНАЯ ВЕРСИЯ (до 1440px) */
 /* ============================================= */
