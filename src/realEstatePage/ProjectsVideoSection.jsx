@@ -20,13 +20,13 @@ const mobileMainCategories = [
   "CELEBRITY APPEARANCES",
 ];
 
-// Данные для видео с обновленной категоризацией
+// Данные для видео с обновленной категоризацией и Vimeo ID
 const videoData = [
   {
     id: 1,
     title: "BRUNELLO",
     description: "WE COMBINE FILM AND REAL ESTATE ADVERTISING. REAL ESTATE IS SOLD THROUGH EMOTION, THROUGH STORYTELLING, AND THROUGH THE EXPERIENCE OF BEING IN IT.",
-    videoUrl: VideoPlaceholder,
+    vimeoId: "1135673984", // brunello
     previewImage: "/projectImage/BRUNELLO.png",
     category: "VIDEO | 3D",
   },
@@ -34,7 +34,7 @@ const videoData = [
     id: 2,
     title: "VILLA DEL GAVI",
     description: "WE CREATED AN EMOTIONAL SALES VIDEO THAT SHOWCASES THE CONCEPT OF THE HOUSE. THE STORY AND CHARACTER OF THE HOUSE WERE CREATED. 3D RENDERINGS.",
-    videoUrl: VideoPlaceholder,
+    vimeoId: "1083958501", // villa del gavi
     previewImage: "/projectImage/VILLA DEL GAVI.png",
     category: "VIDEO | 3D", 
   },
@@ -42,7 +42,7 @@ const videoData = [
     id: 3,
     title: "EYWA WAY OF WATER",
     description: "THEY CREATED A MAGICAL WORLD IN WHICH THE MAIN CHARACTERS ARE A FATHER AND SON.",
-    videoUrl: VideoPlaceholder,
+    vimeoId: "1135702706", // eywa
     previewImage: "/projectImage/EYWA WAY OF WATER.png",
     category: "VIDEO | 3D",
   },
@@ -50,7 +50,7 @@ const videoData = [
     id: 4,
     title: "ELITE MERIT",
     description: "WE MAKE VIDEOS AND MARKETING THAT NO ONE ELSE DOES.",
-    videoUrl: VideoPlaceholder,
+    vimeoId: "1102229342", // elit merit
     previewImage: "/projectImage/ELITE MERIT.png",
     category: "VIDEO | 3D",
   },
@@ -58,7 +58,7 @@ const videoData = [
     id: 5,
     title: "INTERSTELLAR",
     description: "WE COMBINED FILMING IN A STUDIO AND 3D GRAPHICS TO CONVEY THE FUTURE HOME AND ITS PHILOSOPHY AS ACCURATELY AS POSSIBLE.",
-    videoUrl: VideoPlaceholder,
+    vimeoId: "1021703237", // interstellar
     previewImage: "/projectImage/Interstellar.png",
     category: "VIDEO | 3D",
   },
@@ -66,7 +66,7 @@ const videoData = [
     id: 6,
     title: "VILLA DEL DIVOS",
     description: "PARTICULAR ATTENTION IS PAID TO THE PHILOSOPHY BEHIND THE PROJECT AND ITS KEY ADVANTAGES: AN ATMOSPHERE OF COMFORT, AESTHETICS, AND SERVICE.",
-    videoUrl: VideoPlaceholder,
+    vimeoId: "1055145071", // Divos
     previewImage: "/projectImage/Villa del Divos.png",
     category: "VIDEO | 3D",
   },
@@ -74,7 +74,7 @@ const videoData = [
     id: 7,
     title: "MR.EIGHT | BRAND VIDEO",
     description: "«FOLLOW YOUR DREAM WHATEVER IT TAKES» - THIS THESIS REFLECTS THE COMPANY'S DETERMINATION AND UNWAVERING COMMITMENT TO WHICH IT MOVES FORWARD IN THE IMPLEMENTATION OF ITS PROJECTS.",
-    videoUrl: VideoPlaceholder,
+    vimeoId: "1055261671", // mr.eight | brand video
     previewImage: "/projectImage/Mr.Eight  Brand video.png",
     category: "VIDEO | 3D",
   },
@@ -82,7 +82,7 @@ const videoData = [
     id: 8,
     title: "LAUNCH OF THE VILLA DEL GAVI",
     description: "1400 PEOPLE TURNKEY EVENT ORGANIZATION POWERFUL PR CAMPAIGN HOLLYWOOD STARS OSCAR WINNER ADRIEN BRODY",
-    videoUrl: VideoPlaceholder,
+    vimeoId: "1060106406", // launch villa del gavi
     previewImage: "/projectImage/Launch of the Villa del Gavi.png",
     category: "EVENTS | LAUNCHES",
   },
@@ -90,7 +90,7 @@ const videoData = [
     id: 9,
     title: "LAUNCH OF THE EYWA",
     description: "700 PEOPLE TURNKEY EVENT ORGANIZATION POWERFUL PR CAMPAIGN CONTENT",
-    videoUrl: VideoPlaceholder,
+    vimeoId: "1148259441", // launch eywa
     previewImage: "/projectImage/Launch of the EYWA.png",
     category: "EVENTS | LAUNCHES",
   },
@@ -98,7 +98,7 @@ const videoData = [
     id: 10,
     title: "LAUNCH OF THE DIVOS",
     description: "900 PEOPLE TURNKEY EVENT ORGANIZATION POWERFUL PR CAMPAIGN CONTENT",
-    videoUrl: VideoPlaceholder,
+    vimeoId: "1060106406", // временный, нужно добавить правильный ID для launch divos
     previewImage: "/projectImage/Launch of the DIVOS.png",
     category: "EVENTS | LAUNCHES",
   },
@@ -106,7 +106,7 @@ const videoData = [
     id: 11,
     title: "PR OF THE VILLA DEL GAVI",
     description: "PR CAMPAIGN WITH BRAND AMBASSADORS MR. THANK YOU & MR.GOODLUCK. A SERIES OF 98 REELS WAS PRODUCED, REACHING 195,000,000 VIEWS. AND 127 STORIES WERE PRODUCED, REACHING 48,500,000 VIEWS.",
-    videoUrl: VideoPlaceholder,
+    vimeoId: "1060106406", // временный, нужно добавить правильный ID
     previewImage: "/projectImage/PR of the Villa del Gavi.png",
     category: "HYPE CAMPAIGN",
   },
@@ -114,7 +114,7 @@ const videoData = [
     id: 12,
     title: "CELEBRITY APPEARANCES",
     description: "WE CAN BRING ANY STAR FOR YOU. MATTHEW MCCONAUGHEY, ADRIAN BRODY, NICOLAS CAGE, MILA JOVOVICH, VINCENT CASSEL, ZENDAYA, QUENTIN TARANTINO, KEANU REEVES, JASON MAMOA AND OTHERS.",
-    videoUrl: VideoPlaceholder,
+    vimeoId: "1060106406", // временный, нужно добавить правильный ID
     previewImage: "/projectImage/Celebrity Appearances.png",
     category: "CELEBRITY APPEARANCES",
   }
@@ -128,9 +128,10 @@ const ProjectsVideoSection = () => {
   const [hoveredCard, setHoveredCard] = useState(null);
   const [isMobile, setIsMobile] = useState(false);
   const [imageLoadError, setImageLoadError] = useState({});
+  const [cursorHidden, setCursorHidden] = useState(false);
   
   const videoRefs = useRef({});
-  const popupVideoRef = useRef(null);
+  const popupTimeoutRef = useRef(null);
 
   // Определяем мобильное устройство
   useEffect(() => {
@@ -140,6 +141,15 @@ const ProjectsVideoSection = () => {
     checkMobile();
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // Очистка таймера при размонтировании
+  useEffect(() => {
+    return () => {
+      if (popupTimeoutRef.current) {
+        clearTimeout(popupTimeoutRef.current);
+      }
+    };
   }, []);
 
   // Фильтрация видео
@@ -152,14 +162,14 @@ const ProjectsVideoSection = () => {
     setSelectedCategory(selectedCategory === category ? null : category);
   };
 
-  // Открытие попапа с видео
+  // Открытие попапа с Vimeo видео
   const openVideoPopup = (video) => {
     setSelectedVideo(video);
-    setVideoLoadError(false);
     setIsPopupOpen(true);
+    setCursorHidden(true);
     document.body.style.overflow = 'hidden';
     
-    // Останавливаем все видео на карточках
+    // Останавливаем все локальные видео на карточках
     Object.values(videoRefs.current).forEach(videoElement => {
       if (videoElement) {
         videoElement.pause();
@@ -167,30 +177,25 @@ const ProjectsVideoSection = () => {
       }
     });
     
-    // Автовоспроизведение в попапе
-    setTimeout(() => {
-      if (popupVideoRef.current) {
-        const playPromise = popupVideoRef.current.play();
-        if (playPromise !== undefined) {
-          playPromise.catch(error => {
-            if (error.name !== 'AbortError') {
-              console.warn('Автовоспроизведение в попапе не удалось:', error);
-            }
-          });
-        }
-      }
-    }, 300);
+    // Показываем курсор через 2 секунды
+    if (popupTimeoutRef.current) {
+      clearTimeout(popupTimeoutRef.current);
+    }
+    
+    popupTimeoutRef.current = setTimeout(() => {
+      setCursorHidden(false);
+    }, 2000);
   };
 
-  // Закрытие попапа с видео
+  // Закрытие попапа
   const closeVideoPopup = () => {
-    if (popupVideoRef.current) {
-      popupVideoRef.current.pause();
-      popupVideoRef.current.currentTime = 0;
+    if (popupTimeoutRef.current) {
+      clearTimeout(popupTimeoutRef.current);
     }
+    
     setIsPopupOpen(false);
     setSelectedVideo(null);
-    setVideoLoadError(false);
+    setCursorHidden(false);
     document.body.style.overflow = 'auto';
   };
 
@@ -232,10 +237,11 @@ const ProjectsVideoSection = () => {
     }));
   };
 
-  // Обработчик ошибки загрузки видео в попапе
-  const handleVideoError = () => {
-    setVideoLoadError(true);
-    console.error('Ошибка загрузки видео в попапе');
+  // Обработчик движения мыши в попапе
+  const handlePopupMouseMove = () => {
+    if (cursorHidden) {
+      setCursorHidden(false);
+    }
   };
 
   return (
@@ -326,7 +332,7 @@ const ProjectsVideoSection = () => {
                   console.error(`Ошибка загрузки видео ${video.title}:`, e);
                 }}
               >
-                <source src={video.videoUrl} type="video/mp4" />
+                <source src={VideoPlaceholder} type="video/mp4" />
                 Ваш браузер не поддерживает видео тег.
               </video>
               <div className="video-overlay">
@@ -349,32 +355,29 @@ const ProjectsVideoSection = () => {
         </div>
       </div>
 
-      {/* Попап с видео */}
+      {/* Попап с Vimeo видео */}
       {isPopupOpen && selectedVideo && (
-        <div className="video-popup-overlay" onClick={closeVideoPopup}>
-          <div className="video-popup" onClick={e => e.stopPropagation()}>
-            <button className="close-popup" onClick={closeVideoPopup}>
-              ×
-            </button>
+        <div 
+          className={`video-popup-overlay ${cursorHidden ? 'cursor-hidden' : ''}`} 
+          onClick={closeVideoPopup}
+          onMouseMove={handlePopupMouseMove}
+        >
+          <div className="video-popup vimeo-popup" onClick={e => e.stopPropagation()}>
+       
+            
             <div className="popup-content">
-              <h3>{selectedVideo.title}</h3>
-              <div className="popup-video-container">
-                <video
-                  ref={popupVideoRef}
-                  controls
-                  onError={handleVideoError}
-                  key={selectedVideo.id}
-                >
-                  <source src={selectedVideo.videoUrl} type="video/mp4" />
-                  Ваш браузер не поддерживает видео тег.
-                </video>
-                {videoLoadError && (
-                  <div className="video-error-message">
-                    <p>⚠️ Video failed to load</p>
-                    <p>Пожалуйста, проверьте наличие файла видео</p>
-                  </div>
-                )}
+              <div className="popup-video-container vimeo-container">
+                <iframe
+                  src={`https://player.vimeo.com/video/${selectedVideo.vimeoId}?autoplay=1&title=0&byline=0&portrait=0&badge=0&autopause=0`}
+                  width="100%"
+                  height="100%"
+                  frameBorder="0"
+                  allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
+                  allowFullScreen
+                  title={selectedVideo.title}
+                ></iframe>
               </div>
+              
             </div>
           </div>
         </div>
