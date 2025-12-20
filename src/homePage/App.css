@@ -54,6 +54,24 @@
   .view-project-button{
     padding-top: 6px !important;
   }
+  /* Кнопка отправки - ПО ПРАВОМУ КРАЮ для ПК и планшета */
+.submit-button {
+  font-family: var(--font-primary);
+  font-weight: 300;
+  font-size: 0.875em;
+  color: var(--color-black);
+  text-transform: uppercase;
+  padding: 0 !important;
+  border: none;
+  background: rgba(230, 230, 230, 0.72);
+  cursor: pointer;
+  transition: all var(--transition-speed) ease;
+  align-self: flex-end; /* Кнопка справа для ПК и планшета */
+  border-radius: 2em;
+  min-width: 6.375em;
+  min-height: 2.1875em;
+  margin-top: 1em;
+}
 }
 
 /* Фикс для старых Safari */
