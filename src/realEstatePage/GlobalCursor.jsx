@@ -5,6 +5,7 @@ const GlobalCursor = () => {
   // ========== СОСТОЯНИЯ ==========
   const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
   const [isHovering, setIsHovering] = useState(false);
+  const [isClicking, setIsClicking] = useState(false);
   const [particles, setParticles] = useState([]);
   const [showFullLogo, setShowFullLogo] = useState(true);
   
@@ -14,7 +15,8 @@ const GlobalCursor = () => {
   const lastTimeRef = useRef(0);
   const isAssemblingRef = useRef(false);
   const forceCenterTimeoutRef = useRef(null);
-  const cursorRotationRef = useRef(0); // Ref для вращения курсора
+  const cursorRotationRef = useRef(0);
+  const clickAssembleTimeoutRef = useRef(null);
 
   // ========== КОНСТАНТЫ SVG ==========
   const fullSVG = {
@@ -65,20 +67,22 @@ const GlobalCursor = () => {
   }, []);
 
   // ========== ФУНКЦИЯ РАЗБРОСА ЧАСТИЦ ==========
-  const scatterParticles = () => {
+  const scatterParticles = (isClick = false) => {
     setShowFullLogo(false);
     
     setParticles(prev => prev.map(part => {
       const angle = Math.random() * Math.PI * 2;
-      const speed = 800 + Math.random() * 1200;
+      const speed = isClick 
+        ? 1000 + Math.random() * 1500 // Более сильный разлет при клике
+        : 800 + Math.random() * 1200; // Обычный разлет при наведении
       
       return {
         ...part,
         velocityX: Math.cos(angle) * speed,
         velocityY: Math.sin(angle) * speed,
         rotation: Math.random() * 360,
-        scale: 0.8 + Math.random() * 0.3,
-        opacity: 0.8,
+        scale: isClick ? 0.7 + Math.random() * 0.4 : 0.8 + Math.random() * 0.3,
+        opacity: isClick ? 0.9 : 0.8,
         isStuck: false
       };
     }));
@@ -141,6 +145,33 @@ const GlobalCursor = () => {
     });
   };
 
+  // ========== ОБРАБОТЧИК КЛИКА ==========
+  const handleClick = () => {
+    // Отменяем предыдущий таймер сборки если он есть
+    if (clickAssembleTimeoutRef.current) {
+      clearTimeout(clickAssembleTimeoutRef.current);
+      clickAssembleTimeoutRef.current = null;
+    }
+    
+    // Разлет при клике
+    setIsClicking(true);
+    scatterParticles(true);
+    
+    // Немедленная сборка через короткую задержку
+    clickAssembleTimeoutRef.current = setTimeout(() => {
+      assembleParticles();
+      setIsClicking(false);
+      
+      // Автоматическое центрирование через время
+      const autoCenterTimeout = setTimeout(() => {
+        forceCenterParticles();
+      }, 500);
+      
+      // Очистка таймера
+      return () => clearTimeout(autoCenterTimeout);
+    }, 100); // Задержка перед сборкой (100ms)
+  };
+
   // ========== ОСНОВНОЙ ЭФФЕКТ ==========
   useEffect(() => {
     const handleMouseMove = (e) => {
@@ -175,7 +206,7 @@ const GlobalCursor = () => {
 
       if (isInteractive && !isHovering) {
         setIsHovering(true);
-        scatterParticles();
+        scatterParticles(false);
       }
     };
 
@@ -186,13 +217,20 @@ const GlobalCursor = () => {
       }
     };
 
+    const handleMouseDown = (e) => {
+      // Обрабатываем только левую кнопку мыши
+      if (e.button === 0) {
+        handleClick();
+      }
+    };
+
     // ========== ФУНКЦИЯ АНИМАЦИИ ==========
     const animateParticles = (timestamp) => {
       if (!lastTimeRef.current) lastTimeRef.current = timestamp;
       const deltaTime = Math.min((timestamp - lastTimeRef.current) / 1000, 0.033);
       lastTimeRef.current = timestamp;
 
-      // ВРАЩЕНИЕ КУРСОРА ВСЕГДА (даже когда частицы собраны)
+      // ВРАЩЕНИЕ КУРСОРА ВСЕГДА
       cursorRotationRef.current = (cursorRotationRef.current + 0.5) % 360;
 
       setParticles(prev => {
@@ -205,12 +243,14 @@ const GlobalCursor = () => {
             return part;
           }
           
-          if (isHovering) {
+          if (isHovering || isClicking) {
             // ========== РАЗЛЕТ ЧАСТИЦ ==========
             allAssembled = false;
             
-            velocityX *= 0.84;
-            velocityY *= 0.84;
+            // При клике частицы разлетаются быстрее
+            const damping = isClicking ? 0.88 : 0.84;
+            velocityX *= damping;
+            velocityY *= damping;
             
             x += velocityX * deltaTime;
             y += velocityY * deltaTime;
@@ -220,7 +260,7 @@ const GlobalCursor = () => {
               velocityY += (Math.random() - 0.5) * 80 * deltaTime;
             }
             
-            const randomPull = 0.03;
+            const randomPull = isClicking ? 0.02 : 0.03;
             velocityX -= x * randomPull;
             velocityY -= y * randomPull;
             
@@ -265,14 +305,13 @@ const GlobalCursor = () => {
               y = 0;
               velocityX = 0;
               velocityY = 0;
-              rotation = cursorRotationRef.current; // Вращение как у курсора
+              rotation = cursorRotationRef.current;
               scale = 1;
               opacity = 1;
             }
             
           } else {
             // ========== СОБРАННОЕ СОСТОЯНИЕ ==========
-            // Частицы вращаются вместе с курсором
             rotation = cursorRotationRef.current;
             scale = 1 + Math.sin(timestamp * 0.001 + index) * 0.03;
             opacity = 1;
@@ -315,6 +354,7 @@ const GlobalCursor = () => {
     window.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mouseover', handleMouseEnter);
     document.addEventListener('mouseout', handleMouseLeave);
+    document.addEventListener('mousedown', handleMouseDown);
 
     animationRef.current = requestAnimationFrame(animateParticles);
 
@@ -323,14 +363,19 @@ const GlobalCursor = () => {
       window.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseover', handleMouseEnter);
       document.removeEventListener('mouseout', handleMouseLeave);
+      document.removeEventListener('mousedown', handleMouseDown);
+      
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current);
       }
       if (forceCenterTimeoutRef.current) {
         clearTimeout(forceCenterTimeoutRef.current);
       }
+      if (clickAssembleTimeoutRef.current) {
+        clearTimeout(clickAssembleTimeoutRef.current);
+      }
     };
-  }, [isHovering, particles]);
+  }, [isHovering, isClicking]);
 
   // ========== ОТКЛЮЧЕНИЕ НА МОБИЛЬНЫХ ==========
   const isMobile = window.innerWidth <= 768;
@@ -339,7 +384,7 @@ const GlobalCursor = () => {
   }
 
   // ========== РЕНДЕРИНГ ==========
-  const shouldShowFullLogo = showFullLogo && !isHovering && !isAssemblingRef.current;
+  const shouldShowFullLogo = showFullLogo && !isHovering && !isClicking && !isAssemblingRef.current;
 
   return (
     <div 
@@ -356,18 +401,18 @@ const GlobalCursor = () => {
         transformOrigin: 'center center'
       }}
     >
-      {/* Пунктирный круг при наведении */}
-      {isHovering && (
+      {/* Пунктирный круг при наведении или клике */}
+      {(isHovering || isClicking) && (
         <svg
-          width="76"
-          height="76"
+          width="66"
+          height="66"
           viewBox="0 0 76 76"
           style={{
             position: 'absolute',
             left: '0',
             top: '0',
             transform: 'translate(-50%, -50%)',
-            opacity: 0.6,
+            opacity: isClicking ? 0.8 : 0.6,
             transition: 'opacity 0.2s ease'
           }}
         >
@@ -376,10 +421,10 @@ const GlobalCursor = () => {
             cy="38"
             r="38"
             fill="none"
-            stroke="#000000ff"
-            strokeWidth="1.5"
-            strokeDasharray="4, 4"
-            strokeOpacity="0.7"
+            stroke="#00000038"
+            strokeWidth={isClicking ? "2" : "1.5"}
+            strokeDasharray={isClicking ? "3, 3" : "4, 4"}
+            strokeOpacity={isClicking ? "0.9" : "0.7"}
           />
         </svg>
       )}
@@ -395,7 +440,7 @@ const GlobalCursor = () => {
             top: '0',
             width: '60px',
             height: '60px',
-            transform: `translate(-50%, -50%) rotate(${cursorRotationRef.current}deg)`, // ВРАЩЕНИЕ
+            transform: `translate(-50%, -50%) rotate(${cursorRotationRef.current}deg)`,
             opacity: 1,
             filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))',
             transition: 'opacity 0.3s ease, transform 0.1s linear',
@@ -447,8 +492,6 @@ const GlobalCursor = () => {
           </svg>
         );
       })}
-      
-
     </div>
   );
 };

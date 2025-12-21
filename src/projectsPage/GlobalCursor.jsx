@@ -20,6 +20,10 @@ const GlobalCursor = () => {
   const cursorRotationRef = useRef(0);
   const colorCheckIntervalRef = useRef(null);
   const colorAnimationRef = useRef(null); // Ref для анимации цвета
+  const lastScrollYRef = useRef(0);
+  const scrollRotationRef = useRef(0);
+  const isScrollingRef = useRef(false);
+  const scrollTimeoutRef = useRef(null);
 
   // ========== КОНСТАНТЫ SVG ==========
   const fullSVG = {
@@ -185,6 +189,49 @@ const GlobalCursor = () => {
     }
   };
 
+  // ========== ФУНКЦИИ ДЛЯ СКРОЛЛА ==========
+  const handleScroll = () => {
+    const currentScrollY = window.scrollY;
+    const scrollDelta = currentScrollY - lastScrollYRef.current;
+    lastScrollYRef.current = currentScrollY;
+    
+    if (Math.abs(scrollDelta) > 0) {
+      isScrollingRef.current = true;
+      
+      // Чем быстрее скролл, тем быстрее вращение
+      const scrollSpeed = Math.min(Math.abs(scrollDelta), 100) / 100;
+      const rotationAmount = scrollSpeed * 25; // Максимум 10 градусов за шаг
+      
+      if (scrollDelta > 0) {
+        // Скролл вниз - по часовой стрелке
+        scrollRotationRef.current += rotationAmount;
+      } else {
+        // Скролл вверх - против часовой стрелки
+        scrollRotationRef.current -= rotationAmount;
+      }
+      
+      // Сбрасываем таймер скроллинга
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+      }
+      
+      // Через 100мс без скролла считаем, что скролл остановился
+      scrollTimeoutRef.current = setTimeout(() => {
+        isScrollingRef.current = false;
+      }, 100);
+    }
+  };
+
+  // Плавный возврат к базовому вращению после скролла
+  const updateScrollRotation = (deltaTime) => {
+    if (!isScrollingRef.current && Math.abs(scrollRotationRef.current) > 0.1) {
+      // Плавное возвращение к нулю
+      scrollRotationRef.current *= Math.pow(0.9, deltaTime * 60);
+    } else if (!isScrollingRef.current && Math.abs(scrollRotationRef.current) <= 0.1) {
+      scrollRotationRef.current = 0;
+    }
+  };
+
   // ========== АНИМАЦИЯ ЦВЕТА ==========
   const animateColorTransition = (timestamp) => {
     if (!lastTimeRef.current) lastTimeRef.current = timestamp;
@@ -211,6 +258,7 @@ const GlobalCursor = () => {
   // ========== ИНИЦИАЛИЗАЦИЯ ==========
   useEffect(() => {
     setParticles(initialParticles);
+    lastScrollYRef.current = window.scrollY;
     
     // Инициализируем цвет курсора
     updateCursorColor();
@@ -221,6 +269,9 @@ const GlobalCursor = () => {
     // Запускаем анимацию цвета
     colorAnimationRef.current = requestAnimationFrame(animateColorTransition);
     
+    // Добавляем обработчик скролла
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    
     return () => {
       if (colorCheckIntervalRef.current) {
         clearInterval(colorCheckIntervalRef.current);
@@ -228,6 +279,10 @@ const GlobalCursor = () => {
       if (colorAnimationRef.current) {
         cancelAnimationFrame(colorAnimationRef.current);
       }
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+      }
+      window.removeEventListener('scroll', handleScroll);
     };
   }, []);
 
@@ -369,7 +424,12 @@ const GlobalCursor = () => {
       const deltaTime = Math.min((timestamp - lastTimeRef.current) / 1000, 0.033);
       lastTimeRef.current = timestamp;
 
-      cursorRotationRef.current = (cursorRotationRef.current + 0.5) % 360;
+      // Обновляем вращение от скролла
+      updateScrollRotation(deltaTime);
+      
+      // Базовая скорость вращения + эффект от скролла
+      const scrollRotationSpeed = scrollRotationRef.current * deltaTime * 30;
+      cursorRotationRef.current = (cursorRotationRef.current + 0 + scrollRotationSpeed) % 360;
 
       setParticles(prev => {
         let allAssembled = true;
@@ -514,6 +574,9 @@ const GlobalCursor = () => {
     ? `rgba(255, 255, 255, ${shadowOpacity})` 
     : `rgba(0, 0, 0, ${shadowOpacity})`;
 
+  // Итоговое вращение с эффектом скролла
+  const totalRotation = cursorRotationRef.current + scrollRotationRef.current;
+
   return (
     <div 
       ref={cursorRef}
@@ -529,7 +592,6 @@ const GlobalCursor = () => {
         transformOrigin: 'center center'
       }}
     >
-
       
       {/* Целое SVG лого с вращением */}
       {shouldShowFullLogo && (
@@ -542,7 +604,7 @@ const GlobalCursor = () => {
             top: '0',
             width: '60px',
             height: '60px',
-            transform: `translate(-50%, -50%) rotate(${cursorRotationRef.current}deg)`,
+            transform: `translate(-50%, -50%) rotate(${totalRotation}deg)`,
             opacity: 1,
             filter: `drop-shadow(0 2px 4px ${shadowColor})`,
             transition: 'opacity 0.3s ease, transform 0.1s linear, filter 0.3s ease',
@@ -568,6 +630,9 @@ const GlobalCursor = () => {
           return null;
         }
         
+        // Для частиц также добавляем эффект скролла к вращению
+        const particleRotation = part.rotation + scrollRotationRef.current;
+        
         return (
           <svg
             key={part.id}
@@ -579,7 +644,7 @@ const GlobalCursor = () => {
               top: `${part.y}px`,
               width: '60px',
               height: '60px',
-              transform: `translate(-50%, -50%) rotate(${part.rotation}deg) scale(${part.scale})`,
+              transform: `translate(-50%, -50%) rotate(${particleRotation}deg) scale(${part.scale})`,
               opacity: part.opacity,
               transition: isAssemblingRef.current 
                 ? 'transform 0.2s cubic-bezier(0.34, 1.2, 0.64, 1), opacity 0.3s ease, filter 0.3s ease'
@@ -601,7 +666,6 @@ const GlobalCursor = () => {
         );
       })}
       
-
     </div>
   );
 };
