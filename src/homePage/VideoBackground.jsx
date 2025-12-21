@@ -4,7 +4,6 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import "./VideoBackground.css";
 import videoSrc from "../video/Brunello.mp4";
 import mobileVideoSrc from "../video/brun vert.mp4"; // Добавлено для мобильных
-import logoImg from "../image/logo.png";
 import taglineImg from "../image/tagline.png";
 import awardsImg from "../image/awards.png";
 import silverImg from "../image/silver.png";
@@ -100,6 +99,25 @@ const VideoBackground = () => {
     };
   }, [isMenuOpen]);
 
+// Обновите LogoSVG компонент в VideoBackground.jsx:
+const LogoSVG = () => (
+  <svg 
+    xmlns="http://www.w3.org/2000/svg" 
+    viewBox="0 0 450 220" /* Уменьшил высоту и ширину */
+    className="logo-svg"
+    preserveAspectRatio="xMidYMid meet"
+  >
+    <path fill="#ededed" d="M246.65,98.61c1.32,0,2.42,1.1,2.64,2.2l2.42,12.74c5.93-10.54,16.03-17.36,30.31-17.36,14.49.22,25.92,7.03,31.85,20.65,6.59-12.52,18.23-20.65,34.04-20.65,21.53.22,36.46,15.6,36.24,45.24l.22,56.23c0,1.32-.88,2.2-2.19,2.2h-17.14c-1.32,0-2.19-.88-2.19-2.2v-53.15c0-18.89-7.69-26.8-20.21-26.8-14.06,0-23.94,12.08-24.16,34.7v45.24c0,1.32-.88,2.2-2.2,2.2h-16.91c-1.32,0-2.2-.88-2.2-2.2v-53.15c0-18.67-7.68-26.8-19.99-26.8-17.35,0-23.94,18.23-24.38,32.73v47.22c0,1.32-.88,2.2-2.2,2.2h-17.13c-1.32,0-2.2-.88-2.2-2.2v-96.86c0-1.32.88-2.2,2.2-2.2h13.17Z" transform="scale(0.8) translate(-30, -30)"/>
+    <path fill="#ededed" d="M404.65,239.29V100.81c0-1.32.88-2.2,2.42-2.2h11.64c1.53,0,2.42.88,2.86,2.2l3.07,13.4c7.47-11.2,19.55-17.79,35.36-17.79,30.52,0,50.95,21.53,50.95,52.93s-20.43,52.93-50.95,52.93c-14.94,0-26.58-5.93-33.82-16.03v53.04c0,1.32-.88,2.2-2.2,2.2h-17.13c-1.32,0-2.2-.88-2.2-2.2Zm53.59-58.31c18.89,0,31.41-12.74,31.41-31.63s-12.52-31.63-31.41-31.63-31.85,12.74-31.85,31.63,13.17,31.63,31.85,31.63Z" transform="scale(0.8) translate(-30, -30)"/>
+    <g transform="scale(0.8) translate(-30, -30)">
+      <path fill="#ededed" d="M99.86,61.73l7.36-4.25c1.11-.64,2.47-.64,3.57,0l50.64,29.24c1.31.76,1.51,2.57.39,3.58l-29.4,26.85c-1.05.96-2.73.7-3.44-.53l-29.95-51.84c-.62-1.07-.25-2.44.82-3.05Z"/>
+      <path fill="#ededed" d="M28.35,165.37v-61.05c0-.8.43-1.54,1.12-1.93l52.67-30.42c1.07-.62,2.43-.25,3.05.82l32.19,55.75c.52.91.35,2.06-.43,2.77l-47.88,43.74c-.53.49-1.27.69-1.98.53l-36.99-8.02c-1.03-.22-1.76-1.13-1.76-2.18Z"/>
+      <path fill="#ededed" d="M156.15,215.23l-45.38,25.78c-1.1.62-2.44.62-3.53,0l-77.77-44.21c-.7-.4-1.13-1.14-1.13-1.94v-8.55c0-1.42,1.31-2.48,2.71-2.18l124.47,26.97c2,.43,2.41,3.11.63,4.13Z"/>
+      <path fill="#ededed" d="M189.69,104.32v90.55c0,.8-.43,1.55-1.13,1.94l-5.28,3c-.76.43-1.66.57-2.52.39l-89.15-19.3c-1.77-.38-2.37-2.61-1.03-3.83l86.84-79.32c.72-.66,1.78-.77,2.62-.29l8.53,4.92c.69.4,1.12,1.14,1.12,1.94Z"/>
+    </g>
+  </svg>
+);
+
   return (
     <>
       <div className="video-background-container">
@@ -142,7 +160,7 @@ const VideoBackground = () => {
           
           <div className="logo">
             <Link to="/home">
-              <img src={logoImg} alt="Logo" className="logo-image" />
+              <LogoSVG />
             </Link>
           </div>
           
@@ -331,13 +349,6 @@ const VideoBackground = () => {
               </p>
             </div>
           </div>
-
-          {/* <button 
-            className="view-project-button"
-            onClick={() => alert("Viewing project...")}
-          >
-            VIEW PROJECT
-          </button> */}
         </div>
       </div>
     </>
