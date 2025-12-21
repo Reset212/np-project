@@ -105,7 +105,7 @@ const videoData = [
     id: 8,
     title: "LAUNCH OF THE VILLA DEL GAVI",
     description: "1400 PEOPLE TURNKEY EVENT ORGANIZATION POWERFUL PR CAMPAIGN HOLLYWOOD STARS OSCAR WINNER ADRIEN BRODY",
-    vimeoId: "1060106406",
+    vimeoId: "1099296047",
     previewImage: "/projectImage/Launch of the Villa del Gavi.png",
     desktopMainCategory: "EVENTS & LAUNCHES",
     desktopSubCategory: "Real Estate development",
@@ -465,8 +465,18 @@ const ProjectsVideoSection = () => {
     return mainCategoryToSubcategories[category] || [];
   };
 
-  // Открытие попапа с Vimeo видео
+  // Функция для определения, нужно ли показывать кнопку для данного видео
+  const shouldShowWatchButton = (videoId) => {
+    // Для блоков с ID 11 и 12 не показываем кнопку
+    return videoId !== 11 && videoId !== 12;
+  };
+
+  // Открытие попапа с Vimeo видео (только для блоков с кнопкой)
   const openVideoPopup = (video) => {
+    // Для блоков без кнопки (id 11 и 12) не открываем попап
+    if (video.id === 11 || video.id === 12) {
+      return;
+    }
     setSelectedVideo(video);
     setIsPopupOpen(true);
     setCursorHidden(true);
@@ -676,15 +686,18 @@ const ProjectsVideoSection = () => {
                 <div className="video-content">
                   <h2 className="video-title">{video.title}</h2>
                   <p className="video-description">{video.description}</p>
-                  <button
-                    className="watch-btn"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      openVideoPopup(video);
-                    }}
-                  >
-                    WATCH VIDEO
-                  </button>
+                  {/* Убираем кнопку для блоков 11 и 12 */}
+                  {shouldShowWatchButton(video.id) && (
+                    <button
+                      className="watch-btn"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        openVideoPopup(video);
+                      }}
+                    >
+                      WATCH VIDEO
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
@@ -706,7 +719,6 @@ const ProjectsVideoSection = () => {
           onMouseMove={handlePopupMouseMove}
         >
           <div className="video-popup vimeo-popup" onClick={e => e.stopPropagation()}>
-         
             <div className="popup-content">
               <div className="popup-video-container vimeo-container">
                 <iframe
@@ -719,7 +731,6 @@ const ProjectsVideoSection = () => {
                   title={selectedVideo.title}
                 ></iframe>
               </div>
-           
             </div>
           </div>
         </div>
