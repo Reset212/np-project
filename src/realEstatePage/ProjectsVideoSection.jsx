@@ -162,8 +162,12 @@ const ProjectsVideoSection = () => {
     setSelectedCategory(selectedCategory === category ? null : category);
   };
 
-  // Открытие попапа с Vimeo видео
+  // Открытие попапа с Vimeo видео (только для блоков с видео)
   const openVideoPopup = (video) => {
+    // Для блоков без кнопки (id 11 и 12) не открываем попап
+    if (video.id === 11 || video.id === 12) {
+      return;
+    }
     setSelectedVideo(video);
     setIsPopupOpen(true);
     setCursorHidden(true);
@@ -242,6 +246,12 @@ const ProjectsVideoSection = () => {
     if (cursorHidden) {
       setCursorHidden(false);
     }
+  };
+
+  // Функция для определения, нужно ли показывать кнопку для данного видео
+  const shouldShowWatchButton = (videoId) => {
+    // Для блоков с ID 11 и 12 не показываем кнопку
+    return videoId !== 11 && videoId !== 12;
   };
 
   return (
@@ -339,15 +349,18 @@ const ProjectsVideoSection = () => {
                 <div className="video-content">
                   <h2 className="video-title">{video.title}</h2>
                   <p className="video-description">{video.description}</p>
-                  <button
-                    className="watch-btn"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      openVideoPopup(video);
-                    }}
-                  >
-                    WATCH VIDEO
-                  </button>
+                  {/* Убираем кнопку для блоков 11 и 12 */}
+                  {shouldShowWatchButton(video.id) && (
+                    <button
+                      className="watch-btn"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        openVideoPopup(video);
+                      }}
+                    >
+                      WATCH VIDEO
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
@@ -363,8 +376,6 @@ const ProjectsVideoSection = () => {
           onMouseMove={handlePopupMouseMove}
         >
           <div className="video-popup vimeo-popup" onClick={e => e.stopPropagation()}>
-       
-            
             <div className="popup-content">
               <div className="popup-video-container vimeo-container">
                 <iframe
@@ -377,7 +388,6 @@ const ProjectsVideoSection = () => {
                   title={selectedVideo.title}
                 ></iframe>
               </div>
-              
             </div>
           </div>
         </div>
