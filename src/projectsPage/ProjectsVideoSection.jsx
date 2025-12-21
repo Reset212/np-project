@@ -29,6 +29,8 @@ const mainCategoryToSubcategories = {
   "CELEBRITY APPEARANCES": ["Real Estate development", "Beauty", "Commercial", "Betting"]
 };
 
+
+
 // Данные для видео с Vimeo ID
 const videoData = [
   {
@@ -151,7 +153,7 @@ const videoData = [
     desktopSubCategory: "Real Estate development",
     mobileCategories: ["HYPE & MARKETING"],
   },
-   {
+  {
     id: 13,
     title: "VIVIENNE SABO",
     description: "EVERYDAY LIFE VS CELEBRATION, MODESTY VS BOLDNESS, FAMILIARITY VS DARING SELF-EXPRESSION",
@@ -231,7 +233,7 @@ const videoData = [
     desktopSubCategory: "Betting",
     mobileCategories: ["3D"],
   },
-   {
+  {
     id: 21,
     title: "SYNTEC",
     description: "PRODUCTION AT ALL STAGES, FROM CREATIVE CONCEPTS TO MOTION CONTROL FILMING AND 3D GRAPHICS",
@@ -241,7 +243,7 @@ const videoData = [
     desktopSubCategory: "Commercial",
     mobileCategories: ["VIDEO"],
   },
-   {
+  {
     id: 22,
     title: "STREET BEAT",
     description: "A COMMERCIAL FOR UNION SNEAKERS, FEATURING CHILDREN AND ADULTS WHO HAVE SWITCHED ROLES.",
@@ -251,7 +253,7 @@ const videoData = [
     desktopSubCategory: "Commercial",
     mobileCategories: ["VIDEO"],
   },
-   {
+  {
     id: 23,
     title: "KUPIBILET",
     description: "A SERIES OF WES ANDERSON-STYLE COMMERCIALS FOR THE FIRST MAJOR MARKETING CAMPAIGN",
@@ -271,7 +273,7 @@ const videoData = [
     desktopSubCategory: "Commercial",
     mobileCategories: ["VIDEO"],
   },
-{
+  {
     id: 25,
     title: "RESTORE",
     description: "WE CREATED AND IMPLEMENTED THE IDEA OF SELLING SEVERAL PRODUCTS AT ONCE WITH A SINGLE VIDEO.",
@@ -281,7 +283,105 @@ const videoData = [
     desktopSubCategory: "Commercial",
     mobileCategories: ["VIDEO"],
   },
-  // Остальные видео...
+  
+  // ДОБАВЛЕННЫЕ НОВЫЕ ВИДЕО
+  
+  // FONBET для категории 3D и подкатегории Betting
+  // Используем фото FONBET (2).png и нужное описание
+  {
+    id: 26,
+    title: "FONBET",
+    description: "WE DEVELOPED THE VIDEO FROM CONCEPT TO COMPLETION IN 45 DAYS. THE PROJECT WAS LAUNCHED ON TELEVISION.",
+    vimeoId: "912201122", // Используем тот же Vimeo ID
+    previewImage: "/projectImage/FONBET (2).png", // Используем то же фото
+    desktopMainCategory: "3D",
+    desktopSubCategory: "Betting",
+    mobileCategories: ["3D"],
+  },
+  
+  // VAVADA для категории 3D и подкатегории Betting
+  {
+    id: 27,
+    title: "VAVADA",
+    description: "FILMING AND CG FOR A NEW YEAR'S CAMPAIGN IN JUST 21 DAYS",
+    vimeoId: "1055152643", // Используем тот же Vimeo ID
+    previewImage: "/projectImage/VAVADA.png", // Используем то же фото
+    desktopMainCategory: "3D",
+    desktopSubCategory: "Betting",
+    mobileCategories: ["3D"],
+  },
+  
+  // ДОБАВЛЕННЫЕ ВИДЕО ДЛЯ КАТЕГОРИИ VIDEO И ПОДКАТЕГОРИИ REAL ESTATE DEVELOPMENT
+  
+  // BRUNELLO для категории Video и подкатегории Real Estate development
+  {
+    id: 28,
+    title: "BRUNELLO",
+    description: "WE COMBINE FILM AND REAL ESTATE ADVERTISING. REAL ESTATE IS SOLD THROUGH EMOTION, THROUGH STORYTELLING, AND THROUGH THE EXPERIENCE OF BEING IN IT.",
+    vimeoId: "1135673984",
+    previewImage: "/projectImage/BRUNELLO.png",
+    desktopMainCategory: "VIDEO",
+    desktopSubCategory: "Real Estate development",
+    mobileCategories: ["VIDEO"],
+  },
+  
+  // VILLA DEL GAVI для категории Video и подкатегории Real Estate development
+  {
+    id: 29,
+    title: "VILLA DEL GAVI",
+    description: "WE CREATED AN EMOTIONAL SALES VIDEO THAT SHOWCASES THE CONCEPT OF THE HOUSE. THE STORY AND CHARACTER OF THE HOUSE WERE CREATED.",
+    vimeoId: "1083958501",
+    previewImage: "/projectImage/VILLA DEL GAVI.png",
+    desktopMainCategory: "VIDEO",
+    desktopSubCategory: "Real Estate development",
+    mobileCategories: ["VIDEO"],
+  },
+  
+  // EYWA WAY OF WATER для категории Video и подкатегории Real Estate development
+  {
+    id: 30,
+    title: "EYWA WAY OF WATER",
+    description: "THEY CREATED A MAGICAL WORLD IN WHICH THE MAIN CHARACTERS ARE A FATHER AND SON.",
+    vimeoId: "1135702706",
+    previewImage: "/projectImage/EYWA WAY OF WATER.png",
+    desktopMainCategory: "VIDEO",
+    desktopSubCategory: "Real Estate development",
+    mobileCategories: ["VIDEO"],
+  },
+  
+  // Villa del Divos для категории Video и подкатегории Real Estate development
+  {
+    id: 31,
+    title: "VILLA DEL DIVOS",
+    description: "PARTICULAR ATTENTION IS PAID TO THE PHILOSOPHY BEHIND THE PROJECT AND ITS KEY ADVANTAGES: AN ATMOSPHERE OF COMFORT, AESTHETICS, AND SERVICE.",
+    vimeoId: "1055145071",
+    previewImage: "/projectImage/Villa del Divos.png",
+    desktopMainCategory: "VIDEO",
+    desktopSubCategory: "Real Estate development",
+    mobileCategories: ["VIDEO"],
+  },
+  
+  // Interstellar для категории Video и подкатегории Real Estate development
+  {
+    id: 32,
+    title: "INTERSTELLAR",
+    description: "WE COMBINED FILMING IN A STUDIO AND 3D GRAPHICS TO CONVEY THE FUTURE HOME AND ITS PHILOSOPHY AS ACCURATELY AS POSSIBLE.",
+    vimeoId: "1021703237",
+    previewImage: "/projectImage/Interstellar.png",
+    desktopMainCategory: "VIDEO",
+    desktopSubCategory: "Real Estate development",
+    mobileCategories: ["VIDEO"],
+  },
+  {   
+     id: 33,
+    title: "FONBET",
+    description: "WE SHOWED THE COMPANY'S PRECISION BY CAPTURING EVERY DETAIL OF THE GAME, PRESENTING IT AS A RELIABLE BOOKMAKER THAT ACCOUNTS FOR EVERY MOMENT.",
+    vimeoId: "912892750", // Используем Vimeo ID с FONBET (3).png
+    previewImage: "/projectImage/FONBET (3).png", // Используем фото с FONBET (3).png
+    desktopMainCategory: "VIDEO", // Категория VIDEO
+    desktopSubCategory: "Betting", // Подкатегория Betting
+    mobileCategories: ["VIDEO"],
+  }
 ];
 
 const ProjectsVideoSection = () => {
