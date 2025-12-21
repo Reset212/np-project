@@ -8,29 +8,39 @@ const ScrollTextAnimation2 = () => {
   const containerRef = useRef(null);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting && !hasAnimated) {
-            setIsVisible(true);
-            setHasAnimated(true);
-          }
-        });
-      },
-      {
-        threshold: 0.3,
-        rootMargin: "50px"
+    const checkVisibility = () => {
+      if (!containerRef.current || hasAnimated) return;
+      
+      const rect = containerRef.current.getBoundingClientRect();
+      const windowHeight = window.innerHeight;
+      
+      // Вычисляем, какая часть блока видна
+      const visibleHeight = Math.min(rect.bottom, windowHeight) - Math.max(rect.top, 0);
+      const elementHeight = rect.height;
+      
+      // Процент видимости блока (от 0 до 1)
+      const visibilityRatio = Math.max(0, Math.min(1, visibleHeight / elementHeight));
+      
+      // Запускаем анимацию, когда видно примерно 70% блока
+      if (visibilityRatio >= 0.7) {
+        setIsVisible(true);
+        setHasAnimated(true);
       }
-    );
+    };
 
-    if (containerRef.current) {
-      observer.observe(containerRef.current);
-    }
+    const handleScroll = () => {
+      requestAnimationFrame(checkVisibility);
+    };
 
+    // Проверяем сразу при загрузке
+    setTimeout(checkVisibility, 100);
+    
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('resize', handleScroll);
+    
     return () => {
-      if (containerRef.current) {
-        observer.unobserve(containerRef.current);
-      }
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleScroll);
     };
   }, [hasAnimated]);
 
@@ -47,7 +57,9 @@ const ScrollTextAnimation2 = () => {
               <span
                 key={`first-${index}`}
                 className="text-word-2"
-                style={{ animationDelay: `${index * 0.1}s` }}
+                style={{ 
+                  '--word-index': index,
+                }}
               >
                 {word}
                 {index < firstLineWords.length - 1 && <span className="space-2"> </span>}
@@ -61,7 +73,9 @@ const ScrollTextAnimation2 = () => {
               <span
                 key={`second-${index}`}
                 className="text-word-2"
-                style={{ animationDelay: `${(firstLineWords.length + index) * 0.1}s` }}
+                style={{ 
+                  '--word-index': index + firstLineWords.length,
+                }}
               >
                 {word}
                 {index < secondLineWords.length - 1 && <span className="space-2"> </span>}
@@ -70,6 +84,9 @@ const ScrollTextAnimation2 = () => {
           </div>
         </div>
       </div>
+      
+   
+   
     </div>
   );
 };

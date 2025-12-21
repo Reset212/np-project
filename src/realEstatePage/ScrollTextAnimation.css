@@ -4,14 +4,14 @@
 .scroll-text-container-2 {
   position: relative;
   width: 100%;
-  height: 786px;
+  min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
   background-color: #ffffff;
-  /* border: 1px solid red; */
   overflow: hidden;
-  /* padding: 40px 60px; */
+  padding: 100px 0;
+  margin: 150px 0;
 }
 
 /* КОНТЕЙНЕР ТЕКСТА - РАСТЯНУТ НА ВСЮ ШИРИНУ */
@@ -28,9 +28,11 @@
   text-align: center;
   width: 100%;
   max-width: 1600px;
+  padding: 0 80px;
   opacity: 0;
-  transform: translateY(30px);
-  transition: opacity 0.8s ease, transform 0.8s ease;
+  transform: translateY(50px);
+  transition: opacity 0.8s ease-out, 
+              transform 0.8s ease-out;
 }
 
 .text-content-2.visible-2 {
@@ -44,13 +46,15 @@
 /* СТРОКИ ТЕКСТА */
 .text-line-2 {
   display: block;
-  width: 90%;
+  width: 100%;
   line-height: 1.1;
+  overflow: hidden;
+  margin-bottom: 0;
 }
 
 /* Отступ между строками */
 .second-line-2 {
-  margin-top: 30px;
+  margin-top: 60px;
 }
 
 /* ОТДЕЛЬНЫЕ СЛОВА - РАСТЯНУТЫ */
@@ -64,21 +68,11 @@
   color: #000000;
   text-transform: uppercase;
   opacity: 0;
-  transform: translateY(20px);
-  animation: wordAppear2 0.6s ease forwards;
+  transform: translateY(100px);
+  animation: wordSlideUp 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  animation-play-state: paused;
+  animation-delay: calc(var(--word-index) * 0.05s);
   white-space: nowrap;
-}
-
-/* АНИМАЦИЯ ПОЯВЛЕНИЯ СЛОВ */
-@keyframes wordAppear2 {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 /* ПРОБЕЛЫ */
@@ -86,158 +80,289 @@
   display: inline-block;
   width: 20px;
   height: 1px;
+  opacity: 0;
+  transform: translateY(100px);
+  animation: wordSlideUp 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  animation-play-state: paused;
+  animation-delay: calc(var(--word-index) * 0.05s);
 }
 
-/* ПЛАНШЕТНАЯ ВЕРСИЯ */
-@media (max-width: 1440px) {
+/* АНИМАЦИЯ ПОДЪЕМА СЛОВ СНИЗУ */
+@keyframes wordSlideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(100px);
+  }
+  60% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Запуск анимации при появлении */
+.text-content-2.visible-2 .text-word-2,
+.text-content-2.visible-2 .space-2 {
+  animation-play-state: running;
+}
+
+/* АДАПТИВ НА 1920PX */
+@media (max-width: 1920px) {
   .scroll-text-container-2 {
-    padding: 40px 50px;
+    padding: 80px 0;
+    margin: 120px 0;
+  }
+  
+  .text-content-2 {
+    padding: 0 70px;
+    max-width: 1400px;
   }
   
   .text-word-2 {
-    font-size: 75px;
+    font-size: 82px;
     letter-spacing: -1.8px;
+    transform: translateY(80px);
+  }
+  
+  .space-2 {
+    width: 18px;
+    transform: translateY(80px);
+  }
+  
+  @keyframes wordSlideUp-1920 {
+    0% {
+      opacity: 0;
+      transform: translateY(80px);
+    }
+    60% {
+      opacity: 0.8;
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .second-line-2 {
+    margin-top: 50px;
+  }
+}
+
+/* АДАПТИВ НА 1440PX */
+@media (max-width: 1440px) {
+  .scroll-text-container-2 {
+    padding: 70px 0;
+    margin: 100px 0;
+  }
+  
+  .text-content-2 {
+    padding: 0 60px;
+    max-width: 1200px;
+  }
+  
+  .text-word-2 {
+    font-size: 68px;
+    letter-spacing: -1.5px;
+    transform: translateY(70px);
+    animation: wordSlideUp-1440 1.1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    animation-play-state: paused;
+    animation-delay: calc(var(--word-index) * 0.04s);
+  }
+  
+  @keyframes wordSlideUp-1440 {
+    0% {
+      opacity: 0;
+      transform: translateY(70px);
+    }
+    60% {
+      opacity: 0.8;
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
   
   .space-2 {
     width: 16px;
+    transform: translateY(70px);
+    animation: wordSlideUp-1440 1.1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    animation-play-state: paused;
+    animation-delay: calc(var(--word-index) * 0.04s);
   }
   
   .second-line-2 {
-    margin-top: 25px;
+    margin-top: 45px;
   }
 }
 
-@media (max-width: 1200px) {
-  .text-word-2 {
-    font-size: 65px;
-    letter-spacing: -1.5px;
-  }
-  
-  .space-2 {
-    width: 14px;
-  }
-  
-  .second-line-2 {
-    margin-top: 22px;
-  }
-}
-
-@media (max-width: 1024px) {
+/* АДАПТИВ НА 860PX */
+@media (max-width: 860px) {
   .scroll-text-container-2 {
-    padding: 40px 30px;
+    padding: 50px 0;
+    min-height: 80vh;
+    margin: 80px 0;
+  }
+  
+  .text-content-2 {
+    padding: 0 40px;
+    max-width: 100%;
+    transform: translateY(30px);
   }
   
   .text-word-2 {
-    font-size: 55px;
-    letter-spacing: -1.2px;
-  }
-  
-  .space-2 {
-    width: 12px;
-  }
-  
-  .second-line-2 {
-    margin-top: 20px;
-  }
-}
-
-/* МОБИЛЬНАЯ ВЕРСИЯ */
-@media (max-width: 768px) {
-  .scroll-text-container-2 {
-    height: auto;
-    min-height: 100vh;
-    padding: 60px 20px;
-  }
-  
-  .text-word-2 {
-    font-size: 42px;
-    letter-spacing: -0.9px;
-    line-height: 1.2;
+    font-size: 52px;
+    letter-spacing: -1px;
+    line-height: 1.15;
     white-space: normal;
-    display: inline;
+    transform: translateY(50px);
+    animation: wordSlideUp-860 1.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    animation-play-state: paused;
+    animation-delay: calc(var(--word-index) * 0.03s);
+  }
+  
+  @keyframes wordSlideUp-860 {
+    0% {
+      opacity: 0;
+      transform: translateY(50px);
+    }
+    60% {
+      opacity: 0.8;
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
   
   .space-2 {
-    width: 8px;
+    width: 10px;
+    transform: translateY(50px);
+    animation: wordSlideUp-860 1.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    animation-play-state: paused;
+    animation-delay: calc(var(--word-index) * 0.03s);
   }
   
   .text-line-2 {
-    line-height: 1.25;
+    line-height: 1.2;
   }
   
   .second-line-2 {
-    margin-top: 25px;
+    margin-top: 35px;
   }
 }
 
-/* МАЛЕНЬКИЕ ТЕЛЕФОНЫ */
-@media (max-width: 480px) {
+/* АДАПТИВ НА 390PX */
+@media (max-width: 390px) {
   .scroll-text-container-2 {
-    padding: 50px 16px;
+    padding: 40px 0;
+    min-height: 70vh;
+    margin: 60px 0;
+  }
+  
+  .text-content-2 {
+    padding: 0 24px;
+    transform: translateY(20px);
   }
   
   .text-word-2 {
-    font-size: 34px;
+    font-size: 36px;
     letter-spacing: -0.7px;
-    line-height: 1.3;
+    line-height: 1.25;
+    transform: translateY(40px);
+    animation: wordSlideUp-390 1.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    animation-play-state: paused;
+    animation-delay: calc(var(--word-index) * 0.02s);
+  }
+  
+  @keyframes wordSlideUp-390 {
+    0% {
+      opacity: 0;
+      transform: translateY(40px);
+    }
+    60% {
+      opacity: 0.8;
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
   
   .space-2 {
-    width: 6px;
+    width: 7px;
+    transform: translateY(40px);
+    animation: wordSlideUp-390 1.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    animation-play-state: paused;
+    animation-delay: calc(var(--word-index) * 0.02s);
   }
   
   .second-line-2 {
-    margin-top: 20px;
+    margin-top: 30px;
   }
 }
 
-/* ОЧЕНЬ МАЛЕНЬКИЕ ТЕЛЕФОНЫ */
-@media (max-width: 360px) {
-  .text-word-2 {
-    font-size: 28px;
-    letter-spacing: -0.5px;
-    line-height: 1.35;
-  }
-  
-  .space-2 {
-    width: 5px;
-  }
-  
-  .second-line-2 {
-    margin-top: 18px;
-  }
+/* КНОПКА ДЛЯ ТЕСТИРОВАНИЯ */
+.test-animation-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 10px 20px;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  z-index: 1000;
+  font-size: 14px;
+  opacity: 0.7;
+  transition: opacity 0.3s;
 }
 
-/* ЛАНДШАФТНАЯ ОРИЕНТАЦИЯ */
-@media (max-height: 600px) and (orientation: landscape) {
-  .scroll-text-container-2 {
-    height: auto;
-    min-height: 100vh;
-    padding: 40px 30px;
-  }
-  
-  .text-word-2 {
-    font-size: 48px;
-  }
-  
-  .second-line-2 {
-    margin-top: 20px;
-  }
+.test-animation-btn:hover {
+  opacity: 1;
 }
 
-/* БОЛЬШИЕ ЭКРАНЫ */
-@media (max-width: 1920px) {
-  .text-word-2 {
-    font-size: 64px;
-    letter-spacing: -2.5px;
+/* ИНДИКАТОР ВИДИМОСТИ ДЛЯ ОТЛАДКИ */
+.visibility-indicator {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  font-size: 12px;
+  z-index: 1000;
+  pointer-events: none;
+  opacity: 0.8;
+  max-width: 200px;
+}
+
+.visibility-indicator div {
+  margin-bottom: 5px;
+}
+
+.visibility-indicator div:last-child {
+  margin-bottom: 0;
+}
+
+/* ОТКЛЮЧАЕМ АНИМАЦИЮ ДЛЯ ПОЛЬЗОВАТЕЛЕЙ, КОТОРЫЕ ПРЕДПОЧИТАЮТ СНИЖЕННУЮ АНИМАЦИЮ */
+@media (prefers-reduced-motion: reduce) {
+  .text-word-2,
+  .space-2,
+  .text-content-2 {
+    animation: none !important;
+    transition: none !important;
+    animation-play-state: running !important;
+    opacity: 1;
+    transform: translateY(0) !important;
   }
   
-  .space-2 {
-    width: 25px;
-  }
-  
-  .second-line-2 {
-    margin-top: 76px;
+  .text-content-2.visible-2 {
+    opacity: 1;
+    transform: translateY(0) !important;
   }
 }
