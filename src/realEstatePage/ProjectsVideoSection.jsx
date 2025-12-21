@@ -82,7 +82,7 @@ const videoData = [
     id: 8,
     title: "LAUNCH OF THE VILLA DEL GAVI",
     description: "1400 PEOPLE TURNKEY EVENT ORGANIZATION POWERFUL PR CAMPAIGN HOLLYWOOD STARS OSCAR WINNER ADRIEN BRODY",
-    vimeoId: "1060106406", // launch villa del gavi
+    vimeoId: "1099296047", // launch villa del gavi
     previewImage: "/projectImage/Launch of the Villa del Gavi.png",
     category: "EVENTS | LAUNCHES",
   },

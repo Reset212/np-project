@@ -15,7 +15,7 @@ const ThirdScrollBlock = () => {
     "EVENTS",
     "3D/CG"
   ];
-  const buttonText = "VIEW ALL PROJECT";
+  // const buttonText = "VIEW ALL PROJECT";
 
   useEffect(() => {
     const handleScroll = () => {

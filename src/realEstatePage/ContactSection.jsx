@@ -73,7 +73,7 @@ const ContactSection = () => {
 
   return (
     <section className="contact-section" id="contact-section">
-      <div className="global-divider"></div>
+      {/* <div className="global-divider"></div> */}
       <div className="contact-container">
         {/* ЛЕВАЯ КОЛОНКА */}
         <div className="left-column">

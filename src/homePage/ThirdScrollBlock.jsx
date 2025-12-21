@@ -15,7 +15,7 @@ const ThirdScrollBlock = () => {
     "CELEBRITY APPEARANCES",
     "3D"
   ];
-  const buttonText = "VIEW ALL PROJECT";
+  // const buttonText = "VIEW ALL PROJECT";
 
   useEffect(() => {
     const handleScroll = () => {
@@ -259,7 +259,7 @@ const ThirdScrollBlock = () => {
                 transitionDelay: isVisible ? "1200ms" : "0ms"
               }}
             >
-              <button className="third-button">
+              {/* <button className="third-button">
                 {buttonText.split("").map((letter, index) => (
                   <React.Fragment key={index}>
                     {letter === " " ? (
@@ -278,7 +278,7 @@ const ThirdScrollBlock = () => {
                     )}
                   </React.Fragment>
                 ))}
-              </button>
+              </button> */}
             </div>
           </div>
         </div>

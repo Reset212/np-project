@@ -333,12 +333,12 @@ const VideoBackground = () => {
             </div>
           </div>
 
-          <button 
+          {/* <button 
             className="view-project-button"
             onClick={() => alert("Viewing project...")}
           >
             VIEW PROJECT
-          </button>
+          </button> */}
         </div>
       </div>
     </>
