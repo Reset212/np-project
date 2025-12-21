@@ -399,7 +399,7 @@
 .footer-mobile-social a:focus,
 .footer-mobile-links-row1 a:focus,
 .footer-mobile-links-row2 a:focus {
-  outline: 0.125em solid #007bff;
+  /* outline: 0.125em solid #007bff; */
   outline-offset: 0.25em;
   border-radius: 0.125em;
 }

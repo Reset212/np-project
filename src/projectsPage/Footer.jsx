@@ -21,13 +21,13 @@ const Footer = () => {
         </div>
         
         <div className="footer-social">
-          <a href="https://instagram.com" aria-label="Instagram">
+          <a href="https://www.instagram.com/movie_park/" aria-label="Instagram">
             <img src={instagramIcon} alt="Instagram" />
           </a>
-          <a href="https://vimeo.com" aria-label="Vimeo">
+          <a href="https://vimeo.com/movieparkco" aria-label="Vimeo">
             <img src={vimeoIcon} alt="Vimeo" />
           </a>
-          <a href="mailto:contact@example.com" aria-label="Email">
+          <a href="mailto:hello@movieparkpro.com" aria-label="Email">
             <img src={emailIcon} alt="Email" />
           </a>
         </div>
@@ -36,13 +36,13 @@ const Footer = () => {
         <div className="footer-mobile">
           {/* 1 строка: SVG иконки */}
           <div className="footer-mobile-social">
-            <a href="https://instagram.com" aria-label="Instagram">
+            <a href="https://www.instagram.com/movie_park/" aria-label="Instagram">
               <img src={instagramIcon} alt="Instagram" />
             </a>
-            <a href="https://vimeo.com" aria-label="Vimeo">
+            <a href="https://vimeo.com/movieparkco" aria-label="Vimeo">
               <img src={vimeoIcon} alt="Vimeo" />
             </a>
-            <a href="mailto:contact@example.com" aria-label="Email">
+            <a href="mailto:hello@movieparkpro.com" aria-label="Email">
               <img src={emailIcon} alt="Email" />
             </a>
           </div>
