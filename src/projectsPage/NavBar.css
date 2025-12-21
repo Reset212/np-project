@@ -1,4 +1,4 @@
-/* NavBar.css - ОБНОВЛЕННАЯ ВЕРСИЯ */
+/* NavBar.css - ПОЛНАЯ ОБНОВЛЕННАЯ ВЕРСИЯ */
 
 :root {
   --base-font-size: 16px;
@@ -72,10 +72,38 @@ html {
   white-space: nowrap;
   transition: opacity var(--transition-speed) ease;
   cursor: pointer;
+  font-family: inherit;
+  background: none;
+  border: none;
+  padding: 0;
 }
 
 .nav-link:hover {
   opacity: 0.6;
+}
+
+/* Стили для текста наград (если они используются в NavBar) */
+.award-text {
+  color: white;
+  margin: 0;
+  text-align: left;
+  white-space: nowrap;
+  display: flex;
+  flex-direction: column;
+  gap: 0.125em; /* 2px / 16px = 0.125em */
+}
+
+.award-count {
+  font-weight: 500;
+  font-size: 1em; /* 15px / 16px = 0.9375em */
+  line-height: 1.2;
+}
+
+.award-description {
+  font-weight: 400;
+  font-size: 0.8125em; /* 13px / 16px = 0.8125em */
+  line-height: 1.3;
+  opacity: 0.9;
 }
 
 /* Логотип */
@@ -113,11 +141,25 @@ html {
   cursor: pointer;
   transition: all var(--transition-speed) ease;
   white-space: nowrap;
+  font-family: inherit;
 }
 
 .chat-action-button:hover {
   background-color: rgba(0, 0, 0, 0.05);
   transform: translateY(-0.125em); /* -2px */
+}
+
+/* Стили для кнопок */
+.chat-button, .view-project-button {
+  color: white;
+  cursor: none;
+  transition: all 0.3s ease;
+  font-family: inherit;
+  white-space: nowrap !important;
+}
+
+.chat-button:hover, .view-project-button:hover {
+  transform: translateY(-0.125em) !important;
 }
 
 /* ============================================= */
@@ -303,6 +345,14 @@ html {
   .brand-logo__image {
     height: 2.5em;
   }
+  
+  .award-count {
+    font-size: 1.8em;
+  }
+  
+  .award-description {
+    font-size: 1.8em;
+  }
 }
 
 /* ============================================= */
@@ -462,7 +512,7 @@ html {
     height: 1.5em; /* 24px = 1.5em */
   }
   
-  /* Элементы мобильного меню */
+  /* Стили для мобильного меню */
   .mobile-nav-item {
     color: #ffffff !important;
     font-size: 2em !important;
@@ -481,6 +531,7 @@ html {
     box-shadow: none !important;
     cursor: pointer;
     position: relative;
+    font-family: inherit;
   }
   
   /* Пунктирная линия между кнопками */
@@ -516,6 +567,11 @@ html {
   
   .mobile-dropdown-bottom .mobile-nav-item:hover {
     background: rgba(249, 249, 249, 0.25) !important;
+  }
+  
+  /* Адаптивные стили для мобильных */
+  .nav-link {
+    font-size: 0.875em;
   }
 }
 
@@ -554,4 +610,64 @@ html {
   .mobile-dropdown-bottom {
     gap: 2.5em; /* Уменьшаем gap на маленьких экранах */
   }
+}
+
+/* ДОПОЛНИТЕЛЬНЫЕ МЕДИА-ЗАПРОСЫ ИЗ VIDEOBACKGROUND */
+
+/* ============================================= */
+/* ПЛАНШЕТНАЯ ВЕРСИЯ (до 1440px) */
+/* ============================================= */
+@media (max-width: 1440px) {
+  .nav-link {
+    font-size: 1em; /* Адаптируйте размер шрифта */
+  }
+}
+
+/* ============================================= */
+/* АДАПТИВ ДЛЯ 860PX */
+/* ============================================= */
+@media (max-width: 53.75em) { /* 860px = 53.75em */
+  .nav-link {
+    font-size: 0.875em;
+  }
+}
+
+/* ============================================= */
+/* МОБИЛЬНАЯ ВЕРСИЯ (до 768px) */
+/* ============================================= */
+@media (max-width: 768px) {
+  .nav-link {
+    font-size: 0.875em;
+  }
+  
+  .award-count {
+    font-size: 0.875em;
+  }
+  
+  .award-description {
+    font-size: 0.75em;
+  }
+}
+
+/* Специфичные стили для iOS */
+@supports (-webkit-touch-callout: none) {
+  body, html, .App {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-font-smoothing: antialiased;
+  }
+  
+  .nav-link, .chat-action-button {
+    padding-top: 1.25em !important;
+  }
+}
+
+/* Плавные переходы для всех интерактивных элементов */
+button,
+.nav-link,
+.burger-menu,
+.mobile-chat-button,
+.mobile-nav-item,
+.view-project-button,
+.chat-action-button {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }

@@ -155,7 +155,7 @@ const videoData = [
     id: 13,
     title: "VIVIENNE SABO",
     description: "EVERYDAY LIFE VS CELEBRATION, MODESTY VS BOLDNESS, FAMILIARITY VS DARING SELF-EXPRESSION",
-    vimeoId: "1115458742",
+    vimeoId: "919544743",
     previewImage: "/projectImage/Vivienne sabo.png",
     desktopMainCategory: "VIDEO",
     desktopSubCategory: "Beauty",
