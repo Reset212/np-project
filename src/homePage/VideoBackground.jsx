@@ -449,15 +449,7 @@ const VideoBackground = () => {
                     </button>
                   </div>
                   
-                  <button 
-                    className="mobile-nav-item"
-                    onClick={() => {
-                      closeMenu();
-                      scrollToContact();
-                    }}
-                  >
-                    CHAT WITH US
-                  </button>
+
                 </div>
               </>
             )}

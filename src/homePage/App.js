@@ -30,8 +30,7 @@ function HomePageApp() {
       </div> */}
                   {/* <div style={{height: '100vh', background:'red', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
       </div> */}
-      <div style={{height: '50vh', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-      </div>
+
       <ProjectsSection />
       <FourthScrollBlock />
       <ContactSection />

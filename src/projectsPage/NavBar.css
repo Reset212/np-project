@@ -83,15 +83,7 @@ html {
 }
 
 /* Стили для текста наград (если они используются в NavBar) */
-.award-text {
-  color: white;
-  margin: 0;
-  text-align: left;
-  white-space: nowrap;
-  display: flex;
-  flex-direction: column;
-  gap: 0.125em; /* 2px / 16px = 0.125em */
-}
+
 
 .award-count {
   font-weight: 500;
@@ -515,7 +507,7 @@ html {
   /* Стили для мобильного меню */
   .mobile-nav-item {
     color: #ffffff !important;
-    font-size: 2em !important;
+    font-size: 1.4em !important;
     font-weight: 300;
     text-decoration: none;
     padding: 0.8em 1em !important;

@@ -256,12 +256,7 @@ const NavBar = () => {
                 </div>
                 
                 {/* ИСПРАВЛЕННАЯ КНОПКА CHAT WITH US */}
-                <button 
-                  className="mobile-nav-item"
-                  onClick={scrollToContact}
-                >
-                  CHAT WITH US
-                </button>
+
               </div>
             </>
           )}

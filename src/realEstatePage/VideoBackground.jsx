@@ -278,12 +278,7 @@ const VideoBackground = () => {
                   </div>
                   
                   {/* Кнопка CHAT WITH US */}
-                  <button 
-                    className="mobile-nav-item"
-                    onClick={scrollToContact}
-                  >
-                    CHAT WITH US
-                  </button>
+ 
                 </div>
               </>
             )}
