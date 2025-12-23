@@ -177,7 +177,7 @@ const videoData = [
     id: 15,
     title: "VIVIENNE SABO",
     description: "WE FILMED IN MARRAKECH TO CAPTURE THE AUTHENTIC ATMOSPHERE AND REFLECT THE IDENTITY OF THE PRODUCT",
-    vimeoId: "1061972276", // Замените на правильный ID
+    vimeoId: "919544743", // Замените на правильный ID
     previewImage: "/projectImage/Vivienne sabo (2).png",
     desktopMainCategory: "VIDEO",
     desktopSubCategory: "Beauty",
