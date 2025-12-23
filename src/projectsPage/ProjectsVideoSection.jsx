@@ -157,7 +157,7 @@ const videoData = [
     id: 13,
     title: "VIVIENNE SABO",
     description: "EVERYDAY LIFE VS CELEBRATION, MODESTY VS BOLDNESS, FAMILIARITY VS DARING SELF-EXPRESSION",
-    vimeoId: "919544743",
+    vimeoId: "1115458742",
     previewImage: "/projectImage/Vivienne sabo.png",
     desktopMainCategory: "VIDEO",
     desktopSubCategory: "Beauty",
@@ -177,7 +177,7 @@ const videoData = [
     id: 15,
     title: "VIVIENNE SABO",
     description: "WE FILMED IN MARRAKECH TO CAPTURE THE AUTHENTIC ATMOSPHERE AND REFLECT THE IDENTITY OF THE PRODUCT",
-    vimeoId: "1061972276", // Замените на правильный ID
+    vimeoId: "919544743", // Замените на правильный ID
     previewImage: "/projectImage/Vivienne sabo (2).png",
     desktopMainCategory: "VIDEO",
     desktopSubCategory: "Beauty",
