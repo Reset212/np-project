@@ -17,7 +17,9 @@ const GlobalCursor = () => {
   
   const rafRef = useRef(null);
   const positionHistoryRef = useRef([]);
+  const rotationHistoryRef = useRef([]);
   const MAX_HISTORY = 5;
+  const ROTATION_SMOOTH_HISTORY = 3;
 
   const lerp = (start, end, factor) => {
     return start + (end - start) * factor;
@@ -108,9 +110,42 @@ const GlobalCursor = () => {
       const maxSpeed = 50;
       const speedRatio = Math.min(speed / maxSpeed, 2);
       
-      if (speed > 5) {
+      // УЛУЧШЕННАЯ ЛОГИКА ВРАЩЕНИЯ С ГИСТЕРЕЗИСОМ
+      if (speed > 10) { // Увеличили порог с 5 до 10 для устранения дрожания
         const angle = Math.atan2(velocity.y, velocity.x);
-        setRotation(angle);
+        
+        // Сглаживание угла через историю
+        rotationHistoryRef.current.push(angle);
+        if (rotationHistoryRef.current.length > ROTATION_SMOOTH_HISTORY) {
+          rotationHistoryRef.current.shift();
+        }
+        
+        // Вычисляем средний угол из истории
+        let avgAngle = 0;
+        let sinSum = 0;
+        let cosSum = 0;
+        
+        rotationHistoryRef.current.forEach(a => {
+          sinSum += Math.sin(a);
+          cosSum += Math.cos(a);
+        });
+        
+        avgAngle = Math.atan2(sinSum / rotationHistoryRef.current.length, 
+                              cosSum / rotationHistoryRef.current.length);
+        
+        // Плавное изменение угла с учетом гистерезиса
+        const angleDiff = Math.abs(avgAngle - rotation);
+        const normalizedDiff = Math.min(angleDiff / Math.PI, 1);
+        
+        // Быстрое вращение при больших изменениях, медленное - при мелких
+        const lerpFactor = normalizedDiff > 0.3 ? 0.3 : 0.1;
+        
+        setRotation(prev => {
+          // Нормализуем углы для плавного перехода через 0
+          const diff = avgAngle - prev;
+          const normalizedDiff = Math.atan2(Math.sin(diff), Math.cos(diff));
+          return prev + normalizedDiff * lerpFactor;
+        });
         
         const stretchAmount = 1 + speedRatio * 0.5;
         const squeezeAmount = 1 - speedRatio * 0.2;
@@ -120,11 +155,17 @@ const GlobalCursor = () => {
           y: squeezeAmount
         });
       } else {
+        // При медленном движении - плавный возврат к нулевому вращению
+        setRotation(prev => {
+          const diff = -prev;
+          const normalizedDiff = Math.atan2(Math.sin(diff), Math.cos(diff));
+          return prev + normalizedDiff * 0.08; // Очень плавный возврат
+        });
+        
         setScale({
           x: lerp(scale.x, 1, 0.15),
           y: lerp(scale.y, 1, 0.15)
         });
-        setRotation(lerp(rotation, 0, 0.15));
       }
 
       // Логика прилипания к кнопкам
@@ -165,27 +206,23 @@ const GlobalCursor = () => {
         }
       }
 
-      // Деформация точки при прилипании - растягивание в сторону курсора
+      // Деформация точки при прилипании
       if (isSticky && buttonRadius > 0) {
-        // Вычисляем вектор от прилипшей точки к курсору
         const dx = position.x - stickyTarget.x;
         const dy = position.y - stickyTarget.y;
         const distFromCenter = Math.min(distance(0, 0, dx, dy), buttonRadius);
         
-        // Нормализованный вектор направления
         const normDist = distFromCenter / buttonRadius;
         const angle = Math.atan2(dy, dx);
         
-        // Растягиваем в сторону курсора
-        const stretchAmount = 1 + normDist * 0.6; // Растягивание до 1.6x
-        const squeezeAmount = 1 - normDist * 0.4; // Сжатие до 0.6x
+        const stretchAmount = 1 + normDist * 0.6;
+        const squeezeAmount = 1 - normDist * 0.4;
         
         setDotScale({
           x: stretchAmount,
           y: squeezeAmount
         });
       } else {
-        // Плавно возвращаем к исходной форме
         setDotScale(prev => ({
           x: lerp(prev.x, 1, 0.15),
           y: lerp(prev.y, 1, 0.15)
