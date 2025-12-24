@@ -106,7 +106,7 @@ const NavBar = () => {
 
   return (
     <>
-        <nav className="navigation">
+        <nav className="navigation"   style={{ boxShadow: 'none' }}>
           <div className="nav-left">
             <Link to="/real-estate" className="nav-link directions">
               REAL ESTATE

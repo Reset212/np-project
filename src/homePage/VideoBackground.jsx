@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import "./VideoBackground.css";
 import videoSrc from "../video/Brunello.mp4";
-import mobileVideoSrc from "../video/gevi vert.mp4";
+import mobileVideoSrc from "../video/brun vert.mp4";
 import logoImg from "../image/logo.png";
 import taglineImg from "../image/tagline.png";
 import awardsImg from "../image/awards.png";
