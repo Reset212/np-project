@@ -16,7 +16,7 @@
 /* Убедитесь, что все секции имеют позицию relative */
 .App > * {
   position: relative;
-  z-index: auto;
+  /* z-index: auto; */
 }
 
 /* Отладка - можно временно включить */

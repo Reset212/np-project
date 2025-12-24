@@ -1,29 +1,14 @@
-/* NavBar.css - ПОЛНАЯ ОБНОВЛЕННАЯ ВЕРСИЯ */
+/* VideoBackground.css - ТОЛЬКО НАВБАР */
 
 :root {
   --base-font-size: 16px;
-  --container-width: 90%;
-  --max-container-width: 120rem; /* 1920px */
-  --header-height: 6.25rem; /* 100px */
-  --transition-speed: 0.3s;
-}
-
-/* Базовые сбросы */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-html {
-  font-size: var(--base-font-size);
 }
 
 /* КОНТЕЙНЕР HEADER */
 .header-wrapper {
   position: relative;
   width: 100%;
-  height: var(--header-height);
+  height: 6.25rem; /* 100px */
   background-color: #FFFFFF;
   overflow: visible;
 }
@@ -34,8 +19,8 @@ html {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: var(--container-width);
-  max-width: var(--max-container-width);
+  width: 90%;
+  max-width: 120rem; /* 1920px */
   height: 100%;
   display: flex;
   justify-content: space-between;
@@ -66,12 +51,13 @@ html {
 }
 
 .nav-link {
-  color: #000000;
-  font-size: 1em; /* 14px */
-  text-decoration: none;
+  color: #000000 !important; /* ЧЕРНЫЙ ТЕКСТ */
+  font-size: 1em; /* 14px / 16px = 0.875em */
+  cursor: none;
+  text-align: center;
   white-space: nowrap;
-  transition: opacity var(--transition-speed) ease;
-  cursor: pointer;
+  transition: opacity 0.3s ease;
+  text-decoration: none;
   font-family: inherit;
   background: none;
   border: none;
@@ -80,22 +66,6 @@ html {
 
 .nav-link:hover {
   opacity: 0.6;
-}
-
-/* Стили для текста наград (если они используются в NavBar) */
-
-
-.award-count {
-  font-weight: 500;
-  font-size: 1em; /* 15px / 16px = 0.9375em */
-  line-height: 1.2;
-}
-
-.award-description {
-  font-weight: 400;
-  font-size: 0.8125em; /* 13px / 16px = 0.8125em */
-  line-height: 1.3;
-  opacity: 0.9;
 }
 
 /* Логотип */
@@ -112,7 +82,7 @@ html {
 }
 
 .brand-logo__image {
-  width: 120px; /* 240px */
+  width: 120px;
   object-fit: contain;
 }
 
@@ -128,9 +98,9 @@ html {
   border: 0.0625em solid rgba(0, 0, 0, 0.3); /* 1px */
   padding: 0;
   font-size: 0.875em; /* 14px */
-  color: #000000;
+  color: #000000 !important; /* ЧЕРНЫЙ ТЕКСТ */
   cursor: pointer;
-  transition: all var(--transition-speed) ease;
+  transition: all 0.3s ease;
   white-space: nowrap;
   font-family: inherit;
 }
@@ -138,19 +108,6 @@ html {
 .chat-action-button:hover {
   background-color: rgba(0, 0, 0, 0.05);
   transform: translateY(-0.125em); /* -2px */
-}
-
-/* Стили для кнопок */
-.chat-button, .view-project-button {
-  color: white;
-  cursor: none;
-  transition: all 0.3s ease;
-  font-family: inherit;
-  white-space: nowrap !important;
-}
-
-.chat-button:hover, .view-project-button:hover {
-  transform: translateY(-0.125em) !important;
 }
 
 /* ============================================= */
@@ -177,17 +134,17 @@ html {
 /* ПЛАНШЕТНАЯ ВЕРСИЯ (1440px) */
 /* ============================================= */
 @media (max-width: 90em) { /* 1440px */
-  :root {
-    --container-width: 95%;
-    --header-height: 5rem; /* 80px */
-  }
-  
   .main-header {
     padding: 0 1.5em;
+    width: 95%;
+  }
+  
+  .header-wrapper {
+    height: 5rem; /* 80px */
   }
   
   .brand-logo__image {
-    width: 120px; /* 192px */
+    width: 120px;
     height: 4em; /* 64px */
   }
   
@@ -218,13 +175,13 @@ html {
 /* ПЛАНШЕТНАЯ ВЕРСИЯ (1024px) */
 /* ============================================= */
 @media (max-width: 64em) { /* 1024px */
-  :root {
-    --container-width: 97%;
-    --header-height: 4.5rem; /* 72px */
-  }
-  
   .main-header {
     padding: 0 1em;
+    width: 97%;
+  }
+  
+  .header-wrapper {
+    height: 4.5rem; /* 72px */
   }
   
   .brand-logo__image {
@@ -252,11 +209,12 @@ html {
 }
 
 /* ============================================= */
-/* МОБИЛЬНАЯ ВЕРСИЯ (768px) - ИСПРАВЛЕННАЯ БЕЗ ГРИДА */
+/* МОБИЛЬНАЯ ВЕРСИЯ (768px) */
 /* ============================================= */
 @media (max-width: 48em) { /* 768px */
-  :root {
-    --header-height: 4rem; /* 64px */
+  .header-wrapper {
+    height: 4rem; /* 64px */
+    z-index: 10 !important; /* НАВБАР НИЖЕ СЛЕДУЮЩЕГО БЛОКА */
   }
   
   .main-header {
@@ -286,13 +244,13 @@ html {
     display: flex !important;
   }
   
-  /* Логотип - ИСПРАВЛЕННАЯ ВЕРСИЯ */
+  /* Логотип */
   .brand-logo {
     position: absolute;
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
-    z-index: 1001;
+    z-index: 1001; /* ЛОГОТИП ВЫШЕ НАВБАРА */
     display: block;
   }
   
@@ -308,61 +266,20 @@ html {
     max-width: 100%;
   }
   
-  /* Бургер-меню - левая часть */
+  /* Бургер-меню */
   .burger-menu {
     order: 1;
     margin-right: auto;
-  }
-  
-  /* Кнопка чата - правая часть */
-  .mobile-chat-button {
-    order: 3;
-    margin-left: auto;
-  }
-}
-
-/* ============================================= */
-/* МОБИЛЬНАЯ ВЕРСИЯ (390px) */
-/* ============================================= */
-@media (max-width: 24.375em) { /* 390px */
-  :root {
-    --header-height: 3.5rem; /* 56px */
-  }
-  
-  .main-header {
-    padding: 0 0.75em;
-  }
-  
-  .brand-logo__image {
-    height: 2.5em;
-  }
-  
-  .award-count {
-    font-size: 1.8em;
-  }
-  
-  .award-description {
-    font-size: 1.8em;
-  }
-}
-
-/* ============================================= */
-/* МОБИЛЬНОЕ БУРГЕР-МЕНЮ */
-/* ============================================= */
-@media (max-width: 48em) { /* 768px */
-  /* Бургер-меню */
-  .burger-menu {
     width: 3em;
     height: 3em;
     background: rgba(185, 185, 185, 0.32);
     backdrop-filter: blur(0.5em);
     border-radius: 3.25em;
-    display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    z-index: 1002;
-    transition: all var(--transition-speed) ease;
+    z-index: 1002; /* БУРГЕР ВЫШЕ ЛОГОТИПА */
+    transition: all 0.3s ease;
     flex-shrink: 0;
   }
   
@@ -374,22 +291,22 @@ html {
   .burger-menu svg {
     width: 1.125em;
     height: 0.75em;
-    transition: transform var(--transition-speed) ease;
   }
   
   /* Мобильная кнопка чата */
   .mobile-chat-button {
+    order: 3;
+    margin-left: auto;
     width: 3em;
     height: 3em;
     background: rgba(185, 185, 185, 0.32);
     backdrop-filter: blur(0.5em);
     border-radius: 3.25em;
-    display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: all var(--transition-speed) ease;
-    z-index: 1002;
+    transition: all 0.3s ease;
+    z-index: 1002; /* КНОПКА ЧАТА ВЫШЕ ЛОГОТИПА */
     flex-shrink: 0;
   }
   
@@ -404,7 +321,7 @@ html {
   }
   
   /* ============================================= */
-  /* ОБНОВЛЕННОЕ БУРГЕР-МЕНЮ */
+  /* МОБИЛЬНОЕ БУРГЕР-МЕНЮ */
   /* ============================================= */
   .mobile-dropdown {
     display: flex !important;
@@ -415,7 +332,7 @@ html {
     bottom: 0;
     width: 100% !important;
     height: 100vh !important;
-    z-index: 100;
+    z-index: 1000; /* ВЫПАДАЮЩЕЕ МЕНЮ ВЫШЕ ВСЕГО */
     flex-direction: column;
     align-items: center;
     padding: 6em 1.25em 2em;
@@ -453,7 +370,7 @@ html {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 3.25em; /* 52px = 3.25em */
+    gap: 3.25em;
     margin-top: auto;
   }
   
@@ -462,7 +379,7 @@ html {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 2.5em; /* 40px = 2.5em */
+    gap: 2.5em;
   }
   
   /* Иконки соцсетей */
@@ -474,7 +391,7 @@ html {
     border: none;
     padding: 0;
     cursor: pointer;
-    transition: transform var(--transition-speed) ease;
+    transition: transform 0.3s ease;
     width: auto;
     height: auto;
   }
@@ -485,22 +402,22 @@ html {
   
   /* Стили для SVG иконок */
   .social-icon img {
-    filter: brightness(0) invert(1); /* Делает SVG белым */
-    width: 2em; /* 32px = 2em */
-    height: 2em; /* 32px = 2em */
+    filter: brightness(0) invert(1);
+    width: 2em;
+    height: 2em;
     object-fit: contain;
   }
   
-  /* Для Vimeo иконки (38x32) */
+  /* Для Vimeo иконки */
   .social-icon img[alt="Vimeo"] {
-    width: 2.375em; /* 38px = 2.375em */
-    height: 2em; /* 32px = 2em */
+    width: 2.375em;
+    height: 2em;
   }
   
-  /* Для Email иконки (30x24) */
+  /* Для Email иконки */
   .social-icon img[alt="Email"] {
-    width: 1.875em; /* 30px = 1.875em */
-    height: 1.5em; /* 24px = 1.5em */
+    width: 1.875em;
+    height: 1.5em;
   }
   
   /* Стили для мобильного меню */
@@ -510,7 +427,7 @@ html {
     font-weight: 300;
     text-decoration: none;
     padding: 0.8em 1em !important;
-    transition: all var(--transition-speed) ease;
+    transition: all 0.3s ease;
     background: transparent !important;
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
@@ -533,7 +450,7 @@ html {
     left: 10%;
     right: 10%;
     height: 1px;
-    background-image: linear-gradient(to right, transparent 50%, rgb(252, 252, 252) 50%); /* Белый пунктир */
+    background-image: linear-gradient(to right, transparent 50%, rgb(252, 252, 252) 50%);
     background-size: 5px 6px !important;
     background-repeat: repeat-x;
   }
@@ -548,7 +465,7 @@ html {
     font-size: 1em !important;
     width: 20em !important;
     height: 3.75em;
-    background: #F9F9F916 !important; /* F9F9F9 с прозрачностью 16% */
+    background: #F9F9F916 !important;
     border: none !important;
     color: white !important;
     border-radius: 2em !important;
@@ -558,11 +475,6 @@ html {
   
   .mobile-dropdown-bottom .mobile-nav-item:hover {
     background: rgba(249, 249, 249, 0.25) !important;
-  }
-  
-  /* Адаптивные стили для мобильных */
-  .nav-link {
-    font-size: 0.875em;
   }
 }
 
@@ -581,6 +493,10 @@ html {
   .brand-logo__image {
     height: 2em;
   }
+
+  .col12{
+    color: #000000 !important;
+  }
   
   .mobile-nav-item {
     max-width: 90%;
@@ -595,70 +511,10 @@ html {
   }
   
   .social-icons-container {
-    gap: 2em; /* Уменьшаем gap на маленьких экранах */
+    gap: 2em;
   }
   
   .mobile-dropdown-bottom {
-    gap: 2.5em; /* Уменьшаем gap на маленьких экранах */
+    gap: 2.5em;
   }
-}
-
-/* ДОПОЛНИТЕЛЬНЫЕ МЕДИА-ЗАПРОСЫ ИЗ VIDEOBACKGROUND */
-
-/* ============================================= */
-/* ПЛАНШЕТНАЯ ВЕРСИЯ (до 1440px) */
-/* ============================================= */
-@media (max-width: 1440px) {
-  .nav-link {
-    font-size: 1em; /* Адаптируйте размер шрифта */
-  }
-}
-
-/* ============================================= */
-/* АДАПТИВ ДЛЯ 860PX */
-/* ============================================= */
-@media (max-width: 53.75em) { /* 860px = 53.75em */
-  .nav-link {
-    font-size: 0.875em;
-  }
-}
-
-/* ============================================= */
-/* МОБИЛЬНАЯ ВЕРСИЯ (до 768px) */
-/* ============================================= */
-@media (max-width: 768px) {
-  .nav-link {
-    font-size: 0.875em;
-  }
-  
-  .award-count {
-    font-size: 0.875em;
-  }
-  
-  .award-description {
-    font-size: 0.75em;
-  }
-}
-
-/* Специфичные стили для iOS */
-@supports (-webkit-touch-callout: none) {
-  body, html, .App {
-    -webkit-tap-highlight-color: transparent;
-    -webkit-font-smoothing: antialiased;
-  }
-  
-  .nav-link, .chat-action-button {
-    padding-top: 1.25em !important;
-  }
-}
-
-/* Плавные переходы для всех интерактивных элементов */
-button,
-.nav-link,
-.burger-menu,
-.mobile-chat-button,
-.mobile-nav-item,
-.view-project-button,
-.chat-action-button {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
