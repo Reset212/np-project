@@ -1,224 +1,260 @@
 import React, { useState, useEffect, useRef } from 'react';
-import './GlobalCursor.css';
+import './GlobalCursor2.css';
 
 const GlobalCursor = () => {
-  const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
-  const [ringPosition, setRingPosition] = useState({ x: 0, y: 0 });
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [svgPosition, setSvgPosition] = useState({ x: 0, y: 0 });
+  const [velocity, setVelocity] = useState({ x: 0, y: 0 });
+  const [lastPosition, setLastPosition] = useState({ x: 0, y: 0 });
+  const [lastTime, setLastTime] = useState(Date.now());
+  const [isSticky, setIsSticky] = useState(false);
+  const [stickyTarget, setStickyTarget] = useState({ x: 0, y: 0 });
+  const [scale, setScale] = useState({ x: 1, y: 1 });
+  const [rotation, setRotation] = useState(0);
+  const [isClicked, setIsClicked] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
-  const [isClicking, setIsClicking] = useState(false);
-  const cursorDotRef = useRef(null);
-  const cursorRingRef = useRef(null);
-  const animationFrameRef = useRef(null);
+  const [dotScale, setDotScale] = useState({ x: 1, y: 1 });
+  
+  const rafRef = useRef(null);
+  const positionHistoryRef = useRef([]);
+  const MAX_HISTORY = 5;
 
-  // Основные размеры
-  const DOT_SIZE = 10; // диаметр точки
-  const RING_SIZE_NORMAL = 78; // диаметр кольца в нормальном состоянии
-  const RING_SIZE_HOVER = 48; // диаметр кольца при наведении
-  const MAX_RING_OFFSET = 20; // максимальное смещение кольца от точки
+  const lerp = (start, end, factor) => {
+    return start + (end - start) * factor;
+  };
+
+  const distance = (x1, y1, x2, y2) => {
+    return Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
+  };
 
   useEffect(() => {
     const handleMouseMove = (e) => {
-      setCursorPosition({ x: e.clientX, y: e.clientY });
+      const now = Date.now();
+      const dt = Math.min(now - lastTime, 32);
       
-      // Немедленно обновляем позицию точки
-      if (cursorDotRef.current) {
-        cursorDotRef.current.style.left = `${e.clientX}px`;
-        cursorDotRef.current.style.top = `${e.clientY}px`;
+      if (dt > 0) {
+        const newVelocity = {
+          x: (e.clientX - lastPosition.x) / dt * 16,
+          y: (e.clientY - lastPosition.y) / dt * 16
+        };
+        
+        setVelocity(prev => ({
+          x: lerp(prev.x, newVelocity.x, 0.5),
+          y: lerp(prev.y, newVelocity.y, 0.5)
+        }));
+        
+        setLastTime(now);
+        setLastPosition({ x: e.clientX, y: e.clientY });
       }
+      
+      positionHistoryRef.current.push({ x: e.clientX, y: e.clientY });
+      if (positionHistoryRef.current.length > MAX_HISTORY) {
+        positionHistoryRef.current.shift();
+      }
+      
+      const avgPosition = positionHistoryRef.current.reduce(
+        (acc, pos) => ({ x: acc.x + pos.x, y: acc.y + pos.y }),
+        { x: 0, y: 0 }
+      );
+      const count = positionHistoryRef.current.length;
+      
+      setPosition({ 
+        x: avgPosition.x / count, 
+        y: avgPosition.y / count 
+      });
     };
 
-    const handleMouseDown = () => setIsClicking(true);
-    const handleMouseUp = () => setIsClicking(false);
-
-    // Проверяем наведение на интерактивные элементы
-    const handleMouseEnter = (e) => {
-      const target = e.target;
-      
-      if (!target || typeof target.closest !== 'function') {
-        return;
-      }
-      
-      const isInteractive = 
-        (target.tagName && (
-          target.tagName === 'BUTTON' ||
-          target.tagName === 'A' ||
-          target.tagName === 'INPUT' ||
-          target.tagName === 'SELECT' ||
-          target.tagName === 'TEXTAREA'
-        )) ||
-        target.getAttribute('role') === 'button' ||
-        target.onclick ||
-        target.hasAttribute('tabindex') ||
-        target.classList.contains('cursor-hover') ||
-        (target.closest && (
-          target.closest('button') ||
-          target.closest('a') ||
-          target.closest('[role="button"]') ||
-          target.closest('[onclick]')
-        ));
-
-      if (isInteractive) {
-        setIsHovering(true);
-      }
+    const handleMouseDown = () => {
+      setIsClicked(true);
+      setTimeout(() => setIsClicked(false), 300);
     };
-
-    const handleMouseLeave = () => setIsHovering(false);
 
     window.addEventListener('mousemove', handleMouseMove);
     window.addEventListener('mousedown', handleMouseDown);
-    window.addEventListener('mouseup', handleMouseUp);
-    
-    document.addEventListener('mouseover', handleMouseEnter);
-    document.addEventListener('mouseout', handleMouseLeave);
-
-    // Ручное управление через data-атрибуты
-    document.addEventListener('mouseover', (e) => {
-      if (e.target && e.target.dataset.cursorHover === 'true') {
-        setIsHovering(true);
-      }
-    });
-
-    document.addEventListener('mouseout', (e) => {
-      if (e.target && e.target.dataset.cursorHover === 'true') {
-        setIsHovering(false);
-      }
-    });
 
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('mousedown', handleMouseDown);
-      window.removeEventListener('mouseup', handleMouseUp);
-      document.removeEventListener('mouseover', handleMouseEnter);
-      document.removeEventListener('mouseout', handleMouseLeave);
-      
-      if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current);
-      }
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
-  }, []);
+  }, [lastPosition, lastTime]);
 
-  // Анимация кольца с плавным отставанием
   useEffect(() => {
-    const updateRingPosition = () => {
-      if (!cursorRingRef.current || !cursorDotRef.current) return;
-
-      const targetX = cursorPosition.x;
-      const targetY = cursorPosition.y;
+    const checkHover = () => {
+      const elements = document.elementsFromPoint(position.x, position.y);
+      const isOverInteractive = elements.some(el => 
+        el.tagName === 'BUTTON' || 
+        el.tagName === 'A' || 
+        el.getAttribute('role') === 'button' ||
+        el.tagName === 'INPUT' ||
+        el.tagName === 'TEXTAREA' ||
+        el.tagName === 'SELECT'
+      );
       
-      // Текущая позиция кольца
-      const currentRingX = parseFloat(cursorRingRef.current.style.left) || targetX;
-      const currentRingY = parseFloat(cursorRingRef.current.style.top) || targetY;
-      
-      // Рассчитываем разницу
-      const diffX = targetX - currentRingX;
-      const diffY = targetY - currentRingY;
-      
-      // Плавное следование с инерцией
-      const newRingX = currentRingX + diffX * 0.15; // Коэффициент плавности
-      const newRingY = currentRingY + diffY * 0.15;
-      
-      // Ограничиваем смещение, чтобы кольцо не выходило за границы точки
-      const currentRingSize = isHovering ? RING_SIZE_HOVER : RING_SIZE_NORMAL;
-      const dotRadius = DOT_SIZE / 2;
-      const ringRadius = currentRingSize / 2;
-      
-      // Максимально допустимое расстояние между центрами
-      const maxDistance = Math.max(0, ringRadius - dotRadius - 2); // -2 для небольшого отступа
-      const actualDistance = Math.sqrt(diffX * diffX + diffY * diffY);
-      
-      let finalRingX = newRingX;
-      let finalRingY = newRingY;
-      
-      // Если кольцо слишком далеко от точки, ограничиваем его смещение
-      if (actualDistance > maxDistance && maxDistance > 0) {
-        const scale = maxDistance / actualDistance;
-        finalRingX = targetX - diffX * scale;
-        finalRingY = targetY - diffY * scale;
-      }
-      
-      // Обновляем позицию кольца
-      cursorRingRef.current.style.left = `${finalRingX}px`;
-      cursorRingRef.current.style.top = `${finalRingY}px`;
-      
-      // Сохраняем позицию для состояния
-      setRingPosition({ x: finalRingX, y: finalRingY });
-      
-      // Продолжаем анимацию
-      animationFrameRef.current = requestAnimationFrame(updateRingPosition);
+      setIsHovering(isOverInteractive);
     };
-    
-    // Запускаем анимацию
-    animationFrameRef.current = requestAnimationFrame(updateRingPosition);
-    
+
+    const interval = setInterval(checkHover, 50);
+    return () => clearInterval(interval);
+  }, [position]);
+
+  useEffect(() => {
+    const animate = () => {
+      let targetX = position.x;
+      let targetY = position.y;
+      let smoothFactor = 0.15;
+
+      const speed = Math.sqrt(velocity.x ** 2 + velocity.y ** 2);
+      const maxSpeed = 50;
+      const speedRatio = Math.min(speed / maxSpeed, 2);
+      
+      if (speed > 5) {
+        const angle = Math.atan2(velocity.y, velocity.x);
+        setRotation(angle);
+        
+        const stretchAmount = 1 + speedRatio * 0.5;
+        const squeezeAmount = 1 - speedRatio * 0.2;
+        
+        setScale({
+          x: stretchAmount,
+          y: squeezeAmount
+        });
+      } else {
+        setScale({
+          x: lerp(scale.x, 1, 0.15),
+          y: lerp(scale.y, 1, 0.15)
+        });
+        setRotation(lerp(rotation, 0, 0.15));
+      }
+
+      // Логика прилипания к кнопкам
+      const buttons = document.querySelectorAll('button, a[href], [role="button"], input[type="submit"], input[type="button"]');
+      let isOverButton = false;
+      let buttonCenter = { x: 0, y: 0 };
+      let buttonRadius = 0;
+
+      buttons.forEach(button => {
+        const rect = button.getBoundingClientRect();
+        const center = {
+          x: rect.left + rect.width / 2,
+          y: rect.top + rect.height / 2
+        };
+        
+        const dist = distance(position.x, position.y, center.x, center.y);
+        const radius = Math.max(rect.width, rect.height) / 2 + 30;
+        
+        if (dist < radius) {
+          isOverButton = true;
+          buttonCenter = center;
+          buttonRadius = radius;
+        }
+      });
+
+      if (isOverButton && !isSticky) {
+        setIsSticky(true);
+        setStickyTarget(buttonCenter);
+        smoothFactor = 0.05;
+      } else if (isSticky) {
+        targetX = stickyTarget.x;
+        targetY = stickyTarget.y;
+        
+        const pullAwayDistance = buttonRadius * 1.5;
+        const currentDist = distance(position.x, position.y, stickyTarget.x, stickyTarget.y);
+        if (currentDist > pullAwayDistance) {
+          setIsSticky(false);
+        }
+      }
+
+      // Деформация точки при прилипании - растягивание в сторону курсора
+      if (isSticky && buttonRadius > 0) {
+        // Вычисляем вектор от прилипшей точки к курсору
+        const dx = position.x - stickyTarget.x;
+        const dy = position.y - stickyTarget.y;
+        const distFromCenter = Math.min(distance(0, 0, dx, dy), buttonRadius);
+        
+        // Нормализованный вектор направления
+        const normDist = distFromCenter / buttonRadius;
+        const angle = Math.atan2(dy, dx);
+        
+        // Растягиваем в сторону курсора
+        const stretchAmount = 1 + normDist * 0.6; // Растягивание до 1.6x
+        const squeezeAmount = 1 - normDist * 0.4; // Сжатие до 0.6x
+        
+        setDotScale({
+          x: stretchAmount,
+          y: squeezeAmount
+        });
+      } else {
+        // Плавно возвращаем к исходной форме
+        setDotScale(prev => ({
+          x: lerp(prev.x, 1, 0.15),
+          y: lerp(prev.y, 1, 0.15)
+        }));
+      }
+
+      const offsetX = 0;
+      const offsetY = 0;
+      const targetSvgX = targetX + offsetX;
+      const targetSvgY = targetY + offsetY;
+      
+      const speedFactor = Math.min(speed / 20, 1);
+      const dynamicSmoothFactor = lerp(smoothFactor, 0.15, speedFactor);
+      
+      const newSvgX = lerp(svgPosition.x, targetSvgX, dynamicSmoothFactor);
+      const newSvgY = lerp(svgPosition.y, targetSvgY, dynamicSmoothFactor);
+      
+      setSvgPosition({ x: newSvgX, y: newSvgY });
+      
+      rafRef.current = requestAnimationFrame(animate);
+    };
+
+    rafRef.current = requestAnimationFrame(animate);
+
     return () => {
-      if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current);
-      }
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
-  }, [cursorPosition, isHovering]);
+  }, [position, svgPosition, velocity, isSticky, stickyTarget, scale, rotation, dotScale]);
 
-  // Эффект для анимации наведения и клика
-  useEffect(() => {
-    if (!cursorRingRef.current || !cursorDotRef.current) return;
+  const supportsBackdropFilter = () => {
+    return CSS.supports('backdrop-filter', 'invert(1)') || 
+           CSS.supports('-webkit-backdrop-filter', 'invert(1)');
+  };
 
-    // Анимация наведения
-    if (isHovering) {
-      cursorRingRef.current.style.width = `${RING_SIZE_HOVER}px`;
-      cursorRingRef.current.style.height = `${RING_SIZE_HOVER}px`;
-      cursorRingRef.current.style.borderWidth = '2px';
-      cursorRingRef.current.style.borderColor = '#000000';
-    } else {
-      cursorRingRef.current.style.width = `${RING_SIZE_NORMAL}px`;
-      cursorRingRef.current.style.height = `${RING_SIZE_NORMAL}px`;
-      cursorRingRef.current.style.borderWidth = '1px';
-      cursorRingRef.current.style.borderColor = '#000000';
-    }
+  const isFirefox = navigator.userAgent.toLowerCase().includes('firefox');
 
-    // Анимация клика
-    if (isClicking) {
-      cursorDotRef.current.style.transform = 'translate(-50%, -50%) scale(0.8)';
-      cursorDotRef.current.style.opacity = '0.7';
-      cursorRingRef.current.style.transform = 'translate(-50%, -50%) scale(0.9)';
-    } else {
-      cursorDotRef.current.style.transform = 'translate(-50%, -50%) scale(1)';
-      cursorDotRef.current.style.opacity = '1';
-      cursorRingRef.current.style.transform = 'translate(-50%, -50%) scale(1)';
-    }
-  }, [isHovering, isClicking]);
-
-  // Скрываем курсор на мобильных устройствах
-  const isMobile = window.innerWidth <= 768;
-  if (isMobile) {
+  if (!supportsBackdropFilter() || isFirefox) {
     return null;
   }
 
   return (
-    <>
-      <div
-        ref={cursorDotRef}
-        className="global-cursor-dot"
+    <div className="cursor-container">
+      {/* SVG курсор - скрывается при прилипании */}
+      <div 
+        className={`cursor-lens-backdrop ${isClicked ? 'clicked' : ''} ${isHovering ? 'hover' : ''}`}
         style={{
-          position: 'fixed',
-          left: `${cursorPosition.x}px`,
-          top: `${cursorPosition.y}px`,
-          pointerEvents: 'none',
-          zIndex: 9999,
-          width: `${DOT_SIZE}px`,
-          height: `${DOT_SIZE}px`,
+          left: `${svgPosition.x}px`,
+          top: `${svgPosition.y}px`,
+          transform: `translate(-50%, -50%) 
+                     rotate(${rotation}rad)
+                     scale(${scale.x}, ${scale.y})`,
+          opacity: isSticky ? 0 : 1
         }}
       />
-      <div
-        ref={cursorRingRef}
-        className="global-cursor-ring"
+      
+      {/* Деформируемая точка при прилипании */}
+      <div 
+        className="cursor-sticky-dot"
         style={{
-          position: 'fixed',
-          left: `${ringPosition.x}px`,
-          top: `${ringPosition.y}px`,
-          pointerEvents: 'none',
-          zIndex: 9998,
+          left: `${svgPosition.x}px`,
+          top: `${svgPosition.y}px`,
+          transform: `translate(-50%, -50%) 
+                     scale(${dotScale.x}, ${dotScale.y})`,
+          opacity: isSticky ? 1 : 0,
+          '--deform-x': `${(dotScale.x - 1) * 50}%`,
+          '--deform-y': `${(1 - dotScale.y) * 50}%`
         }}
       />
-    </>
+    </div>
   );
 };
 
