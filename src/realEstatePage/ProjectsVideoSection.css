@@ -180,7 +180,7 @@
   margin-top: 2.5em; /* 40px */
 }
 
-/* Карточка видео */
+/* Карточка видео - ОСНОВНОЙ СТИЛЬ */
 .video-card {
   position: relative;
   overflow: hidden;
@@ -198,11 +198,6 @@
   box-shadow: none;
 }
 
-/* Видео фон - СКРЫТ ВСЕГДА */
-.project-video-background {
-  display: none !important;
-}
-
 /* Контейнер для изображения превью */
 .preview-image-container {
   position: absolute;
@@ -212,6 +207,9 @@
   height: 100%;
   z-index: 1;
   overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .preview-image {
@@ -230,6 +228,32 @@
   opacity: 1 !important;
 }
 
+/* Стили для мобильных изображений BRUNELLO (высота 26.875em = 430px) */
+.video-card.mobile-image-mode {
+  height: 26.875em; /* 430px */
+  min-height: 26.875em; /* 430px */
+  max-height: 26.875em; /* 430px */
+  background: #000000; /* Черный фон для всего блока */
+}
+
+.video-card.mobile-image-mode .preview-image-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000000; /* Черный фон для контейнера */
+}
+
+/* Убираем черные боковые полосы - используем cover для заполнения всего пространства */
+.video-card.mobile-image-mode .preview-image.mobile-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover !important; /* Заполняем весь контейнер без черных полос */
+  object-position: center;
+}
+
 /* Плейсхолдер при ошибке загрузки изображения */
 .image-error-placeholder {
   width: 100%;
@@ -239,12 +263,17 @@
   align-items: center;
   justify-content: center;
   font-family: 'Helvetica Neue', Arial, sans-serif;
-  font-size: 1.5em; /* 24px */
-  color: #ffffff;
   text-align: center;
   padding: 1.25em; /* 20px */
-  opacity: 0.8;
   z-index: 1;
+}
+
+.image-error-placeholder span {
+  font-size: 1.5em; /* 24px */
+  color: #ffffff;
+  opacity: 0.8;
+  text-transform: uppercase;
+  font-weight: 500;
 }
 
 /* Оверлей с контентом */
@@ -270,6 +299,20 @@
     to bottom,
     rgba(0, 0, 0, 0) 0%,
     rgba(0, 0, 0, 0.85) 100%
+  );
+}
+
+/* Для мобильных изображений - абсолютный оверлей */
+.video-card.mobile-image-mode .video-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.2) 0%,
+    rgba(0, 0, 0, 0.8) 100%
   );
 }
 
@@ -375,7 +418,7 @@
     max-width: 48em;
   }
 
-  .video-card {
+  .video-card:not(.mobile-image-mode) {
     min-height: 24.25em; /* 388px */
     max-height: 24.25em;
   }
@@ -411,7 +454,7 @@
     gap: 1.875em; /* 30px */
   }
 
-  .video-card {
+  .video-card:not(.mobile-image-mode) {
     min-height: 21.875em; /* 350px */
     max-height: 21.875em;
   }
@@ -496,6 +539,13 @@
     border-radius: 0.25em; /* 4px */
   }
 
+  /* Специальные стили для карточек с мобильными изображениями (BRUNELLO) */
+  .video-card.mobile-image-mode {
+    height: 26.875em; /* 430px */
+    min-height: 26.875em; /* 430px */
+    max-height: 26.875em; /* 430px */
+  }
+
   .video-overlay {
     padding: 1.875em 1.5em; /* 30px 24px */
   }
@@ -515,6 +565,38 @@
     height: 2.75em; /* 44px */
     font-size: 0.875em; /* 14px */
     margin-top: 0.625em; /* 10px */
+  }
+}
+
+/* Ширина 450px и меньше - меняем фото BRUNELLO и убираем черные полосы */
+@media (max-width: 28.125em) { /* 450px */
+  /* Фиксированная высота для мобильного изображения BRUNELLO */
+  .video-card.mobile-image-mode {
+    height: 26.875em; /* 430px */
+    min-height: 26.875em; /* 430px */
+    max-height: 26.875em; /* 430px */
+  }
+  
+  /* Ключевое изменение: используем object-fit: cover для заполнения всего пространства */
+  .video-card.mobile-image-mode .preview-image.mobile-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover !important; /* Заполняем весь контейнер */
+    object-position: center center; /* Центрируем изображение */
+  }
+  
+  /* Оптимизация контейнера */
+  .video-card.mobile-image-mode .preview-image-container {
+    overflow: hidden; /* Скрываем все, что выходит за пределы */
+  }
+  
+  /* Уменьшаем отступы для маленьких экранов */
+  .video-overlay {
+    padding: 1.5em 1.25em; /* 24px 20px */
+  }
+  
+  .video-title {
+    font-size: 1.25em; /* 20px */
   }
 }
 
@@ -565,9 +647,24 @@
     padding: 0.375em 0; /* 6px */
   }
 
-  .video-card {
+  .video-card:not(.mobile-image-mode) {
     min-height: 25em; /* 400px */
     max-height: 25em;
+  }
+
+  /* Фиксированная высота для мобильного изображения BRUNELLO */
+  .video-card.mobile-image-mode {
+    height: 26.875em; /* 430px */
+    min-height: 26.875em; /* 430px */
+    max-height: 26.875em; /* 430px */
+  }
+
+  /* Убираем черные полосы на всех мобильных устройствах */
+  .video-card.mobile-image-mode .preview-image.mobile-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover !important;
+    object-position: center;
   }
 
   .video-title {
@@ -588,174 +685,28 @@
     margin-bottom: 5em; /* 80px */
   }
 
-  .video-card {
+  .video-card:not(.mobile-image-mode) {
     min-height: 22.5em; /* 360px */
     max-height: 22.5em;
+  }
+  
+  /* Фиксированная высота для мобильного изображения BRUNELLO */
+  .video-card.mobile-image-mode {
+    height: 26.875em; /* 430px */
+    min-height: 26.875em; /* 430px */
+    max-height: 26.875em; /* 430px */
   }
   
   .video-overlay {
     padding: 1.5em 1.25em; /* 24px 20px */
   }
-}
-
-/* Попап стили */
-.video-popup-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.95);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 10000;
-  padding: 1.25em; /* 20px */
-  animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    backdrop-filter: blur(0);
-  }
-  to {
-    opacity: 1;
-    backdrop-filter: blur(0.625em); /* 10px */
+  
+  .video-title {
+    font-size: 1.125em; /* 18px */
   }
 }
 
-.video-popup {
-  background: #000000;
-  width: 90%;
-  max-width: 62.5em; /* 1000px */
-  border-radius: 0.25em; /* 4px */
-  overflow: hidden;
-  position: relative;
-  animation: scaleIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-  transform-origin: center;
-}
-
-@keyframes scaleIn {
-  from {
-    opacity: 0;
-    transform: scale(0.9);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-.close-popup {
-  position: absolute;
-  top: 0.9375em; /* 15px */
-  right: 0.9375em;
-  background: transparent;
-  border: none;
-  color: #FFFFFF;
-  font-size: 2.5rem;
-  cursor: pointer;
-  z-index: 10001;
-  width: 2.5em; /* 40px */
-  height: 2.5em;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  font-family: 'Helvetica Neue', Arial, sans-serif;
-}
-
-.close-popup:hover {
-  opacity: 0.7;
-  transform: scale(1.1) rotate(90deg);
-}
-
-.popup-content h3 {
-  font-family: 'Helvetica Neue', Arial, sans-serif;
-  font-style: normal;
-  font-weight: 500;
-  font-size: 2em; /* 32px */
-  line-height: 1.2;
-  color: #FFFFFF;
-  margin: 0;
-  padding: 1.875em 1.875em 1.25em 1.875em; /* 30px 30px 20px 30px */
-  text-transform: uppercase;
-  animation: slideInDown 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-
-@keyframes slideInDown {
-  from {
-    opacity: 0;
-    transform: translateY(-1.25em); /* -20px */
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.popup-video-container {
-  width: 100%;
-  position: relative;
-  min-height: 25em; /* 400px */
-  background: #000000;
-  animation: fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-  animation-delay: 0.1s;
-  opacity: 0;
-}
-
-.popup-video-container video {
-  width: 100%;
-  height: auto;
-  max-height: 70vh;
-  display: block;
-}
-
-.video-error-message {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: #000;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  color: #FFFFFF;
-  font-family: 'Helvetica Neue', Arial, sans-serif;
-  text-align: center;
-  padding: 1.25em; /* 20px */
-}
-
-.video-error-message p {
-  margin: 0.625em 0; /* 10px */
-  opacity: 0.8;
-  font-size: 1em; /* 16px */
-}
-
-@media (max-width: 48em) { /* 768px */
-  .popup-content h3 {
-    font-size: 1.5em; /* 24px */
-    padding: 1.25em 1.25em 0.9375em 1.25em; /* 20px 20px 15px 20px */
-  }
-
-  .close-popup {
-    top: 0.625em; /* 10px */
-    right: 0.625em;
-    font-size: 2rem;
-  }
-
-  .popup-video-container {
-    min-height: 18.75em; /* 300px */
-  }
-}
-
-/* Убираем все возможные перекрытия */
-.video-card * {
-  box-sizing: border-box;
-}/* ProjectsVideoSection.css - добавьте эти стили */
+/* ========== ПОПАП СТИЛИ ========== */
 
 /* Стили для попапа со скрытым курсором */
 .video-popup-overlay.cursor-hidden {
@@ -911,4 +862,52 @@
   .popup-description {
     color: #ccc;
   }
+}
+
+/* Анимации для попапа */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    backdrop-filter: blur(0);
+  }
+  to {
+    opacity: 1;
+    backdrop-filter: blur(0.625em); /* 10px */
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.video-popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.95);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+  padding: 1.25em; /* 20px */
+  animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.video-popup {
+  animation: scaleIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  transform-origin: center;
+}
+
+/* Убираем все возможные перекрытия */
+.video-card * {
+  box-sizing: border-box;
 }
