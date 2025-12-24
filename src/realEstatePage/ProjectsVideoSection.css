@@ -230,9 +230,9 @@
 
 /* Стили для мобильных изображений BRUNELLO (высота 26.875em = 430px) */
 .video-card.mobile-image-mode {
-  height: 26.875em; /* 430px */
-  min-height: 26.875em; /* 430px */
-  max-height: 26.875em; /* 430px */
+  height: 32em; /* 430px */
+  min-height: 32em; /* 430px */
+  max-height: 32em; /* 430px */
   background: #000000; /* Черный фон для всего блока */
 }
 
@@ -540,11 +540,7 @@
   }
 
   /* Специальные стили для карточек с мобильными изображениями (BRUNELLO) */
-  .video-card.mobile-image-mode {
-    height: 26.875em; /* 430px */
-    min-height: 26.875em; /* 430px */
-    max-height: 26.875em; /* 430px */
-  }
+ 
 
   .video-overlay {
     padding: 1.875em 1.5em; /* 30px 24px */
@@ -571,11 +567,7 @@
 /* Ширина 450px и меньше - меняем фото BRUNELLO и убираем черные полосы */
 @media (max-width: 28.125em) { /* 450px */
   /* Фиксированная высота для мобильного изображения BRUNELLO */
-  .video-card.mobile-image-mode {
-    height: 26.875em; /* 430px */
-    min-height: 26.875em; /* 430px */
-    max-height: 26.875em; /* 430px */
-  }
+
   
   /* Ключевое изменение: используем object-fit: cover для заполнения всего пространства */
   .video-card.mobile-image-mode .preview-image.mobile-image {
@@ -653,11 +645,7 @@
   }
 
   /* Фиксированная высота для мобильного изображения BRUNELLO */
-  .video-card.mobile-image-mode {
-    height: 26.875em; /* 430px */
-    min-height: 26.875em; /* 430px */
-    max-height: 26.875em; /* 430px */
-  }
+  
 
   /* Убираем черные полосы на всех мобильных устройствах */
   .video-card.mobile-image-mode .preview-image.mobile-image {
@@ -690,13 +678,7 @@
     max-height: 22.5em;
   }
   
-  /* Фиксированная высота для мобильного изображения BRUNELLO */
-  .video-card.mobile-image-mode {
-    height: 26.875em; /* 430px */
-    min-height: 26.875em; /* 430px */
-    max-height: 26.875em; /* 430px */
-  }
-  
+
   .video-overlay {
     padding: 1.5em 1.25em; /* 24px 20px */
   }

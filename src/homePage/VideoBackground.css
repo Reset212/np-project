@@ -162,8 +162,8 @@ html {
 }
 
 .logo-image {
-  width: 15em !important; /* 240px / 16px = 15em */
-  height: 5em !important; /* 80px / 16px = 5em */
+  width: 120px!important; /* 240px / 16px = 15em */
+  height: auto;
   object-fit: contain;
 }
 

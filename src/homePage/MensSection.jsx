@@ -82,11 +82,11 @@ const MensSection = () => {
               </p>
             </div>
             
-            <div className="text-button">
+            {/* <div className="text-button">
               <button className="action-button" onClick={goToRealEstate}>
                 <span className="btn-text">READ MORE</span>
               </button>
-            </div>
+            </div> */}
           </div>
         </div>
 
