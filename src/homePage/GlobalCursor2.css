@@ -1,6 +1,6 @@
 /* GlobalCursor2.css */
 * {
-  cursor: context-menu !important;
+  cursor: default !important;
 }
 
 
