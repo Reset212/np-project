@@ -1,11 +1,8 @@
 /* GlobalCursor2.css */
 * {
-  cursor: auto !important;
+  cursor: context-menu !important;
 }
 
-html, body {
-  cursor: auto !important;
-}
 
 .cursor-container {
   position: fixed;
