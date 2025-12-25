@@ -381,7 +381,7 @@ html {
   .content-wrapper {
     max-width: 100%;
     padding: 0 1.875em;
-    bottom: 4.5em;
+    bottom: 1.525em;
   }
   
   .awards-row {
@@ -458,7 +458,7 @@ html {
   
   .content-wrapper {
     padding: 0 1.5em;
-    bottom: 4em;
+    bottom: 1.525em;
   }
   
   .awards-row {
@@ -773,6 +773,7 @@ html {
     gap: 2em 1.25em;
     width: 100%;
     order: 1;
+    align-items: start;
   }
   
   .award-item {
@@ -860,7 +861,7 @@ html {
   }
   
   .content-wrapper {
-    bottom: 6em;
+    bottom: 1.525em;
   }
   
   .awards-row {
@@ -958,9 +959,7 @@ button,
 
 /* Улучшенные стили для текста наград */
 @media (min-width: 769px) {
-  .award-item {
-    min-width: 7.5em;
-  }
+
   
   .award-text {
     min-height: 3.75em;
