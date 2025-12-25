@@ -186,15 +186,6 @@ html {
   opacity: 0.8;
 }
 
-/* Позиционирование элементов в левой части */
-.nav-left .nav-item.directions {
-  margin-right: 2em;
-}
-
-/* Позиционирование элементов в правой части */
-.nav-right .nav-item.about {
-  margin-right: 2em;
-}
 
 /* Кнопка CHAT WITH US - ПК версия */
 .chat-button {
