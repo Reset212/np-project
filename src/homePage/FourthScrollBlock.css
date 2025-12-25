@@ -255,7 +255,7 @@ html {
 @media (max-width: 48em) { /* 768px = 48em */
   .fourth-section {
     min-height: 50vh;
-    margin-bottom: 6.25em; /* 100px = 6.25em */
+    margin-bottom: 6em; /* 100px = 6.25em */
   }
   
   .cities-container {
@@ -288,7 +288,7 @@ html {
 /* ============================================= */
 @media (max-width: 36em) { /* 576px = 36em */
   .fourth-section {
-    margin-bottom: 5em; /* 80px = 5em */
+    margin-bottom: 4.5em; /* 80px = 5em */
   }
   
   .cities-container {
@@ -322,7 +322,7 @@ html {
 @media (max-width: 24.375em) { /* 390px = 24.375em */
   .fourth-section {
     min-height: 60vh;
-    margin-bottom: 4em; /* 64px = 4em */
+    margin-bottom: 3.825em; /* 64px = 4em */
   }
   
   .cities-container {
