@@ -1,4 +1,4 @@
-/* ThirdScrollBlock.css - СГЛАЖЕННЫЕ АНИМАЦИИ */
+/* ThirdScrollBlock.css */
 
 :root {
   --base-font-size: 16px;
@@ -22,8 +22,8 @@ html {
   background-color: #ffffff !important;
   position: relative !important;
   overflow: hidden !important;
-  padding-bottom: 5.625em;
-  padding-top: 6.25em;
+  padding-bottom: 5.625em; /* 90px / 16px = 5.625em */
+  padding-top: 6.25em; /* 100px / 16px = 6.25em */
   max-height: 90vh;
   z-index: 99 !important;
 }
@@ -33,39 +33,18 @@ html {
   text-decoration: none;
 }
 
-/* ПЛАВНЫЕ АНИМАЦИИ ДЛЯ ВСЕХ УСТРОЙСТВ */
-.third-title {
-  transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), 
-              transform 0.9s cubic-bezier(0.16, 1, 0.3, 1) !important;
+/* Для мобильных устройств - уменьшаем толщину контура */
+@media (max-width: 768px) { /* 768px / 16px = 48em */
+  .third-item:hover .item-text .text-letter {
+
+  }
 }
 
-.title-letter {
-  transition: opacity 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), 
-              transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
-}
+/* Fallback для браузеров без поддержки text-stroke */
+@supports not (-webkit-text-stroke: 0.0625em #282525) {
+  .third-item:hover .item-text .text-letter {
 
-.third-button-wrapper {
-  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), 
-              transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) !important;
-}
-
-.third-item {
-  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), 
-              transform 0.7s cubic-bezier(0.16, 1, 0.3, 1) !important;
-}
-
-.text-letter {
-  transition: opacity 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), 
-              all 0.6s cubic-bezier(0.16, 1, 0.3, 1) !important;
-}
-
-.outline-letter {
-  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), 
-              transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) !important;
-}
-
-.button-letter {
-  transition: opacity 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+  }
 }
 
 /* ========== ОСНОВНОЙ КОНТЕЙНЕР ========== */
@@ -75,7 +54,7 @@ html {
   flex-direction: row;
   align-items: flex-start;
   justify-content: space-between;
-  padding: 0 5em;
+  padding: 0 5em; /* 80px / 16px = 5em */
   box-sizing: border-box;
   min-width: 0;
   position: relative;
@@ -91,7 +70,7 @@ html {
   flex-shrink: 0;
   width: auto;
   min-width: 0;
-  margin-right: 6.25em;
+  margin-right: 6.25em; /* 100px / 16px = 6.25em */
 }
 
 .third-title-wrapper {
@@ -103,14 +82,15 @@ html {
   font-family: 'Helvetica Neue', Arial, sans-serif;
   font-style: normal;
   font-weight: 700;
-  font-size: 15.625em;
+  font-size: 15.625em; /* 250px / 16px = 15.625em */
   line-height: 1;
   letter-spacing: -0.04em;
   text-transform: uppercase;
   color: #000000;
   margin: 0;
   opacity: 0;
-  transform: translateX(-2em); /* Уменьшил смещение для плавности */
+  transform: translateX(-3.125em); /* -50px / 16px = -3.125em */
+  transition: opacity 0.8s ease, transform 0.8s ease;
   white-space: nowrap;
   text-align: left;
   -webkit-font-smoothing: antialiased;
@@ -120,13 +100,14 @@ html {
 /* Стиль для пробела между WE и DO */
 .title-space {
   display: inline-block;
-  width: 0.15em;
+  width: 0.15em; /* 24px / 16px = 1.5em */
 }
 
 .title-letter {
   display: inline-block;
   opacity: 0;
-  transform: translateX(-1.2em); /* Уменьшил смещение */
+  transform: translateX(-1.875em); /* -30px / 16px = -1.875em */
+  transition: opacity 0.5s ease, transform 0.5s ease;
 }
 
 /* Правая часть - список и кнопка */
@@ -153,7 +134,7 @@ html {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 1.25em !important;
+  gap: 1.25em !important; /* 20px / 16px = 1.25em */
   width: 100%;
   min-width: 0;
 }
@@ -162,7 +143,8 @@ html {
   width: 100%;
   text-align: left;
   opacity: 0;
-  transform: translateX(-2em); /* Уменьшил смещение */
+  transform: translateX(-3.125em); /* -50px / 16px = -3.125em */
+  transition: opacity 0.6s ease, transform 0.6s ease;
   overflow: visible;
 }
 
@@ -170,7 +152,7 @@ html {
   font-family: 'Helvetica Neue', Arial, sans-serif;
   font-style: normal;
   font-weight: 500;
-  font-size: 4em;
+  font-size: 4em; /* 64px / 16px = 4em */
   line-height: 1;
   letter-spacing: -0.03em;
   text-transform: uppercase;
@@ -193,6 +175,7 @@ html {
 .text-letter {
   display: inline-block;
   opacity: 0;
+  transition: opacity 0.3s ease, all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   will-change: opacity, color, -webkit-text-stroke;
 }
 
@@ -206,30 +189,31 @@ html {
 .button-container {
   display: flex;
   width: 100%;
-  margin-top: 2.5em;
+  margin-top: 2.5em; /* 40px / 16px = 2.5em */
   justify-content: flex-end;
 }
 
 .third-button-wrapper {
   opacity: 0;
-  transform: translateY(1.2em); /* Уменьшил смещение */
+  transform: translateY(1.875em); /* 30px / 16px = 1.875em */
+  transition: opacity 0.7s ease, transform 0.7s ease;
 }
 
 .third-button {
-  width: 15em !important;
-  height: 3.75em;
+  width: 15em !important; /* 240px / 16px = 15em */
+  height: 3.75em; /* 60px / 16px = 3.75em */
   background: rgba(230, 230, 230, 0.72);
   border: none;
-  border-radius: 2em;
+  border-radius: 2em; /* 32px / 16px = 2em */
   font-family: 'Helvetica Neue', Arial, sans-serif;
-  font-size: 1.125em;
+  font-size: 1.125em; /* 18px / 16px = 1.125em */
   line-height: 1;
   color: #000000;
-  letter-spacing: 0.0625em;
+  letter-spacing: 0.0625em; /* 1px / 16px = 0.0625em */
   font-style: normal;
   text-transform: uppercase;
   cursor: pointer;
-  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+  transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
   display: flex;
@@ -242,19 +226,20 @@ html {
 
 .third-button:hover {
   background: rgba(200, 200, 200, 0.9);
-  transform: translateY(-0.125em);
-  box-shadow: 0 0.3125em 0.9375em rgba(0, 0, 0, 0.1);
+  transform: translateY(-0.125em); /* -2px / 16px = -0.125em */
+  box-shadow: 0 0.3125em 0.9375em rgba(0, 0, 0, 0.1); /* 5px / 16px = 0.3125em, 15px / 16px = 0.9375em */
 }
 
 /* Стиль для пробелов в кнопке */
 .button-space {
   display: inline-block;
-  width: 0.5em;
+  width: 0.5em; /* 8px / 16px = 0.5em */
 }
 
 .button-letter {
   display: inline-block;
   opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
 /* ========== КОНТУРНЫЕ БУКВЫ (фон) ========== */
@@ -286,7 +271,8 @@ html {
 .outline-letter {
   display: inline-block;
   opacity: 0;
-  transform: translateX(-2em); /* Уменьшил смещение */
+  transform: translateX(-3.125em); /* -50px / 16px = -3.125em */
+  transition: opacity 0.8s ease, transform 0.8s ease;
 }
 
 /* Десктопные контурные буквы */
@@ -297,19 +283,19 @@ html {
 /* Контур WE на планшетах */
 .outline-we-container.desktop-outline {
   position: absolute;
-  bottom: -0.625em !important;
-  left: -1.875em !important;
+  bottom: -0.625em !important; /* -10px / 16px = -0.625em */
+  left: -1.875em !important; /* -30px / 16px = -1.875em */
   width: 100%;
-  padding: 2.1875em -1.5625em !important;
+  padding: 2.1875em -1.5625em !important; /* 35px / 16px = 2.1875em, -25px / 16px = -1.5625em */
   z-index: 2;
   overflow: visible;
 }
 
 .outline-we-container.desktop-outline .outline-we {
-  font-size: 15.625em;
+  font-size: 15.625em; /* 250px / 16px = 15.625em */
   line-height: 1;
   color: transparent;
-  -webkit-text-stroke: 0.015em #DDDBDB;
+  -webkit-text-stroke: 0.015em #DDDBDB; /* 2px / 16px = 0.125em */
   text-stroke: 0.015em #DDDBDB;
   -webkit-text-fill-color: transparent;
   margin-bottom: 0;
@@ -322,16 +308,16 @@ html {
 /* Контур DO справа (выступает на 33%) - ДЕСКТОП */
 .outline-do-container.desktop-outline {
   position: absolute;
-  top: 6.25em;
+  top: 6.25em; /* 100px / 16px = 6.25em */
   right: 0;
   transform: translateX(33%);
 }
 
 .outline-do-container.desktop-outline .outline-do {
-  font-size: 18.75em;
+  font-size: 18.75em; /* 300px / 16px = 18.75em */
   line-height: 1;
   color: transparent;
-  -webkit-text-stroke: 0.015em #DDDBDB;
+  -webkit-text-stroke: 0.015em #DDDBDB; /* 2px / 16px = 0.125em */
   text-stroke: 0.015em #DDDBDB;
   -webkit-text-fill-color: transparent;
 }
@@ -389,73 +375,72 @@ html {
 /* ============================================= */
 /* ПРОМЕЖУТОЧНЫЕ РАЗМЕРЫ (1441px - 1760px) */
 /* ============================================= */
-@media (min-width: 90.0625em) and (max-width: 110em) {
+@media (min-width: 90.0625em) and (max-width: 110em) { /* 1441px = 90.0625em, 1760px = 110em */
   html {
-    font-size: calc(var(--base-font-size) * 0.9375);
+    font-size: calc(var(--base-font-size) * 0.9375); /* 15px */
   }
   
   .third-scroll-section {
-    padding-top: 5em;
-    padding-bottom: 4.375em;
+    padding-top: 5em; /* 80px / 16px = 5em */
+    padding-bottom: 4.375em; /* 70px / 16px = 4.375em */
     max-height: 95vh;
   }
   
   .third-scroll-container {
-    padding: 0 3.75em;
+    padding: 0 3.75em; /* 60px / 16px = 3.75em */
   }
   
   .left-side {
-    margin-right: 4em;
+    margin-right: 4em; /* 64px / 16px = 4em */
   }
   
   .third-title {
-    font-size: 13em;
+    font-size: 13em; /* 208px / 16px = 13em */
     line-height: 0.85;
   }
   
   .item-text {
-    font-size: 3.25em;
+    font-size: 3.25em; /* 52px / 16px = 3.25em */
     line-height: 1;
   }
   
   .third-items-list {
-    gap: 1em !important;
+    gap: 1em !important; /* 16px / 16px = 1em */
   }
   
   .button-container {
-    margin-top: 2em;
+    margin-top: 2em; /* 32px / 16px = 2em */
   }
   
   .third-button {
-    width: 14em !important;
-    font-size: 1em !important;
+    width: 14em !important; /* 224px / 16px = 14em */
+    font-size: 1em !important; /* 16px / 16px = 1em */
   }
   
   /* Контурные буквы для промежуточных размеров */
   .outline-we-container.desktop-outline .outline-we {
-    font-size: 13em;
+    font-size: 13em; /* 208px / 16px = 13em */
   }
   
   .outline-do-container.desktop-outline .outline-do {
-    font-size: 15em;
+    font-size: 15em; /* 240px / 16px = 15em */
   }
   
   .outline-do-container.desktop-outline {
-    top: 5em;
+    top: 5em; /* 80px / 16px = 5em */
   }
 }
-
 /* ============================================= */
 /* ПЛАНШЕТНАЯ ВЕРСИЯ (до 1440px) */
 /* ============================================= */
-@media (max-width: 1440px) {
+@media (max-width: 1440px) { /* 1440px / 16px = 90em */
   html {
-    font-size: calc(var(--base-font-size) * 0.9375);
+    font-size: calc(var(--base-font-size) * 0.9375); /* 15px */
   }
   
   .third-scroll-section {
-    padding-top: 5em;
-    padding-bottom: 4.375em;
+    padding-top: 5em; /* 80px / 16px = 5em */
+    padding-bottom: 4.375em; /* 70px / 16px = 4.375em */
     overflow: visible;
     position: relative;
   }
@@ -463,8 +448,8 @@ html {
   .third-scroll-container {
     flex-direction: column;
     align-items: flex-end;
-    padding: 0 3.75em;
-    gap: 1.875em;
+    padding: 0 3.75em; /* 60px / 16px = 3.75em */
+    gap: 1.875em; /* 30px / 16px = 1.875em */
     min-width: 0;
     position: relative;
     z-index: 3;
@@ -480,11 +465,14 @@ html {
   .right-side {
     width: 100%;
     min-width: 0;
+    /* align-items: flex-end; */
+    /* margin-right: 9em !important; */
+    max-width: 100%;
     max-width: 100% !important;
   }
 
   .third-title {
-    font-size: 15.5em;
+    font-size: 15.5em; /* 200px / 16px = 12.5em */
     line-height: 0.8;
     text-align: left;
     width: 100%;
@@ -506,7 +494,7 @@ html {
   }
 
   .item-text {
-    font-size: 2.5em;
+    font-size: 2.5em; /* 40px / 16px = 2.5em */
     line-height: 1;
     text-align: left;
     white-space: nowrap;
@@ -516,36 +504,36 @@ html {
   }
 
   .title-space {
-    width: 0.15em;
+    width: 0.15em; /* 20px / 16px = 1.25em */
   }
 
   .button-container {
-    margin-top: 1.875em;
+    margin-top: 1.875em; /* 30px / 16px = 1.875em */
     justify-content: flex-end;
     width: 100%;
   }
   
   .third-button {
-    width: 13.5em !important;
-    font-size: 1em !important;
+    width: 13.5em !important; /* 216px / 16px = 13.5em */
+    font-size: 1em !important; /* 16px / 16px = 1em */
   }
   
   /* Контур WE на планшетах */
   .outline-we-container.desktop-outline {
     position: absolute;
-    bottom: -1.25em;
-    left: -1.25em;
+    bottom: -1.25em; /* -20px / 16px = -1.25em */
+    left: -1.25em; /* -20px / 16px = -1.25em */
     width: 100%;
-    padding: 2.1875em 0;
+    padding: 2.1875em 0; /* 35px / 16px = 2.1875em */
     z-index: 2;
     overflow: visible;
   }
   
   .outline-we-container.desktop-outline .outline-we {
-    font-size: 15.625em;
+    font-size: 15.625em; /* 250px / 16px = 15.625em */
     line-height: 1;
     color: transparent;
-    -webkit-text-stroke: 0.015em #DDDBDB;
+    -webkit-text-stroke: 0.015em #DDDBDB; /* 2px / 16px = 0.125em */
     text-stroke: 0.015em #DDDBDB;
     -webkit-text-fill-color: transparent;
     margin-bottom: 0;
@@ -559,31 +547,35 @@ html {
   /* Контур DO справа */
   .outline-do-container.desktop-outline {
     position: absolute;
-    top: 6.25em;
+    top: 6.25em; /* 100px / 16px = 6.25em */
     right: 0;
+
     transform: translateX(33%);
   }
   
   .outline-do-container.desktop-outline .outline-do {
-    font-size: 15.625em;
+    font-size: 15.625em; /* 250px / 16px = 15.625em */
     line-height: 1;
     color: transparent;
-    -webkit-text-stroke: 0.015em #DDDBDB;
+    -webkit-text-stroke: 0.015em #DDDBDB; /* 2px / 16px = 0.125em */
     text-stroke: 0.015em #DDDBDB;
     -webkit-text-fill-color: transparent;
+
   }
 }
 
+/* ThirdScrollBlock.css - ТОЛЬКО ИСПРАВЛЕННЫЕ СЕКЦИИ ДЛЯ МОБИЛЬНОЙ ВЕРСИИ */
+
 /* ============================================= */
-/* ТЕЛЕФОННАЯ ВЕРСИЯ (до 768px) - ПЛАВНАЯ */
+/* ТЕЛЕФОННАЯ ВЕРСИЯ (до 768px) - ИСПРАВЛЕННЫЙ */
 /* ============================================= */
 @media (max-width: 768px) {
   html {
-    font-size: calc(var(--base-font-size) * 0.875);
+    font-size: calc(var(--base-font-size) * 0.875); /* 14px */
   }
   
   .third-scroll-section {
-    padding: 3.571em 1.429em 8em 1.429em !important;
+    padding: 3.571em 1.429em 10em 1.429em !important;
     min-height: auto;
     overflow: hidden;
     position: relative;
@@ -611,7 +603,7 @@ html {
   .third-title-wrapper {
     width: 100%;
     display: flex;
-    justify-content: center;
+    justify-content: center; /* Центрируем заголовок */
   }
 
   .desktop-title {
@@ -621,7 +613,7 @@ html {
   .mobile-title {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: center; /* Центрируем слова */
     justify-content: center;
     width: 100%;
   }
@@ -629,24 +621,23 @@ html {
   .third-title {
     font-size: 7.143em !important;
     line-height: 0.85 !important;
-    text-align: center !important;
+    text-align: center !important; /* Центрируем текст */
     margin: 0 !important;
     width: 100%;
-    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), 
-                transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) !important;
   }
 
   .title-word {
     display: block;
     line-height: 0.85;
     left: 1em !important;
+
     width: 100%;
   }
 
   /* ПРАВАЯ ЧАСТЬ - Список сервисов */
   .right-side {
     width: 100%;
-    align-items: center !important;
+    align-items: center !important; /* Центрируем содержимое */
     max-width: 100%;
     order: 2;
     position: relative;
@@ -654,41 +645,35 @@ html {
   }
 
   .items-container {
-    align-items: center !important;
+    align-items: center !important; /* Центрируем список */
     width: 100%;
   }
 
   .third-items-list {
-    align-items: center !important;
+    align-items: center !important; /* Центрируем элементы списка */
     gap: 1.429em;
     width: 100%;
   }
 
   .third-item {
-    text-align: center !important;
+    text-align: center !important; /* Центрируем текст элементов */
     width: 100%;
-    transform: translateY(1em) !important; /* Меньшее смещение */
-    transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), 
-                transform 0.7s cubic-bezier(0.16, 1, 0.3, 1) !important;
   }
 
   .item-text {
     font-size: 2em !important;
     line-height: 1 !important;
-    text-align: center !important;
+    text-align: center !important; /* Центрируем текст */
     white-space: normal;
     overflow: visible;
     text-overflow: clip;
   }
 
-  .text-letter {
-    transition: opacity 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
-  }
-
   /* КНОПКА */
   .button-container {
+
     margin-bottom: 2.143em !important;
-    justify-content: center !important;
+    justify-content: center !important; /* Центрируем кнопку */
     width: 100%;
     position: relative;
     z-index: 7;
@@ -701,9 +686,6 @@ html {
   .third-button-wrapper {
     position: relative;
     z-index: 8;
-    transform: translateY(0.8em) !important; /* Меньшее смещение */
-    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), 
-                transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) !important;
   }
 
   .third-button {
@@ -714,7 +696,6 @@ html {
     background: rgba(230, 230, 230, 0.85);
     position: relative;
     z-index: 9;
-    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
   }
 
   /* СКРЫВАЕМ ДЕСКТОПНЫЕ КОНТУРНЫЕ БУКВЫ */
@@ -722,12 +703,12 @@ html {
     display: none !important;
   }
   
-  /* ПОКАЗЫВАЕМ МОБИЛЬНЫЕ КОНТУРНЫЕ БУКВЫ */
+  /* ПОКАЗЫВАЕМ МОБИЛЬНЫЕ КОНТУРНЫЕ БУКВЫ - ВОССТАНАВЛИВАЕМ ПРЕДЫДУЩИЕ СТИЛИ */
   .mobile-outline {
     display: block !important;
   }
   
-  /* DO - НАД кнопкой справа */
+  /* DO - НАД кнопкой справа, увеличенный - ВОССТАНАВЛИВАЕМ ПРЕДЫДУЩИЕ ПОЗИЦИИ */
   .outline-do-container.mobile-outline.do-above-button {
     position: absolute !important;
     top: auto !important;
@@ -745,12 +726,14 @@ html {
     -webkit-text-stroke: 0.015em #DDDBDB;
     text-stroke: 0.143em #DDDBDB;
     -webkit-text-fill-color: transparent;
+    /* letter-spacing: -0.143em; */
   }
   
-  /* WE - под кнопкой слева */
+  /* WE - под кнопкой слева, видна только верхняя половина - ВОССТАНАВЛИВАЕМ ПРЕДЫДУЩИЕ ПОЗИЦИИ */
   .outline-we-container.mobile-outline.we-below-button {
     position: absolute !important;
     bottom: 0.614em !important;
+    /* left: 1.429em !important; */
     z-index: 3;
     overflow: hidden;
     height: 3.571em;
@@ -765,79 +748,73 @@ html {
     -webkit-text-stroke: 0.015em #DDDBDB;
     text-stroke: 0.107em #DDDBDB;
     -webkit-text-fill-color: transparent;
+    /* letter-spacing: -0.143em; */
+    /* margin-top: -5.714em; */
   }
   
-  /* ПЛАВНЫЕ АНИМАЦИИ ДЛЯ МОБИЛЬНОЙ ВЕРСИИ */
-  .outline-letter {
-    transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), 
-                transform 0.9s cubic-bezier(0.16, 1, 0.3, 1) !important;
-  }
-  
+  /* ПЛАВНЫЕ АНИМАЦИИ - ВОССТАНАВЛИВАЕМ */
   .third-title-wrapper,
   .third-items-list,
   .button-container {
     opacity: 0;
-    transform: translateY(1em) !important; /* Меньшее смещение */
-    transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), 
-                transform 0.9s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    transform: translateY(2.143em);
+    transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1), 
+                transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
   }
-  
-  .title-word:first-child {
-    transform: translateX(-16px) !important; /* Меньшее смещение */
+    .title-word:first-child {
+    transform: translateX(-22px) !important;
   }
-  
   .title-word:nth-child(2) {
-    transform: translateX(16px) !important; /* Меньшее смещение */
+    transform: translateX(22px) !important;
   }
-  
   .section-visible .third-title-wrapper {
     opacity: 1;
-    transform: translateY(0) !important;
+    transform: translateY(0);
     transition-delay: 100ms;
   }
   
   .section-visible .third-items-list {
     opacity: 1;
-    transform: translateY(0) !important;
+    transform: translateY(0);
     transition-delay: 200ms;
   }
   
   .section-visible .button-container {
     opacity: 1;
-    transform: translateY(0) !important;
+    transform: translateY(0);
     transition-delay: 300ms;
   }
   
-  /* Плавная анимация для контурных букв */
+  /* Анимация для контурных букв - ВОССТАНАВЛИВАЕМ */
   .outline-do-container.mobile-outline.do-above-button .outline-letter,
   .outline-we-container.mobile-outline.we-below-button .outline-letter {
     opacity: 0;
-    transform: translateY(0.8em) !important; /* Меньшее смещение */
-    transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), 
-                transform 1s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    transform: translateY(1.429em);
+    transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), 
+                transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
   }
   
   .section-visible .outline-do-container.mobile-outline.do-above-button .outline-letter,
   .section-visible .outline-we-container.mobile-outline.we-below-button .outline-letter {
     opacity: 0.9;
-    transform: translateY(0) !important;
+    transform: translateY(0);
   }
   
-  /* Естественные задержки для букв */
+  /* Задержки для букв - ВОССТАНАВЛИВАЕМ */
   .outline-do-container.mobile-outline.do-above-button .outline-letter:nth-child(1) {
-    transition-delay: 400ms;
+    transition-delay: 100ms;
   }
   
   .outline-do-container.mobile-outline.do-above-button .outline-letter:nth-child(2) {
-    transition-delay: 450ms;
+    transition-delay: 200ms;
   }
   
   .outline-we-container.mobile-outline.we-below-button .outline-letter:nth-child(1) {
-    transition-delay: 500ms;
+    transition-delay: 300ms;
   }
   
   .outline-we-container.mobile-outline.we-below-button .outline-letter:nth-child(2) {
-    transition-delay: 550ms;
+    transition-delay: 400ms;
   }
 }
 
@@ -846,23 +823,20 @@ html {
 /* ============================================= */
 @media (max-width: 390px) {
   html {
-    font-size: calc(var(--base-font-size) * 0.8125);
+    font-size: calc(var(--base-font-size) * 0.8125); /* 13px */
   }
-  
   .third-scroll-container {
     width: 100%;
+    
   }
-  
   .title-word:first-child {
-    transform: translateX(-14px) !important; /* Меньшее смещение */
+    transform: translateX(-22px) !important;
   }
-  
   .title-word:nth-child(2) {
-    transform: translateX(14px) !important; /* Меньшее смещение */
+    transform: translateX(22px) !important;
   }
-  
   .third-scroll-section {
-    padding: 3em 1em 7em 1em !important;
+    padding: 0em !important;
   }
   
   .item-text {
@@ -870,28 +844,27 @@ html {
   }
   
   .third-button {
-    width: 12em !important;
+    width: 14em !important;
   }
 
-  /* Контурные буквы */
+  /* ВОССТАНАВЛИВАЕМ позиции контурных букв */
   .outline-do-container.mobile-outline.do-above-button {
-    font-size: 1em;
-    bottom: 6.5em !important;
-    right: 1em !important;
+    font-size: 1.3em;
+    left: 16em !important; /* 16px / 13px = 1.231em */
   }
   
   .outline-we-container.mobile-outline.we-below-button {
-    font-size: 1em;
-    bottom: 0.4em !important;
+    font-size: 1.3em;
+    right: 10.231em !important; /* 16px / 13px = 1.231em */
   }
 }
 
 /* ============================================= */
 /* ОЧЕНЬ БОЛЬШИЕ ЭКРАНЫ (больше 1920px) */
 /* ============================================= */
-@media (min-width: 1921px) {
+@media (min-width: 1921px) { /* 1920px / 16px = 120em */
   html {
-    font-size: calc(var(--base-font-size) * 1.2);
+    font-size: calc(var(--base-font-size) * 1.2); /* Увеличиваем базовый размер */
   }
   
   .third-scroll-container {
@@ -899,40 +872,115 @@ html {
     margin: 0 auto;
   }
 }
-
 /* ============================================= */
 /* МАЛЕНЬКИЕ ТЕЛЕФОНЫ (до 480px) */
 /* ============================================= */
-@media (max-width: 30em) {
+@media (max-width: 30em) { /* 480px / 16px = 30em */
   html {
     font-size: calc(var(--base-font-size) * 0.8125); 
   }
   
   .third-scroll-section {
-    padding: 2.5em 0.8em 6em 0.8em !important;
+    padding: 0em !important; /* 40px / 13px = 3.077em, 16px / 13px = 1.231em, 130px / 13px = 10em */
   }
 
   .third-scroll-container {
-    gap: 2.3em;
+    gap: 2.692em; /* 35px / 13px = 2.692em */
   }
 
   .third-title {
-    font-size: 6em !important;
+    font-size: 5em !important; /* 104px / 13px = 8em */
     line-height: 0.85 !important;
   }
 
   .item-text {
-    font-size: 1.6em !important;
+    font-size: 1.5em !important; /* 24px / 13px = 1.846em */
     line-height: 1 !important;
     font-weight: 500 !important;
   }
 
   .third-items-list {
-    gap: 1.2em;
-  }
-
-  .third-button {
-    width: 11em !important;
-    height: 2.4em !important;
+    /* gap: 1.385em; 18px / 13px = 1.385em */
   }
 }
+
+/* ============================================= */
+/* УСКОРЕНИЕ НАЧАЛА АНИМАЦИЙ ПРИ ПОЯВЛЕНИИ СЕКЦИИ */
+/* ============================================= */
+
+/* Убираем все задержки когда секция становится видимой */
+.section-visible .third-title,
+.section-visible .title-letter,
+.section-visible .third-item,
+.section-visible .text-letter,
+.section-visible .third-button-wrapper,
+.section-visible .button-letter,
+.section-visible .outline-letter {
+  transition-delay:150ms !important;
+}
+
+/* Для десктопных и планшетных версий */
+.section-visible .third-title {
+  transition-delay: 150ms !important;
+}
+
+.section-visible .title-letter {
+  transition-delay: 150ms !important;
+}
+
+.section-visible .third-item {
+  transition-delay: 150ms !important;
+}
+
+.section-visible .text-letter {
+  transition-delay: 100ms !important;
+}
+
+.section-visible .third-button-wrapper {
+  transition-delay: 100ms !important;
+}
+
+.section-visible .button-letter {
+  transition-delay: 100ms !important;
+}
+
+.section-visible .outline-letter {
+  transition-delay: 100ms !important;
+}
+
+/* Для мобильной версии убираем все задержки */
+@media (max-width: 768px) {
+  .section-visible .third-title-wrapper,
+  .section-visible .third-items-list,
+  .section-visible .button-container {
+    transition-delay: 100ms !important;
+  }
+  
+  .section-visible .outline-do-container.mobile-outline.do-above-button .outline-letter,
+  .section-visible .outline-we-container.mobile-outline.we-below-button .outline-letter {
+    transition-delay: 100ms !important;
+  }
+  
+  /* Убираем задержки для отдельных букв в контурных надписях */
+  .section-visible .outline-do-container.mobile-outline.do-above-button .outline-letter:nth-child(1),
+  .section-visible .outline-do-container.mobile-outline.do-above-button .outline-letter:nth-child(2),
+  .section-visible .outline-we-container.mobile-outline.we-below-button .outline-letter:nth-child(1),
+  .section-visible .outline-we-container.mobile-outline.we-below-button .outline-letter:nth-child(2) {
+    transition-delay: 100ms !important;
+  }
+}
+
+/* Убираем любые существующие задержки в исходных состояниях */
+.third-title,
+.title-letter,
+.third-item,
+.text-letter,
+.third-button-wrapper,
+.button-letter,
+.outline-letter {
+  transition-delay: 100ms !important;
+}
+
+/* ============================================= */
+/* КОНЕЦ ФАЙЛА */
+/* ============================================= */
