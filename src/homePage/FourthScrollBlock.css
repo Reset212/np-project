@@ -23,8 +23,8 @@
   --transition-medium: 0.8s ease;
   
   /* Толщины линий */
-  --underline-thick: 0.05375em;   /* 1.5px = 0.09375em */
-  --underline-thin: 0.03125em;    /* 0.5px = 0.03125em */
+  --underline-thick: 0.09375em;   /* 1.5px */
+  --underline-thin: 0.03125em;    /* 0.5px */
 }
 
 /* Базовые настройки */
@@ -59,14 +59,14 @@ html {
 .cities-container {
   display: flex;
   flex-direction: column;
-  gap: 1.875em; /* Уменьшил: 30px = 1.875em (было 60px = 3.75em) */
+  gap: 1.875em; /* 30px = 1.875em */
   width: 100%;
 }
 
 /* ОСНОВНЫЕ СТИЛИ - БЕЗ ХОВЕРОВ */
 .city-line {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: center;
   position: relative;
   width: 100%;
@@ -80,13 +80,21 @@ html {
   transform: translateY(0);
 }
 
-.city-container-flex {
+.city-wrapper {
+  position: relative;
   display: flex;
-  align-items: flex-start;
+  align-items: flex-start; /* Изменено: выравнивание по верху */
   justify-content: center;
-  gap: 1.5em; /* 24px = 1.5em */
 }
 
+.city-container-flex {
+  display: flex;
+  align-items: flex-start; /* Изменено: выравнивание по верху */
+  position: relative;
+  width: fit-content;
+}
+
+/* ИЗМЕНЕНО: Центрирование названия города */
 .city-name-flex {
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-style: normal;
@@ -97,20 +105,19 @@ html {
   text-transform: uppercase;
   color: var(--color-black);
   white-space: nowrap;
-  display: flex;
-  align-items: center;
   position: relative;
-  padding-top: 0.3125em; /* 5px = 0.3125em */
+  display: block;
+  margin: 0 auto;
 }
 
-/* ПОДЧЕРКИВАНИЕ ПРИ НАВЕДЕНИИ - СДЕЛАЛ ТОНЬШЕ */
+/* ПОДЧЕРКИВАНИЕ ПРИ НАВЕДЕНИИ */
 .city-name-flex::after {
   content: '';
   position: absolute;
   bottom: 0;
   left: 0;
   width: 0;
-  height: var(--underline-thick); /* 1.5px = 0.09375em (было 3px = 0.1875em) */
+  height: var(--underline-thick); /* 1.5px = 0.09375em */
   background-color: var(--color-black);
   transition: width var(--transition-fast);
 }
@@ -120,24 +127,28 @@ html {
   width: 100%;
 }
 
+/* ИЗМЕНЕНО: Время позиционируется выше города */
 .city-time-flex {
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-style: normal;
   font-weight: 500;
   color: var(--color-black);
   white-space: nowrap;
-  padding-top: 0.75em; /* 12px = 0.75em */
-  position: relative;
+  position: absolute;
+  left: 100%;
+  top: -0.75em; /* Изменено: размещаем выше города (-12px) */
+  margin-left: 1.5em; /* 24px = 1.5em */
+  padding-top: 0; /* Убрал padding-top */
 }
 
-/* ПОДЧЕРКИВАНИЕ ВРЕМЕНИ - СДЕЛАЛ ТОНЬШЕ */
+/* ПОДЧЕРКИВАНИЕ ВРЕМЕНИ */
 .city-time-flex::after {
   content: '';
   position: absolute;
-  bottom: -0.0625em; /* -1px = -0.0625em (было -2px = -0.125em) */
+  bottom: -0.0625em; /* -1px = -0.0625em */
   left: 0;
   width: 0;
-  height: var(--underline-thin); /* 0.5px = 0.03125em (было 1px = 0.0625em) */
+  height: var(--underline-thin); /* 0.5px = 0.03125em */
   background-color: var(--color-black);
   transition: width var(--transition-fast);
 }
@@ -154,14 +165,14 @@ html {
 }
 
 .city-time-flex {
-  font-size: 1em; /* 16px = 1em - ИСПРАВИЛ: было 0em */
+  font-size: 1em; /* 16px = 1em */
   line-height: 1em;
 }
 
 /* ============================================= */
 /* ПК ВЕРСИЯ (1920px и больше) */
 /* ============================================= */
-@media (min-width: 120em) { /* 1920px = 120em - ИСПРАВИЛ: было max-width */
+@media (min-width: 120em) { /* 1920px = 120em */
   .cities-container {
     gap: 1.875em; /* 30px = 1.875em */
   }
@@ -181,7 +192,7 @@ html {
   
   .fourth-content {
     max-width: 100%;
-    padding: 0 4vw; /* Уменьшил отступы: было 8vw */
+    padding: 0 4vw;
   }
 }
 
@@ -189,27 +200,24 @@ html {
 /* ПЛАНШЕТНАЯ ВЕРСИЯ (до 1440px) */
 /* ============================================= */
 @media (max-width: 90em) { /* 1440px = 90em */
-  .cities-container {
-
-  }
-  
   .city-name-flex {
-    font-size: 4.5em; /* 72px = 4.5em (было 85px) */
-
+    font-size: 5.3125em; /* 85px = 5.3125em (старый размер) */
   }
   
   .city-time-flex {
     font-size: 0.9375em; /* 15px = 0.9375em */
     line-height: 0.9375em;
+    margin-left: 1.25em; /* 20px = 1.25em */
+    top: -0.625em; /* -10px = -0.625em (старый отступ) */
   }
   
   .city-line {
-    transform: translateY(1.875em); /* Уменьшил: 30px = 1.875em (было 40px) */
+    transform: translateY(2.5em); /* 40px = 2.5em (старый отступ) */
   }
   
   .fourth-content {
     max-width: 100%;
-    padding: 0 4vw; /* Уменьшил отступы: было 6vw */
+    padding: 0 4vw;
   }
 }
 
@@ -218,21 +226,22 @@ html {
 /* ============================================= */
 @media (min-width: 64em) and (max-width: 75em) { /* 1024px = 64em, 1200px = 75em */
   .cities-container {
-    gap: 1.125em; /* 18px = 1.125em (было 40px) */
+    gap: 2.5em; /* 40px = 2.5em (старый отступ) */
   }
   
   .city-name-flex {
-    font-size: 3.75em; /* 60px = 3.75em (было 75px) */
-
+    font-size: 4.6875em; /* 75px = 4.6875em (старый размер) */
   }
   
   .city-time-flex {
     font-size: 0.875em; /* 14px = 0.875em */
     line-height: 0.875em;
+    margin-left: 1em; /* 16px = 1em */
+    top: -0.5625em; /* -9px = -0.5625em */
   }
   
   .city-line {
-    transform: translateY(1.5625em); /* 25px = 1.5625em (было 35px) */
+    transform: translateY(2.1875em); /* 35px = 2.1875em (старый отступ) */
   }
   
   .fourth-content {
@@ -248,31 +257,25 @@ html {
     min-height: 50vh;
     margin-bottom: 6.25em; /* 100px = 6.25em */
   }
-  .fourth-content{
-    height: 30em;
-  }
+  
   .cities-container {
-    gap: 1.125em; /* 18px = 1.125em (было 30px) */
+    gap: 1.875em; /* 30px = 1.875em (старый отступ) */
   }
   
   .city-name-flex {
-    font-size: 3.5em; /* 40px = 2.5em (было 50px) */
+    font-size: 3.125em; /* 50px = 3.125em (старый размер) */
     line-height: 1;
   }
   
   .city-time-flex {
     font-size: 0.75em; /* 12px = 0.75em */
     line-height: 0.75em;
-  }
-  
-  .city-container-flex {
-    display: flex;
-    flex-direction: row;
-    gap: 0.75em; /* 12px = 0.75em */
+    margin-left: 0.75em; /* 12px = 0.75em */
+    top: -0.5em; /* -8px = -0.5em */
   }
   
   .city-line {
-    transform: translateY(1.125em); /* 18px = 1.125em (было 25px) */
+    transform: translateY(1.5625em); /* 25px = 1.5625em (старый отступ) */
   }
   
   .fourth-content {
@@ -289,25 +292,23 @@ html {
   }
   
   .cities-container {
-    gap: 1em; /* 16px = 1em (было 25px) */
+    gap: 1.5625em; /* 25px = 1.5625em (старый отступ) */
   }
   
   .city-name-flex {
-    font-size: 3.3em; /* 32px = 2em (было 40px) */
+    font-size: 3.125em; /* 40px = 2.5em (старый размер) */
     line-height: 1;
   }
   
   .city-time-flex {
     font-size: 0.6875em; /* 11px = 0.6875em */
     line-height: 0.6875em;
-  }
-  
-  .city-container-flex {
-    gap: 0.5em; /* 8px = 0.5em (было 12px) */
+    margin-left: 0.625em; /* 10px = 0.625em */
+    top: -0.4375em; /* -7px = -0.4375em */
   }
   
   .city-line {
-    transform: translateY(0.875em); /* 14px = 0.875em (было 20px) */
+    transform: translateY(1.25em); /* 20px = 1.25em (старый отступ) */
   }
   
   .fourth-content {
@@ -325,25 +326,23 @@ html {
   }
   
   .cities-container {
-    gap: 0.875em; /* 14px = 0.875em (было 20px) */
+    gap: 1.25em; /* 20px = 1.25em (старый отступ) */
   }
   
   .city-name-flex {
-    font-size: 2.7em; /* 26px = 1.625em (было 32px) */
+    font-size: 3.125em; /* 32px = 2em (старый размер) */
     line-height: 1;
   }
   
   .city-time-flex {
     font-size: 0.625em; /* 10px = 0.625em */
     line-height: 0.625em;
-  }
-  
-  .city-container-flex {
-    gap: 0.375em; /* 6px = 0.375em (было 8px) */
+    margin-left: 0.5em; /* 8px = 0.5em */
+    top: -0.375em; /* -6px = -0.375em */
   }
   
   .city-line {
-    transform: translateY(0.625em); /* 10px = 0.625em (было 15px) */
+    transform: translateY(0.9375em); /* 15px = 0.9375em (старый отступ) */
   }
   
   .fourth-content {
@@ -360,15 +359,17 @@ html {
   }
   
   .cities-container {
-    gap: 0.75em; /* 12px = 0.75em (было 16px) */
+    gap: 1em; /* 16px = 1em */
   }
   
   .city-name-flex {
-    font-size: 2em; /* 32px = 2em (было 40px) */
+    font-size: 2.5em; /* 40px = 2.5em */
   }
   
   .city-time-flex {
     font-size: 0.75em; /* 12px = 0.75em */
+    margin-left: 0.75em; /* 12px = 0.75em */
+    top: -0.5em; /* -8px = -0.5em */
   }
 }
 

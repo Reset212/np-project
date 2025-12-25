@@ -112,9 +112,11 @@ const FourthScrollBlock = () => {
                 transitionDelay: `${index * 150}ms`
               }}
             >
-              <div className="city-container-flex">
-                <div className="city-name-flex">{city.name}</div>
-                <div className="city-time-flex">{getCityTime(city.name)}</div>
+              <div className="city-wrapper">
+                <div className="city-container-flex">
+                  <div className="city-name-flex">{city.name}</div>
+                  <div className="city-time-flex">{getCityTime(city.name)}</div>
+                </div>
               </div>
             </div>
           ))}
