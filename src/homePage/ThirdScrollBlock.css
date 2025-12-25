@@ -26,6 +26,7 @@ html {
   padding-top: 6.25em; /* 100px / 16px = 6.25em */
   max-height: 90vh;
   z-index: 99 !important;
+  min-height: 100vh; /* Гарантируем минимальную высоту для мобильных */
 }
 
 /* Убираем стандартное подчеркивание */
@@ -752,14 +753,14 @@ html {
     /* margin-top: -5.714em; */
   }
   
-  /* ПЛАВНЫЕ АНИМАЦИИ - ВОССТАНАВЛИВАЕМ */
+  /* ПЛАВНЫЕ АНИМАЦИИ - С ОПТИМИЗАЦИЕЙ ДЛИТЕЛЬНОСТИ */
   .third-title-wrapper,
   .third-items-list,
   .button-container {
     opacity: 0;
     transform: translateY(2.143em);
-    transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1), 
-                transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), 
+                transform 0.5s cubic-bezier(0.4, 0, 0.2, 1) !important;
   }
     .title-word:first-child {
     transform: translateX(-22px) !important;
@@ -767,54 +768,14 @@ html {
   .title-word:nth-child(2) {
     transform: translateX(22px) !important;
   }
-  .section-visible .third-title-wrapper {
-    opacity: 1;
-    transform: translateY(0);
-    transition-delay: 100ms;
-  }
   
-  .section-visible .third-items-list {
-    opacity: 1;
-    transform: translateY(0);
-    transition-delay: 200ms;
-  }
-  
-  .section-visible .button-container {
-    opacity: 1;
-    transform: translateY(0);
-    transition-delay: 300ms;
-  }
-  
-  /* Анимация для контурных букв - ВОССТАНАВЛИВАЕМ */
+  /* Анимация для контурных букв - С ОПТИМИЗАЦИЕЙ */
   .outline-do-container.mobile-outline.do-above-button .outline-letter,
   .outline-we-container.mobile-outline.we-below-button .outline-letter {
     opacity: 0;
     transform: translateY(1.429em);
-    transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), 
-                transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-  
-  .section-visible .outline-do-container.mobile-outline.do-above-button .outline-letter,
-  .section-visible .outline-we-container.mobile-outline.we-below-button .outline-letter {
-    opacity: 0.9;
-    transform: translateY(0);
-  }
-  
-  /* Задержки для букв - ВОССТАНАВЛИВАЕМ */
-  .outline-do-container.mobile-outline.do-above-button .outline-letter:nth-child(1) {
-    transition-delay: 100ms;
-  }
-  
-  .outline-do-container.mobile-outline.do-above-button .outline-letter:nth-child(2) {
-    transition-delay: 200ms;
-  }
-  
-  .outline-we-container.mobile-outline.we-below-button .outline-letter:nth-child(1) {
-    transition-delay: 300ms;
-  }
-  
-  .outline-we-container.mobile-outline.we-below-button .outline-letter:nth-child(2) {
-    transition-delay: 400ms;
+    transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), 
+                transform 0.6s cubic-bezier(0.4, 0, 0.2, 1) !important;
   }
 }
 
@@ -881,7 +842,6 @@ html {
   }
   
   .third-scroll-section {
-    padding: 0em !important; /* 40px / 13px = 3.077em, 16px / 13px = 1.231em, 130px / 13px = 10em */
   }
 
   .third-scroll-container {
@@ -905,72 +865,125 @@ html {
 }
 
 /* ============================================= */
-/* УСКОРЕНИЕ НАЧАЛА АНИМАЦИЙ ПРИ ПОЯВЛЕНИИ СЕКЦИИ */
+/* ОПТИМИЗИРОВАННЫЕ ЗАДЕРЖКИ ДЛЯ МОБИЛЬНЫХ */
 /* ============================================= */
 
-/* Убираем все задержки когда секция становится видимой */
-.section-visible .third-title,
-.section-visible .title-letter,
-.section-visible .third-item,
-.section-visible .text-letter,
-.section-visible .third-button-wrapper,
-.section-visible .button-letter,
-.section-visible .outline-letter {
-  transition-delay:150ms !important;
+@media (max-width: 768px) {
+  /* Быстрые стартовые задержки для мобильных */
+  .section-visible .third-title-wrapper {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0ms !important;
+  }
+  
+  .section-visible .third-items-list {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 50ms !important;
+  }
+  
+  .section-visible .button-container {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 100ms !important;
+  }
+  
+  /* Контурные буквы появляются почти сразу */
+  .section-visible .outline-do-container.mobile-outline.do-above-button .outline-letter,
+  .section-visible .outline-we-container.mobile-outline.we-below-button .outline-letter {
+    opacity: 0.9;
+    transform: translateY(0);
+    transition-delay: 0ms !important;
+  }
+  
+  /* Уменьшаем задержки для отдельных букв контурных надписей */
+  .section-visible .outline-do-container.mobile-outline.do-above-button .outline-letter:nth-child(1) {
+    transition-delay: 0ms !important;
+  }
+  
+  .section-visible .outline-do-container.mobile-outline.do-above-button .outline-letter:nth-child(2) {
+    transition-delay: 20ms !important;
+  }
+  
+  .section-visible .outline-we-container.mobile-outline.we-below-button .outline-letter:nth-child(1) {
+    transition-delay: 40ms !important;
+  }
+  
+  .section-visible .outline-we-container.mobile-outline.we-below-button .outline-letter:nth-child(2) {
+    transition-delay: 60ms !important;
+  }
+  
+  /* Для очень маленьких экранов делаем анимации еще быстрее */
+  @media (max-width: 480px) {
+    .section-visible .third-title-wrapper {
+      transition-delay: 0ms !important;
+    }
+    
+    .section-visible .third-items-list {
+      transition-delay: 30ms !important;
+    }
+    
+    .section-visible .button-container {
+      transition-delay: 60ms !important;
+    }
+    
+    .section-visible .outline-do-container.mobile-outline.do-above-button .outline-letter,
+    .section-visible .outline-we-container.mobile-outline.we-below-button .outline-letter {
+      transition-delay: 0ms !important;
+    }
+    
+    .section-visible .outline-do-container.mobile-outline.do-above-button .outline-letter:nth-child(1) {
+      transition-delay: 0ms !important;
+    }
+    
+    .section-visible .outline-do-container.mobile-outline.do-above-button .outline-letter:nth-child(2) {
+      transition-delay: 10ms !important;
+    }
+    
+    .section-visible .outline-we-container.mobile-outline.we-below-button .outline-letter:nth-child(1) {
+      transition-delay: 20ms !important;
+    }
+    
+    .section-visible .outline-we-container.mobile-outline.we-below-button .outline-letter:nth-child(2) {
+      transition-delay: 30ms !important;
+    }
+  }
 }
 
-/* Для десктопных и планшетных версий */
+/* ============================================= */
+/* УСКОРЕННЫЕ ЗАДЕРЖКИ ДЛЯ ДЕСКТОПА И ПЛАНШЕТОВ */
+/* ============================================= */
+
+/* Ускоряем начало анимаций для всех устройств */
 .section-visible .third-title {
-  transition-delay: 150ms !important;
+  transition-delay: 50ms !important;
 }
 
 .section-visible .title-letter {
-  transition-delay: 150ms !important;
+  transition-delay: 50ms !important;
 }
 
 .section-visible .third-item {
-  transition-delay: 150ms !important;
+  transition-delay: 50ms !important;
 }
 
 .section-visible .text-letter {
-  transition-delay: 100ms !important;
+  transition-delay: 30ms !important;
 }
 
 .section-visible .third-button-wrapper {
-  transition-delay: 100ms !important;
+  transition-delay: 80ms !important;
 }
 
 .section-visible .button-letter {
-  transition-delay: 100ms !important;
+  transition-delay: 80ms !important;
 }
 
 .section-visible .outline-letter {
-  transition-delay: 100ms !important;
+  transition-delay: 50ms !important;
 }
 
-/* Для мобильной версии убираем все задержки */
-@media (max-width: 768px) {
-  .section-visible .third-title-wrapper,
-  .section-visible .third-items-list,
-  .section-visible .button-container {
-    transition-delay: -100ms !important;
-  }
-  
-  .section-visible .outline-do-container.mobile-outline.do-above-button .outline-letter,
-  .section-visible .outline-we-container.mobile-outline.we-below-button .outline-letter {
-    transition-delay: -100ms !important;
-  }
-  
-  /* Убираем задержки для отдельных букв в контурных надписях */
-  .section-visible .outline-do-container.mobile-outline.do-above-button .outline-letter:nth-child(1),
-  .section-visible .outline-do-container.mobile-outline.do-above-button .outline-letter:nth-child(2),
-  .section-visible .outline-we-container.mobile-outline.we-below-button .outline-letter:nth-child(1),
-  .section-visible .outline-we-container.mobile-outline.we-below-button .outline-letter:nth-child(2) {
-    transition-delay: -100ms !important;
-  }
-}
-
-/* Убираем любые существующие задержки в исходных состояниях */
+/* Сохраняем плавность анимаций, но ускоряем начало */
 .third-title,
 .title-letter,
 .third-item,
@@ -978,7 +991,7 @@ html {
 .third-button-wrapper,
 .button-letter,
 .outline-letter {
-  transition-delay: -100ms !important;
+  transition-delay: 0ms;
 }
 
 /* ============================================= */
