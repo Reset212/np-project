@@ -6,6 +6,8 @@ const ThirdScrollBlock = () => {
   const [hoveredItem, setHoveredItem] = useState(null);
   const sectionRef = useRef(null);
   const lastScrollTop = useRef(0);
+  const scrollTimeout = useRef(null);
+  const isScrollingRef = useRef(false);
 
   const title = "WE DO";
   const items = [
@@ -19,65 +21,66 @@ const ThirdScrollBlock = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      if (!sectionRef.current) return;
+      if (!sectionRef.current || isScrollingRef.current) return;
 
-      const section = sectionRef.current;
-      const rect = section.getBoundingClientRect();
-      const windowHeight = window.innerHeight;
-      const currentScrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      isScrollingRef.current = true;
+      
+      // Используем requestAnimationFrame для более плавного скролла
+      requestAnimationFrame(() => {
+        const section = sectionRef.current;
+        const rect = section.getBoundingClientRect();
+        const windowHeight = window.innerHeight;
+        const currentScrollTop = window.pageYOffset || document.documentElement.scrollTop;
 
-      // Проверяем, мобильное ли устройство
-      const isMobile = window.innerWidth <= 768;
+        // Упрощенная проверка на мобильное устройство
+        const isMobile = window.innerWidth <= 768;
+        
+        let isInView;
+        const isScrollingDown = currentScrollTop > lastScrollTop.current;
 
-      let isInView;
-      const isScrollingDown = currentScrollTop > lastScrollTop.current;
-
-      if (isMobile) {
-        // Для мобильных: разные условия в зависимости от направления скролла
-        if (isScrollingDown) {
-          // Скроллим ВНИЗ: анимация запускается, когда нижняя часть экрана
-          // пересекает верхнюю часть блока
-          isInView = windowHeight > rect.top && rect.bottom > 0;
+        if (isMobile) {
+          // Упрощенная логика для мобильных устройств
+          isInView = rect.top < windowHeight * 0.8 && rect.bottom > windowHeight * 0.2;
         } else {
-          // Скроллим ВВЕРХ: анимация запускается, когда верхняя часть экрана
-          // пересекает нижнюю часть блока
-          isInView = rect.bottom > 0 && rect.top < windowHeight;
+          // Для десктопов
+          isInView = rect.top < windowHeight * 0.6 && rect.bottom > windowHeight * 0.4;
         }
-      } else {
-        // Для десктопов: оригинальная логика - блок в центре экрана
-        isInView = rect.top < windowHeight * 0.6 && rect.bottom > windowHeight * 0.4;
-      }
 
-      if (isInView) {
-        setIsVisible(true);
-      } else {
-        // Скрываем анимацию только когда блок полностью вышел из видимости
-        // Это позволит ей снова запуститься при следующем появлении
-        const isCompletelyOutOfView = rect.bottom <= 0 || rect.top >= windowHeight;
-        if (isCompletelyOutOfView) {
-          setIsVisible(false);
+        if (isInView && !isVisible) {
+          setIsVisible(true);
+        } else if (!isInView && isVisible) {
+          // Скрываем анимацию только когда блок полностью вышел из видимости
+          const isCompletelyOutOfView = rect.bottom <= 0 || rect.top >= windowHeight;
+          if (isCompletelyOutOfView) {
+            setIsVisible(false);
+          }
         }
-      }
 
-      // Сохраняем позицию скролла для определения направления
-      lastScrollTop.current = currentScrollTop <= 0 ? 0 : currentScrollTop;
+        lastScrollTop.current = currentScrollTop <= 0 ? 0 : currentScrollTop;
+        
+        // Разрешаем следующий вызов обработчика
+        setTimeout(() => {
+          isScrollingRef.current = false;
+        }, 50); // Троттлинг 50ms
+      });
     };
 
-    const handleScrollThrottled = () => {
-      requestAnimationFrame(handleScroll);
-    };
-
-    window.addEventListener("scroll", handleScrollThrottled, { passive: true });
-    window.addEventListener("resize", handleScrollThrottled);
+    // Используем passive event listener для лучшей производительности
+    const options = { passive: true, capture: true };
+    window.addEventListener("scroll", handleScroll, options);
+    window.addEventListener("resize", handleScroll, options);
 
     // Проверяем сразу при загрузке
     handleScroll();
 
     return () => {
-      window.removeEventListener("scroll", handleScrollThrottled);
-      window.removeEventListener("resize", handleScrollThrottled);
+      window.removeEventListener("scroll", handleScroll, options);
+      window.removeEventListener("resize", handleScroll, options);
+      if (scrollTimeout.current) {
+        clearTimeout(scrollTimeout.current);
+      }
     };
-  }, []);
+  }, [isVisible]);
 
   // Функция для рендеринга текста с пробелами
   const renderTextWithSpaces = (text, getLetterDelay, type = "item", itemIndex = 0) => {
@@ -151,11 +154,6 @@ const ThirdScrollBlock = () => {
     return itemIndex * 200 + letterIndex * 20;
   };
 
-  const getButtonLetterDelay = (index, isAppearing) => {
-    if (!isAppearing) return 0;
-    return index * 40 + 1000;
-  };
-
   const getItemDelay = (index, isAppearing) => {
     if (!isAppearing) return 0;
     return index * 200 + 400;
@@ -189,6 +187,13 @@ const ThirdScrollBlock = () => {
     <section
       className={`third-scroll-section ${isVisible ? 'section-visible' : ''}`}
       ref={sectionRef}
+      style={{
+        // Предотвращает мерцание на мобильных устройствах
+        backfaceVisibility: 'hidden',
+        WebkitBackfaceVisibility: 'hidden',
+        transform: 'translateZ(0)',
+        WebkitTransform: 'translateZ(0)',
+      }}
     >
       <div className="third-scroll-container">
         {/* Левая часть - основной WE DO (заполненный) */}
@@ -206,7 +211,9 @@ const ThirdScrollBlock = () => {
                         style={{
                           opacity: isVisible ? 1 : 0,
                           transform: getTitleTransform(isVisible),
-                          transitionDelay: `${getTitleLetterDelay(index, isVisible)}ms`
+                          transitionDelay: `${getTitleLetterDelay(index, isVisible)}ms`,
+                          // Оптимизация анимаций
+                          willChange: 'transform, opacity'
                         }}
                       >
                         {letter}
@@ -225,7 +232,8 @@ const ThirdScrollBlock = () => {
                       style={{
                         opacity: isVisible ? 1 : 0,
                         transform: getTitleTransform(isVisible),
-                        transitionDelay: `${getTitleLetterDelay(index, isVisible, 0)}ms`
+                        transitionDelay: `${getTitleLetterDelay(index, isVisible, 0)}ms`,
+                        willChange: 'transform, opacity'
                       }}
                     >
                       {letter}
@@ -240,7 +248,8 @@ const ThirdScrollBlock = () => {
                       style={{
                         opacity: isVisible ? 1 : 0,
                         transform: getTitleTransform(isVisible),
-                        transitionDelay: `${getTitleLetterDelay(index, isVisible, 1)}ms`
+                        transitionDelay: `${getTitleLetterDelay(index, isVisible, 1)}ms`,
+                        willChange: 'transform, opacity'
                       }}
                     >
                       {letter}
@@ -265,6 +274,7 @@ const ThirdScrollBlock = () => {
                     transform: getItemTransform(isVisible),
                     transitionDelay: `${getItemDelay(index, isVisible)}ms`,
                     width: "100%",
+                    willChange: 'transform, opacity'
                   }}
                   onMouseEnter={() => handleItemMouseEnter(index)}
                   onMouseLeave={handleItemMouseLeave}
@@ -286,7 +296,8 @@ const ThirdScrollBlock = () => {
               style={{
                 opacity: isVisible ? 1 : 0,
                 transform: getButtonTransform(isVisible),
-                transitionDelay: isVisible ? "1200ms" : "0ms"
+                transitionDelay: isVisible ? "1200ms" : "0ms",
+                willChange: 'transform, opacity'
               }}
             >
               {/* Кнопка временно скрыта */}
@@ -307,7 +318,8 @@ const ThirdScrollBlock = () => {
                 style={{
                   opacity: isVisible ? 1 : 0,
                   transform: getOutlineTransform(isVisible),
-                  transitionDelay: `${index * 100 + 500}ms`
+                  transitionDelay: `${index * 100 + 500}ms`,
+                  willChange: 'transform, opacity'
                 }}
               >
                 {letter}
@@ -326,7 +338,8 @@ const ThirdScrollBlock = () => {
                 style={{
                   opacity: isVisible ? 1 : 0,
                   transform: getOutlineTransform(isVisible),
-                  transitionDelay: `${index * 100 + 700}ms`
+                  transitionDelay: `${index * 100 + 700}ms`,
+                  willChange: 'transform, opacity'
                 }}
               >
                 {letter}
@@ -346,7 +359,8 @@ const ThirdScrollBlock = () => {
                   opacity: isVisible ? 0.9 : 0,
                   transform: isVisible ? 'translateY(0)' : 'translateY(1.25em)',
                   transitionDelay: `${index * 100 + 400}ms`,
-                  transition: 'opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1)'
+                  transition: 'opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1)',
+                  willChange: 'transform, opacity'
                 }}
               >
                 {letter}
@@ -366,7 +380,8 @@ const ThirdScrollBlock = () => {
                   opacity: isVisible ? 0.9 : 0,
                   transform: isVisible ? 'translateY(0)' : 'translateY(1.25em)',
                   transitionDelay: `${index * 100 + 600}ms`,
-                  transition: 'opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1)'
+                  transition: 'opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1)',
+                  willChange: 'transform, opacity'
                 }}
               >
                 {letter}
