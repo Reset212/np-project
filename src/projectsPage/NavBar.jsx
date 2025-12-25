@@ -63,11 +63,11 @@ const NavBar = () => {
   };
 
   const handleVimeoClick = () => {
-    window.open('https://vimeo.com/moviepark', '_blank');
+    window.open('https://vimeo.com/movieparkco', '_blank');
   };
 
   const handleEmailClick = () => {
-    window.location.href = 'mailto:info@moviepark.com';
+    window.location.href = 'mailto:hello@movieparkpro.com';
   };
 
   // ТОЧНО ТАКОЙ ЖЕ useEffect КАК В VideoBackground.jsx

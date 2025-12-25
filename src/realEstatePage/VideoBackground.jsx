@@ -77,11 +77,11 @@ const VideoBackground = () => {
   };
 
   const handleVimeoClick = () => {
-    window.open('https://vimeo.com/moviepark', '_blank');
+    window.open('https://vimeo.com/movieparkco', '_blank');
   };
 
   const handleEmailClick = () => {
-    window.location.href = 'mailto:info@moviepark.com';
+    window.location.href = 'mailto:hello@movieparkpro.com';
   };
 
   // Хэш-скроллинг при загрузке страницы
