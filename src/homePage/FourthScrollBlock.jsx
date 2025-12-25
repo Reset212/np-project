@@ -22,16 +22,12 @@ const FourthScrollBlock = () => {
           const cityLine = entry.target;
           
           if (entry.isIntersecting) {
-            // Когда элемент появляется в viewport (с любой стороны)
             cityLine.classList.add("visible");
             cityLine.classList.remove("hidden");
           } else {
-            // Когда элемент уходит из viewport
             const rect = entry.boundingClientRect;
             const windowHeight = window.innerHeight;
             
-            // Если элемент ушел вверх (верхняя граница выше viewport)
-            // ИЛИ если элемент ушел вниз (нижняя граница ниже viewport)
             if (rect.top < 0 || rect.bottom > windowHeight) {
               cityLine.classList.add("hidden");
               cityLine.classList.remove("visible");
@@ -46,7 +42,6 @@ const FourthScrollBlock = () => {
       }
     );
 
-    // Наблюдаем за всеми элементами городов
     cityRefs.current.forEach((ref) => {
       if (ref) observer.observe(ref);
     });
@@ -58,32 +53,34 @@ const FourthScrollBlock = () => {
     };
   }, []);
 
-  // Функция для получения времени в разных городах
-  const getCityTime = (city, baseTime = currentTime) => {
-    const time = new Date(baseTime);
+  // ИСПРАВЛЕННАЯ ФУНКЦИЯ: Создаем новый объект Date для каждого города
+  const getCityTime = (city) => {
+    const now = new Date(); // Берем текущее время
     
-    switch(city) {
-      case 'DUBAI':
-        time.setHours(time.getHours() + 4);
-        break;
-      case 'NEW YORK':
-        time.setHours(time.getHours() - 5);
-        break;
-      case 'MOSCOW':
-        time.setHours(time.getHours() + 3);
-        break;
-      case 'CAPE TOWN':
-        time.setHours(time.getHours() + 2);
-        break;
-      case 'PARIS':
-        time.setHours(time.getHours() + 1);
-        break;
-      default:
-        break;
-    }
-
-    const hours = time.getHours();
-    const minutes = time.getMinutes();
+    // Часовые пояса для городов (UTC offset)
+    const timezones = {
+      'DUBAI': 4,      // UTC+4
+      'NEW YORK': -5,  // UTC-5
+      'MOSCOW': 3,     // UTC+3
+      'CAPE TOWN': 2,  // UTC+2
+      'PARIS': 1       // UTC+1
+    };
+    
+    // Создаем копию времени для каждого города
+    const cityTime = new Date(now.getTime());
+    
+    // Получаем смещение для города
+    const offset = timezones[city] || 0;
+    
+    // Вычисляем время в городе
+    const utcHours = cityTime.getUTCHours();
+    const cityHours = (utcHours + offset + 24) % 24;
+    
+    cityTime.setUTCHours(cityHours);
+    
+    // Форматируем время
+    const hours = cityTime.getUTCHours();
+    const minutes = cityTime.getUTCMinutes();
     const ampm = hours >= 12 ? 'PM' : 'AM';
     const formattedHours = hours % 12 || 12;
     const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
