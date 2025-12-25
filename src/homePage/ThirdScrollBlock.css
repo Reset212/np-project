@@ -24,9 +24,9 @@ html {
   overflow: hidden !important;
   padding-bottom: 5.625em; /* 90px / 16px = 5.625em */
   padding-top: 6.25em; /* 100px / 16px = 6.25em */
-  max-height: 90vh;
+  /* max-height: 90vh; */
   z-index: 99 !important;
-  min-height: 100vh; /* Гарантируем минимальную высоту для мобильных */
+  /* min-height: 100vh; Гарантируем минимальную высоту для мобильных */
 }
 
 /* Убираем стандартное подчеркивание */
