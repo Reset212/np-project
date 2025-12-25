@@ -448,10 +448,7 @@ html {
     padding-left: 1em;
   }
   
-  .logo-image {
-    width: 10em !important;
-    height: 3.333em !important;
-  }
+
   
   .nav-left .nav-item.directions {
     margin-right: 1em;
@@ -863,10 +860,7 @@ html {
     padding-bottom: 3em !important;
   }
   
-  .logo-image {
-    width: 11.5em !important;
-    height: 4.5em !important;
-  }
+
   
   .burger-menu,
   .mobile-chat-button {
