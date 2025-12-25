@@ -602,7 +602,7 @@ html {
   
   .burger-menu svg {
     width: 1.125em;
-    height: 0.75em;
+    height: 1.75em;
     transition: transform 0.3s ease;
   }
   
@@ -747,7 +747,7 @@ html {
   .awards-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 2em 1.25em;
+    gap: 3em 1.25em;
     width: 100%;
     order: 1;
     align-items: start;
@@ -975,7 +975,7 @@ html {
   
   .awards-row {
     gap: 1.5em;
-    row-gap: 3em;
+    row-gap: 4em;
   }
   
   .mobile-dropdown-content {
