@@ -1,4 +1,4 @@
-/* VideoBackground.css - ДОБАВЛЯЕМ ЭТИ СТИЛИ */
+/* VideoBackground.css - ИСПРАВЛЕННАЯ ВЕРСИЯ */
 
 :root {
   --base-font-size: 16px;
@@ -758,10 +758,18 @@ html {
     align-items: center;
     text-align: center;
     flex: 1;
+    /* ФИКСИРОВАННАЯ ВЫСОТА ДЛЯ ВСЕХ ЭЛЕМЕНТОВ */
+    height: 6.5em; /* ~104px */
+    justify-content: flex-start;
   }
   
   .award-icon-container {
-    margin-bottom: 1.125em;
+    margin-bottom: 0.5em;
+    /* ФИКСИРОВАННАЯ ВЫСОТА ДЛЯ ИКОНОК */
+    height: 1.875em; /* ~30px */
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
   
   /* Размеры иконок для мобильных */
@@ -785,48 +793,52 @@ html {
     height: 1.7em;
   }
   
-  /* Мобильные стили для наград С ПЕРЕНОСОМ ТЕКСТА */
+  /* ФИКСИРОВАННЫЙ КОНТЕЙНЕР ДЛЯ ТЕКСТА */
   .award-text {
     font-size: 1em;
     white-space: normal;
     text-align: center;
     gap: 0.0625em;
+    /* ФИКСИРОВАННАЯ ВЫСОТА ДЛЯ ТЕКСТА */
+    height: 4.5em; /* ~72px */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
   }
   
   .award-count {
     font-size: 1em;
-    white-space: nowrap; /* Цифры без переноса */
+    white-space: nowrap;
+    margin-bottom: 0.25em;
   }
   
-  /* ВАЖНО: Добавляем перенос текста для мобильной версии */
+  /* ФИКСИРОВАННАЯ ВЫСОТА ДЛЯ ОПИСАНИЙ */
   .award-description {
     font-size: 1em;
-    white-space: normal; /* Разрешаем перенос */
-    word-break: break-word; /* Позволяем разрывать слова */
+    white-space: normal;
+    word-break: break-word;
     line-height: 1.2;
     text-align: center;
     padding: 0 0.25em;
-    
-    /* Добавляем разрыв строк в конкретных местах как в примере */
+    /* ФИКСИРОВАННАЯ МИНИМАЛЬНАЯ ВЫСОТА */
+    min-height: 2.8em; /* ~45px */
     display: flex;
     flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
   }
   
   /* Перенос конкретных фраз как в примере */
-  .award-item:nth-child(1) .award-description {
-    display: block;
-  }
-  
-  .award-item:nth-child(2) .award-description {
-    display: block;
-  }
-  
-  .award-item:nth-child(3) .award-description {
-    display: block;
-  }
-  
+  .award-item:nth-child(1) .award-description,
+  .award-item:nth-child(2) .award-description,
+  .award-item:nth-child(3) .award-description,
   .award-item:nth-child(4) .award-description {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
   
   /* Кнопка VIEW PROJECT */
@@ -872,25 +884,29 @@ html {
     white-space: pre;
   }
   
-  /* Скрываем оригинальный текст */
+  /* Скрываем оригинальный текст и добавляем фиксированную высоту */
   .award-description {
     visibility: hidden;
     position: relative;
-    min-height: 2.4em;
+    min-height: 3em; /* ~48px - фиксированная высота */
+    margin: 0;
+    padding: 0;
   }
   
   .award-description::after {
     visibility: visible;
     position: absolute;
-    top: 0;
+    top: 50%;
     left: 50%;
-    transform: translateX(-50%);
+    transform: translate(-50%, -50%);
     font-weight: 400;
     font-size: 1.1em;
     line-height: 1.2;
     opacity: 0.9;
     text-align: center;
     color: white;
+    width: 100%;
+    padding: 0 0.5em;
   }
 }
 
@@ -920,6 +936,15 @@ html {
   .award-description::after {
     font-size: 1.1em;
     line-height: 1.3;
+  }
+  
+  /* Увеличиваем фиксированные высоты для планшетов */
+  .award-item {
+    height: 7em; /* ~112px */
+  }
+  
+  .award-text {
+    height: 5em; /* ~80px */
   }
 }
 
@@ -991,6 +1016,19 @@ html {
     line-height: 1.2;
   }
   
+  /* Уменьшаем фиксированные высоты для маленьких экранов */
+  .award-item {
+    height: 6em; /* ~96px */
+  }
+  
+  .award-text {
+    height: 4em; /* ~64px */
+  }
+  
+  .award-description {
+    min-height: 2.5em; /* ~40px */
+  }
+  
   .view-project-button {
     max-width: 11em;
     font-size: 1.231em !important;
@@ -1008,6 +1046,19 @@ html {
   
   .award-count {
     font-size: 1em;
+  }
+  
+  /* Еще меньше высоты для очень маленьких экранов */
+  .award-item {
+    height: 5.5em; /* ~88px */
+  }
+  
+  .award-text {
+    height: 3.5em; /* ~56px */
+  }
+  
+  .award-description {
+    min-height: 2.2em; /* ~35px */
   }
 }
 
@@ -1102,7 +1153,42 @@ button,
   margin: 0px;
 }
 
-/* АЛЬТЕРНАТИВНЫЙ ВАРИАНТ С ПОМОЩЬЮ <br> В HTML */
+/* ============================================= */
+/* ДОПОЛНИТЕЛЬНЫЕ ИСПРАВЛЕНИЯ ДЛЯ ВЫРАВНИВАНИЯ */
+/* ============================================= */
 @media (max-width: 768px) {
-  /* Если вы решите использовать <br> в HTML, можно удалить ::after правила */
+  /* Гарантируем одинаковое выравнивание для всех элементов */
+  .award-item:nth-child(1),
+  .award-item:nth-child(2),
+  .award-item:nth-child(3),
+  .award-item:nth-child(4) {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+  }
+  
+  /* Центрируем иконки по горизонтали и вертикали */
+  .award-icon-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+  }
+  
+  /* Центрируем весь текст */
+  .award-text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+  }
+  
+  /* Фиксируем отступы между элементами */
+  .award-item > * {
+    margin: 0 auto;
+  }
 }
