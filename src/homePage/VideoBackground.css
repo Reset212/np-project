@@ -229,6 +229,7 @@ html {
 .awards-row {
   display: flex;
   gap: 3.75em;
+
   align-items: flex-end;
 }
 
@@ -974,6 +975,7 @@ html {
   
   .awards-row {
     gap: 1.5em;
+    row-gap: 3em;
   }
   
   .mobile-dropdown-content {
@@ -1189,6 +1191,6 @@ button,
   
   /* Фиксируем отступы между элементами */
   .award-item > * {
-    margin: 0 auto;
+    margin-bottom: 1.125em;
   }
 }
