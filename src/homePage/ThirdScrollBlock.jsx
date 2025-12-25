@@ -5,6 +5,7 @@ const ThirdScrollBlock = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [hoveredItem, setHoveredItem] = useState(null);
   const sectionRef = useRef(null);
+  const lastScrollTop = useRef(0);
 
   const title = "WE DO";
   const items = [
@@ -23,24 +24,25 @@ const ThirdScrollBlock = () => {
       const section = sectionRef.current;
       const rect = section.getBoundingClientRect();
       const windowHeight = window.innerHeight;
+      const currentScrollTop = window.pageYOffset || document.documentElement.scrollTop;
 
       // Проверяем, мобильное ли устройство
       const isMobile = window.innerWidth <= 768;
 
       let isInView;
+      const isScrollingDown = currentScrollTop > lastScrollTop.current;
 
       if (isMobile) {
-        // Для мобильных: анимация запускается, когда нижняя часть экрана
-        // пересекает верхнюю часть блока
-        // windowHeight - это нижняя часть экрана
-        // rect.top - это позиция верха блока относительно верха экрана
-        // Если нижняя часть экрана (windowHeight) > позиции верха блока (rect.top)
-        // значит нижняя часть экрана пересекла верхнюю часть блока
-        isInView = windowHeight > rect.top;
-        
-        // Также добавляем проверку, что блок еще не ушел за верх экрана
-        // чтобы анимация не срабатывала при скролле вверх, когда блок уже ушел
-        isInView = isInView && rect.bottom > 0;
+        // Для мобильных: разные условия в зависимости от направления скролла
+        if (isScrollingDown) {
+          // Скроллим ВНИЗ: анимация запускается, когда нижняя часть экрана
+          // пересекает верхнюю часть блока
+          isInView = windowHeight > rect.top && rect.bottom > 0;
+        } else {
+          // Скроллим ВВЕРХ: анимация запускается, когда верхняя часть экрана
+          // пересекает нижнюю часть блока
+          isInView = rect.bottom > 0 && rect.top < windowHeight;
+        }
       } else {
         // Для десктопов: оригинальная логика - блок в центре экрана
         isInView = rect.top < windowHeight * 0.6 && rect.bottom > windowHeight * 0.4;
@@ -49,12 +51,16 @@ const ThirdScrollBlock = () => {
       if (isInView) {
         setIsVisible(true);
       } else {
-        // Скрываем анимацию только на десктопах при скролле вверх
-        // На мобильных оставляем видимым, чтобы анимация не сбрасывалась
-        if (!isMobile) {
+        // Скрываем анимацию только когда блок полностью вышел из видимости
+        // Это позволит ей снова запуститься при следующем появлении
+        const isCompletelyOutOfView = rect.bottom <= 0 || rect.top >= windowHeight;
+        if (isCompletelyOutOfView) {
           setIsVisible(false);
         }
       }
+
+      // Сохраняем позицию скролла для определения направления
+      lastScrollTop.current = currentScrollTop <= 0 ? 0 : currentScrollTop;
     };
 
     const handleScrollThrottled = () => {
