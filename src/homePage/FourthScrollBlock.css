@@ -289,7 +289,7 @@ html {
 @media (max-width: 36em) { /* 576px = 36em */
   .fourth-section {
     margin-bottom: 4.5em;
-    margin-top: 0.5em; /* 80px = 5em */
+    padding-top: 0.5em; /* 80px = 5em */
   }
   
   .cities-container {
