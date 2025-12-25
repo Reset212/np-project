@@ -73,7 +73,7 @@ const VideoBackground = () => {
 
   // Функции для соцсетей
   const handleInstagramClick = () => {
-    window.open('https://instagram.com/moviepark', '_blank');
+    window.open('https://www.instagram.com/movie_park/', '_blank');
   };
 
   const handleVimeoClick = () => {
