@@ -53,40 +53,62 @@ const FourthScrollBlock = () => {
     };
   }, []);
 
-  // ИСПРАВЛЕННАЯ ФУНКЦИЯ: Создаем новый объект Date для каждого города
-  const getCityTime = (city) => {
-    const now = new Date(); // Берем текущее время
+  // ВЕРСИЯ 1: Используем Intl API (рекомендуется) - учитывает летнее время
+  const getCityTimeIntl = (city) => {
+    const timeZones = {
+      'DUBAI': 'Asia/Dubai',
+      'NEW YORK': 'America/New_York',
+      'MOSCOW': 'Europe/Moscow',
+      'CAPE TOWN': 'Africa/Johannesburg',
+      'PARIS': 'Europe/Paris'
+    };
+
+    const timeZone = timeZones[city];
+    if (!timeZone) return '--:-- --';
+
+    try {
+      const formatter = new Intl.DateTimeFormat('en-US', {
+        timeZone: timeZone,
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true
+      });
+      
+      return formatter.format(new Date());
+    } catch (error) {
+      console.error(`Error formatting time for ${city}:`, error);
+      return getCityTimeFallback(city);
+    }
+  };
+
+  // ВЕРСИЯ 2: Fallback - если Intl не поддерживается (редко)
+  const getCityTimeFallback = (city) => {
+    const now = new Date();
+    const utcTime = now.getTime() + (now.getTimezoneOffset() * 60000);
     
-    // Часовые пояса для городов (UTC offset)
-    const timezones = {
-      'DUBAI': 4,      // UTC+4
-      'NEW YORK': -5,  // UTC-5
-      'MOSCOW': 3,     // UTC+3
-      'CAPE TOWN': 2,  // UTC+2
-      'PARIS': 1       // UTC+1
+    // Смещения с учетом некоторых особенностей (примерные)
+    const offsets = {
+      'DUBAI': 4 * 3600000,      // UTC+4
+      'NEW YORK': -5 * 3600000,  // UTC-5 (EST), UTC-4 летом
+      'MOSCOW': 3 * 3600000,     // UTC+3
+      'CAPE TOWN': 2 * 3600000,  // UTC+2
+      'PARIS': 1 * 3600000       // UTC+1 (CET), UTC+2 летом
     };
     
-    // Создаем копию времени для каждого города
-    const cityTime = new Date(now.getTime());
+    const offset = offsets[city] || 0;
+    const cityTime = new Date(utcTime + offset);
     
-    // Получаем смещение для города
-    const offset = timezones[city] || 0;
-    
-    // Вычисляем время в городе
-    const utcHours = cityTime.getUTCHours();
-    const cityHours = (utcHours + offset + 24) % 24;
-    
-    cityTime.setUTCHours(cityHours);
-    
-    // Форматируем время
-    const hours = cityTime.getUTCHours();
-    const minutes = cityTime.getUTCMinutes();
+    const hours = cityTime.getHours();
+    const minutes = cityTime.getMinutes();
     const ampm = hours >= 12 ? 'PM' : 'AM';
     const formattedHours = hours % 12 || 12;
     const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
 
     return `${formattedHours}:${formattedMinutes} ${ampm}`;
   };
+
+  // ВЫБОР ФУНКЦИИ: используем Intl по умолчанию
+  const getCityTime = getCityTimeIntl;
 
   const cities = [
     { name: "DUBAI" },
@@ -95,6 +117,18 @@ const FourthScrollBlock = () => {
     { name: "CAPE TOWN" },
     { name: "PARIS" }
   ];
+
+  // Для тестирования - показываем локальное время пользователя
+  const getUserLocalTime = () => {
+    const now = new Date();
+    const hours = now.getHours();
+    const minutes = now.getMinutes();
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    const formattedHours = hours % 12 || 12;
+    const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
+    
+    return `${formattedHours}:${formattedMinutes} ${ampm} (Ваше время)`;
+  };
 
   return (
     <section className="fourth-section">
@@ -117,6 +151,8 @@ const FourthScrollBlock = () => {
               </div>
             </div>
           ))}
+          
+  
         </div>
       </div>
     </section>
