@@ -24,29 +24,13 @@ html {
   overflow: hidden !important;
   padding-bottom: 5.625em; /* 90px / 16px = 5.625em */
   padding-top: 6.25em; /* 100px / 16px = 6.25em */
-  max-height: 90vh;
   z-index: 99 !important;
+
 }
-
-
 
 /* Убираем стандартное подчеркивание */
 .third-item:hover {
   text-decoration: none;
-}
-
-/* Для мобильных устройств - уменьшаем толщину контура */
-@media (max-width: 768px) { /* 768px / 16px = 48em */
-  .third-item:hover .item-text .text-letter {
-
-  }
-}
-
-/* Fallback для браузеров без поддержки text-stroke */
-@supports not (-webkit-text-stroke: 0.0625em #282525) {
-  .third-item:hover .item-text .text-letter {
-
-  }
 }
 
 /* ========== ОСНОВНОЙ КОНТЕЙНЕР ========== */
@@ -385,7 +369,6 @@ html {
   .third-scroll-section {
     padding-top: 5em; /* 80px / 16px = 5em */
     padding-bottom: 4.375em; /* 70px / 16px = 4.375em */
-    max-height: 95vh;
   }
   
   .third-scroll-container {
@@ -467,9 +450,6 @@ html {
   .right-side {
     width: 100%;
     min-width: 0;
-    /* align-items: flex-end; */
-    /* margin-right: 9em !important; */
-    max-width: 100%;
     max-width: 100% !important;
   }
 
@@ -551,7 +531,6 @@ html {
     position: absolute;
     top: 6.25em; /* 100px / 16px = 6.25em */
     right: 0;
-
     transform: translateX(33%);
   }
   
@@ -562,14 +541,11 @@ html {
     -webkit-text-stroke: 0.015em #DDDBDB; /* 2px / 16px = 0.125em */
     text-stroke: 0.015em #DDDBDB;
     -webkit-text-fill-color: transparent;
-
   }
 }
 
-/* ThirdScrollBlock.css - ТОЛЬКО ИСПРАВЛЕННЫЕ СЕКЦИИ ДЛЯ МОБИЛЬНОЙ ВЕРСИИ */
-
 /* ============================================= */
-/* ТЕЛЕФОННАЯ ВЕРСИЯ (до 768px) - ИСПРАВЛЕННЫЙ */
+/* ТЕЛЕФОННАЯ ВЕРСИЯ (до 768px) */
 /* ============================================= */
 @media (max-width: 768px) {
   html {
@@ -578,7 +554,6 @@ html {
   
   .third-scroll-section {
     padding: 3.571em 1.429em 10em 1.429em !important;
-    min-height: auto;
     overflow: hidden;
     position: relative;
   }
@@ -605,7 +580,7 @@ html {
   .third-title-wrapper {
     width: 100%;
     display: flex;
-    justify-content: center; /* Центрируем заголовок */
+    justify-content: center;
   }
 
   .desktop-title {
@@ -615,7 +590,7 @@ html {
   .mobile-title {
     display: flex;
     flex-direction: column;
-    align-items: center; /* Центрируем слова */
+    align-items: center;
     justify-content: center;
     width: 100%;
   }
@@ -623,7 +598,7 @@ html {
   .third-title {
     font-size: 7.143em !important;
     line-height: 0.85 !important;
-    text-align: center !important; /* Центрируем текст */
+    text-align: center !important;
     margin: 0 !important;
     width: 100%;
   }
@@ -632,14 +607,13 @@ html {
     display: block;
     line-height: 0.85;
     left: 1em !important;
-
     width: 100%;
   }
 
   /* ПРАВАЯ ЧАСТЬ - Список сервисов */
   .right-side {
     width: 100%;
-    align-items: center !important; /* Центрируем содержимое */
+    align-items: center !important;
     max-width: 100%;
     order: 2;
     position: relative;
@@ -647,25 +621,25 @@ html {
   }
 
   .items-container {
-    align-items: center !important; /* Центрируем список */
+    align-items: center !important;
     width: 100%;
   }
 
   .third-items-list {
-    align-items: center !important; /* Центрируем элементы списка */
+    align-items: center !important;
     gap: 1.429em;
     width: 100%;
   }
 
   .third-item {
-    text-align: center !important; /* Центрируем текст элементов */
+    text-align: center !important;
     width: 100%;
   }
 
   .item-text {
     font-size: 2em !important;
     line-height: 1 !important;
-    text-align: center !important; /* Центрируем текст */
+    text-align: center !important;
     white-space: normal;
     overflow: visible;
     text-overflow: clip;
@@ -673,9 +647,8 @@ html {
 
   /* КНОПКА */
   .button-container {
-
     margin-bottom: 2.143em !important;
-    justify-content: center !important; /* Центрируем кнопку */
+    justify-content: center !important;
     width: 100%;
     position: relative;
     z-index: 7;
@@ -705,12 +678,12 @@ html {
     display: none !important;
   }
   
-  /* ПОКАЗЫВАЕМ МОБИЛЬНЫЕ КОНТУРНЫЕ БУКВЫ - ВОССТАНАВЛИВАЕМ ПРЕДЫДУЩИЕ СТИЛИ */
+  /* ПОКАЗЫВАЕМ МОБИЛЬНЫЕ КОНТУРНЫЕ БУКВЫ */
   .mobile-outline {
     display: block !important;
   }
   
-  /* DO - НАД кнопкой справа, увеличенный - ВОССТАНАВЛИВАЕМ ПРЕДЫДУЩИЕ ПОЗИЦИИ */
+  /* DO - НАД кнопкой справа */
   .outline-do-container.mobile-outline.do-above-button {
     position: absolute !important;
     top: auto !important;
@@ -728,14 +701,12 @@ html {
     -webkit-text-stroke: 0.015em #DDDBDB;
     text-stroke: 0.143em #DDDBDB;
     -webkit-text-fill-color: transparent;
-    /* letter-spacing: -0.143em; */
   }
   
-  /* WE - под кнопкой слева, видна только верхняя половина - ВОССТАНАВЛИВАЕМ ПРЕДЫДУЩИЕ ПОЗИЦИИ */
+  /* WE - под кнопкой слева */
   .outline-we-container.mobile-outline.we-below-button {
     position: absolute !important;
     bottom: 0.614em !important;
-    /* left: 1.429em !important; */
     z-index: 3;
     overflow: hidden;
     height: 3.571em;
@@ -750,73 +721,33 @@ html {
     -webkit-text-stroke: 0.015em #DDDBDB;
     text-stroke: 0.107em #DDDBDB;
     -webkit-text-fill-color: transparent;
-    /* letter-spacing: -0.143em; */
-    /* margin-top: -5.714em; */
   }
   
-  /* ПЛАВНЫЕ АНИМАЦИИ - ВОССТАНАВЛИВАЕМ */
+  /* АНИМАЦИИ - ОПТИМИЗИРОВАННЫЕ */
   .third-title-wrapper,
   .third-items-list,
   .button-container {
     opacity: 0;
     transform: translateY(2.143em);
-    transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1), 
-                transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), 
+                transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   }
-    .title-word:first-child {
+  
+  .title-word:first-child {
     transform: translateX(-22px) !important;
   }
+  
   .title-word:nth-child(2) {
     transform: translateX(22px) !important;
   }
-  .section-visible .third-title-wrapper {
-    opacity: 1;
-    transform: translateY(0);
-    transition-delay: 100ms;
-  }
   
-  .section-visible .third-items-list {
-    opacity: 1;
-    transform: translateY(0);
-    transition-delay: 200ms;
-  }
-  
-  .section-visible .button-container {
-    opacity: 1;
-    transform: translateY(0);
-    transition-delay: 300ms;
-  }
-  
-  /* Анимация для контурных букв - ВОССТАНАВЛИВАЕМ */
+  /* Контурные буквы */
   .outline-do-container.mobile-outline.do-above-button .outline-letter,
   .outline-we-container.mobile-outline.we-below-button .outline-letter {
     opacity: 0;
     transform: translateY(1.429em);
-    transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), 
-                transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-  
-  .section-visible .outline-do-container.mobile-outline.do-above-button .outline-letter,
-  .section-visible .outline-we-container.mobile-outline.we-below-button .outline-letter {
-    opacity: 0.9;
-    transform: translateY(0);
-  }
-  
-  /* Задержки для букв - ВОССТАНАВЛИВАЕМ */
-  .outline-do-container.mobile-outline.do-above-button .outline-letter:nth-child(1) {
-    transition-delay: 100ms;
-  }
-  
-  .outline-do-container.mobile-outline.do-above-button .outline-letter:nth-child(2) {
-    transition-delay: 200ms;
-  }
-  
-  .outline-we-container.mobile-outline.we-below-button .outline-letter:nth-child(1) {
-    transition-delay: 300ms;
-  }
-  
-  .outline-we-container.mobile-outline.we-below-button .outline-letter:nth-child(2) {
-    transition-delay: 400ms;
+    transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), 
+                transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   }
 }
 
@@ -827,16 +758,19 @@ html {
   html {
     font-size: calc(var(--base-font-size) * 0.8125); /* 13px */
   }
+  
   .third-scroll-container {
     width: 100%;
-    
   }
+  
   .title-word:first-child {
     transform: translateX(-22px) !important;
   }
+  
   .title-word:nth-child(2) {
     transform: translateX(22px) !important;
   }
+  
   .third-scroll-section {
     padding: 0em !important;
   }
@@ -849,31 +783,17 @@ html {
     width: 14em !important;
   }
 
-  /* ВОССТАНАВЛИВАЕМ позиции контурных букв */
   .outline-do-container.mobile-outline.do-above-button {
     font-size: 1.3em;
-    left: 16em !important; /* 16px / 13px = 1.231em */
+    left: 16em !important;
   }
   
   .outline-we-container.mobile-outline.we-below-button {
     font-size: 1.3em;
-    right: 10.231em !important; /* 16px / 13px = 1.231em */
+    right: 10.231em !important;
   }
 }
 
-/* ============================================= */
-/* ОЧЕНЬ БОЛЬШИЕ ЭКРАНЫ (больше 1920px) */
-/* ============================================= */
-@media (min-width: 1921px) { /* 1920px / 16px = 120em */
-  html {
-    font-size: calc(var(--base-font-size) * 1.2); /* Увеличиваем базовый размер */
-  }
-  
-  .third-scroll-container {
-    max-width: 90%;
-    margin: 0 auto;
-  }
-}
 /* ============================================= */
 /* МАЛЕНЬКИЕ ТЕЛЕФОНЫ (до 480px) */
 /* ============================================= */
@@ -883,30 +803,139 @@ html {
   }
   
   .third-scroll-section {
-    padding: 0em !important; /* 40px / 13px = 3.077em, 16px / 13px = 1.231em, 130px / 13px = 10em */
+    padding: 0em !important;
   }
 
   .third-scroll-container {
-    gap: 2.692em; /* 35px / 13px = 2.692em */
+    gap: 2.692em;
   }
 
   .third-title {
-    font-size: 5em !important; /* 104px / 13px = 8em */
+    font-size: 5em !important;
     line-height: 0.85 !important;
   }
 
   .item-text {
-    font-size: 1.5em !important; /* 24px / 13px = 1.846em */
+    font-size: 1.5em !important;
     line-height: 1 !important;
     font-weight: 500 !important;
   }
+}
 
-  .third-items-list {
-    /* gap: 1.385em; 18px / 13px = 1.385em */
+/* ============================================= */
+/* БЫСТРЫЕ АНИМАЦИИ ДЛЯ ВСЕХ УСТРОЙСТВ */
+/* ============================================= */
+.section-visible .third-title {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.section-visible .title-letter {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.section-visible .third-button-wrapper {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.section-visible .third-item {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.section-visible .text-letter {
+  opacity: 1;
+}
+
+.section-visible .button-letter {
+  opacity: 1;
+}
+
+.section-visible .outline-letter {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* УСКОРЕННЫЕ ЗАДЕРЖКИ ДЛЯ ДЕСКТОПА И ПЛАНШЕТОВ */
+.section-visible .third-title {
+  transition-delay: 50ms !important;
+}
+
+.section-visible .title-letter {
+  transition-delay: 50ms !important;
+}
+
+.section-visible .third-item {
+  transition-delay: 50ms !important;
+}
+
+.section-visible .text-letter {
+  transition-delay: 30ms !important;
+}
+
+.section-visible .third-button-wrapper {
+  transition-delay: 80ms !important;
+}
+
+.section-visible .button-letter {
+  transition-delay: 80ms !important;
+}
+
+.section-visible .outline-letter {
+  transition-delay: 50ms !important;
+}
+
+/* БЫСТРЫЕ СТАРТОВЫЕ ЗАДЕРЖКИ ДЛЯ МОБИЛЬНЫХ */
+@media (max-width: 768px) {
+  .section-visible .third-title-wrapper {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0ms !important;
   }
+  
+  .section-visible .third-items-list {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 50ms !important;
+  }
+  
+  .section-visible .button-container {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 100ms !important;
+  }
+  
+  .section-visible .outline-do-container.mobile-outline.do-above-button .outline-letter,
+  .section-visible .outline-we-container.mobile-outline.we-below-button .outline-letter {
+    opacity: 0.9;
+    transform: translateY(0);
+    transition-delay: 0ms !important;
+  }
+}
 
+/* Сохраняем плавность анимаций */
+.third-title,
+.title-letter,
+.third-item,
+.text-letter,
+.third-button-wrapper,
+.button-letter,
+.outline-letter {
+  transition-delay: 0ms;
+}
 
-
-
-
+/* ============================================= */
+/* ОЧЕНЬ БОЛЬШИЕ ЭКРАНЫ (больше 1920px) */
+/* ============================================= */
+@media (min-width: 1921px) {
+  html {
+    font-size: calc(var(--base-font-size) * 1.2);
+  }
+  
+  .third-scroll-container {
+    max-width: 90%;
+    margin: 0 auto;
+  }
 }

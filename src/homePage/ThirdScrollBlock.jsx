@@ -15,7 +15,6 @@ const ThirdScrollBlock = () => {
     "CELEBRITY APPEARANCES",
     "3D"
   ];
-  // const buttonText = "VIEW ALL PROJECT";
 
   useEffect(() => {
     const handleScroll = () => {
@@ -25,12 +24,36 @@ const ThirdScrollBlock = () => {
       const rect = section.getBoundingClientRect();
       const windowHeight = window.innerHeight;
 
-      const isInView = rect.top < windowHeight * 0.6 && rect.bottom > windowHeight * 0.4;
+      // Проверяем, мобильное ли устройство
+      const isMobile = window.innerWidth <= 768;
+
+      let isInView;
+
+      if (isMobile) {
+        // Для мобильных: анимация запускается, когда нижняя часть экрана
+        // пересекает верхнюю часть блока
+        // windowHeight - это нижняя часть экрана
+        // rect.top - это позиция верха блока относительно верха экрана
+        // Если нижняя часть экрана (windowHeight) > позиции верха блока (rect.top)
+        // значит нижняя часть экрана пересекла верхнюю часть блока
+        isInView = windowHeight > rect.top;
+        
+        // Также добавляем проверку, что блок еще не ушел за верх экрана
+        // чтобы анимация не срабатывала при скролле вверх, когда блок уже ушел
+        isInView = isInView && rect.bottom > 0;
+      } else {
+        // Для десктопов: оригинальная логика - блок в центре экрана
+        isInView = rect.top < windowHeight * 0.6 && rect.bottom > windowHeight * 0.4;
+      }
 
       if (isInView) {
         setIsVisible(true);
       } else {
-        setIsVisible(false);
+        // Скрываем анимацию только на десктопах при скролле вверх
+        // На мобильных оставляем видимым, чтобы анимация не сбрасывалась
+        if (!isMobile) {
+          setIsVisible(false);
+        }
       }
     };
 
@@ -41,6 +64,7 @@ const ThirdScrollBlock = () => {
     window.addEventListener("scroll", handleScrollThrottled, { passive: true });
     window.addEventListener("resize", handleScrollThrottled);
 
+    // Проверяем сразу при загрузке
     handleScroll();
 
     return () => {
@@ -259,26 +283,7 @@ const ThirdScrollBlock = () => {
                 transitionDelay: isVisible ? "1200ms" : "0ms"
               }}
             >
-              {/* <button className="third-button">
-                {buttonText.split("").map((letter, index) => (
-                  <React.Fragment key={index}>
-                    {letter === " " ? (
-                      <span className="button-space"></span>
-                    ) : (
-                      <span
-                        key={index}
-                        className="button-letter"
-                        style={{
-                          opacity: isVisible ? 1 : 0,
-                          transitionDelay: `${getButtonLetterDelay(index, isVisible)}ms`
-                        }}
-                      >
-                        {letter}
-                      </span>
-                    )}
-                  </React.Fragment>
-                ))}
-              </button> */}
+              {/* Кнопка временно скрыта */}
             </div>
           </div>
         </div>
