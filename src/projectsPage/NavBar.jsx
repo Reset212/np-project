@@ -59,7 +59,7 @@ const NavBar = () => {
 
   // ТОЧНО ТАКИЕ ЖЕ ФУНКЦИИ КАК В VideoBackground.jsx
   const handleInstagramClick = () => {
-    window.open('https://instagram.com/moviepark', '_blank');
+    window.open('https://www.instagram.com/movie_park/', '_blank');
   };
 
   const handleVimeoClick = () => {
