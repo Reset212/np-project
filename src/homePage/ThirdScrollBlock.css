@@ -953,12 +953,12 @@ html {
   .section-visible .third-title-wrapper,
   .section-visible .third-items-list,
   .section-visible .button-container {
-    transition-delay: 0ms !important;
+    transition-delay: -100ms !important;
   }
   
   .section-visible .outline-do-container.mobile-outline.do-above-button .outline-letter,
   .section-visible .outline-we-container.mobile-outline.we-below-button .outline-letter {
-    transition-delay: 0ms !important;
+    transition-delay: -100ms !important;
   }
   
   /* Убираем задержки для отдельных букв в контурных надписях */
@@ -966,7 +966,7 @@ html {
   .section-visible .outline-do-container.mobile-outline.do-above-button .outline-letter:nth-child(2),
   .section-visible .outline-we-container.mobile-outline.we-below-button .outline-letter:nth-child(1),
   .section-visible .outline-we-container.mobile-outline.we-below-button .outline-letter:nth-child(2) {
-    transition-delay: 0ms !important;
+    transition-delay: -100ms !important;
   }
 }
 
@@ -978,7 +978,7 @@ html {
 .third-button-wrapper,
 .button-letter,
 .outline-letter {
-  transition-delay: 0ms !important;
+  transition-delay: -100ms !important;
 }
 
 /* ============================================= */
