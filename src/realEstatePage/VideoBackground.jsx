@@ -250,7 +250,7 @@ const VideoBackground = () => {
                       <img 
                         src={require("../image/instagram-icon.svg").default} 
                         alt="Instagram" 
-                        style={{ width: '32px', height: '32px' }}
+                        style={{ width: '26px', height: '26px' }}
                       />
                     </button>
                     <button 
@@ -261,7 +261,7 @@ const VideoBackground = () => {
                       <img 
                         src={require("../image/vimeo-icon.svg").default} 
                         alt="Vimeo" 
-                        style={{ width: '38px', height: '32px' }}
+                        style={{ width: '26px', height: '26px' }}
                       />
                     </button>
                     <button 
@@ -272,7 +272,7 @@ const VideoBackground = () => {
                       <img 
                         src={require("../image/email-icon.svg").default} 
                         alt="Email" 
-                        style={{ width: '30px', height: '24px' }}
+                        style={{ width: '26px', height: '26px' }}
                       />
                     </button>
                   </div>
