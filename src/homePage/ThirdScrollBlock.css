@@ -7,16 +7,25 @@
   --max-width-mobile: 390px;
 }
 
-/* Базовые настройки */
+/* Базовые настройки для предотвращения прыжков */
 html {
   font-size: var(--base-font-size);
   box-sizing: border-box;
+  overflow-x: hidden;
+  width: 100%;
 }
 
 *, *:before, *:after {
   box-sizing: inherit;
 }
 
+body {
+  overflow-x: hidden;
+  width: 100%;
+  position: relative;
+}
+
+/* Основные стили для предотвращения мерцания */
 .third-scroll-section {
   width: 100%;
   background-color: #ffffff !important;
@@ -25,7 +34,13 @@ html {
   padding-bottom: 5.625em; /* 90px / 16px = 5.625em */
   padding-top: 6.25em; /* 100px / 16px = 6.25em */
   z-index: 99 !important;
-
+  /* Оптимизации для мобильных */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 /* Убираем стандартное подчеркивание */
@@ -45,6 +60,9 @@ html {
   min-width: 0;
   position: relative;
   z-index: 3;
+  /* Оптимизации */
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
 }
 
 /* Левая часть - основной WE DO (заполненный) */
@@ -81,6 +99,9 @@ html {
   text-align: left;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* Оптимизации */
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 /* Стиль для пробела между WE и DO */
@@ -94,6 +115,9 @@ html {
   opacity: 0;
   transform: translateX(-1.875em); /* -30px / 16px = -1.875em */
   transition: opacity 0.5s ease, transform 0.5s ease;
+  /* Оптимизации */
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 /* Правая часть - список и кнопка */
@@ -132,6 +156,9 @@ html {
   transform: translateX(-3.125em); /* -50px / 16px = -3.125em */
   transition: opacity 0.6s ease, transform 0.6s ease;
   overflow: visible;
+  /* Оптимизации */
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 .item-text {
@@ -162,7 +189,10 @@ html {
   display: inline-block;
   opacity: 0;
   transition: opacity 0.3s ease, all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-  will-change: opacity, color, -webkit-text-stroke;
+  will-change: opacity;
+  /* Оптимизации */
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 /* Специальные стили для специальных символов */
@@ -183,6 +213,8 @@ html {
   opacity: 0;
   transform: translateY(1.875em); /* 30px / 16px = 1.875em */
   transition: opacity 0.7s ease, transform 0.7s ease;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 .third-button {
@@ -208,6 +240,9 @@ html {
   white-space: nowrap;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* Оптимизации для мобильных */
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 
 .third-button:hover {
@@ -226,6 +261,8 @@ html {
   display: inline-block;
   opacity: 0;
   transition: opacity 0.3s ease;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 /* ========== КОНТУРНЫЕ БУКВЫ (фон) ========== */
@@ -237,6 +274,9 @@ html {
   height: 100%;
   pointer-events: none;
   z-index: 2;
+  /* Оптимизации */
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
 }
 
 /* Контурные буквы стили */
@@ -259,6 +299,8 @@ html {
   opacity: 0;
   transform: translateX(-3.125em); /* -50px / 16px = -3.125em */
   transition: opacity 0.8s ease, transform 0.8s ease;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 /* Десктопные контурные буквы */
@@ -415,6 +457,7 @@ html {
     top: 5em; /* 80px / 16px = 5em */
   }
 }
+
 /* ============================================= */
 /* ПЛАНШЕТНАЯ ВЕРСИЯ (до 1440px) */
 /* ============================================= */
@@ -556,6 +599,8 @@ html {
     padding: 3.571em 1.429em 10em 1.429em !important;
     overflow: hidden;
     position: relative;
+    /* Оптимизации для мобильных */
+    -webkit-overflow-scrolling: touch;
   }
 
   .third-scroll-container {
@@ -643,6 +688,9 @@ html {
     white-space: normal;
     overflow: visible;
     text-overflow: clip;
+    /* Оптимизации для мобильных */
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
   }
 
   /* КНОПКА */
@@ -723,14 +771,14 @@ html {
     -webkit-text-fill-color: transparent;
   }
   
-  /* АНИМАЦИИ - ОПТИМИЗИРОВАННЫЕ */
+  /* УПРОЩЕННЫЕ АНИМАЦИИ ДЛЯ МОБИЛЬНЫХ */
   .third-title-wrapper,
   .third-items-list,
   .button-container {
     opacity: 0;
     transform: translateY(2.143em);
-    transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), 
-                transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: opacity 0.3s ease, 
+                transform 0.3s ease;
   }
   
   .title-word:first-child {
@@ -746,8 +794,8 @@ html {
   .outline-we-container.mobile-outline.we-below-button .outline-letter {
     opacity: 0;
     transform: translateY(1.429em);
-    transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), 
-                transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: opacity 0.4s ease, 
+                transform 0.4s ease;
   }
 }
 
@@ -823,119 +871,127 @@ html {
 }
 
 /* ============================================= */
-/* БЫСТРЫЕ АНИМАЦИИ ДЛЯ ВСЕХ УСТРОЙСТВ */
+/* ОПТИМИЗИРОВАННЫЕ АНИМАЦИИ */
 /* ============================================= */
 .section-visible .third-title {
   opacity: 1;
   transform: translateX(0);
+  transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 .section-visible .title-letter {
   opacity: 1;
   transform: translateX(0);
+  transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
 .section-visible .third-button-wrapper {
   opacity: 1;
   transform: translateY(0);
+  transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 .section-visible .third-item {
   opacity: 1;
   transform: translateX(0);
+  transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 .section-visible .text-letter {
   opacity: 1;
+  transition: opacity 0.2s ease;
 }
 
 .section-visible .button-letter {
   opacity: 1;
+  transition: opacity 0.2s ease;
 }
 
 .section-visible .outline-letter {
   opacity: 1;
   transform: translateX(0);
+  transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
-/* УСКОРЕННЫЕ ЗАДЕРЖКИ ДЛЯ ДЕСКТОПА И ПЛАНШЕТОВ */
-.section-visible .third-title {
-  transition-delay: 50ms !important;
-}
-
-.section-visible .title-letter {
-  transition-delay: 50ms !important;
-}
-
-.section-visible .third-item {
-  transition-delay: 50ms !important;
-}
-
-.section-visible .text-letter {
-  transition-delay: 30ms !important;
-}
-
-.section-visible .third-button-wrapper {
-  transition-delay: 80ms !important;
-}
-
-.section-visible .button-letter {
-  transition-delay: 80ms !important;
-}
-
-.section-visible .outline-letter {
-  transition-delay: 50ms !important;
-}
-
-/* БЫСТРЫЕ СТАРТОВЫЕ ЗАДЕРЖКИ ДЛЯ МОБИЛЬНЫХ */
+/* УСКОРЕННЫЕ АНИМАЦИИ ДЛЯ МОБИЛЬНЫХ */
 @media (max-width: 768px) {
   .section-visible .third-title-wrapper {
     opacity: 1;
     transform: translateY(0);
-    transition-delay: 0ms !important;
+    transition: opacity 0.2s ease, transform 0.2s ease;
   }
   
   .section-visible .third-items-list {
     opacity: 1;
     transform: translateY(0);
-    transition-delay: 50ms !important;
+    transition: opacity 0.2s ease, transform 0.2s ease;
   }
   
   .section-visible .button-container {
     opacity: 1;
     transform: translateY(0);
-    transition-delay: 100ms !important;
+    transition: opacity 0.2s ease, transform 0.2s ease;
   }
   
   .section-visible .outline-do-container.mobile-outline.do-above-button .outline-letter,
   .section-visible .outline-we-container.mobile-outline.we-below-button .outline-letter {
     opacity: 0.9;
     transform: translateY(0);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+}
+
+/* ============================================= */
+/* ФИКСЫ ДЛЯ ПРЕДОТВРАЩЕНИЯ ПРЫЖКОВ */
+/* ============================================= */
+
+/* 1. Фикс для iOS Safari - предотвращает прыжки при скролле */
+@supports (-webkit-overflow-scrolling: touch) {
+  .third-scroll-section {
+    /* iOS specific fixes */
+    -webkit-transform: translate3d(0,0,0);
+    transform: translate3d(0,0,0);
+  }
+}
+
+/* 2. Предотвращает мерцание при анимациях на мобильных */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* 3. Улучшает производительность скролла */
+.third-scroll-container,
+.third-items-list,
+.third-item,
+.item-text {
+  /* Используем GPU ускорение где это возможно */
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+}
+
+/* 4. Убираем задержки на мобильных для более быстрого отклика */
+@media (max-width: 768px) {
+  .title-letter,
+  .text-letter,
+  .outline-letter {
+    transition-delay: 0ms !important;
+  }
+  
+  .third-item {
     transition-delay: 0ms !important;
   }
 }
 
-/* Сохраняем плавность анимаций */
-.third-title,
-.title-letter,
-.third-item,
-.text-letter,
-.third-button-wrapper,
-.button-letter,
-.outline-letter {
-  transition-delay: 0ms;
+/* 5. Оптимизация для старых Android устройств */
+@media (max-width: 768px) and (-webkit-min-device-pixel-ratio: 0) {
+  .third-scroll-section {
+    /* Предотвращает глитчи на Android */
+    -webkit-font-smoothing: subpixel-antialiased;
+  }
 }
 
-/* ============================================= */
-/* ОЧЕНЬ БОЛЬШИЕ ЭКРАНЫ (больше 1920px) */
-/* ============================================= */
-@media (min-width: 1921px) {
-  html {
-    font-size: calc(var(--base-font-size) * 1.2);
-  }
-  
-  .third-scroll-container {
-    max-width: 90%;
-    margin: 0 auto;
-  }
+/* 6. Фикс для viewport на мобильных */
+@viewport {
+  width: device-width;
+  zoom: 1.0;
 }
