@@ -1,5 +1,6 @@
 /* Файл: ContactSection.css */
 /* Базовые переменные */
+@import 'normalize.css';
 :root {
   --font-primary: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   --color-black: #000000;

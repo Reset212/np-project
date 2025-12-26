@@ -1,5 +1,5 @@
 /* MensSection.css */
-
+@import 'normalize.css';
 :root {
   --base-font-size: 16px;
   --max-width-pc: 1920px;
