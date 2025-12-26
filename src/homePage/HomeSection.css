@@ -159,7 +159,7 @@ html {
 .read-more-button {
   width: 10em; /* 160px = 10em */
   height: 2.5em; /* 40px = 2.5em */
-  background: rgba(118, 118, 118, 0.16);
+  background: #9b9b9b94;
   border: 0.09375em solid rgba(156, 156, 156, 0.32); /* 1.5px = 0.09375em */
   backdrop-filter: blur(0.5em); /* 8px = 0.5em */
   border-radius: 2em; /* 32px = 2em */
@@ -316,8 +316,8 @@ html {
   
   .read-more-button {
     width: 11em; /* 176px = 11em */
-    height: 3em; /* 48px = 3em */
-    font-size: 0.875em; /* 14px = 0.875em */
+    height: 4em; /* 48px = 3em */
+    font-size: 1em; /* 14px = 0.875em */
     border-radius: 1.875em; /* 30px = 1.875em */
     backdrop-filter: blur(0.625em); /* 10px = 0.625em */
   }
@@ -374,8 +374,8 @@ html {
   }
   
   .read-more-button {
-    width: 10em; /* 160px = 10em */
-    height: 2.75em; /* 44px = 2.75em */
+    width: 11em; /* 160px = 10em */
+    height: 4em; /* 44px = 2.75em */
   }
 }
 
@@ -434,8 +434,8 @@ html {
   }
   
   .read-more-button {
-    width: 9.5em; /* 152px = 9.5em */
-    height: 2.375em; /* 38px = 2.375em */
+    width: 11em; /* 152px = 9.5em */
+    height: 4em; /* 38px = 2.375em */
   }
 }
 
@@ -460,8 +460,8 @@ html {
   }
   
   .read-more-button {
-    width: 10.5em; /* 168px = 10.5em */
-    height: 2.625em; /* 42px = 2.625em */
+    width: 11em; /* 168px = 10.5em */
+    height: 4em; /* 42px = 2.625em */
   }
 }
 
@@ -608,9 +608,9 @@ _::-webkit-full-page-media, _:future, :root .read-more-button {
   }
   
   .read-more-button {
-    width: 12em; /* 192px = 12em */
-    height: 3em; /* 48px = 3em */
-    font-size: 1.125em; /* 18px = 1.125em */
+    width: 11em; /* 192px = 12em */
+    height: 3.9em; /* 48px = 3em */
+    font-size: 1em; /* 18px = 1.125em */
   }
 }
 
