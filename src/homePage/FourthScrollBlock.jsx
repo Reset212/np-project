@@ -22,16 +22,12 @@ const FourthScrollBlock = () => {
           const cityLine = entry.target;
           
           if (entry.isIntersecting) {
-            // Когда элемент появляется в viewport (с любой стороны)
             cityLine.classList.add("visible");
             cityLine.classList.remove("hidden");
           } else {
-            // Когда элемент уходит из viewport
             const rect = entry.boundingClientRect;
             const windowHeight = window.innerHeight;
             
-            // Если элемент ушел вверх (верхняя граница выше viewport)
-            // ИЛИ если элемент ушел вниз (нижняя граница ниже viewport)
             if (rect.top < 0 || rect.bottom > windowHeight) {
               cityLine.classList.add("hidden");
               cityLine.classList.remove("visible");
@@ -46,7 +42,6 @@ const FourthScrollBlock = () => {
       }
     );
 
-    // Наблюдаем за всеми элементами городов
     cityRefs.current.forEach((ref) => {
       if (ref) observer.observe(ref);
     });
@@ -59,31 +54,51 @@ const FourthScrollBlock = () => {
   }, []);
 
   // Функция для получения времени в разных городах
-  const getCityTime = (city, baseTime = currentTime) => {
-    const time = new Date(baseTime);
-    
-    switch(city) {
-      case 'DUBAI':
-        time.setHours(time.getHours() + 4);
-        break;
-      case 'NEW YORK':
-        time.setHours(time.getHours() - 5);
-        break;
-      case 'MOSCOW':
-        time.setHours(time.getHours() + 3);
-        break;
-      case 'CAPE TOWN':
-        time.setHours(time.getHours() + 2);
-        break;
-      case 'PARIS':
-        time.setHours(time.getHours() + 1);
-        break;
-      default:
-        break;
-    }
+  const getCityTime = (city) => {
+    const timeZones = {
+      'DUBAI': 'Asia/Dubai',
+      'NEW YORK': 'America/New_York',
+      'MOSCOW': 'Europe/Moscow',
+      'CAPE TOWN': 'Africa/Johannesburg',
+      'PARIS': 'Europe/Paris'
+    };
 
-    const hours = time.getHours();
-    const minutes = time.getMinutes();
+    const timeZone = timeZones[city];
+    if (!timeZone) return '--:-- --';
+
+    try {
+      const formatter = new Intl.DateTimeFormat('en-US', {
+        timeZone: timeZone,
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true
+      });
+      
+      return formatter.format(new Date());
+    } catch (error) {
+      console.error(`Error formatting time for ${city}:`, error);
+      return getCityTimeFallback(city);
+    }
+  };
+
+  // Fallback функция на случай проблем с Intl
+  const getCityTimeFallback = (city) => {
+    const now = new Date();
+    const utcTime = now.getTime() + (now.getTimezoneOffset() * 60000);
+    
+    const offsets = {
+      'DUBAI': 4 * 3600000,
+      'NEW YORK': -5 * 3600000,
+      'MOSCOW': 3 * 3600000,
+      'CAPE TOWN': 2 * 3600000,
+      'PARIS': 1 * 3600000
+    };
+    
+    const offset = offsets[city] || 0;
+    const cityTime = new Date(utcTime + offset);
+    
+    const hours = cityTime.getHours();
+    const minutes = cityTime.getMinutes();
     const ampm = hours >= 12 ? 'PM' : 'AM';
     const formattedHours = hours % 12 || 12;
     const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
@@ -112,9 +127,11 @@ const FourthScrollBlock = () => {
                 transitionDelay: `${index * 150}ms`
               }}
             >
-              <div className="city-container-flex">
-                <div className="city-name-flex">{city.name}</div>
-                <div className="city-time-flex">{getCityTime(city.name)}</div>
+              <div className="city-wrapper">
+                <div className="city-container-flex">
+                  <div className="city-name-flex">{city.name}</div>
+                  <div className="city-time-flex">{getCityTime(city.name)}</div>
+                </div>
               </div>
             </div>
           ))}

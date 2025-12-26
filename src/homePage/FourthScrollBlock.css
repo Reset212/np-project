@@ -23,8 +23,8 @@
   --transition-medium: 0.8s ease;
   
   /* Толщины линий */
-  --underline-thick: 0.05375em;   /* 1.5px = 0.09375em */
-  --underline-thin: 0.03125em;    /* 0.5px = 0.03125em */
+  --underline-thick: 0.09375em;   /* 1.5px */
+  --underline-thin: 0.03125em;    /* 0.5px */
 }
 
 /* Базовые настройки */
@@ -59,14 +59,14 @@ html {
 .cities-container {
   display: flex;
   flex-direction: column;
-  gap: 1.875em; /* Уменьшил: 30px = 1.875em (было 60px = 3.75em) */
+  gap: 1.875em; /* 30px = 1.875em */
   width: 100%;
 }
 
 /* ОСНОВНЫЕ СТИЛИ - БЕЗ ХОВЕРОВ */
 .city-line {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: center;
   position: relative;
   width: 100%;
@@ -80,13 +80,21 @@ html {
   transform: translateY(0);
 }
 
-.city-container-flex {
+.city-wrapper {
+  position: relative;
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  gap: 1.5em; /* 24px = 1.5em */
 }
 
+.city-container-flex {
+  display: flex;
+  align-items: flex-start;
+  position: relative;
+  width: fit-content;
+}
+
+/* СТИЛИ НАЗВАНИЯ ГОРОДА */
 .city-name-flex {
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-style: normal;
@@ -97,20 +105,19 @@ html {
   text-transform: uppercase;
   color: var(--color-black);
   white-space: nowrap;
-  display: flex;
-  align-items: center;
   position: relative;
-  padding-top: 0.3125em; /* 5px = 0.3125em */
+  display: block;
+  margin: 0 auto;
 }
 
-/* ПОДЧЕРКИВАНИЕ ПРИ НАВЕДЕНИИ - СДЕЛАЛ ТОНЬШЕ */
+/* ПОДЧЕРКИВАНИЕ ПРИ НАВЕДЕНИИ */
 .city-name-flex::after {
   content: '';
   position: absolute;
   bottom: 0;
   left: 0;
   width: 0;
-  height: var(--underline-thick); /* 1.5px = 0.09375em (было 3px = 0.1875em) */
+  height: var(--underline-thick); /* 1.5px = 0.09375em */
   background-color: var(--color-black);
   transition: width var(--transition-fast);
 }
@@ -120,24 +127,30 @@ html {
   width: 100%;
 }
 
+/* ВРЕМЯ - ПОЗИЦИОНИРОВАНИЕ ВЫШЕ ГОРОДА (ПК И ПЛАНШЕТ) */
 .city-time-flex {
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-style: normal;
   font-weight: 500;
   color: var(--color-black);
   white-space: nowrap;
-  padding-top: 0.75em; /* 12px = 0.75em */
-  position: relative;
+  position: absolute;
+  left: 100%;
+  top: -0.75em; /* Размещаем ВЫШЕ города (-12px) */
+  margin-left: 1.5em; /* 24px = 1.5em */
+  padding-top: 0;
+  opacity: 1;
+  transition: all var(--transition-fast);
 }
 
-/* ПОДЧЕРКИВАНИЕ ВРЕМЕНИ - СДЕЛАЛ ТОНЬШЕ */
+/* ПОДЧЕРКИВАНИЕ ВРЕМЕНИ */
 .city-time-flex::after {
   content: '';
   position: absolute;
-  bottom: -0.0625em; /* -1px = -0.0625em (было -2px = -0.125em) */
+  bottom: -0.0625em; /* -1px = -0.0625em */
   left: 0;
   width: 0;
-  height: var(--underline-thin); /* 0.5px = 0.03125em (было 1px = 0.0625em) */
+  height: var(--underline-thin); /* 0.5px = 0.03125em */
   background-color: var(--color-black);
   transition: width var(--transition-fast);
 }
@@ -154,14 +167,14 @@ html {
 }
 
 .city-time-flex {
-  font-size: 1em; /* 16px = 1em - ИСПРАВИЛ: было 0em */
+  font-size: 1em; /* 16px = 1em */
   line-height: 1em;
 }
 
 /* ============================================= */
 /* ПК ВЕРСИЯ (1920px и больше) */
 /* ============================================= */
-@media (min-width: 120em) { /* 1920px = 120em - ИСПРАВИЛ: было max-width */
+@media (min-width: 120em) { /* 1920px = 120em */
   .cities-container {
     gap: 1.875em; /* 30px = 1.875em */
   }
@@ -181,58 +194,58 @@ html {
   
   .fourth-content {
     max-width: 100%;
-    padding: 0 4vw; /* Уменьшил отступы: было 8vw */
+    padding: 0 4vw;
   }
 }
 
 /* ============================================= */
-/* ПЛАНШЕТНАЯ ВЕРСИЯ (до 1440px) */
+/* ПЛАНШЕТНАЯ ВЕРСИЯ (до 1440px) - ИСХОДНЫЕ РАЗМЕРЫ */
 /* ============================================= */
 @media (max-width: 90em) { /* 1440px = 90em */
-  .cities-container {
-
-  }
-  
   .city-name-flex {
-    font-size: 4.5em; /* 72px = 4.5em (было 85px) */
-
+    font-size: 5.3125em; /* 85px = 5.3125em (исходный размер) */
   }
   
+  /* НА ПЛАНШЕТАХ ВРЕМЯ ВЫШЕ ГОРОДА (КАК НА ПК) */
   .city-time-flex {
-    font-size: 0.9375em; /* 15px = 0.9375em */
+    font-size: 0.9375em; /* 15px = 0.9375em (исходный размер) */
     line-height: 0.9375em;
+    margin-left: 1.25em; /* 20px = 1.25em (исходный отступ) */
+    top: -0.625em; /* -10px = -0.625em (исходный отступ) */
   }
   
   .city-line {
-    transform: translateY(1.875em); /* Уменьшил: 30px = 1.875em (было 40px) */
+    transform: translateY(2.5em); /* 40px = 2.5em (исходный отступ) */
   }
   
   .fourth-content {
     max-width: 100%;
-    padding: 0 4vw; /* Уменьшил отступы: было 6vw */
+    padding: 0 4vw;
   }
 }
 
 /* ============================================= */
-/* ПЕРЕХОДНЫЙ АДАПТИВ (1024px - 1200px) */
+/* ПЕРЕХОДНЫЙ АДАПТИВ (1024px - 1200px) - ИСХОДНЫЕ РАЗМЕРЫ */
 /* ============================================= */
 @media (min-width: 64em) and (max-width: 75em) { /* 1024px = 64em, 1200px = 75em */
   .cities-container {
-    gap: 1.125em; /* 18px = 1.125em (было 40px) */
+    gap: 2.5em; /* 40px = 2.5em (исходный отступ) */
   }
   
   .city-name-flex {
-    font-size: 3.75em; /* 60px = 3.75em (было 75px) */
-
+    font-size: 4.6875em; /* 75px = 4.6875em (исходный размер) */
   }
   
+  /* НА ПЛАНШЕТАХ ВРЕМЯ ВЫШЕ ГОРОДА (КАК НА ПК) */
   .city-time-flex {
-    font-size: 0.875em; /* 14px = 0.875em */
+    font-size: 0.875em; /* 14px = 0.875em (исходный размер) */
     line-height: 0.875em;
+    margin-left: 1em; /* 16px = 1em (исходный отступ) */
+    top: -0.5625em; /* -9px = -0.5625em (исходный отступ) */
   }
   
   .city-line {
-    transform: translateY(1.5625em); /* 25px = 1.5625em (было 35px) */
+    transform: translateY(2.1875em); /* 35px = 2.1875em (исходный отступ) */
   }
   
   .fourth-content {
@@ -241,134 +254,164 @@ html {
 }
 
 /* ============================================= */
-/* ТЕЛЕФОННАЯ ВЕРСИЯ (до 768px) */
+/* ТЕЛЕФОННАЯ ВЕРСИЯ (до 768px) - ИСХОДНЫЕ РАЗМЕРЫ */
 /* ============================================= */
 @media (max-width: 48em) { /* 768px = 48em */
   .fourth-section {
     min-height: 50vh;
-    margin-bottom: 6.25em; /* 100px = 6.25em */
+    margin-bottom: 6.25em; /* 100px = 6.25em (исходный отступ) */
   }
-  .fourth-content{
-    height: 30em;
-  }
+  
   .cities-container {
-    gap: 1.125em; /* 18px = 1.125em (было 30px) */
+    gap: 1.875em; /* 30px = 1.875em (исходный отступ) */
   }
   
   .city-name-flex {
-    font-size: 3.5em; /* 40px = 2.5em (было 50px) */
+    font-size: 3.125em; /* 50px = 3.125em (исходный размер) */
     line-height: 1;
   }
   
+  /* НА ТЕЛЕФОНАХ ВРЕМЯ ПОД ГОРОДОМ */
   .city-time-flex {
-    font-size: 0.75em; /* 12px = 0.75em */
+    position: relative;
+    left: auto;
+    top: auto;
+    margin: 0.25em auto 0 auto; /* 4px сверху, центрируем */
+    text-align: center;
+    width: 100%;
+    font-size: 0.75em; /* 12px = 0.75em (исходный размер) */
     line-height: 0.75em;
+    display: block !important; /* Важно: переопределяем все */
   }
   
+  /* Центрируем контейнер на мобильных */
   .city-container-flex {
-    display: flex;
-    flex-direction: row;
-    gap: 0.75em; /* 12px = 0.75em */
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
+  
+  /* Убираем подчеркивание при наведении на мобильных */
+  .city-time-flex::after {
+    display: none;
+  }
+  
+  .city-line:hover .city-time-flex::after {
+    display: none;
   }
   
   .city-line {
-    transform: translateY(1.125em); /* 18px = 1.125em (было 25px) */
+    transform: translateY(1.5625em); /* 25px = 1.5625em (исходный отступ) */
   }
   
   .fourth-content {
-    padding: 0 1.5em; /* 24px = 1.5em */
+    padding: 0 1.5em; /* 24px = 1.5em (исходный отступ) */
   }
 }
 
 /* ============================================= */
-/* МАЛЕНЬКИЕ ТЕЛЕФОНЫ (до 576px) */
+/* МАЛЕНЬКИЕ ТЕЛЕФОНЫ (до 576px) - ИСХОДНЫЕ РАЗМЕРЫ */
 /* ============================================= */
 @media (max-width: 36em) { /* 576px = 36em */
   .fourth-section {
-    margin-bottom: 5em; /* 80px = 5em */
+    margin-bottom: 4.5em;
+    padding-top: 0.5em; /* 80px = 5em */
   }
   
   .cities-container {
-    gap: 1em; /* 16px = 1em (было 25px) */
+    gap: 1.5625em; /* 25px = 1.5625em (исходный отступ) */
   }
   
   .city-name-flex {
-    font-size: 3.3em; /* 32px = 2em (было 40px) */
+    font-size: 3.125em; /* 50px = 3.125em (исходный размер) */
     line-height: 1;
   }
   
   .city-time-flex {
-    font-size: 0.6875em; /* 11px = 0.6875em */
+    font-size: 0.6875em; /* 11px = 0.6875em (исходный размер) */
     line-height: 0.6875em;
-  }
-  
-  .city-container-flex {
-    gap: 0.5em; /* 8px = 0.5em (было 12px) */
+    margin-top: 0.125em; /* 2px сверху */
   }
   
   .city-line {
-    transform: translateY(0.875em); /* 14px = 0.875em (было 20px) */
+    transform: translateY(1.25em); /* 20px = 1.25em (исходный отступ) */
   }
   
   .fourth-content {
-    padding: 0 1.25em; /* 20px = 1.25em */
+    padding: 0 1.25em; /* 20px = 1.25em (исходный отступ) */
   }
 }
 
 /* ============================================= */
-/* ОЧЕНЬ МАЛЕНЬКИЕ ТЕЛЕФОНЫ (до 390px) */
+/* ОЧЕНЬ МАЛЕНЬКИЕ ТЕЛЕФОНЫ (до 390px) - ИСХОДНЫЕ РАЗМЕРЫ */
 /* ============================================= */
 @media (max-width: 24.375em) { /* 390px = 24.375em */
   .fourth-section {
     min-height: 60vh;
-    margin-bottom: 4em; /* 64px = 4em */
+    margin-bottom: 3.825em; /* 64px = 4em */
   }
   
   .cities-container {
-    gap: 0.875em; /* 14px = 0.875em (было 20px) */
+    gap: 1.25em; /* 20px = 1.25em (исходный отступ) */
   }
   
   .city-name-flex {
-    font-size: 2.7em; /* 26px = 1.625em (было 32px) */
+    font-size: 3.125em; /* 50px = 3.125em (исходный размер) */
     line-height: 1;
   }
   
   .city-time-flex {
-    font-size: 0.625em; /* 10px = 0.625em */
+    font-size: 0.625em; /* 10px = 0.625em (исходный размер) */
     line-height: 0.625em;
-  }
-  
-  .city-container-flex {
-    gap: 0.375em; /* 6px = 0.375em (было 8px) */
+    margin-left: 0.5em; /* 8px = 0.5em (исходный отступ) */
+    top: -0.375em; /* -6px = -0.375em (исходный отступ) */
   }
   
   .city-line {
-    transform: translateY(0.625em); /* 10px = 0.625em (было 15px) */
+    transform: translateY(0.9375em); /* 15px = 0.9375em (исходный отступ) */
   }
   
   .fourth-content {
-    padding: 0 1em; /* 16px = 1em */
+    padding: 0 1em; /* 16px = 1em (исходный отступ) */
+  }
+}
+
+/* ============================================= */
+/* ПЛАНШЕТЫ ВЕРТИКАЛЬНО (768px - 1024px) */
+/* ============================================= */
+@media (min-width: 48em) and (max-width: 64em) { /* 768px - 1024px */
+  .city-name-flex {
+    font-size: 4.6875em; /* 75px = 4.6875em (исходный размер) */
+  }
+  
+  /* НА ПЛАНШЕТАХ ВРЕМЯ ВЫШЕ ГОРОДА (КАК НА ПК) */
+  .city-time-flex {
+    font-size: 0.875em; /* 14px = 0.875em (исходный размер) */
+    line-height: 0.875em;
+    margin-left: 1em; /* 16px = 1em (исходный отступ) */
+    top: -0.5625em; /* -9px = -0.5625em (исходный отступ) */
   }
 }
 
 /* ============================================= */
 /* ЛАНДШАФТНАЯ ОРИЕНТАЦИЯ НА МОБИЛЬНЫХ */
 /* ============================================= */
-@media (max-height: 40em) and (orientation: landscape) { /* 640px = 40em */
+@media (max-height: 40em) and (orientation: landscape) and (max-width: 48em) { /* 640px = 40em */
   .fourth-section {
     min-height: 80vh;
   }
   
   .cities-container {
-    gap: 0.75em; /* 12px = 0.75em (было 16px) */
+    gap: 1em; /* 16px = 1em */
   }
   
   .city-name-flex {
-    font-size: 2em; /* 32px = 2em (было 40px) */
+    font-size: 2.5em; /* 40px = 2.5em */
   }
   
   .city-time-flex {
     font-size: 0.75em; /* 12px = 0.75em */
+    margin-top: 0.125em; /* 2px сверху */
   }
 }
 

@@ -110,7 +110,7 @@ html {
 /* ============================================= */
 @media (max-width: 120em) { /* 1920px = 120em */
   .projects-section {
-    height: 300vh !important; /* 250vh остается для анимации скролла */
+    height: 220vh !important; /* 250vh остается для анимации скролла */
   }
   
   .word {
@@ -179,7 +179,7 @@ html {
 /* ============================================= */
 @media (min-width: 64em) and (max-width: 90em) { /* 1024px = 64em, 1440px = 90em */
   .projects-section {
-    height: 350vh !important;
+    height: 220vh !important;
   }
   
   .word-1 {
