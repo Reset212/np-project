@@ -53,8 +53,8 @@ const FourthScrollBlock = () => {
     };
   }, []);
 
-  // ВЕРСИЯ 1: Используем Intl API (рекомендуется) - учитывает летнее время
-  const getCityTimeIntl = (city) => {
+  // Функция для получения времени в разных городах
+  const getCityTime = (city) => {
     const timeZones = {
       'DUBAI': 'Asia/Dubai',
       'NEW YORK': 'America/New_York',
@@ -81,18 +81,17 @@ const FourthScrollBlock = () => {
     }
   };
 
-  // ВЕРСИЯ 2: Fallback - если Intl не поддерживается (редко)
+  // Fallback функция на случай проблем с Intl
   const getCityTimeFallback = (city) => {
     const now = new Date();
     const utcTime = now.getTime() + (now.getTimezoneOffset() * 60000);
     
-    // Смещения с учетом некоторых особенностей (примерные)
     const offsets = {
-      'DUBAI': 4 * 3600000,      // UTC+4
-      'NEW YORK': -5 * 3600000,  // UTC-5 (EST), UTC-4 летом
-      'MOSCOW': 3 * 3600000,     // UTC+3
-      'CAPE TOWN': 2 * 3600000,  // UTC+2
-      'PARIS': 1 * 3600000       // UTC+1 (CET), UTC+2 летом
+      'DUBAI': 4 * 3600000,
+      'NEW YORK': -5 * 3600000,
+      'MOSCOW': 3 * 3600000,
+      'CAPE TOWN': 2 * 3600000,
+      'PARIS': 1 * 3600000
     };
     
     const offset = offsets[city] || 0;
@@ -107,9 +106,6 @@ const FourthScrollBlock = () => {
     return `${formattedHours}:${formattedMinutes} ${ampm}`;
   };
 
-  // ВЫБОР ФУНКЦИИ: используем Intl по умолчанию
-  const getCityTime = getCityTimeIntl;
-
   const cities = [
     { name: "DUBAI" },
     { name: "NEW YORK" },
@@ -117,18 +113,6 @@ const FourthScrollBlock = () => {
     { name: "CAPE TOWN" },
     { name: "PARIS" }
   ];
-
-  // Для тестирования - показываем локальное время пользователя
-  const getUserLocalTime = () => {
-    const now = new Date();
-    const hours = now.getHours();
-    const minutes = now.getMinutes();
-    const ampm = hours >= 12 ? 'PM' : 'AM';
-    const formattedHours = hours % 12 || 12;
-    const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
-    
-    return `${formattedHours}:${formattedMinutes} ${ampm} (Ваше время)`;
-  };
 
   return (
     <section className="fourth-section">
@@ -151,8 +135,6 @@ const FourthScrollBlock = () => {
               </div>
             </div>
           ))}
-          
-  
         </div>
       </div>
     </section>
