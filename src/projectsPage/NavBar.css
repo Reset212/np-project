@@ -89,15 +89,15 @@
 /* Кнопка CHAT WITH US */
 .chat-action-button {
   background-color: transparent;
-  width: 11.25em; 
-  height: 3.75em; 
+  width: 10.75em;
+    height: 3.625em; 
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 1.875em; /* 30px */
   border: 0.0625em solid rgba(0, 0, 0, 0.3); /* 1px */
   padding: 0;
-  font-size: 0.875em; /* 14px */
+  font-size: 1em; /* 14px */
   color: #000000 !important; /* ЧЕРНЫЙ ТЕКСТ */
   cursor: pointer;
   transition: all 0.3s ease;
@@ -161,8 +161,9 @@
   }
   
   .chat-action-button {
-    width: 9em;
-    height: 2.8em;
+    width: 10.75em;
+    height: 3.625em;
+    font-weight: 400;
     font-size: 0.8em;
   }
   
@@ -201,11 +202,7 @@
     gap: 3em;
   }
   
-  .chat-action-button {
-    width: 8em;
-    height: 2.5em;
-    font-size: 0.75em;
-  }
+
 }
 
 /* ============================================= */

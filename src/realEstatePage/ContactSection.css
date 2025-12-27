@@ -8,6 +8,7 @@
   --color-gray: #999797;
   --color-light-gray: #D9D9D9;
   --color-green: #4CAF50;
+  --color-blue: #2196F3;
   --transition-speed: 0.3s;
   --border-radius: 0.125em;
   --section-height: 53.75em; /* 860px в em */
@@ -33,6 +34,7 @@
   width: 100%;
   position: relative;
   overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* Контейнер - ПК: 140px от краев, ПЛАНШЕТ: 85px от краев */
@@ -148,6 +150,7 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .email-value:hover {
@@ -228,6 +231,8 @@
   height: auto; /* Убираем высоту textarea */
   resize: none; /* Запрещаем изменение размера */
   min-height: auto; /* Убираем min-height */
+  -webkit-appearance: none;
+  border-radius: 0;
 }
 
 /* УБИРАЕМ ВСЕ СТИЛИ ДЛЯ TEXTAREA */
@@ -242,10 +247,11 @@ textarea {
   border-bottom-color: var(--color-blue);
 }
 
-/* Кнопка отправки - ПО ПРАВОМУ КРАЮ для ПК и планшета */
+/* ========== КНОПКА ДЛЯ IOS ========== */
+/* Базовые стили кнопки для всех устройств */
 .submit-button {
   font-family: var(--font-primary);
-  font-weight: 300;
+  font-weight: 400;
   font-size: 0.875em;
   color: var(--color-black);
   text-transform: uppercase;
@@ -259,10 +265,104 @@ textarea {
   min-width: 6.375em;
   min-height: 2.1875em;
   margin-top: 1em;
+  line-height: normal;
+  box-sizing: border-box;
+  
+  /* iOS-specific reset */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  
+  /* Убираем стандартные iOS стили */
+  -webkit-border-radius: 2em;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  
+  /* Отключаем выделение при касании на iOS */
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
+/* Ховер эффект для всех устройств */
 .submit-button:hover {
   background: rgba(200, 200, 200, 0.8);
+}
+
+/* Активное состояние для всех устройств */
+.submit-button:active {
+  transform: scale(0.98);
+  background: rgba(180, 180, 180, 0.8);
+}
+
+/* Специфичные стили для iOS устройств */
+@supports (-webkit-touch-callout: none) {
+  .submit-button {
+    /* iOS Safari specific fixes */
+    padding: 0.875em 2.5em !important;
+    min-height: 2.1875em !important;
+    
+    /* Убираем стандартные iOS тени и градиенты */
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    
+    /* Фикс для Safari */
+    -webkit-user-select: none;
+    user-select: none;
+    
+    /* Убираем стандартные iOS стили для кнопок */
+    -webkit-appearance: none;
+    appearance: none;
+    
+    /* Отключаем автоматическое изменение размера текста */
+    -webkit-text-size-adjust: 100%;
+    
+    /* Фикс для вертикального выравнивания текста в iOS */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* Фикс для старых версий iOS */
+  .submit-button::-webkit-outer-spin-button,
+  .submit-button::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+}
+
+/* Специфичные стили для мобильных устройств на iOS */
+@media screen and (max-width: 65em) and (-webkit-min-device-pixel-ratio: 0) {
+  .submit-button {
+    /* Еще более строгие настройки для мобильного iOS */
+    padding: 0.875em 2.5em !important;
+    margin: 1em auto 0 auto;
+    display: block;
+    width: auto;
+    min-width: 6.375em;
+    min-height: 2.1875em;
+    height: auto;
+    
+    /* Убираем все возможные iOS стили */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    
+    /* Фикс для центрирования текста в iOS */
+    text-align: center;
+    line-height: normal;
+  }
+}
+
+/* Дополнительный фикс для Safari на iOS */
+@media not all and (min-resolution:.001dpcm) { 
+  @supports (-webkit-appearance:none) and (stroke-color:transparent) {
+    .submit-button {
+      padding: 0.875em 2.5em !important;
+      min-height: 2.1875em !important;
+    }
+  }
 }
 
 .submit-button:disabled {
@@ -303,6 +403,7 @@ textarea {
   color: var(--color-black);
   cursor: pointer;
   transition: opacity var(--transition-speed) ease;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .mobile-copy-notification {
@@ -521,9 +622,16 @@ textarea {
     gap: 2em; /* Немного уменьшено */
   }
   
+  /* Фикс кнопки для мобильных на iOS */
   .submit-button {
     align-self: center;
     margin-top: 1em;
+    padding: 0.875em 2.5em !important;
+    min-height: 2.1875em !important;
+    width: auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
   }
 }
 
@@ -569,12 +677,14 @@ textarea {
     text-align: center;
   }
   
+  /* Кнопка для маленьких экранов на iOS */
   .submit-button {
-    width: 100%;
+    width: auto;
     max-width: 7.5em;
-    padding: 0.75em 1em;
+    padding: 0.875em 1em !important;
     font-size: 0.875em;
     align-self: center;
+    min-height: 2.1875em !important;
   }
   
   .mobile-emails-section {
@@ -605,6 +715,8 @@ textarea {
   .submit-button {
     max-width: 6.875em;
     font-size: 0.75em;
+    padding: 0.875em 1em !important;
+    min-height: 2.1875em !important;
   }
   
   /* 16px для очень маленьких телефонов */
@@ -666,6 +778,8 @@ textarea {
   /* В ландшафтной ориентации кнопка справа */
   .submit-button {
     align-self: flex-end;
+    padding: 0.875em 2.5em !important;
+    min-height: 2.1875em !important;
   }
   
   /* ИМЕНА ПОЛЕЙ: 16px для ландшафта */
@@ -702,5 +816,27 @@ textarea {
 @media (min-width: 65em) { /* 1040px и выше - десктоп и планшет */
   .right-column {
     margin-top: 3em; /* 30px */
+  }
+}
+
+/* Дополнительные iOS фиксы для всех состояний кнопки */
+.submit-button::-moz-focus-inner {
+  border: 0;
+  padding: 0;
+}
+
+.submit-button:focus {
+  outline: none;
+}
+
+/* Фикс для Safari на iOS 14+ */
+@supports (-webkit-touch-callout: none) {
+  .submit-button {
+    /* Принудительно устанавливаем высоту и паддинги */
+    height: auto !important;
+    min-height: 2.1875em !important;
+    padding-top: 0.875em !important;
+    padding-bottom: 0.875em !important;
+    line-height: 1 !important;
   }
 }

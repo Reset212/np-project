@@ -188,8 +188,8 @@ html {
 /* Кнопка CHAT WITH US - ПК версия */
 .chat-button {
   background-color: rgba(255, 255, 255, 0.2);
-  width: 11.25em !important;
-  height: 3.75em !important;
+  width: 10.75em !important;
+  height: 3.625em !important;
   white-space: nowrap !important;
   display: flex;
   align-items: center;
@@ -373,8 +373,7 @@ html {
   }
   
   .chat-button {
-    width: 10em !important;
-    height: 3em !important;
+    
     font-size: 1em !important;
     padding: 0 1em  !important;
   }
@@ -454,8 +453,7 @@ html {
   }
   
   .chat-button {
-    width: 9em !important;
-    height: 3em !important;
+   
     font-size: 1em !important;
     padding: 0 0.875em !important;
   }
