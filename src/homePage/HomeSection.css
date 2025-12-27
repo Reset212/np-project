@@ -5,7 +5,7 @@
   --max-width-pc: 1920px;
   --max-width-tablet: 1440px;
   --max-width-mobile: 390px;
-  --button-height: 3.75em; /* 60px = 3.75em */
+  --button-height: 3.625em; /* 58px = 3.625em - ИЗМЕНЕНО С 60px */
   --button-width: 10.875em; /* 174px = 10.875em */
   --button-border-radius: 2em; /* 32px = 2em */
   --button-font-size: 1em; /* 16px = 1em */
@@ -184,16 +184,19 @@ button,
 
 /* Кнопка read more - ОСНОВНЫЕ СТИЛИ, РАБОТАЮЩИЕ НА ВСЕХ УСТРОЙСТВАХ */
 .read-more-button {
-  width: var(--button-width) !important; /* 174px = 10.875em */
-  height: var(--button-height) !important; /* 60px = 3.75em */
-  min-height: var(--button-height) !important; /* Фикс для iOS */
+  /* РАЗМЕР КНОПКИ - ФИКСИРОВАННЫЙ: 174x58px */
+  width: 10.875em !important; /* 174px = 10.875em */
+  height: 3.625em !important; /* 58px = 3.625em - ФИКСИРОВАННО */
+  min-height: 3.625em !important; /* 58px - ФИКСИРОВАННО */
+  max-height: 3.625em !important; /* 58px - ФИКСИРОВАННО */
+  
   background: rgba(155, 155, 155, 0.64) !important; /* rgba(155, 155, 155, 0.64) */
   border: 0.09375em solid rgba(156, 156, 156, 0.32) !important; /* 1.5px = 0.09375em */
-  backdrop-filter: blur(var(--button-blur)) !important; /* 12px = 0.75em */
-  -webkit-backdrop-filter: blur(var(--button-blur)) !important; /* Для Safari */
-  border-radius: var(--button-border-radius) !important; /* 32px = 2em */
+  backdrop-filter: blur(0.75em) !important; /* 12px = 0.75em */
+  -webkit-backdrop-filter: blur(0.75em) !important; /* Для Safari */
+  border-radius: 2em !important; /* 32px = 2em */
   color: white !important;
-  font-size: var(--button-font-size) !important; /* 16px = 1em */
+  font-size: 1em !important; /* 16px = 1em */
   letter-spacing: 0.03125em !important; /* 0.5px = 0.03125em */
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -210,26 +213,28 @@ button,
   -webkit-touch-callout: none !important;
   -webkit-user-select: none !important;
   user-select: none !important;
-  -webkit-border-radius: var(--button-border-radius) !important;
-  -moz-border-radius: var(--button-border-radius) !important;
-  border-radius: var(--button-border-radius) !important;
+  -webkit-border-radius: 2em !important;
+  -moz-border-radius: 2em !important;
+  border-radius: 2em !important;
   -webkit-background-clip: padding-box !important;
   -moz-background-clip: padding-box !important;
   background-clip: padding-box !important;
-   font-weight: 400 !important;
+  font-weight: 400 !important;
   opacity: 0;
   transform: scale(0.95) translateY(0.9375em); /* 15px = 0.9375em */
   padding: 0 !important;
   margin: 0 !important;
-  line-height: normal !important;
+  line-height: 1 !important;
   box-shadow: none !important;
   text-shadow: none !important;
-  position: relative !important; /* Для совместимости с исходным стилем */
+  position: relative !important;
+  
+  /* Фиксированный размер для всех устройств */
+  box-sizing: border-box !important;
+  flex-shrink: 0 !important;
 }
 
 .read-more-button .button-text {
- 
- 
   display: flex;
   align-items: center;
   justify-content: center;
@@ -238,9 +243,9 @@ button,
   padding: 0;
   margin: 0;
   line-height: 1;
-  transform: translateY(0);
   font: inherit !important;
   color: inherit !important;
+  vertical-align: middle !important;
 }
 
 .read-more-button.animate-in {
@@ -257,7 +262,7 @@ button,
 
 .read-more-button:hover,
 .read-more-button:active {
-  background: rgba(118, 118, 118, 0.64) !important; /* Более темный вариант при наведении */
+  background: rgba(118, 118, 118, 0.64) !important;
   border: 0.09375em solid rgba(200, 200, 200, 0.4) !important; /* 1.5px = 0.09375em */
   transform: translateY(-0.125em) scale(1.05); /* -2px = -0.125em */
   box-shadow: 0 0.625em 1.875em rgba(0, 0, 0, 0.2) !important; /* 10px = 0.625em, 30px = 1.875em */
@@ -285,11 +290,13 @@ button,
     max-width: 8em; /* 128px = 8em */
   }
   
+  /* КНОПКА: ФИКСИРОВАННЫЙ РАЗМЕР 174x58px НА ВСЕХ УСТРОЙСТВАХ */
   .read-more-button {
-    width: var(--button-width) !important; /* 174px = 10.875em */
-    height: var(--button-height) !important; /* 60px = 3.75em */
-    min-height: var(--button-height) !important;
-    font-size: var(--button-font-size) !important; /* 16px = 1em */
+    width: 10.875em !important; /* 174px */
+    height: 3.625em !important; /* 58px - ФИКСИРОВАННО */
+    min-height: 3.625em !important; /* 58px - ФИКСИРОВАННО */
+    max-height: 3.625em !important; /* 58px - ФИКСИРОВАННО */
+    font-size: 1em !important; /* 16px = 1em */
   }
   
   .home-section-content {
@@ -298,24 +305,24 @@ button,
 }
 
 /* ============================================= */
-/* ТЕЛЕФОННАЯ ВЕРСИЯ (до 768px) - ПОЛНОСТЬЮ ПЕРЕРАБОТАНА */
+/* ТЕЛЕФОННАЯ ВЕРСИЯ (до 768px) */
 /* ============================================= */
 @media (max-width: 48em) { /* 768px = 48em */
   .home-section {
-    display: block !important; /* Показываем на мобильных */
+    display: block !important;
     height: 100vh;
     min-height: 37.5em; /* 600px = 37.5em */
   }
   
   .home-section-content {
     padding: 0 1em; /* 16px = 1em */
-    justify-content: center; /* Изменено с flex-start на center для iOS */
-    padding-top: 0; /* Убрали фиксированный отступ сверху */
+    justify-content: center;
+    padding-top: 0;
   }
   
   .home-logo {
     margin-bottom: 1em !important; /* 40px = 2.5em */
-    margin-left: 0 !important; /* Убираем левый отступ */
+    margin-left: 0 !important;
     width: 100%;
     display: flex;
     justify-content: center;
@@ -357,21 +364,22 @@ button,
   
   .home-button-container {
     margin-top: 0;
-    margin-bottom: 0; /* Убрали отступ снизу */
+    margin-bottom: 0;
     width: 100%;
     display: flex;
     justify-content: center;
   }
   
-  /* СОХРАНЯЕМ РАЗМЕР КНОПКИ НА МОБИЛЬНЫХ - 174x60px */
+  /* КНОПКА: ФИКСИРОВАННЫЙ РАЗМЕР 174x58px НА МОБИЛЬНЫХ */
   .read-more-button {
-    width: var(--button-width) !important; /* 174px = 10.875em */
-    height: var(--button-height) !important; /* 60px = 3.75em */
-    min-height: var(--button-height) !important;
-    font-size: var(--button-font-size) !important; /* 16px = 1em */
-    border-radius: var(--button-border-radius) !important; /* 32px = 2em */
-    backdrop-filter: blur(var(--button-blur)) !important; /* 12px = 0.75em */
-    -webkit-backdrop-filter: blur(var(--button-blur)) !important;
+    width: 10.875em !important; /* 174px */
+    height: 3.625em !important; /* 58px - ФИКСИРОВАННО */
+    min-height: 3.625em !important; /* 58px - ФИКСИРОВАННО */
+    max-height: 3.625em !important; /* 58px - ФИКСИРОВАННО */
+    font-size: 1em !important; /* 16px = 1em */
+    border-radius: 2em !important; /* 32px = 2em */
+    backdrop-filter: blur(0.75em) !important; /* 12px = 0.75em */
+    -webkit-backdrop-filter: blur(0.75em) !important;
     border: 0.09375em solid rgba(156, 156, 156, 0.32) !important; /* 1.5px = 0.09375em */
     background: rgba(155, 155, 155, 0.64) !important;
     letter-spacing: 0.03125em !important; /* 0.5px = 0.03125em */
@@ -413,7 +421,7 @@ button,
   }
   
   .home-section-content {
-    justify-content: center; /* Центрируем по вертикали */
+    justify-content: center;
     padding-top: 0;
   }
   
@@ -430,12 +438,13 @@ button,
     margin-bottom: 1em; /* 32px = 2em */
   }
   
-  /* СОХРАНЯЕМ РАЗМЕР КНОПКИ - 174x60px */
+  /* КНОПКА: ФИКСИРОВАННЫЙ РАЗМЕР 174x58px */
   .read-more-button {
-    width: var(--button-width) !important; /* 174px = 10.875em */
-    height: var(--button-height) !important; /* 60px = 3.75em */
-    min-height: var(--button-height) !important;
-    font-size: var(--button-font-size) !important; /* 16px = 1em */
+    width: 10.875em !important; /* 174px */
+    height: 3.625em !important; /* 58px - ФИКСИРОВАННО */
+    min-height: 3.625em !important; /* 58px - ФИКСИРОВАННО */
+    max-height: 3.625em !important; /* 58px - ФИКСИРОВАННО */
+    font-size: 1em !important; /* 16px = 1em */
   }
 }
 
@@ -470,11 +479,12 @@ button,
     margin-bottom: 0.375em; /* 6px = 0.375em */
   }
   
-  /* СОХРАНЯЕМ РАЗМЕР КНОПКИ - 174x60px, меняем только шрифт */
+  /* КНОПКА: ФИКСИРОВАННЫЙ РАЗМЕР 174x58px, меняем только шрифт */
   .read-more-button {
-    width: var(--button-width) !important; /* 174px = 10.875em */
-    height: var(--button-height) !important; /* 60px = 3.75em */
-    min-height: var(--button-height) !important;
+    width: 10.875em !important; /* 174px */
+    height: 3.625em !important; /* 58px - ФИКСИРОВАННО */
+    min-height: 3.625em !important; /* 58px - ФИКСИРОВАННО */
+    max-height: 3.625em !important; /* 58px - ФИКСИРОВАННО */
     font-size: 0.875em !important; /* 14px = 0.875em */
   }
 }
@@ -495,11 +505,13 @@ button,
     max-width: 7.5em; /* 120px = 7.5em */
   }
   
+  /* КНОПКА: ФИКСИРОВАННЫЙ РАЗМЕР 174x58px */
   .read-more-button {
-    width: var(--button-width) !important; /* 174px = 10.875em */
-    height: var(--button-height) !important; /* 60px = 3.75em */
-    min-height: var(--button-height) !important;
-    font-size: var(--button-font-size) !important; /* 16px = 1em */
+    width: 10.875em !important; /* 174px */
+    height: 3.625em !important; /* 58px - ФИКСИРОВАННО */
+    min-height: 3.625em !important; /* 58px - ФИКСИРОВАННО */
+    max-height: 3.625em !important; /* 58px - ФИКСИРОВАННО */
+    font-size: 1em !important; /* 16px = 1em */
   }
 }
 
@@ -523,11 +535,13 @@ button,
     max-width: 7em; /* 112px = 7em */
   }
   
+  /* КНОПКА: ФИКСИРОВАННЫЙ РАЗМЕР 174x58px */
   .read-more-button {
-    width: var(--button-width) !important; /* 174px = 10.875em */
-    height: var(--button-height) !important; /* 60px = 3.75em */
-    min-height: var(--button-height) !important;
-    font-size: var(--button-font-size) !important; /* 16px = 1em */
+    width: 10.875em !important; /* 174px */
+    height: 3.625em !important; /* 58px - ФИКСИРОВАННО */
+    min-height: 3.625em !important; /* 58px - ФИКСИРОВАННО */
+    max-height: 3.625em !important; /* 58px - ФИКСИРОВАННО */
+    font-size: 1em !important; /* 16px = 1em */
   }
 }
 
@@ -544,7 +558,7 @@ button,
     padding-top: 0;
     flex-direction: row;
     justify-content: space-between;
-    align-items: center; /* Центрируем по вертикали */
+    align-items: center;
     padding: 1em;
   }
   
@@ -577,20 +591,20 @@ button,
     margin-bottom: 0;
   }
   
-  /* СОХРАНЯЕМ РАЗМЕР КНОПКИ - 174x60px */
+  /* КНОПКА: ФИКСИРОВАННЫЙ РАЗМЕР 174x58px */
   .read-more-button {
-    width: var(--button-width) !important; /* 174px = 10.875em */
-    height: var(--button-height) !important; /* 60px = 3.75em */
-    min-height: var(--button-height) !important;
+    width: 10.875em !important; /* 174px */
+    height: 3.625em !important; /* 58px - ФИКСИРОВАННО */
+    min-height: 3.625em !important; /* 58px - ФИКСИРОВАННО */
+    max-height: 3.625em !important; /* 58px - ФИКСИРОВАННО */
     font-size: 0.875em !important; /* 14px = 0.875em */
   }
 }
 
 /* ============================================= */
-/* iOS-СПЕЦИФИЧНЫЕ СТИЛИ - ИСПРАВЛЕНИЯ */
+/* iOS-СПЕЦИФИЧНЫЕ СТИЛИ */
 /* ============================================= */
 @supports (-webkit-touch-callout: none) {
-  /* iOS устройства */
   @media (max-width: 48em) { /* 768px = 48em */
     .home-section-content {
       justify-content: center !important;
@@ -611,7 +625,6 @@ button,
     }
   }
   
-  /* iOS в ландшафтном режиме */
   @media (max-height: 31.25em) and (orientation: landscape) { /* 500px = 31.25em */
     .home-section-content {
       justify-content: space-between;
@@ -620,7 +633,6 @@ button,
     }
   }
   
-  /* Фикс для безопасных зон на iOS */
   .home-section-content {
     padding-top: env(safe-area-inset-top);
     padding-bottom: env(safe-area-inset-bottom);
@@ -628,7 +640,6 @@ button,
   
   /* ОСНОВНОЙ ФИКС ДЛЯ КНОПКИ НА iOS */
   .read-more-button {
-    /* Принудительный сброс всех iOS стилей */
     -webkit-appearance: none !important;
     -moz-appearance: none !important;
     appearance: none !important;
@@ -642,34 +653,32 @@ button,
     -webkit-user-select: none !important;
     user-select: none !important;
     
-    /* Принудительное применение стилей как в макете */
+    /* ФИКСИРОВАННЫЙ РАЗМЕР 174x58px */
+    width: 10.875em !important; /* 174px */
+    height: 3.625em !important; /* 58px - ФИКСИРОВАННО */
+    min-height: 3.625em !important; /* 58px - ФИКСИРОВАННО */
+    max-height: 3.625em !important; /* 58px - ФИКСИРОВАННО */
+    
     background: rgba(155, 155, 155, 0.64) !important;
     border: 0.09375em solid rgba(156, 156, 156, 0.32) !important;
-    border-radius: var(--button-border-radius) !important;
-    -webkit-border-radius: var(--button-border-radius) !important;
-    font-size: var(--button-font-size) !important;
+    border-radius: 2em !important;
+    -webkit-border-radius: 2em !important;
+    font-size: 1em !important;
     letter-spacing: 0.03125em !important;
     color: white !important;
     
-    /* Исправление отступов и высоты - ВЫСОТА 60px, ШИРИНА 174px */
     padding: 0 !important;
     margin: 0 !important;
     line-height: 1 !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    width: var(--button-width) !important;
-    height: var(--button-height) !important;
-    min-height: var(--button-height) !important;
     
-    /* Фикс для backdrop-filter на iOS - BLUR 12px */
-    -webkit-backdrop-filter: blur(var(--button-blur)) !important;
-    backdrop-filter: blur(var(--button-blur)) !important;
+    -webkit-backdrop-filter: blur(0.75em) !important;
+    backdrop-filter: blur(0.75em) !important;
   }
   
   .read-more-button .button-text {
-
-    /* Фикс для текста на iOS */
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
@@ -684,7 +693,6 @@ button,
     -moz-osx-font-smoothing: grayscale !important;
   }
   
-  /* Фикс для нажатия на iOS */
   .read-more-button:active {
     background: rgba(118, 118, 118, 0.64) !important;
     border: 0.09375em solid rgba(200, 200, 200, 0.4) !important;
@@ -699,7 +707,6 @@ button,
 /* Windows-СПЕЦИФИЧНЫЕ СТИЛИ */
 /* ============================================= */
 @media not all and (pointer: coarse) {
-  /* Windows и другие десктопы с мышью */
   .home-section-content {
     justify-content: center;
   }
@@ -716,7 +723,7 @@ button,
 /* Фикс для старых Safari */
 /* ============================================= */
 _::-webkit-full-page-media, _:future, :root .read-more-button {
-  line-height: 3.4375em !important; /* 55px = 3.4375em для высоты 60px */
+  line-height: 3.25em !important; /* 52px = 3.25em для высоты 58px */
 }
 
 /* ============================================= */
@@ -731,11 +738,13 @@ _::-webkit-full-page-media, _:future, :root .read-more-button {
     max-width: 11.25em; /* 180px = 11.25em */
   }
   
+  /* КНОПКА: ФИКСИРОВАННЫЙ РАЗМЕР 174x58px */
   .read-more-button {
-    width: var(--button-width) !important; /* 174px = 10.875em */
-    height: var(--button-height) !important; /* 60px = 3.75em */
-    min-height: var(--button-height) !important;
-    font-size: var(--button-font-size) !important; /* 16px = 1em */
+    width: 10.875em !important; /* 174px */
+    height: 3.625em !important; /* 58px - ФИКСИРОВАННО */
+    min-height: 3.625em !important; /* 58px - ФИКСИРОВАННО */
+    max-height: 3.625em !important; /* 58px - ФИКСИРОВАННО */
+    font-size: 1em !important; /* 16px = 1em */
   }
 }
 
@@ -744,7 +753,6 @@ _::-webkit-full-page-media, _:future, :root .read-more-button {
 /* ============================================= */
 @media (max-width: 48em) { /* 768px = 48em */
   .home-section-content {
-    /* Универсальное центрирование для всех мобильных устройств */
     display: flex !important;
     flex-direction: column !important;
     justify-content: center !important;
@@ -772,14 +780,27 @@ _::-webkit-full-page-media, _:future, :root .read-more-button {
 }
 
 /* ============================================= */
-/* ФИКС ДЛЯ ВЫСОТЫ КНОПКИ НА iOS - ОСОБЫЙ ФИКС */
+/* ОСНОВНОЙ ФИКС ВЫСОТЫ КНОПКИ 58px ДЛЯ ВСЕХ УСТРОЙСТВ */
 /* ============================================= */
+.read-more-button {
+  /* ФИКСИРОВАННАЯ ВЫСОТА 58px НА ВСЕХ УСТРОЙСТВАХ */
+  height: 3.625em !important; /* 58px */
+  min-height: 3.625em !important; /* 58px */
+  max-height: 3.625em !important; /* 58px */
+  line-height: 1 !important;
+  
+  /* ФИКСИРОВАННАЯ ШИРИНА 174px НА ВСЕХ УСТРОЙСТВАХ */
+  width: 10.875em !important; /* 174px */
+  min-width: 10.875em !important; /* 174px */
+  max-width: 10.875em !important; /* 174px */
+}
+
 @supports (-webkit-touch-callout: none) {
   .read-more-button {
-    height: var(--button-height) !important;
-    min-height: var(--button-height) !important;
-    max-height: var(--button-height) !important;
-    line-height: var(--button-height) !important;
+    height: 3.625em !important; /* 58px - ФИКСИРОВАННО ДЛЯ iOS */
+    min-height: 3.625em !important; /* 58px - ФИКСИРОВАННО ДЛЯ iOS */
+    max-height: 3.625em !important; /* 58px - ФИКСИРОВАННО ДЛЯ iOS */
+    line-height: 3.625em !important; /* 58px - ФИКСИРОВАННО ДЛЯ iOS */
   }
   
   .read-more-button .button-text {
@@ -791,17 +812,14 @@ _::-webkit-full-page-media, _:future, :root .read-more-button {
 /* ============================================= */
 /* ОСОБЫЕ СТИЛИ ДЛЯ КНОПКИ КАК В МАКЕТЕ */
 /* ============================================= */
-/* box-sizing: border-box; - уже установлено в начале файла */
 .read-more-button {
-  box-sizing: border-box !important; /* box-sizing: border-box; */
-  position: relative !important; /* position: absolute; - в нашем случае relative достаточно */
-  width: var(--button-width) !important; /* width: 174px; */
-  height: var(--button-height) !important; /* height: 60px; */
-  /* left: calc(50% - 174px/2); - не нужно, так как используем flex-центрирование */
-  /* top: 2891px; - не нужно */
-  background: rgba(155, 155, 155, 0.64) !important; /* background: rgba(155, 155, 155, 0.64); */
-  border: 0.09375em solid rgba(156, 156, 156, 0.32) !important; /* border: 1.5px solid rgba(156, 156, 156, 0.32); */
-  backdrop-filter: blur(0.75em) !important; /* backdrop-filter: blur(12px); */
-  -webkit-backdrop-filter: blur(0.75em) !important; /* для Safari */
-  border-radius: 2em !important; /* border-radius: 32px; */
+  box-sizing: border-box !important;
+  position: relative !important;
+  width: 10.875em !important; /* 174px - ФИКСИРОВАННО */
+  height: 3.625em !important; /* 58px - ФИКСИРОВАННО */
+  background: rgba(155, 155, 155, 0.64) !important;
+  border: 0.09375em solid rgba(156, 156, 156, 0.32) !important; /* 1.5px */
+  backdrop-filter: blur(0.75em) !important; /* 12px */
+  -webkit-backdrop-filter: blur(0.75em) !important;
+  border-radius: 2em !important; /* 32px */
 }
