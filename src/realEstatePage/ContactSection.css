@@ -12,6 +12,7 @@
   --transition-speed: 0.3s;
   --border-radius: 0.125em;
   --section-height: 53.75em; /* 860px в em */
+  --button-height: 2.5em; /* 40px = 2.5em */
 }
 
 /* Разделительная полоса */
@@ -255,7 +256,7 @@ textarea {
   font-size: 0.875em; /* 14px */
   color: var(--color-black);
   text-transform: uppercase;
-  padding: 0.875em 2.5em;
+  padding: 0;
   border: none;
   background: rgba(230, 230, 230, 0.72);
   cursor: pointer;
@@ -263,12 +264,14 @@ textarea {
   align-self: flex-end; /* Кнопка справа для ПК и планшета */
   border-radius: 2em;
   min-width: 6.375em;
-  min-height: 2.1875em;
+  height: var(--button-height); /* 40px = 2.5em */
+  min-height: var(--button-height);
   margin-top: 1em;
-  line-height: normal;
+  line-height: var(--button-height); /* Центрирование текста по вертикали */
   box-sizing: border-box;
   display: inline-block;
   position: relative;
+  padding: 0 2.5em; /* Только горизонтальные паддинги */
   
   /* iOS-specific reset */
   -webkit-appearance: none;
@@ -287,6 +290,10 @@ textarea {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+  
+  /* Вертикальное центрирование текста */
+  vertical-align: middle;
+  text-align: center;
 }
 
 /* Ховер эффект для всех устройств */
@@ -313,39 +320,26 @@ textarea {
     -webkit-appearance: none;
     appearance: none;
     
-    /* Фикс вертикального выравнивания в iOS */
-    display: -webkit-inline-box;
+    /* Используем flexbox для идеального центрирования на iOS */
     display: -webkit-inline-flex;
-    display: -ms-inline-flexbox;
     display: inline-flex;
-    -webkit-box-align: center;
     -webkit-align-items: center;
-    -ms-flex-align: center;
     align-items: center;
-    -webkit-box-pack: center;
     -webkit-justify-content: center;
-    -ms-flex-pack: center;
     justify-content: center;
     
-    /* Высота для iOS */
-    height: 2.1875em;
-    min-height: 2.1875em;
+    /* Фиксированная высота для всех браузеров */
+    height: var(--button-height) !important;
+    min-height: var(--button-height) !important;
     
-    /* Паддинги для iOS */
-    padding: 0 2.5em;
-    
-    /* Line-height для iOS */
+    /* Сбрасываем line-height для flexbox центрирования */
     line-height: 1;
+    
+    /* Только горизонтальные паддинги */
+    padding: 0 2.5em !important;
     
     /* Текст для iOS */
     font-size: 0.875em;
-    text-align: center;
-  }
-  
-  /* Специфичный фикс для Safari на iOS */
-  _::-webkit-full-page-media, _:future, :root .submit-button {
-    display: inline-block;
-    vertical-align: middle;
   }
 }
 
@@ -360,11 +354,14 @@ textarea {
 /* Дополнительный фикс для iOS 14+ */
 @supports (-webkit-touch-callout: none) and (not (translate: none)) {
   .submit-button {
+    display: -webkit-inline-flex;
     display: inline-flex;
+    -webkit-align-items: center;
     align-items: center;
+    -webkit-justify-content: center;
     justify-content: center;
-    padding-top: 0.875em;
-    padding-bottom: 0.875em;
+    height: var(--button-height) !important;
+    line-height: 1;
   }
 }
 
@@ -374,25 +371,34 @@ textarea {
     /* Центрируем кнопку на мобильных */
     align-self: center;
     margin: 1em auto 0 auto;
+    display: -webkit-inline-flex;
     display: inline-flex;
     width: auto;
     min-width: 6.375em;
-    height: 2.1875em;
     
-    /* Фикс вертикального выравнивания текста */
+    /* Фиксированная высота 40px */
+    height: var(--button-height) !important;
+    min-height: var(--button-height) !important;
+    
+    /* Центрирование текста через flexbox */
+    -webkit-align-items: center;
+    align-items: center;
+    -webkit-justify-content: center;
+    justify-content: center;
+    
+    /* Только горизонтальные паддинги */
     padding: 0 2.5em !important;
+    
+    /* Сбрасываем line-height */
+    line-height: 1;
     
     /* Убираем все возможные iOS стили */
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
     
-    /* Фикс для центрирования текста в iOS */
+    /* Текст по центру */
     text-align: center;
-    
-    /* Принудительное выравнивание через flex */
-    align-items: center;
-    justify-content: center;
   }
 }
 
@@ -652,11 +658,13 @@ textarea {
   .submit-button {
     align-self: center;
     margin-top: 1em;
-    padding: 0 2.5em;
-    height: 2.1875em;
+    height: var(--button-height) !important;
+    min-height: var(--button-height) !important;
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    padding: 0 2.5em !important;
+    line-height: 1;
   }
 }
 
@@ -709,10 +717,12 @@ textarea {
     padding: 0 1em !important;
     font-size: 0.875em;
     align-self: center;
-    height: 2.1875em;
+    height: var(--button-height) !important;
+    min-height: var(--button-height) !important;
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    line-height: 1;
   }
   
   .mobile-emails-section {
@@ -744,10 +754,12 @@ textarea {
     max-width: 6.875em;
     font-size: 0.75em;
     padding: 0 1em !important;
-    height: 2.1875em;
+    height: var(--button-height) !important;
+    min-height: var(--button-height) !important;
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    line-height: 1;
   }
   
   /* 16px для очень маленьких телефонов */
@@ -809,10 +821,12 @@ textarea {
   /* В ландшафтной ориентации кнопка справа */
   .submit-button {
     align-self: flex-end;
-    height: 2.1875em;
+    height: var(--button-height) !important;
+    min-height: var(--button-height) !important;
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    line-height: 1;
   }
   
   /* ИМЕНА ПОЛЕЙ: 16px для ландшафта */
@@ -878,21 +892,23 @@ input[type="submit"].submit-button {
   box-sizing: border-box;
   margin: 0em;
   font: 400 0.875em var(--font-primary);
-  padding: 0.875em 2.5em;
+  padding: 0 2.5em;
   border-width: 0px;
   border-style: none;
   border-color: transparent;
   border-image: none;
+  height: var(--button-height);
+  line-height: var(--button-height);
 }
 
 /* Финальный фикс для iOS вертикального выравнивания */
 @supports (-webkit-touch-callout: none) {
   .submit-button {
-    /* Принудительно устанавливаем фиксированную высоту */
-    height: 2.1875em !important;
-    min-height: 2.1875em !important;
+    /* Принудительно устанавливаем фиксированную высоту 40px */
+    height: var(--button-height) !important;
+    min-height: var(--button-height) !important;
     
-    /* Используем flexbox для центрирования */
+    /* Используем flexbox для идеального центрирования */
     display: -webkit-inline-flex !important;
     display: inline-flex !important;
     -webkit-align-items: center !important;
@@ -900,10 +916,22 @@ input[type="submit"].submit-button {
     -webkit-justify-content: center !important;
     justify-content: center !important;
     
-    /* Паддинги для iOS */
+    /* Только горизонтальные паддинги */
     padding: 0 2.5em !important;
     
-    /* Line-height для iOS */
+    /* Сбрасываем line-height для flexbox центрирования */
     line-height: 1 !important;
+    
+    /* Отключаем стандартные iOS стили */
+    -webkit-appearance: none !important;
+    appearance: none !important;
   }
+}
+
+/* Альтернативный метод центрирования для кросс-браузерной совместимости */
+.submit-button::before {
+  content: '';
+  display: inline-block;
+  height: 100%;
+  vertical-align: middle;
 }
