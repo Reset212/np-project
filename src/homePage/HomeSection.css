@@ -5,7 +5,7 @@
   --max-width-pc: 1920px;
   --max-width-tablet: 1440px;
   --max-width-mobile: 390px;
-  --button-height: 3.625em; /* 58px = 3.625em - ИЗМЕНЕНО С 60px */
+  --button-height: 3.75em; /* 58px = 3.75em - ИЗМЕНЕНО С 60px */
   --button-width: 10.875em; /* 174px = 10.875em */
   --button-border-radius: 2em; /* 32px = 2em */
   --button-font-size: 1em; /* 16px = 1em */
@@ -186,9 +186,9 @@ button,
 .read-more-button {
   /* РАЗМЕР КНОПКИ - ФИКСИРОВАННЫЙ: 174x58px */
   width: 10.875em !important; /* 174px = 10.875em */
-  height: 3.625em !important; /* 58px = 3.625em - ФИКСИРОВАННО */
-  min-height: 3.625em !important; /* 58px - ФИКСИРОВАННО */
-  max-height: 3.625em !important; /* 58px - ФИКСИРОВАННО */
+  height: 3.75em !important; /* 58px = 3.75em - ФИКСИРОВАННО */
+  min-height: 3.75em !important; /* 58px - ФИКСИРОВАННО */
+  max-height: 3.75em !important; /* 58px - ФИКСИРОВАННО */
   
   background: rgba(155, 155, 155, 0.64) !important; /* rgba(155, 155, 155, 0.64) */
   border: 0.09375em solid rgba(156, 156, 156, 0.32) !important; /* 1.5px = 0.09375em */
@@ -293,9 +293,9 @@ button,
   /* КНОПКА: ФИКСИРОВАННЫЙ РАЗМЕР 174x58px НА ВСЕХ УСТРОЙСТВАХ */
   .read-more-button {
     width: 10.875em !important; /* 174px */
-    height: 3.625em !important; /* 58px - ФИКСИРОВАННО */
-    min-height: 3.625em !important; /* 58px - ФИКСИРОВАННО */
-    max-height: 3.625em !important; /* 58px - ФИКСИРОВАННО */
+    height: 3.75em !important; /* 58px - ФИКСИРОВАННО */
+    min-height: 3.75em !important; /* 58px - ФИКСИРОВАННО */
+    max-height: 3.75em !important; /* 58px - ФИКСИРОВАННО */
     font-size: 1em !important; /* 16px = 1em */
   }
   
@@ -373,9 +373,9 @@ button,
   /* КНОПКА: ФИКСИРОВАННЫЙ РАЗМЕР 174x58px НА МОБИЛЬНЫХ */
   .read-more-button {
     width: 10.875em !important; /* 174px */
-    height: 3.625em !important; /* 58px - ФИКСИРОВАННО */
-    min-height: 3.625em !important; /* 58px - ФИКСИРОВАННО */
-    max-height: 3.625em !important; /* 58px - ФИКСИРОВАННО */
+    height: 3.75em !important; /* 58px - ФИКСИРОВАННО */
+    min-height: 3.75em !important; /* 58px - ФИКСИРОВАННО */
+    max-height: 3.75em !important; /* 58px - ФИКСИРОВАННО */
     font-size: 1em !important; /* 16px = 1em */
     border-radius: 2em !important; /* 32px = 2em */
     backdrop-filter: blur(0.75em) !important; /* 12px = 0.75em */
@@ -441,9 +441,9 @@ button,
   /* КНОПКА: ФИКСИРОВАННЫЙ РАЗМЕР 174x58px */
   .read-more-button {
     width: 10.875em !important; /* 174px */
-    height: 3.625em !important; /* 58px - ФИКСИРОВАННО */
-    min-height: 3.625em !important; /* 58px - ФИКСИРОВАННО */
-    max-height: 3.625em !important; /* 58px - ФИКСИРОВАННО */
+    height: 3.75em !important; /* 58px - ФИКСИРОВАННО */
+    min-height: 3.75em !important; /* 58px - ФИКСИРОВАННО */
+    max-height: 3.75em !important; /* 58px - ФИКСИРОВАННО */
     font-size: 1em !important; /* 16px = 1em */
   }
 }
@@ -482,9 +482,9 @@ button,
   /* КНОПКА: ФИКСИРОВАННЫЙ РАЗМЕР 174x58px, меняем только шрифт */
   .read-more-button {
     width: 10.875em !important; /* 174px */
-    height: 3.625em !important; /* 58px - ФИКСИРОВАННО */
-    min-height: 3.625em !important; /* 58px - ФИКСИРОВАННО */
-    max-height: 3.625em !important; /* 58px - ФИКСИРОВАННО */
+    height: 3.75em !important; /* 58px - ФИКСИРОВАННО */
+    min-height: 3.75em !important; /* 58px - ФИКСИРОВАННО */
+    max-height: 3.75em !important; /* 58px - ФИКСИРОВАННО */
     font-size: 0.875em !important; /* 14px = 0.875em */
   }
 }
@@ -508,9 +508,9 @@ button,
   /* КНОПКА: ФИКСИРОВАННЫЙ РАЗМЕР 174x58px */
   .read-more-button {
     width: 10.875em !important; /* 174px */
-    height: 3.625em !important; /* 58px - ФИКСИРОВАННО */
-    min-height: 3.625em !important; /* 58px - ФИКСИРОВАННО */
-    max-height: 3.625em !important; /* 58px - ФИКСИРОВАННО */
+    height: 3.75em !important; /* 58px - ФИКСИРОВАННО */
+    min-height: 3.75em !important; /* 58px - ФИКСИРОВАННО */
+    max-height: 3.75em !important; /* 58px - ФИКСИРОВАННО */
     font-size: 1em !important; /* 16px = 1em */
   }
 }
@@ -538,9 +538,9 @@ button,
   /* КНОПКА: ФИКСИРОВАННЫЙ РАЗМЕР 174x58px */
   .read-more-button {
     width: 10.875em !important; /* 174px */
-    height: 3.625em !important; /* 58px - ФИКСИРОВАННО */
-    min-height: 3.625em !important; /* 58px - ФИКСИРОВАННО */
-    max-height: 3.625em !important; /* 58px - ФИКСИРОВАННО */
+    height: 3.75em !important; /* 58px - ФИКСИРОВАННО */
+    min-height: 3.75em !important; /* 58px - ФИКСИРОВАННО */
+    max-height: 3.75em !important; /* 58px - ФИКСИРОВАННО */
     font-size: 1em !important; /* 16px = 1em */
   }
 }
@@ -594,9 +594,9 @@ button,
   /* КНОПКА: ФИКСИРОВАННЫЙ РАЗМЕР 174x58px */
   .read-more-button {
     width: 10.875em !important; /* 174px */
-    height: 3.625em !important; /* 58px - ФИКСИРОВАННО */
-    min-height: 3.625em !important; /* 58px - ФИКСИРОВАННО */
-    max-height: 3.625em !important; /* 58px - ФИКСИРОВАННО */
+    height: 3.75em !important; /* 58px - ФИКСИРОВАННО */
+    min-height: 3.75em !important; /* 58px - ФИКСИРОВАННО */
+    max-height: 3.75em !important; /* 58px - ФИКСИРОВАННО */
     font-size: 0.875em !important; /* 14px = 0.875em */
   }
 }
@@ -655,9 +655,9 @@ button,
     
     /* ФИКСИРОВАННЫЙ РАЗМЕР 174x58px */
     width: 10.875em !important; /* 174px */
-    height: 3.625em !important; /* 58px - ФИКСИРОВАННО */
-    min-height: 3.625em !important; /* 58px - ФИКСИРОВАННО */
-    max-height: 3.625em !important; /* 58px - ФИКСИРОВАННО */
+    height: 3.75em !important; /* 58px - ФИКСИРОВАННО */
+    min-height: 3.75em !important; /* 58px - ФИКСИРОВАННО */
+    max-height: 3.75em !important; /* 58px - ФИКСИРОВАННО */
     
     background: rgba(155, 155, 155, 0.64) !important;
     border: 0.09375em solid rgba(156, 156, 156, 0.32) !important;
@@ -741,9 +741,9 @@ _::-webkit-full-page-media, _:future, :root .read-more-button {
   /* КНОПКА: ФИКСИРОВАННЫЙ РАЗМЕР 174x58px */
   .read-more-button {
     width: 10.875em !important; /* 174px */
-    height: 3.625em !important; /* 58px - ФИКСИРОВАННО */
-    min-height: 3.625em !important; /* 58px - ФИКСИРОВАННО */
-    max-height: 3.625em !important; /* 58px - ФИКСИРОВАННО */
+    height: 3.75em !important; /* 58px - ФИКСИРОВАННО */
+    min-height: 3.75em !important; /* 58px - ФИКСИРОВАННО */
+    max-height: 3.75em !important; /* 58px - ФИКСИРОВАННО */
     font-size: 1em !important; /* 16px = 1em */
   }
 }
@@ -784,9 +784,9 @@ _::-webkit-full-page-media, _:future, :root .read-more-button {
 /* ============================================= */
 .read-more-button {
   /* ФИКСИРОВАННАЯ ВЫСОТА 58px НА ВСЕХ УСТРОЙСТВАХ */
-  height: 3.625em !important; /* 58px */
-  min-height: 3.625em !important; /* 58px */
-  max-height: 3.625em !important; /* 58px */
+  height: 3.75em !important; /* 58px */
+  min-height: 3.75em !important; /* 58px */
+  max-height: 3.75em !important; /* 58px */
   line-height: 1 !important;
   
   /* ФИКСИРОВАННАЯ ШИРИНА 174px НА ВСЕХ УСТРОЙСТВАХ */
@@ -797,10 +797,10 @@ _::-webkit-full-page-media, _:future, :root .read-more-button {
 
 @supports (-webkit-touch-callout: none) {
   .read-more-button {
-    height: 3.625em !important; /* 58px - ФИКСИРОВАННО ДЛЯ iOS */
-    min-height: 3.625em !important; /* 58px - ФИКСИРОВАННО ДЛЯ iOS */
-    max-height: 3.625em !important; /* 58px - ФИКСИРОВАННО ДЛЯ iOS */
-    line-height: 3.625em !important; /* 58px - ФИКСИРОВАННО ДЛЯ iOS */
+    height: 3.75em !important; /* 58px - ФИКСИРОВАННО ДЛЯ iOS */
+    min-height: 3.75em !important; /* 58px - ФИКСИРОВАННО ДЛЯ iOS */
+    max-height: 3.75em !important; /* 58px - ФИКСИРОВАННО ДЛЯ iOS */
+    line-height: 3.75em !important; /* 58px - ФИКСИРОВАННО ДЛЯ iOS */
   }
   
   .read-more-button .button-text {
@@ -816,7 +816,7 @@ _::-webkit-full-page-media, _:future, :root .read-more-button {
   box-sizing: border-box !important;
   position: relative !important;
   width: 10.875em !important; /* 174px - ФИКСИРОВАННО */
-  height: 3.625em !important; /* 58px - ФИКСИРОВАННО */
+  height: 3.75em !important; /* 58px - ФИКСИРОВАННО */
   background: rgba(155, 155, 155, 0.64) !important;
   border: 0.09375em solid rgba(156, 156, 156, 0.32) !important; /* 1.5px */
   backdrop-filter: blur(0.75em) !important; /* 12px */
