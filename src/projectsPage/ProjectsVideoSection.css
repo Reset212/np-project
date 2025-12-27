@@ -520,8 +520,8 @@
 
 /* Кнопка "WATCH VIDEO" */
 .watch-btn {
-  width: 10.8125em; /* 173px */
-  height: 3em; /* 48px */
+  width: 10.75em; /* 173px */
+  height: 3.625em; /* 48px */
   background: rgba(238, 238, 238, 0.72);
   backdrop-filter: blur(0.5em); /* 8px */
   border: none;
@@ -718,9 +718,6 @@
   }
 
   .watch-btn {
-    width: 10em; /* 160px */
-    height: 2.75em; /* 44px */
-    font-size: 1em; /* 14px */
     margin-top: 0.625em; /* 10px */
   }
 }
@@ -780,8 +777,7 @@
   }
 
   .watch-btn {
-    width: 8.75em; /* 140px */
-    height: 2.5em; /* 40px */
+   
     font-size: 1em; /* 13px */
   }
 }
