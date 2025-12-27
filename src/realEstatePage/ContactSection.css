@@ -247,15 +247,15 @@ textarea {
   border-bottom-color: var(--color-blue);
 }
 
-/* ========== КНОПКА ДЛЯ IOS ========== */
+/* ========== ИСПРАВЛЕННАЯ КНОПКА ДЛЯ IOS ========== */
 /* Базовые стили кнопки для всех устройств */
 .submit-button {
   font-family: var(--font-primary);
   font-weight: 400;
-  font-size: 0.875em;
+  font-size: 0.875em; /* 14px */
   color: var(--color-black);
   text-transform: uppercase;
-  padding: 0.875em 2.5em;
+  padding: 0.75em 2.5em; /* Изменено: уменьшен вертикальный padding */
   border: none;
   background: rgba(230, 230, 230, 0.72);
   cursor: pointer;
@@ -265,8 +265,12 @@ textarea {
   min-width: 6.375em;
   min-height: 2.1875em;
   margin-top: 1em;
-  line-height: normal;
+  line-height: 1.2; /* Изменено: уменьшен line-height для лучшего вертикального центрирования */
   box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
   
   /* iOS-specific reset */
   -webkit-appearance: none;
@@ -275,14 +279,20 @@ textarea {
   
   /* Убираем стандартные iOS стили */
   -webkit-border-radius: 2em;
-  -webkit-tap-highlight-color: transparent;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   
   /* Отключаем выделение при касании на iOS */
   -webkit-touch-callout: none;
   -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
   user-select: none;
+  
+  /* Фиксируем высоту и выравнивание */
+  height: auto;
+  vertical-align: middle;
 }
 
 /* Ховер эффект для всех устройств */
@@ -296,20 +306,21 @@ textarea {
   background: rgba(180, 180, 180, 0.8);
 }
 
-/* Специфичные стили для iOS устройств */
+/* Специфичные исправления для iOS */
 @supports (-webkit-touch-callout: none) {
   .submit-button {
-    /* iOS Safari specific fixes */
-    padding: 0.875em 2.5em !important;
-    min-height: 2.1875em !important;
+    /* Фикс для центрирования текста в iOS */
+    line-height: 1.2 !important;
+    padding-top: 0.75em !important;
+    padding-bottom: 0.75em !important;
     
     /* Убираем стандартные iOS тени и градиенты */
     -webkit-box-shadow: none;
     box-shadow: none;
     
-    /* Фикс для Safari */
-    -webkit-user-select: none;
-    user-select: none;
+    /* Фикс размера в iOS */
+    min-height: 2.1875em !important;
+    height: auto !important;
     
     /* Убираем стандартные iOS стили для кнопок */
     -webkit-appearance: none;
@@ -318,9 +329,18 @@ textarea {
     /* Отключаем автоматическое изменение размера текста */
     -webkit-text-size-adjust: 100%;
     
-    /* Фикс для вертикального выравнивания текста в iOS */
+    /* Дополнительный фикс для вертикального выравнивания */
+    display: -webkit-inline-box;
+    display: -webkit-inline-flex;
+    display: -ms-inline-flexbox;
     display: inline-flex;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
     align-items: center;
+    -webkit-box-pack: center;
+    -webkit-justify-content: center;
+    -ms-flex-pack: center;
     justify-content: center;
   }
   
@@ -335,14 +355,16 @@ textarea {
 /* Специфичные стили для мобильных устройств на iOS */
 @media screen and (max-width: 65em) and (-webkit-min-device-pixel-ratio: 0) {
   .submit-button {
-    /* Еще более строгие настройки для мобильного iOS */
-    padding: 0.875em 2.5em !important;
+    /* Центрируем кнопку на мобильных */
+    align-self: center;
     margin: 1em auto 0 auto;
-    display: block;
+    display: inline-flex;
     width: auto;
     min-width: 6.375em;
-    min-height: 2.1875em;
-    height: auto;
+    
+    /* Фикс вертикального выравнивания текста */
+    padding: 0.75em 2.5em !important;
+    min-height: 2.1875em !important;
     
     /* Убираем все возможные iOS стили */
     -webkit-appearance: none;
@@ -351,16 +373,20 @@ textarea {
     
     /* Фикс для центрирования текста в iOS */
     text-align: center;
-    line-height: normal;
+    line-height: 1.2;
+    
+    /* Принудительное выравнивание */
+    vertical-align: middle;
   }
 }
 
-/* Дополнительный фикс для Safari на iOS */
+/* Фикс для Safari на iOS */
 @media not all and (min-resolution:.001dpcm) { 
   @supports (-webkit-appearance:none) and (stroke-color:transparent) {
     .submit-button {
-      padding: 0.875em 2.5em !important;
+      padding: 0.75em 2.5em !important;
       min-height: 2.1875em !important;
+      line-height: 1.2 !important;
     }
   }
 }
@@ -626,12 +652,13 @@ textarea {
   .submit-button {
     align-self: center;
     margin-top: 1em;
-    padding: 0.875em 2.5em !important;
+    padding: 0.75em 2.5em !important;
     min-height: 2.1875em !important;
     width: auto;
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    line-height: 1.2;
   }
 }
 
@@ -681,10 +708,11 @@ textarea {
   .submit-button {
     width: auto;
     max-width: 7.5em;
-    padding: 0.875em 1em !important;
+    padding: 0.75em 1em !important;
     font-size: 0.875em;
     align-self: center;
     min-height: 2.1875em !important;
+    line-height: 1.2;
   }
   
   .mobile-emails-section {
@@ -715,8 +743,9 @@ textarea {
   .submit-button {
     max-width: 6.875em;
     font-size: 0.75em;
-    padding: 0.875em 1em !important;
+    padding: 0.75em 1em !important;
     min-height: 2.1875em !important;
+    line-height: 1.2;
   }
   
   /* 16px для очень маленьких телефонов */
@@ -778,8 +807,9 @@ textarea {
   /* В ландшафтной ориентации кнопка справа */
   .submit-button {
     align-self: flex-end;
-    padding: 0.875em 2.5em !important;
+    padding: 0.75em 2.5em !important;
     min-height: 2.1875em !important;
+    line-height: 1.2;
   }
   
   /* ИМЕНА ПОЛЕЙ: 16px для ландшафта */
@@ -823,6 +853,7 @@ textarea {
 .submit-button::-moz-focus-inner {
   border: 0;
   padding: 0;
+  margin: 0;
 }
 
 .submit-button:focus {
@@ -835,8 +866,38 @@ textarea {
     /* Принудительно устанавливаем высоту и паддинги */
     height: auto !important;
     min-height: 2.1875em !important;
-    padding-top: 0.875em !important;
-    padding-bottom: 0.875em !important;
-    line-height: 1 !important;
+    padding-top: 0.75em !important;
+    padding-bottom: 0.75em !important;
+    line-height: 1.2 !important;
   }
+  
+  /* Дополнительный фикс для выравнивания в iOS */
+  .submit-button:after {
+    content: '';
+    display: inline-block;
+    vertical-align: middle;
+    height: 100%;
+  }
+}
+
+/* Универсальный фикс для кнопок во всех браузерах */
+button.submit-button,
+input[type="submit"].submit-button {
+  -webkit-writing-mode: horizontal-tb !important;
+  text-rendering: auto;
+  letter-spacing: normal;
+  word-spacing: normal;
+  text-indent: 0px;
+  text-shadow: none;
+  text-align: center;
+  cursor: pointer;
+  background-color: rgba(230, 230, 230, 0.72);
+  box-sizing: border-box;
+  margin: 0em;
+  font: 400 0.875em var(--font-primary);
+  padding: 0.75em 2.5em;
+  border-width: 0px;
+  border-style: none;
+  border-color: transparent;
+  border-image: none;
 }
