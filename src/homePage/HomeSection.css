@@ -613,11 +613,11 @@ button,
     }
     
     .home-logo {
-      margin-bottom: 2.5em !important; /* 40px = 2.5em */
+      margin-bottom: 1em !important; /* 40px = 2.5em */
     }
     
     .home-title {
-      margin-bottom: 2.5em !important; /* 40px = 2.5em */
+      margin-bottom: 1em !important; /* 40px = 2.5em */
     }
     
     .home-button-container {
