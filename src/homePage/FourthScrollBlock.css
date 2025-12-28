@@ -46,7 +46,7 @@ html {
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  margin-bottom: 12.5em; /* 200px = 12.5em */
+  margin-bottom: 10.8125em; /* 200px = 12.5em */
 }
 
 .fourth-content {
@@ -259,7 +259,7 @@ html {
 @media (max-width: 48em) { /* 768px = 48em */
   .fourth-section {
     min-height: 50vh;
-    margin-bottom: 6.25em; /* 100px = 6.25em (исходный отступ) */
+    margin-bottom: 10.8125em; /* 100px = 6.25em (исходный отступ) */
   }
   
   .cities-container {
@@ -314,7 +314,7 @@ html {
 /* ============================================= */
 @media (max-width: 36em) { /* 576px = 36em */
   .fourth-section {
-    margin-bottom: 4.5em;
+    margin-bottom: 10.8125em;
     padding-top: 0.5em; /* 80px = 5em */
   }
   
@@ -348,7 +348,7 @@ html {
 @media (max-width: 24.375em) { /* 390px = 24.375em */
   .fourth-section {
     min-height: 60vh;
-    margin-bottom: 3.825em; /* 64px = 4em */
+    margin-bottom: 10.8125em; /* 64px = 4em */
   }
   
   .cities-container {

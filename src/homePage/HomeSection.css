@@ -197,7 +197,6 @@ button,
   border-radius: 2em !important; /* 32px = 2em */
   color: white !important;
   font-size: 1em !important; /* 16px = 1em */
-  letter-spacing: 0.03125em !important; /* 0.5px = 0.03125em */
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none;
@@ -219,7 +218,7 @@ button,
   -webkit-background-clip: padding-box !important;
   -moz-background-clip: padding-box !important;
   background-clip: padding-box !important;
-  font-weight: 500 !important;
+  font-weight: 400 !important;
   opacity: 0;
   transform: scale(0.95) translateY(0.9375em); /* 15px = 0.9375em */
   padding: 0 !important;
@@ -242,8 +241,7 @@ button,
   width: 100%;
   padding: 0;
   margin: 0;
-  font-weight: 500 !important;
-  letter-spacing: 1px;
+  font-weight: 400 !important;
   line-height: 1em;
   font: inherit !important;
   color: inherit !important;
@@ -281,7 +279,7 @@ button,
 /* ============================================= */
 @media (max-width: 90em) { /* 1440px = 90em */
   .home-title {
-    font-size: 3em; /* 48px = 3em */
+    font-size: 2.5em; /* 48px = 3em */
   }
   
   .home-logo {
@@ -384,7 +382,6 @@ button,
     -webkit-backdrop-filter: blur(0.75em) !important;
     border: 0.09375em solid rgba(156, 156, 156, 0.32) !important; /* 1.5px = 0.09375em */
     background: rgba(155, 155, 155, 0.64) !important;
-    letter-spacing: 0.03125em !important; /* 0.5px = 0.03125em */
   }
   
   .read-more-button:hover,
@@ -666,7 +663,6 @@ button,
     border-radius: 2em !important;
     -webkit-border-radius: 2em !important;
     font-size: 1em !important;
-    letter-spacing: 0.03125em !important;
     color: white !important;
     
     padding: 0 !important;

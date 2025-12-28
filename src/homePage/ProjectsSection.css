@@ -273,19 +273,16 @@ html {
   /* Центрируем каждое слово по вертикали */
   .word-1 {
     height: auto !important;
-    min-height: 2.5em !important; /* 40px = 2.5em */
     font-size: 5.25em !important; /* 36px = 2.25em */
   }
 
   .word-2 {
     height: auto !important;
-    min-height: 3.75em !important; /* 60px = 3.75em */
     font-size: 5em !important; /* 48px = 3em */
   }
 
   .word-3 {
     height: auto !important;
-    min-height: 2.8125em !important; /* 45px = 2.8125em */
     font-size: 5.5em !important; /* 40px = 2.5em */
   }
   
@@ -311,17 +308,14 @@ html {
 
   .word-1 {
     font-size: 5em !important; /* 32px = 2em */
-    min-height: 2.1875em !important; /* 35px = 2.1875em */
   }
 
   .word-2 {
     font-size: 4.625em !important; /* 42px = 2.625em */
-    min-height: 3.125em !important; /* 50px = 3.125em */
   }
 
   .word-3 {
     font-size: 4.25em !important; /* 36px = 2.25em */
-    min-height: 2.5em !important; /* 40px = 2.5em */
   }
 }
 
@@ -340,19 +334,16 @@ html {
 
   .word-1 {
     font-size: 4.75em !important; /* 44px = 2.75em */
-    min-height: 1.875em !important; /* 30px = 1.875em */
     max-width: 90vw;
   }
 
   .word-2 {
     font-size: 3.9em !important; /* 56px = 3.5em */
-    min-height: 2.8125em !important; /* 45px = 2.8125em */
     max-width: 95vw !important;
   }
 
   .word-3 {
     font-size: 4em !important; /* 48px = 3em */
-    min-height: 2.1875em !important; /* 35px = 2.1875em */
     max-width: 90vw;
   }
 }
@@ -372,17 +363,14 @@ html {
 
   .word-1 {
     font-size: 1.5em !important; /* 24px = 1.5em */
-    min-height: 1.5625em !important; /* 25px = 1.5625em */
   }
 
   .word-2 {
     font-size: 2em !important; /* 32px = 2em */
-    min-height: 2.1875em !important; /* 35px = 2.1875em */
   }
 
   .word-3 {
     font-size: 1.75em !important; /* 28px = 1.75em */
-    min-height: 1.875em !important; /* 30px = 1.875em */
   }
 }
 
