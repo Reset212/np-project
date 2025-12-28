@@ -242,7 +242,9 @@ button,
   width: 100%;
   padding: 0;
   margin: 0;
-  line-height: 1;
+  font-weight: 400 !important;
+  letter-spacing: 1px;
+  line-height: 1em;
   font: inherit !important;
   color: inherit !important;
   vertical-align: middle !important;
