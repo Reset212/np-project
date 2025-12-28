@@ -189,7 +189,6 @@ button,
   height: 3.75em !important; /* 58px = 3.75em - ФИКСИРОВАННО */
   min-height: 3.75em !important; /* 58px - ФИКСИРОВАННО */
   max-height: 3.75em !important; /* 58px - ФИКСИРОВАННО */
-  
   background: rgba(155, 155, 155, 0.64) !important; /* rgba(155, 155, 155, 0.64) */
   border: 0.09375em solid rgba(156, 156, 156, 0.32) !important; /* 1.5px = 0.09375em */
   backdrop-filter: blur(0.75em) !important; /* 12px = 0.75em */
@@ -249,12 +248,14 @@ button,
 }
 
 .read-more-button.animate-in {
+  font-weight: 400 !important;
   opacity: 1;
   transform: scale(1) translateY(0);
   transition: opacity 0.4s ease 0.7s, transform 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.7s;
 }
 
 .read-more-button.animate-out {
+  font-weight: 400 !important;
   opacity: 0;
   transform: scale(0.95) translateY(0.9375em); /* 15px = 0.9375em */
   transition: opacity 0.3s ease 0.1s, transform 0.4s ease 0.1s;
@@ -262,6 +263,7 @@ button,
 
 .read-more-button:hover,
 .read-more-button:active {
+  font-weight: 400 !important;
   background: rgba(118, 118, 118, 0.64) !important;
   border: 0.09375em solid rgba(200, 200, 200, 0.4) !important; /* 1.5px = 0.09375em */
   transform: translateY(-0.125em) scale(1.05); /* -2px = -0.125em */
@@ -269,6 +271,7 @@ button,
 }
 
 .read-more-button:focus {
+  font-weight: 400 !important;
   outline: 0.125em solid rgba(255, 255, 255, 0.5) !important; /* 2px = 0.125em */
   outline-offset: 0.125em !important; /* 2px = 0.125em */
   box-shadow: none !important;
@@ -393,6 +396,7 @@ button,
   
   .read-more-button:hover,
   .read-more-button:active {
+    font-weight: 400 !important;
     transform: translateY(-0.125em) scale(1.05) !important; /* -2px = -0.125em */
     background: rgba(118, 118, 118, 0.64) !important;
     border: 0.09375em solid rgba(200, 200, 200, 0.4) !important;
@@ -706,6 +710,7 @@ button,
   }
   
   .read-more-button:active {
+    font-weight: 400 !important;
     background: rgba(118, 118, 118, 0.64) !important;
     border: 0.09375em solid rgba(200, 200, 200, 0.4) !important;
     transform: translateY(-0.125em) scale(1.05) !important;
@@ -782,6 +787,7 @@ _::-webkit-full-page-media, _:future, :root .read-more-button {
 /* ============================================= */
 @supports (background: -webkit-named-image(i)) {
   .read-more-button {
+    font-weight: 400 !important;
     -webkit-mask-image: -webkit-radial-gradient(white, black) !important;
   }
 }
@@ -791,6 +797,7 @@ _::-webkit-full-page-media, _:future, :root .read-more-button {
 /* ============================================= */
 .read-more-button::before,
 .read-more-button::after {
+  font-weight: 400 !important;
   display: none !important;
 }
 
@@ -798,6 +805,7 @@ _::-webkit-full-page-media, _:future, :root .read-more-button {
 /* ОСНОВНОЙ ФИКС ВЫСОТЫ КНОПКИ 58px ДЛЯ ВСЕХ УСТРОЙСТВ */
 /* ============================================= */
 .read-more-button {
+  font-weight: 400 !important;
   /* ФИКСИРОВАННАЯ ВЫСОТА 58px НА ВСЕХ УСТРОЙСТВАХ */
   height: 3.75em !important; /* 58px */
   font-weight: 400 !important;
