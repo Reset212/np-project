@@ -57,7 +57,6 @@
   /* Кнопка отправки - ПО ПРАВОМУ КРАЮ для ПК и планшета */
 .submit-button {
   font-family: var(--font-primary);
-  font-weight: 300;
   font-size: 0.875em;
   color: var(--color-black);
   text-transform: uppercase;
