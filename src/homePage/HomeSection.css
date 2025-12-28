@@ -677,6 +677,7 @@ button,
   }
   
   .read-more-button .button-text {
+    font-weight: 400 !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
@@ -802,6 +803,7 @@ _::-webkit-full-page-media, _:future, :root .read-more-button {
   }
   
   .read-more-button .button-text {
+    font-weight: 400 !important;
     line-height: 1 !important;
     vertical-align: middle !important;
   }
