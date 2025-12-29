@@ -954,9 +954,10 @@ _::-webkit-full-page-media, _:future, :root .submit-button {
   }
 }
 
-/* Принудительно для всех WebKit браузеров (Safari на всех устройствах) */
-_:-webkit-full-screen:not(:root:root), .submit-button {
-  font-weight: 500 !important;
+@supports (-webkit-touch-callout: none) and (pointer: coarse) {
+  .submit-button {
+    font-weight: 500 !important; /* Только iOS с touch */
+  }
 }
 
 /* Для Firefox, Edge, Chrome на Windows - принудительно 400 */
