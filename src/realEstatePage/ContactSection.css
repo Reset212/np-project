@@ -867,10 +867,7 @@ input[type="submit"].submit-button {
 
 /* Для десктопных браузеров (не мобильных) */
 @media (hover: hover) and (pointer: fine) {
-  /* Windows/Mac десктоп - по умолчанию 400 */
-  .submit-button {
-    font-weight: 400 !important;
-  }
+
   
   /* Но если это Safari на Mac - 500 */
   @supports (-webkit-touch-callout: none) {
@@ -915,14 +912,7 @@ _::-webkit-full-page-media, _:future, :root .submit-button {
  
 }
 
-/* Для не-WebKit браузеров (Chrome на Windows, Firefox и т.д.) */
-@supports not (-webkit-touch-callout: none) {
-  @media not all and (pointer: coarse) {
-    .submit-button {
-      font-weight: 400 !important; /* Windows/Android не-iOS */
-    }
-  }
-}
+
 
 /* Альтернативный метод центрирования для кросс-браузерной совместимости */
 .submit-button::before {
