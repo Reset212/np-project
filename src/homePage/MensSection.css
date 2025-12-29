@@ -178,7 +178,7 @@ html {
   border: none;
   font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
   font-size: 1em; /* 16px = 1em */
-  font-weight: 400; /* Windows: 400 по умолчанию */
+  font-weight: 300;
   color: #000000;
   letter-spacing: 0.03125em; /* 0.5px = 0.03125em */
   text-transform: uppercase;
@@ -200,38 +200,6 @@ html {
   height: 100%;
   width: 100%;
   line-height: 1;
-}
-
-/* ============================================= */
-/* ИЗМЕНЕНИЕ: Разный font-weight для iOS и Windows */
-/* ============================================= */
-
-/* Для iOS: font-weight 500 */
-@supports (-webkit-touch-callout: none) {
-  .action-button {
-    font-weight: 500 !important; /* iOS: 500 */
-  }
-}
-
-/* Для Safari (старые версии) */
-_::-webkit-full-page-media, _:future, :root .action-button {
-  font-weight: 500 !important; /* iOS Safari: 500 */
-}
-
-/* Для Windows/других платформ оставляем 400 */
-@supports not (-webkit-touch-callout: none) {
-  .action-button {
-    font-weight: 400; /* Windows/другие: 400 */
-  }
-}
-
-/* Для Firefox (не iOS) */
-@-moz-document url-prefix() {
-  @supports not (-webkit-touch-callout: none) {
-    .action-button {
-      font-weight: 400; /* Firefox на Windows: 400 */
-    }
-  }
 }
 
 .action-button:hover {
