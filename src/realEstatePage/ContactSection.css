@@ -973,10 +973,41 @@ _:-webkit-full-screen:not(:root:root), .submit-button {
   }
 }
 
-/* Для Chrome на Windows */
-@media screen and (-webkit-min-device-pixel-ratio:0) and (min-resolution:.001dpcm) {
-  /* Это Chrome, но не Safari */
-  _:-webkit-full-screen:not(:root:root), .submit-button {
-    font-weight: 400 !important; /* Chrome на Windows */
+/* Для Chrome на Windows/Linux */
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+  /* Только для Chrome (не Safari) - используем селектор который не сработает на Safari */
+  .submit-button:not(._) {
+    font-weight: 400 !important; /* Chrome на Windows/Linux */
+  }
+}
+
+/* Альтернативный, более надежный метод для Chrome на Windows */
+@supports (-webkit-touch-callout: none) {
+  /* Этот блок сработает только на iOS/macOS с touch поддержкой */
+  .submit-button {
+    font-weight: 500 !important; /* iOS/macOS Safari */
+  }
+}
+
+/* Для всех НЕ-iOS/НЕ-Safari устройств */
+@supports not (-webkit-touch-callout: none) {
+  .submit-button {
+    font-weight: 400 !important; /* Windows/Android/другие */
+  }
+}
+
+/* Еще один надежный хак для разделения Chrome и Safari */
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+  /* Проверяем что это именно Chrome (а не Safari) */
+  _:-webkit-full-screen:not(:root:root), 
+  _:-webkit-full-screen-ancestor:not(:root:root) {
+    .submit-button {
+      font-weight: 500 !important; /* Safari */
+    }
+  }
+  
+  /* Для Chrome (селектор, который Safari не понимает) */
+  .submit-button:not(:-webkit-full-screen) {
+    font-weight: 400 !important; /* Chrome */
   }
 }
