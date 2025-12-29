@@ -117,9 +117,8 @@ const HomeSection = () => {
                   window.location.href = "#/real-estate";
                 }
               }}
-               style={{ fontWeight: 400 }}
             >
-              <span className="button-text"  style={{ fontWeight: 400 }}>READ MORE</span>
+              <span className="button-text">READ MORE</span>
             </div>
           </div>
         </div>
