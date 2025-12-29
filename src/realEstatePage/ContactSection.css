@@ -14,7 +14,7 @@
   --button-height: 2.5em; /* 40px = 2.5em */
 }
 
-/* Разделительная полоса */
+
 .global-divider {
   height: 0.125em;
   background: var(--color-light-gray);
