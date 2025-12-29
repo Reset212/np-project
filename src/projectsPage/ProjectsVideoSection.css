@@ -518,7 +518,8 @@
   opacity: 1;
 }
 
-/* Кнопка "WATCH VIDEO" */
+/* ========== КНОПКА "WATCH VIDEO" ========== */
+/* Базовые стили кнопки для всех устройств - Windows/Android: 400 */
 .watch-btn {
   width: 10.75em; /* 173px */
   height: 3.625em; /* 48px */
@@ -528,7 +529,7 @@
   border-radius: 2em; /* 32px */
   font-family: 'Helvetica Neue', Arial, sans-serif;
   font-size: 1em; /* 16px */
-  font-weight: 400;
+  font-weight: 400; /* Windows/Android по умолчанию */
   color: #000000;
   cursor: pointer;
   text-transform: uppercase;
@@ -542,6 +543,58 @@
   background: rgba(255, 255, 255, 0.95);
   transform: scale(1.08) translateY(-0.125em); /* -2px */
   box-shadow: 0 0.5em 1.25em rgba(0, 0, 0, 0.2); /* 8px 20px */
+}
+
+/* iOS-специфичные стили для кнопки (font-weight: 500) */
+/* ТОЛЬКО для iOS Safari */
+@supports (-webkit-touch-callout: none) and (pointer: coarse) {
+  .watch-btn {
+    font-weight: 500 !important; /* iOS: 500 */
+  }
+}
+
+/* Для Mac Safari */
+@supports (-webkit-touch-callout: none) and (not (pointer: coarse)) {
+  .watch-btn {
+    font-weight: 500 !important; /* Mac Safari */
+  }
+}
+
+/* Для всех Safari с помощью хаков */
+_:-webkit-full-screen:not(:root:root), .watch-btn,
+_:-webkit-full-screen-ancestor:not(:root:root), .watch-btn,
+_::-webkit-full-page-media, _:future, :root .watch-btn {
+  font-weight: 500 !important; /* Safari всех версий */
+}
+
+/* Для Windows/Android/других ОС - гарантируем 400 */
+@media not all and (-webkit-touch-callout: none) {
+  .watch-btn {
+    font-weight: 400 !important; /* Windows/Android */
+  }
+}
+
+/* Для Chrome на Windows/Linux */
+@media screen and (-webkit-min-device-pixel-ratio:0) and (min-resolution:.001dpcm) {
+  @supports not (-webkit-touch-callout: none) {
+    .watch-btn {
+      font-weight: 400 !important; /* Chrome на Windows */
+    }
+  }
+}
+
+/* Для Firefox */
+@supports (-moz-appearance:none) {
+  .watch-btn {
+    font-weight: 400 !important; /* Firefox */
+  }
+}
+
+/* Для Edge */
+@supports (-ms-ime-align:auto) {
+  .watch-btn {
+    font-weight: 400 !important; /* Edge */
+  }
 }
 
 /* Анимации */
@@ -720,6 +773,13 @@
   .watch-btn {
     margin-top: 0.625em; /* 10px */
   }
+  
+  /* iOS кнопка на мобильных */
+  @supports (-webkit-touch-callout: none) {
+    .watch-btn {
+      font-weight: 500 !important;
+    }
+  }
 }
 
 /* Десктоп (769px и больше) - скрываем мобильную фильтрацию */
@@ -777,7 +837,6 @@
   }
 
   .watch-btn {
-   
     font-size: 1em; /* 13px */
   }
 }
