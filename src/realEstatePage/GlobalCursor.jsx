@@ -2,496 +2,445 @@ import React, { useState, useEffect, useRef } from 'react';
 import './GlobalCursor.css';
 
 const GlobalCursor = () => {
-  // ========== СОСТОЯНИЯ ==========
-  const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [svgPosition, setSvgPosition] = useState({ x: 0, y: 0 });
+  const [velocity, setVelocity] = useState({ x: 0, y: 0 });
+  const [lastPosition, setLastPosition] = useState({ x: 0, y: 0 });
+  const [lastTime, setLastTime] = useState(Date.now());
+  const [isSticky, setIsSticky] = useState(false);
+  const [stickyTarget, setStickyTarget] = useState({ 
+    x: 0, y: 0, width: 0, height: 0, borderRadius: 0 
+  });
+  const [scale, setScale] = useState({ x: 1, y: 1 });
+  const [rotation, setRotation] = useState(0);
+  const [isClicked, setIsClicked] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
-  const [isClicking, setIsClicking] = useState(false);
-  const [particles, setParticles] = useState([]);
-  const [showFullLogo, setShowFullLogo] = useState(true);
+  const [circleSize, setCircleSize] = useState({ width: 60, height: 60, borderRadius: 30 });
+  const [showCircle, setShowCircle] = useState(false);
+  const [isInsideButton, setIsInsideButton] = useState(false);
+  const [buttonHasBackground, setButtonHasBackground] = useState(false);
   
-  // ========== REF-Ы ==========
-  const animationRef = useRef(null);
-  const cursorRef = useRef(null);
-  const lastTimeRef = useRef(0);
-  const isAssemblingRef = useRef(false);
-  const forceCenterTimeoutRef = useRef(null);
-  const cursorRotationRef = useRef(0);
-  const clickAssembleTimeoutRef = useRef(null);
+  const rafRef = useRef(null);
+  const positionHistoryRef = useRef([]);
+  const rotationHistoryRef = useRef([]);
+  const stickyElementRef = useRef(null);
+  const targetSizeRef = useRef({ width: 60, height: 60, borderRadius: 30 });
+  const MAX_HISTORY = 5;
+  const ROTATION_SMOOTH_HISTORY = 3;
 
-  // ========== КОНСТАНТЫ SVG ==========
-  const fullSVG = {
-    viewBox: "0 0 298.49 298.49",
-    paths: [
-      "M140.09,61.73l7.36-4.25c1.11-.64,2.47-.64,3.57,0l50.64,29.24c1.31.76,1.51,2.57.39,3.58l-29.4,26.85c-1.05.96-2.73.7-3.44-.53l-29.95-51.84c-.62-1.07-.25-2.44.82-3.05Z",
-      "M68.57,165.37v-61.05c0-.8.43-1.54,1.12-1.93l52.67-30.42c1.07-.62,2.43-.25,3.05.82l32.19,55.75c.52.91.35,2.06-.43,2.77l-47.88,43.74c-.53.49-1.27.69-1.98.53l-36.99-8.02c-1.03-.22-1.76-1.13-1.76-2.18Z",
-      "M196.38,215.23l-45.38,25.78c-1.1.62-2.44.62-3.53,0l-77.77-44.21c-.7-.4,-1.13-1.14,-1.13-1.94v-8.55c0-1.42,1.31-2.48,2.71-2.18l124.47,26.97c2,.43,2.41,3.11.63,4.13Z",
-      "M229.92,104.32v90.55c0,.8-.43,1.55-1.13,1.94l-5.28,3c-.76.43,-1.66.57,-2.52.39l-89.15-19.3c-1.77-.38,-2.37-2.61,-1.03-3.83l86.84-79.32c.72-.66,1.78-.77,2.62-.29l8.53,4.92c.69.4,1.12,1.14,1.12,1.94Z"
-    ]
+  const lerp = (start, end, factor) => {
+    return start + (end - start) * factor;
   };
 
-  // Исходные частицы
-  const initialParticles = [
-    {
-      id: 1,
-      path: fullSVG.paths[0],
-      x: 0, y: 0, scale: 1, opacity: 1, rotation: 0,
-      velocityX: 0, velocityY: 0,
-      isStuck: false
-    },
-    {
-      id: 2,
-      path: fullSVG.paths[1],
-      x: 0, y: 0, scale: 1, opacity: 1, rotation: 0,
-      velocityX: 0, velocityY: 0,
-      isStuck: false
-    },
-    {
-      id: 3,
-      path: fullSVG.paths[2],
-      x: 0, y: 0, scale: 1, opacity: 1, rotation: 0,
-      velocityX: 0, velocityY: 0,
-      isStuck: false
-    },
-    {
-      id: 4,
-      path: fullSVG.paths[3],
-      x: 0, y: 0, scale: 1, opacity: 1, rotation: 0,
-      velocityX: 0, velocityY: 0,
-      isStuck: false
-    }
-  ];
+  const distance = (x1, y1, x2, y2) => {
+    return Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
+  };
 
-  // ========== ИНИЦИАЛИЗАЦИЯ ==========
-  useEffect(() => {
-    setParticles(initialParticles);
-  }, []);
-
-  // ========== ФУНКЦИЯ РАЗБРОСА ЧАСТИЦ ==========
-  const scatterParticles = (isClick = false) => {
-    setShowFullLogo(false);
+  // Функция для проверки есть ли у элемента фон
+  const hasBackground = (element) => {
+    if (!element) return false;
     
-    setParticles(prev => prev.map(part => {
-      const angle = Math.random() * Math.PI * 2;
-      const speed = isClick 
-        ? 1000 + Math.random() * 1500 // Более сильный разлет при клике
-        : 800 + Math.random() * 1200; // Обычный разлет при наведении
+    const style = window.getComputedStyle(element);
+    const backgroundColor = style.backgroundColor;
+    const backgroundImage = style.backgroundImage;
+    
+    // Проверяем есть ли фон
+    const hasBgColor = backgroundColor && 
+                      backgroundColor !== 'rgba(0, 0, 0, 0)' && 
+                      backgroundColor !== 'transparent';
+    
+    const hasBgImage = backgroundImage && backgroundImage !== 'none';
+    
+    // Также проверяем есть ли градиент, тень и т.д.
+    const hasBoxShadow = style.boxShadow && style.boxShadow !== 'none';
+    const hasGradient = backgroundImage.includes('gradient');
+    
+    return hasBgColor || hasBgImage || hasBoxShadow || hasGradient;
+  };
+
+  // Функция для получения точных размеров элемента
+  const getElementMetrics = (element) => {
+    const rect = element.getBoundingClientRect();
+    
+    // Проверяем есть ли у элемента фон
+    const hasBg = hasBackground(element);
+    setButtonHasBackground(hasBg);
+    
+    // Для кнопок с фоном делаем круг ВНУТРИ (меньше)
+    if (hasBg) {
+      // Внутренние отступы - круг внутри кнопки
+      const padding = {
+        horizontal: 8,  // Меньше для внутреннего круга
+        vertical: 6
+      };
+      
+      const finalWidth = Math.max(rect.width - (padding.horizontal * 2), 40);
+      const finalHeight = Math.max(rect.height - (padding.vertical * 2), 20);
+      
+      // Большое скругление для внутреннего круга
+      const minSide = Math.min(finalWidth, finalHeight);
+      const finalBorderRadius = Math.min(30, minSide / 2);
       
       return {
-        ...part,
-        velocityX: Math.cos(angle) * speed,
-        velocityY: Math.sin(angle) * speed,
-        rotation: Math.random() * 360,
-        scale: isClick ? 0.7 + Math.random() * 0.4 : 0.8 + Math.random() * 0.3,
-        opacity: isClick ? 0.9 : 0.8,
-        isStuck: false
+        x: rect.left + padding.horizontal,
+        y: rect.top + padding.vertical,
+        width: finalWidth,
+        height: finalHeight,
+        borderRadius: finalBorderRadius,
+        center: {
+          x: rect.left + rect.width / 2,
+          y: rect.top + rect.height / 2
+        },
+        originalRect: rect,
+        hasBackground: true
       };
-    }));
-  };
-
-  // ========== ФУНКЦИЯ СБОРКИ ЧАСТИЦ ==========
-  const assembleParticles = () => {
-    isAssemblingRef.current = true;
-    
-    setParticles(prev => prev.map(part => {
+    } else {
+      // Для кнопок без фона - обычный круг СНАРУЖИ (больше)
+      const padding = {
+        horizontal: 14,
+        vertical: 12
+      };
+      
+      const finalWidth = rect.width + (padding.horizontal * 2);
+      const finalHeight = rect.height + (padding.vertical * 2);
+      
+      const minSide = Math.min(finalWidth, finalHeight);
+      const finalBorderRadius = Math.min(30, minSide / 2);
+      
       return {
-        ...part,
-        velocityX: part.velocityX * 0.1 - part.x * 40,
-        velocityY: part.velocityY * 0.1 - part.y * 40,
-        isStuck: false
+        x: rect.left - padding.horizontal,
+        y: rect.top - padding.vertical,
+        width: finalWidth,
+        height: finalHeight,
+        borderRadius: finalBorderRadius,
+        center: {
+          x: rect.left + rect.width / 2,
+          y: rect.top + rect.height / 2
+        },
+        originalRect: rect,
+        hasBackground: false
       };
-    }));
-    
-    if (forceCenterTimeoutRef.current) {
-      clearTimeout(forceCenterTimeoutRef.current);
     }
-    forceCenterTimeoutRef.current = setTimeout(() => {
-      forceCenterParticles();
-    }, 800);
   };
 
-  // ========== ПРИНУДИТЕЛЬНОЕ ЦЕНТРИРОВАНИЕ ==========
-  const forceCenterParticles = () => {
-    setParticles(prev => {
-      const newParticles = prev.map(part => {
-        const distance = Math.sqrt(part.x * part.x + part.y * part.y);
-        
-        if (distance > 5 && !part.isStuck) {
-          return {
-            ...part,
-            x: 0,
-            y: 0,
-            velocityX: 0,
-            velocityY: 0,
-            rotation: 0,
-            scale: 1,
-            opacity: 1,
-            isStuck: true
-          };
-        }
-        return part;
-      });
-      
-      const allCentered = newParticles.every(p => {
-        const dist = Math.sqrt(p.x * p.x + p.y * p.y);
-        return dist < 1;
-      });
-      
-      if (allCentered) {
-        setShowFullLogo(true);
-        isAssemblingRef.current = false;
-      }
-      
-      return newParticles;
+  // ОЧЕНЬ быстрое изменение размера круга
+  const animateCircleSize = () => {
+    const targetSize = targetSizeRef.current;
+    
+    // Очень быстрые факторы для анимации
+    const animationSpeed = isSticky ? 0.5 : 0.6;
+    const newWidth = lerp(circleSize.width, targetSize.width, animationSpeed);
+    const newHeight = lerp(circleSize.height, targetSize.height, animationSpeed);
+    const newBorderRadius = lerp(circleSize.borderRadius, targetSize.borderRadius, animationSpeed);
+    
+    setCircleSize({
+      width: newWidth,
+      height: newHeight,
+      borderRadius: newBorderRadius
     });
+    
+    // Показываем круг только когда прилипли или в процессе анимации
+    const shouldShow = isSticky || circleSize.width > 65 || targetSize.width > 65;
+    setShowCircle(shouldShow);
   };
 
-  // ========== ОБРАБОТЧИК КЛИКА ==========
-  const handleClick = () => {
-    // Отменяем предыдущий таймер сборки если он есть
-    if (clickAssembleTimeoutRef.current) {
-      clearTimeout(clickAssembleTimeoutRef.current);
-      clickAssembleTimeoutRef.current = null;
-    }
-    
-    // Разлет при клике
-    setIsClicking(true);
-    scatterParticles(true);
-    
-    // Немедленная сборка через короткую задержку
-    clickAssembleTimeoutRef.current = setTimeout(() => {
-      assembleParticles();
-      setIsClicking(false);
-      
-      // Автоматическое центрирование через время
-      const autoCenterTimeout = setTimeout(() => {
-        forceCenterParticles();
-      }, 500);
-      
-      // Очистка таймера
-      return () => clearTimeout(autoCenterTimeout);
-    }, 100); // Задержка перед сборкой (100ms)
-  };
-
-  // ========== ОСНОВНОЙ ЭФФЕКТ ==========
   useEffect(() => {
     const handleMouseMove = (e) => {
-      setCursorPosition({ x: e.clientX, y: e.clientY });
-    };
-
-    const handleMouseEnter = (e) => {
-      const target = e.target;
+      const now = Date.now();
+      const dt = Math.min(now - lastTime, 32);
       
-      if (!target || typeof target.closest !== 'function') {
-        return;
+      if (dt > 0) {
+        const newVelocity = {
+          x: (e.clientX - lastPosition.x) / dt * 16,
+          y: (e.clientY - lastPosition.y) / dt * 16
+        };
+        
+        setVelocity(prev => ({
+          x: lerp(prev.x, newVelocity.x, 0.5),
+          y: lerp(prev.y, newVelocity.y, 0.5)
+        }));
+        
+        setLastTime(now);
+        setLastPosition({ x: e.clientX, y: e.clientY });
       }
       
-      const isInteractive = 
-        (target.tagName && (
-          target.tagName === 'BUTTON' ||
-          target.tagName === 'A' ||
-          target.tagName === 'INPUT' ||
-          target.tagName === 'SELECT' ||
-          target.tagName === 'TEXTAREA'
-        )) ||
-        target.getAttribute('role') === 'button' ||
-        target.onclick ||
-        target.hasAttribute('tabindex') ||
-        target.classList.contains('cursor-hover') ||
-        (target.closest && (
-          target.closest('button') ||
-          target.closest('a') ||
-          target.closest('[role="button"]') ||
-          target.closest('[onclick]')
-        ));
-
-      if (isInteractive && !isHovering) {
-        setIsHovering(true);
-        scatterParticles(false);
+      positionHistoryRef.current.push({ x: e.clientX, y: e.clientY });
+      if (positionHistoryRef.current.length > MAX_HISTORY) {
+        positionHistoryRef.current.shift();
       }
-    };
-
-    const handleMouseLeave = () => {
-      if (isHovering) {
-        setIsHovering(false);
-        assembleParticles();
-      }
-    };
-
-    const handleMouseDown = (e) => {
-      // Обрабатываем только левую кнопку мыши
-      if (e.button === 0) {
-        handleClick();
-      }
-    };
-
-    // ========== ФУНКЦИЯ АНИМАЦИИ ==========
-    const animateParticles = (timestamp) => {
-      if (!lastTimeRef.current) lastTimeRef.current = timestamp;
-      const deltaTime = Math.min((timestamp - lastTimeRef.current) / 1000, 0.033);
-      lastTimeRef.current = timestamp;
-
-      // ВРАЩЕНИЕ КУРСОРА ВСЕГДА
-      cursorRotationRef.current = (cursorRotationRef.current + 0.5) % 360;
-
-      setParticles(prev => {
-        let allAssembled = true;
-        
-        const newParticles = prev.map((part, index) => {
-          let { x, y, velocityX, velocityY, scale, opacity, rotation, isStuck } = part;
-          
-          if (isStuck) {
-            return part;
-          }
-          
-          if (isHovering || isClicking) {
-            // ========== РАЗЛЕТ ЧАСТИЦ ==========
-            allAssembled = false;
-            
-            // При клике частицы разлетаются быстрее
-            const damping = isClicking ? 0.88 : 0.84;
-            velocityX *= damping;
-            velocityY *= damping;
-            
-            x += velocityX * deltaTime;
-            y += velocityY * deltaTime;
-            
-            if (Math.abs(velocityX) < 100 && Math.abs(velocityY) < 100) {
-              velocityX += (Math.random() - 0.5) * 80 * deltaTime;
-              velocityY += (Math.random() - 0.5) * 80 * deltaTime;
-            }
-            
-            const randomPull = isClicking ? 0.02 : 0.03;
-            velocityX -= x * randomPull;
-            velocityY -= y * randomPull;
-            
-            // Частицы вращаются независимо от курсора при разлете
-            rotation += velocityX * 0.02 * deltaTime;
-            scale = 0.8 + Math.sin(timestamp * 0.003 + index) * 0.15;
-            opacity = 0.7 + Math.sin(timestamp * 0.002 + index) * 0.15;
-            
-          } else if (isAssemblingRef.current) {
-            // ========== СБОРКА ЧАСТИЦ ==========
-            
-            const dx = 0 - x;
-            const dy = 0 - y;
-            const distance = Math.sqrt(dx * dx + dy * dy);
-            
-            if (distance > 0.5) {
-              allAssembled = false;
-              
-              const magneticForce = 50 + distance * 10;
-              velocityX += dx * magneticForce * deltaTime;
-              velocityY += dy * magneticForce * deltaTime;
-              
-              velocityX *= 0.7;
-              velocityY *= 0.7;
-              
-              x += velocityX * deltaTime;
-              y += velocityY * deltaTime;
-              
-              if (distance < 20) {
-                const directPull = 0.3;
-                x += dx * directPull;
-                y += dy * directPull;
-              }
-              
-              // При сборке частицы вращаются вместе с курсором
-              rotation = cursorRotationRef.current;
-              scale = Math.min(1, scale + 3 * deltaTime);
-              opacity = Math.min(1, opacity + 4 * deltaTime);
-              
-            } else {
-              x = 0;
-              y = 0;
-              velocityX = 0;
-              velocityY = 0;
-              rotation = cursorRotationRef.current;
-              scale = 1;
-              opacity = 1;
-            }
-            
-          } else {
-            // ========== СОБРАННОЕ СОСТОЯНИЕ ==========
-            rotation = cursorRotationRef.current;
-            scale = 1 + Math.sin(timestamp * 0.001 + index) * 0.03;
-            opacity = 1;
-            
-            if (Math.abs(x) > 0.5 || Math.abs(y) > 0.5) {
-              x *= 0.9;
-              y *= 0.9;
-              allAssembled = false;
-            }
-          }
-          
-          return {
-            ...part,
-            x, y, velocityX, velocityY, scale, opacity, rotation, isStuck
-          };
-        });
-        
-        const allCloseToCenter = newParticles.every(p => {
-          const dist = Math.sqrt(p.x * p.x + p.y * p.y);
-          return dist < 1;
-        });
-        
-        if (isAssemblingRef.current && allCloseToCenter) {
-          isAssemblingRef.current = false;
-          setShowFullLogo(true);
-          
-          if (forceCenterTimeoutRef.current) {
-            clearTimeout(forceCenterTimeoutRef.current);
-            forceCenterTimeoutRef.current = null;
-          }
-        }
-        
-        return newParticles;
+      
+      const avgPosition = positionHistoryRef.current.reduce(
+        (acc, pos) => ({ x: acc.x + pos.x, y: acc.y + pos.y }),
+        { x: 0, y: 0 }
+      );
+      const count = positionHistoryRef.current.length;
+      
+      setPosition({ 
+        x: avgPosition.x / count, 
+        y: avgPosition.y / count 
       });
-
-      animationRef.current = requestAnimationFrame(animateParticles);
     };
 
-    // ========== ПОДПИСКА НА СОБЫТИЯ ==========
+    const handleMouseDown = () => {
+      setIsClicked(true);
+      setTimeout(() => setIsClicked(false), 200);
+    };
+
     window.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseover', handleMouseEnter);
-    document.addEventListener('mouseout', handleMouseLeave);
-    document.addEventListener('mousedown', handleMouseDown);
+    window.addEventListener('mousedown', handleMouseDown);
 
-    animationRef.current = requestAnimationFrame(animateParticles);
-
-    // ========== ОЧИСТКА ==========
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseover', handleMouseEnter);
-      document.removeEventListener('mouseout', handleMouseLeave);
-      document.removeEventListener('mousedown', handleMouseDown);
-      
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current);
-      }
-      if (forceCenterTimeoutRef.current) {
-        clearTimeout(forceCenterTimeoutRef.current);
-      }
-      if (clickAssembleTimeoutRef.current) {
-        clearTimeout(clickAssembleTimeoutRef.current);
-      }
+      window.removeEventListener('mousedown', handleMouseDown);
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
-  }, [isHovering, isClicking]);
+  }, [lastPosition, lastTime]);
 
-  // ========== ОТКЛЮЧЕНИЕ НА МОБИЛЬНЫХ ==========
-  const isMobile = window.innerWidth <= 768;
-  if (isMobile) {
+  useEffect(() => {
+    const checkHover = () => {
+      const elements = document.elementsFromPoint(position.x, position.y);
+      const isOverInteractive = elements.some(el => 
+        el.tagName === 'BUTTON' || 
+        el.tagName === 'A' || 
+        el.getAttribute('role') === 'button' ||
+        el.tagName === 'INPUT' ||
+        el.tagName === 'TEXTAREA' ||
+        el.tagName === 'SELECT' ||
+        el.closest('.logo') ||
+        el.classList?.contains('logo-image')
+      );
+      
+      setIsHovering(isOverInteractive);
+    };
+
+    const interval = setInterval(checkHover, 40);
+    return () => clearInterval(interval);
+  }, [position]);
+
+  useEffect(() => {
+    const animate = () => {
+      let targetX = position.x;
+      let targetY = position.y;
+      let smoothFactor = 0.15;
+
+      const speed = Math.sqrt(velocity.x ** 2 + velocity.y ** 2);
+      const maxSpeed = 50;
+      const speedRatio = Math.min(speed / maxSpeed, 2);
+      
+      // Быстрая логика вращения
+      if (speed > 10) {
+        const angle = Math.atan2(velocity.y, velocity.x);
+        
+        rotationHistoryRef.current.push(angle);
+        if (rotationHistoryRef.current.length > ROTATION_SMOOTH_HISTORY) {
+          rotationHistoryRef.current.shift();
+        }
+        
+        let sinSum = 0;
+        let cosSum = 0;
+        
+        rotationHistoryRef.current.forEach(a => {
+          sinSum += Math.sin(a);
+          cosSum += Math.cos(a);
+        });
+        
+        const avgAngle = Math.atan2(sinSum / rotationHistoryRef.current.length, 
+                                   cosSum / rotationHistoryRef.current.length);
+        
+        setRotation(prev => {
+          const diff = avgAngle - prev;
+          const normalizedDiff = Math.atan2(Math.sin(diff), Math.cos(diff));
+          return prev + normalizedDiff * 0.4;
+        });
+        
+        const stretchAmount = 1 + speedRatio * 0.5;
+        const squeezeAmount = 1 - speedRatio * 0.2;
+        
+        setScale({
+          x: stretchAmount,
+          y: squeezeAmount
+        });
+      } else {
+        setRotation(prev => {
+          const diff = -prev;
+          const normalizedDiff = Math.atan2(Math.sin(diff), Math.cos(diff));
+          return prev + normalizedDiff * 0.12;
+        });
+        
+        setScale({
+          x: lerp(scale.x, 1, 0.25),
+          y: lerp(scale.y, 1, 0.25)
+        });
+      }
+
+      // Быстрая проверка элементов для прилипания
+      const interactiveSelectors = [
+        'button',
+        'a[href]',
+        '[role="button"]',
+        'input[type="submit"]',
+        'input[type="button"]',
+        '.logo',
+        '.logo-image',
+        '[data-discover="true"]'
+      ];
+      
+      const interactiveElements = document.querySelectorAll(interactiveSelectors.join(','));
+      let isOverInteractive = false;
+      let closestElement = null;
+      let closestDistance = Infinity;
+
+      interactiveElements.forEach(element => {
+        const rect = element.getBoundingClientRect();
+        const center = {
+          x: rect.left + rect.width / 2,
+          y: rect.top + rect.height / 2
+        };
+        
+        // Расстояние до центра элемента
+        const dist = distance(position.x, position.y, center.x, center.y);
+        // Большой радиус прилипания для быстрого отклика
+        const maxRadius = Math.sqrt(rect.width ** 2 + rect.height ** 2) / 2 + 30;
+        
+        if (dist < maxRadius && dist < closestDistance) {
+          closestDistance = dist;
+          closestElement = element;
+          isOverInteractive = true;
+        }
+      });
+
+      if (isOverInteractive && closestElement && !isSticky) {
+        setIsSticky(true);
+        const metrics = getElementMetrics(closestElement);
+        
+        // Сразу устанавливаем почти целевой размер для мгновенного отклика
+        targetSizeRef.current = {
+          width: metrics.width * 0.9,
+          height: metrics.height * 0.9,
+          borderRadius: metrics.borderRadius
+        };
+        
+        // Быстро добираем до полного размера
+        setTimeout(() => {
+          targetSizeRef.current = {
+            width: metrics.width,
+            height: metrics.height,
+            borderRadius: metrics.borderRadius
+          };
+        }, 10);
+        
+        setStickyTarget({
+          x: metrics.center.x,
+          y: metrics.center.y,
+          width: metrics.width,
+          height: metrics.height,
+          borderRadius: metrics.borderRadius
+        });
+        
+        stickyElementRef.current = closestElement;
+        smoothFactor = 0.05;
+      } else if (isSticky && stickyElementRef.current) {
+        // Быстрое обновление позиции и размеров
+        const metrics = getElementMetrics(stickyElementRef.current);
+        targetX = metrics.center.x;
+        targetY = metrics.center.y;
+        
+        targetSizeRef.current = {
+          width: metrics.width,
+          height: metrics.height,
+          borderRadius: metrics.borderRadius
+        };
+        
+        setStickyTarget({
+          x: metrics.center.x,
+          y: metrics.center.y,
+          width: metrics.width,
+          height: metrics.height,
+          borderRadius: metrics.borderRadius
+        });
+        
+        // Проверяем вышли ли мы из элемента
+        const dist = distance(position.x, position.y, metrics.center.x, metrics.center.y);
+        const maxDistance = Math.max(metrics.originalRect.width, metrics.originalRect.height) * 0.8;
+        
+        if (dist > maxDistance) {
+          setIsSticky(false);
+          stickyElementRef.current = null;
+          // Мгновенно начинаем уменьшение
+          targetSizeRef.current = { width: 60, height: 60, borderRadius: 30 };
+        }
+      } else if (!isSticky) {
+        // Быстрый возврат к размеру лого
+        targetSizeRef.current = { width: 60, height: 60, borderRadius: 30 };
+      }
+
+      // Супер быстрая анимация изменения размера
+      animateCircleSize();
+
+      // Быстрое плавное движение
+      const offsetX = 0;
+      const offsetY = 0;
+      const targetSvgX = targetX + offsetX;
+      const targetSvgY = targetY + offsetY;
+      
+      const speedFactor = Math.min(speed / 20, 1);
+      const dynamicSmoothFactor = lerp(smoothFactor, 0.15, speedFactor);
+      
+      const newSvgX = lerp(svgPosition.x, targetSvgX, dynamicSmoothFactor);
+      const newSvgY = lerp(svgPosition.y, targetSvgY, dynamicSmoothFactor);
+      
+      setSvgPosition({ x: newSvgX, y: newSvgY });
+      
+      rafRef.current = requestAnimationFrame(animate);
+    };
+
+    rafRef.current = requestAnimationFrame(animate);
+
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, [position, svgPosition, velocity, isSticky, scale, rotation, circleSize]);
+
+  const supportsBackdropFilter = () => {
+    return CSS.supports('backdrop-filter', 'invert(1)') || 
+           CSS.supports('-webkit-backdrop-filter', 'invert(1)');
+  };
+
+  const isFirefox = navigator.userAgent.toLowerCase().includes('firefox');
+
+  if (!supportsBackdropFilter() || isFirefox) {
     return null;
   }
 
-  // ========== РЕНДЕРИНГ ==========
-  const shouldShowFullLogo = showFullLogo && !isHovering && !isClicking && !isAssemblingRef.current;
-
   return (
-    <div 
-      ref={cursorRef}
-      className="svg-cursor-container"
-      style={{
-        position: 'fixed',
-        left: `${cursorPosition.x}px`,
-        top: `${cursorPosition.y}px`,
-        pointerEvents: 'none',
-        zIndex: 9999,
-        transform: 'translate(-50%, -50%)',
-        transition: 'transform 0.12s linear',
-        transformOrigin: 'center center'
-      }}
-    >
-      {/* Пунктирный круг при наведении или клике */}
-      {(isHovering || isClicking) && (
-        <svg
-          width="66"
-          height="66"
-          viewBox="0 0 76 76"
-          style={{
-            position: 'absolute',
-            left: '0',
-            top: '0',
-            transform: 'translate(-50%, -50%)',
-            opacity: isClicking ? 0.8 : 0.6,
-            transition: 'opacity 0.2s ease'
-          }}
-        >
-          <circle
-            cx="38"
-            cy="38"
-            r="38"
-            fill="none"
-            stroke="#00000038"
-            strokeWidth={isClicking ? "2" : "1.5"}
-            strokeDasharray={isClicking ? "3, 3" : "4, 4"}
-            strokeOpacity={isClicking ? "0.9" : "0.7"}
-          />
-        </svg>
-      )}
+    <div className="cursor-container">
+      {/* Лого-курсор (постоянно виден, скрывается при прилипании) */}
+      <div 
+        className={`cursor-lens-backdrop ${isClicked ? 'clicked' : ''} ${isHovering ? 'hover' : ''}`}
+        style={{
+          left: `${svgPosition.x}px`,
+          top: `${svgPosition.y}px`,
+          transform: `translate(-50%, -50%) 
+                     rotate(${rotation}rad)
+                     scale(${scale.x}, ${scale.y})`,
+          opacity: showCircle ? 0 : 1
+        }}
+      />
       
-      {/* Целое SVG лого с вращением */}
-      {shouldShowFullLogo && (
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox={fullSVG.viewBox}
-          style={{
-            position: 'absolute',
-            left: '0',
-            top: '0',
-            width: '60px',
-            height: '60px',
-            transform: `translate(-50%, -50%) rotate(${cursorRotationRef.current}deg)`,
-            opacity: 1,
-            filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))',
-            transition: 'opacity 0.3s ease, transform 0.1s linear',
-            transformOrigin: 'center center'
-          }}
-        >
-          {fullSVG.paths.map((path, index) => (
-            <path 
-              key={`full-${index}`}
-              d={path} 
-              fill="#000000ff"
-            />
-          ))}
-        </svg>
-      )}
-      
-      {/* Частицы */}
-      {particles.map((part) => {
-        if (shouldShowFullLogo && !part.isStuck) {
-          return null;
-        }
-        
-        return (
-          <svg
-            key={part.id}
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 298.49 298.49"
-            style={{
-              position: 'absolute',
-              left: `${part.x}px`,
-              top: `${part.y}px`,
-              width: '60px',
-              height: '60px',
-              transform: `translate(-50%, -50%) rotate(${part.rotation}deg) scale(${part.scale})`,
-              opacity: part.opacity,
-              transition: isAssemblingRef.current 
-                ? 'transform 0.2s cubic-bezier(0.34, 1.2, 0.64, 1), opacity 0.3s ease'
-                : 'transform 0.15s ease-out, opacity 0.2s ease',
-              filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))',
-              willChange: 'transform, opacity',
-              display: shouldShowFullLogo && !part.isStuck ? 'none' : 'block'
-            }}
-          >
-            <path 
-              d={part.path} 
-              fill="#000000ff"
-              className="cursor-particle"
-            />
-          </svg>
-        );
-      })}
+      {/* Круг для прилипания (быстрая анимация) */}
+      <div 
+        className={`cursor-sticky-circle ${isClicked ? 'clicked' : ''} ${buttonHasBackground ? 'inside-button' : 'outside-button'}`}
+        style={{
+          left: `${svgPosition.x}px`,
+          top: `${svgPosition.y}px`,
+          width: `${circleSize.width}px`,
+          height: `${circleSize.height}px`,
+          borderRadius: `${circleSize.borderRadius}px`,
+          transform: `translate(-50%, -50%)`,
+          opacity: showCircle ? 1 : 0,
+          transformOrigin: 'center'
+        }}
+      />
     </div>
   );
 };
