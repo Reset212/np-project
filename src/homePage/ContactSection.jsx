@@ -47,8 +47,6 @@ const ContactSection = () => {
           email: formData.email,
           message: formData.project,
           _subject: `Новая заявка от ${formData.name}`,
-          _replyto: formData.email,
-          _to: "manatin306@gmail.com"
         }),
       });
 
