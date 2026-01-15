@@ -20,7 +20,7 @@ const ContactSection = () => {
         setTimeout(() => setCopiedEmail(""), 2000);
       })
       .catch(err => {
-        console.error('Ошибка копирования: ', err);
+        console.error('Copy error: ', err);
       });
   };
 
@@ -61,11 +61,11 @@ const ContactSection = () => {
           setMessageSent(false);
         }, 5000);
       } else {
-        throw new Error('Ошибка отправки');
+        throw new Error('Sending error');
       }
     } catch (error) {
-      alert('Произошла ошибка при отправке. Пожалуйста, попробуйте еще раз или напишите нам напрямую на info@novlepships.com');
-      console.error('Ошибка:', error);
+      alert('An error occurred while sending. Please try again or contact us directly at hello@movieparkpro.com');
+      console.error('Error:', error);
     } finally {
       setIsSubmitting(false);
     }
@@ -84,7 +84,7 @@ const ContactSection = () => {
                 <div
                   className="email-value"
                   onClick={() => copyEmailToClipboard("hello@movieparkpro.com", "client")}
-                  title="Нажмите чтобы скопировать"
+                  title="Click to copy"
                 >
                   hello@movieparkpro.com
                   {copiedEmail === "client" && <span className="copy-notification">copied!</span>}
@@ -96,7 +96,7 @@ const ContactSection = () => {
                 <div
                   className="email-value"
                   onClick={() => copyEmailToClipboard("job@movieparkpro.com", "work")}
-                  title="Нажмите чтобы скопировать"
+                  title="Click to copy"
                 >
                   job@movieparkpro.com
                   {copiedEmail === "work" && <span className="copy-notification">copied!</span>}
@@ -122,7 +122,7 @@ const ContactSection = () => {
           <form className="contact-form" onSubmit={handleSubmit}>
             {messageSent && (
               <div className="success-message">
-                ✓ Сообщение успешно отправлено! Мы свяжемся с вами в ближайшее время.
+                ✓ The message has been successfully sent! We will contact you shortly.
               </div>
             )}
 
@@ -153,7 +153,7 @@ const ContactSection = () => {
                   required
                   placeholder=""
                   pattern="[0-9+\-\s()]{10,}"
-                  title="Введите корректный номер телефона"
+                  title="Enter the correct phone number"
                 />
               </div>
 
@@ -192,7 +192,7 @@ const ContactSection = () => {
               className="submit-button"
               disabled={isSubmitting}
             >
-              {isSubmitting ? "Отправка..." : "SEND"}
+              {isSubmitting ? "Sending..." : "SEND"}
             </button>
 
             {/* Мобильные email кнопки */}
@@ -202,7 +202,7 @@ const ContactSection = () => {
                 <div
                   className="mobile-email-value"
                   onClick={() => copyEmailToClipboard("hello@movieparkpro.com", "client-mobile")}
-                  title="Нажмите чтобы скопировать"
+                  title="Click to copy"
                 >
                   hello@movieparkpro.com
                   {copiedEmail === "client-mobile" && <span className="mobile-copy-notification">copied!</span>}
@@ -213,7 +213,7 @@ const ContactSection = () => {
                 <div
                   className="mobile-email-value"
                   onClick={() => copyEmailToClipboard("job@movieparkpro.com", "work-mobile")}
-                  title="Нажмите чтобы скопировать"
+                  title="Click to copy"
                 >
                   job@movieparkpro.com
                   {copiedEmail === "work-mobile" && <span className="mobile-copy-notification">copied!</span>}
