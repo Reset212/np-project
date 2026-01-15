@@ -28,12 +28,12 @@ const ScrollTextAnimation = () => {
     {
       lines: [
         ["WE", "BRING", "IDEAS", "TO", "LIFE", "THROUGH"],
-        ["BRANDING,", "VISUALS", "AND", "HYPE"]
+        [ "", "BRANDING,", "VISUALS", "AND", "HYPE", ""]
       ],
     },
     {
       lines: [
-        ["EVERY", "PROJECT", "SUCCEEDS"]
+        [ "", "","EVERY", "PROJECT", "SUCCEEDS", "", ""]
       ],
     }
   ];
@@ -42,12 +42,12 @@ const ScrollTextAnimation = () => {
     {
       lines: [
         ["WE", "BRING", "IDEAS", "TO", "LIFE"],
-        ["THROUGH", "BRANDING,", "VISUALS", "AND", "HYPE"]
+        ["", "THROUGH", "BRANDING,", "VISUALS", "AND", "HYPE", ""]
       ]
     },
     {
       lines: [
-        ["EVERY", "PROJECT", "SUCCEEDS"]
+        [ "", "","EVERY", "PROJECT", "SUCCEEDS", "", ""]
       ]
     }
   ];
