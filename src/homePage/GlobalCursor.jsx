@@ -8,16 +8,21 @@ const GlobalCursor = () => {
   const [lastPosition, setLastPosition] = useState({ x: 0, y: 0 });
   const [lastTime, setLastTime] = useState(Date.now());
   const [isSticky, setIsSticky] = useState(false);
-  const [stickyTarget, setStickyTarget] = useState({ x: 0, y: 0 });
+  const [stickyTarget, setStickyTarget] = useState({ 
+    x: 0, y: 0, width: 0, height: 0, borderRadius: 0 
+  });
   const [scale, setScale] = useState({ x: 1, y: 1 });
   const [rotation, setRotation] = useState(0);
   const [isClicked, setIsClicked] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
-  const [dotScale, setDotScale] = useState({ x: 1, y: 1 });
+  const [circleSize, setCircleSize] = useState({ width: 60, height: 60, borderRadius: 30 });
+  const [showCircle, setShowCircle] = useState(false);
   
   const rafRef = useRef(null);
   const positionHistoryRef = useRef([]);
   const rotationHistoryRef = useRef([]);
+  const stickyElementRef = useRef(null);
+  const targetSizeRef = useRef({ width: 60, height: 60, borderRadius: 30 });
   const MAX_HISTORY = 5;
   const ROTATION_SMOOTH_HISTORY = 3;
 
@@ -27,6 +32,58 @@ const GlobalCursor = () => {
 
   const distance = (x1, y1, x2, y2) => {
     return Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
+  };
+
+  // Функция для получения точных размеров элемента
+  const getElementMetrics = (element) => {
+    const rect = element.getBoundingClientRect();
+    
+    // Большие отступы для полного покрытия
+    const padding = {
+      horizontal: 14,
+      vertical: 12
+    };
+    
+    const finalWidth = rect.width + (padding.horizontal * 2);
+    const finalHeight = rect.height + (padding.vertical * 2);
+    
+    // Большое скругление
+    const minSide = Math.min(finalWidth, finalHeight);
+    const finalBorderRadius = Math.min(30, minSide / 2);
+    
+    return {
+      x: rect.left - padding.horizontal,
+      y: rect.top - padding.vertical,
+      width: finalWidth,
+      height: finalHeight,
+      borderRadius: finalBorderRadius,
+      center: {
+        x: rect.left + rect.width / 2,
+        y: rect.top + rect.height / 2
+      },
+      originalRect: rect
+    };
+  };
+
+  // ОЧЕНЬ быстрое изменение размера круга
+  const animateCircleSize = () => {
+    const targetSize = targetSizeRef.current;
+    
+    // Очень быстрые факторы для анимации
+    const animationSpeed = isSticky ? 0.5 : 0.6; // Еще быстрее!
+    const newWidth = lerp(circleSize.width, targetSize.width, animationSpeed);
+    const newHeight = lerp(circleSize.height, targetSize.height, animationSpeed);
+    const newBorderRadius = lerp(circleSize.borderRadius, targetSize.borderRadius, animationSpeed);
+    
+    setCircleSize({
+      width: newWidth,
+      height: newHeight,
+      borderRadius: newBorderRadius
+    });
+    
+    // Показываем круг только когда прилипли или в процессе анимации
+    const shouldShow = isSticky || circleSize.width > 65 || targetSize.width > 65;
+    setShowCircle(shouldShow);
   };
 
   useEffect(() => {
@@ -68,7 +125,7 @@ const GlobalCursor = () => {
 
     const handleMouseDown = () => {
       setIsClicked(true);
-      setTimeout(() => setIsClicked(false), 300);
+      setTimeout(() => setIsClicked(false), 200); // Быстрее!
     };
 
     window.addEventListener('mousemove', handleMouseMove);
@@ -90,13 +147,15 @@ const GlobalCursor = () => {
         el.getAttribute('role') === 'button' ||
         el.tagName === 'INPUT' ||
         el.tagName === 'TEXTAREA' ||
-        el.tagName === 'SELECT'
+        el.tagName === 'SELECT' ||
+        el.closest('.logo') ||
+        el.classList?.contains('logo-image')
       );
       
       setIsHovering(isOverInteractive);
     };
 
-    const interval = setInterval(checkHover, 50);
+    const interval = setInterval(checkHover, 40); // Чаще проверяем
     return () => clearInterval(interval);
   }, [position]);
 
@@ -110,18 +169,15 @@ const GlobalCursor = () => {
       const maxSpeed = 50;
       const speedRatio = Math.min(speed / maxSpeed, 2);
       
-      // УЛУЧШЕННАЯ ЛОГИКА ВРАЩЕНИЯ С ГИСТЕРЕЗИСОМ
-      if (speed > 10) { // Увеличили порог с 5 до 10 для устранения дрожания
+      // Быстрая логика вращения
+      if (speed > 10) {
         const angle = Math.atan2(velocity.y, velocity.x);
         
-        // Сглаживание угла через историю
         rotationHistoryRef.current.push(angle);
         if (rotationHistoryRef.current.length > ROTATION_SMOOTH_HISTORY) {
           rotationHistoryRef.current.shift();
         }
         
-        // Вычисляем средний угол из истории
-        let avgAngle = 0;
         let sinSum = 0;
         let cosSum = 0;
         
@@ -130,21 +186,13 @@ const GlobalCursor = () => {
           cosSum += Math.cos(a);
         });
         
-        avgAngle = Math.atan2(sinSum / rotationHistoryRef.current.length, 
-                              cosSum / rotationHistoryRef.current.length);
-        
-        // Плавное изменение угла с учетом гистерезиса
-        const angleDiff = Math.abs(avgAngle - rotation);
-        const normalizedDiff = Math.min(angleDiff / Math.PI, 1);
-        
-        // Быстрое вращение при больших изменениях, медленное - при мелких
-        const lerpFactor = normalizedDiff > 0.3 ? 0.3 : 0.1;
+        const avgAngle = Math.atan2(sinSum / rotationHistoryRef.current.length, 
+                                   cosSum / rotationHistoryRef.current.length);
         
         setRotation(prev => {
-          // Нормализуем углы для плавного перехода через 0
           const diff = avgAngle - prev;
           const normalizedDiff = Math.atan2(Math.sin(diff), Math.cos(diff));
-          return prev + normalizedDiff * lerpFactor;
+          return prev + normalizedDiff * 0.4; // Быстрее вращение
         });
         
         const stretchAmount = 1 + speedRatio * 0.5;
@@ -155,80 +203,123 @@ const GlobalCursor = () => {
           y: squeezeAmount
         });
       } else {
-        // При медленном движении - плавный возврат к нулевому вращению
         setRotation(prev => {
           const diff = -prev;
           const normalizedDiff = Math.atan2(Math.sin(diff), Math.cos(diff));
-          return prev + normalizedDiff * 0.08; // Очень плавный возврат
+          return prev + normalizedDiff * 0.12; // Быстрее возврат
         });
         
         setScale({
-          x: lerp(scale.x, 1, 0.15),
-          y: lerp(scale.y, 1, 0.15)
+          x: lerp(scale.x, 1, 0.25), // Быстрее
+          y: lerp(scale.y, 1, 0.25)
         });
       }
 
-      // Логика прилипания к кнопкам
-      const buttons = document.querySelectorAll('button, a[href], [role="button"], input[type="submit"], input[type="button"]');
-      let isOverButton = false;
-      let buttonCenter = { x: 0, y: 0 };
-      let buttonRadius = 0;
+      // Быстрая проверка элементов для прилипания
+      const interactiveSelectors = [
+        'button',
+        'a[href]',
+        '[role="button"]',
+        'input[type="submit"]',
+        'input[type="button"]',
+        '.logo',
+        '.logo-image',
+        '[data-discover="true"]'
+      ];
+      
+      const interactiveElements = document.querySelectorAll(interactiveSelectors.join(','));
+      let isOverInteractive = false;
+      let closestElement = null;
+      let closestDistance = Infinity;
 
-      buttons.forEach(button => {
-        const rect = button.getBoundingClientRect();
+      interactiveElements.forEach(element => {
+        const rect = element.getBoundingClientRect();
         const center = {
           x: rect.left + rect.width / 2,
           y: rect.top + rect.height / 2
         };
         
+        // Расстояние до центра элемента
         const dist = distance(position.x, position.y, center.x, center.y);
-        const radius = Math.max(rect.width, rect.height) / 2 + 30;
+        // Большой радиус прилипания для быстрого отклика
+        const maxRadius = Math.sqrt(rect.width ** 2 + rect.height ** 2) / 2 + 30;
         
-        if (dist < radius) {
-          isOverButton = true;
-          buttonCenter = center;
-          buttonRadius = radius;
+        if (dist < maxRadius && dist < closestDistance) {
+          closestDistance = dist;
+          closestElement = element;
+          isOverInteractive = true;
         }
       });
 
-      if (isOverButton && !isSticky) {
+      if (isOverInteractive && closestElement && !isSticky) {
         setIsSticky(true);
-        setStickyTarget(buttonCenter);
-        smoothFactor = 0.05;
-      } else if (isSticky) {
-        targetX = stickyTarget.x;
-        targetY = stickyTarget.y;
+        const metrics = getElementMetrics(closestElement);
         
-        const pullAwayDistance = buttonRadius * 1.5;
-        const currentDist = distance(position.x, position.y, stickyTarget.x, stickyTarget.y);
-        if (currentDist > pullAwayDistance) {
-          setIsSticky(false);
-        }
-      }
-
-      // Деформация точки при прилипании
-      if (isSticky && buttonRadius > 0) {
-        const dx = position.x - stickyTarget.x;
-        const dy = position.y - stickyTarget.y;
-        const distFromCenter = Math.min(distance(0, 0, dx, dy), buttonRadius);
+        // Сразу устанавливаем почти целевой размер для мгновенного отклика
+        targetSizeRef.current = {
+          width: metrics.width * 0.9, // Начинаем с 90% для быстрого эффекта
+          height: metrics.height * 0.9,
+          borderRadius: metrics.borderRadius
+        };
         
-        const normDist = distFromCenter / buttonRadius;
-        const angle = Math.atan2(dy, dx);
+        // Быстро добираем до полного размера
+        setTimeout(() => {
+          targetSizeRef.current = {
+            width: metrics.width,
+            height: metrics.height,
+            borderRadius: metrics.borderRadius
+          };
+        }, 10);
         
-        const stretchAmount = 1 + normDist * 0.6;
-        const squeezeAmount = 1 - normDist * 0.4;
-        
-        setDotScale({
-          x: stretchAmount,
-          y: squeezeAmount
+        setStickyTarget({
+          x: metrics.center.x,
+          y: metrics.center.y,
+          width: metrics.width,
+          height: metrics.height,
+          borderRadius: metrics.borderRadius
         });
-      } else {
-        setDotScale(prev => ({
-          x: lerp(prev.x, 1, 0.15),
-          y: lerp(prev.y, 1, 0.15)
-        }));
+        
+        stickyElementRef.current = closestElement;
+        smoothFactor = 0.05;
+      } else if (isSticky && stickyElementRef.current) {
+        // Быстрое обновление позиции и размеров
+        const metrics = getElementMetrics(stickyElementRef.current);
+        targetX = metrics.center.x;
+        targetY = metrics.center.y;
+        
+        targetSizeRef.current = {
+          width: metrics.width,
+          height: metrics.height,
+          borderRadius: metrics.borderRadius
+        };
+        
+        setStickyTarget({
+          x: metrics.center.x,
+          y: metrics.center.y,
+          width: metrics.width,
+          height: metrics.height,
+          borderRadius: metrics.borderRadius
+        });
+        
+        // Проверяем вышли ли мы из элемента
+        const dist = distance(position.x, position.y, metrics.center.x, metrics.center.y);
+        const maxDistance = Math.max(metrics.originalRect.width, metrics.originalRect.height) * 0.8;
+        
+        if (dist > maxDistance) {
+          setIsSticky(false);
+          stickyElementRef.current = null;
+          // Мгновенно начинаем уменьшение
+          targetSizeRef.current = { width: 60, height: 60, borderRadius: 30 };
+        }
+      } else if (!isSticky) {
+        // Быстрый возврат к размеру лого
+        targetSizeRef.current = { width: 60, height: 60, borderRadius: 30 };
       }
 
+      // Супер быстрая анимация изменения размера
+      animateCircleSize();
+
+      // Быстрое плавное движение
       const offsetX = 0;
       const offsetY = 0;
       const targetSvgX = targetX + offsetX;
@@ -250,7 +341,7 @@ const GlobalCursor = () => {
     return () => {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
-  }, [position, svgPosition, velocity, isSticky, stickyTarget, scale, rotation, dotScale]);
+  }, [position, svgPosition, velocity, isSticky, scale, rotation, circleSize]);
 
   const supportsBackdropFilter = () => {
     return CSS.supports('backdrop-filter', 'invert(1)') || 
@@ -265,7 +356,7 @@ const GlobalCursor = () => {
 
   return (
     <div className="cursor-container">
-      {/* SVG курсор - скрывается при прилипании */}
+      {/* Лого-курсор (постоянно виден, скрывается при прилипании) */}
       <div 
         className={`cursor-lens-backdrop ${isClicked ? 'clicked' : ''} ${isHovering ? 'hover' : ''}`}
         style={{
@@ -274,21 +365,22 @@ const GlobalCursor = () => {
           transform: `translate(-50%, -50%) 
                      rotate(${rotation}rad)
                      scale(${scale.x}, ${scale.y})`,
-          opacity: isSticky ? 0 : 1
+          opacity: showCircle ? 0 : 1
         }}
       />
       
-      {/* Деформируемая точка при прилипании */}
+      {/* Круг для прилипания (быстрая анимация) */}
       <div 
-        className="cursor-sticky-dot"
+        className={`cursor-sticky-circle ${isClicked ? 'clicked' : ''}`}
         style={{
           left: `${svgPosition.x}px`,
           top: `${svgPosition.y}px`,
-          transform: `translate(-50%, -50%) 
-                     scale(${dotScale.x}, ${dotScale.y})`,
-          opacity: isSticky ? 1 : 0,
-          '--deform-x': `${(dotScale.x - 1) * 50}%`,
-          '--deform-y': `${(1 - dotScale.y) * 50}%`
+          width: `${circleSize.width}px`,
+          height: `${circleSize.height}px`,
+          borderRadius: `${circleSize.borderRadius}px`,
+          transform: `translate(-50%, -50%)`,
+          opacity: showCircle ? 1 : 0,
+          transformOrigin: 'center'
         }}
       />
     </div>
