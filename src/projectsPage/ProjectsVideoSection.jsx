@@ -51,16 +51,17 @@ const videoData = [
     mobileBreakpoint: 450,
   },
   {
-    id: 2,
-    title: "VILLA DEL GAVI",
-    description: "WE CREATED AN EMOTIONAL SALES VIDEO THAT SHOWCASES THE CONCEPT OF THE HOUSE. THE STORY AND CHARACTER OF THE HOUSE WERE CREATED. 3D RENDERINGS.",
-    vimeoId: "1083958501",
-    previewImage: "/projectImage/VILLA DEL GAVI.png",
-    mobilePreviewImage: "/projectImage/mobileImage/VILLA DEL GAVI_mob.png",
-    desktopMainCategory: "3D", 
+     id: 2,
+    title: "CELEBRITY APPEARANCES",
+    description: "WE CAN BRING ANY STAR FOR YOU. MATTHEW MCCONAUGHEY, ADRIAN BRODY, NICOLAS CAGE, MILA JOVOVICH, VINCENT CASSEL, ZENDAYA, QUENTIN TARANTINO, KEANU REEVES, JASON MAMOA AND OTHERS.",
+    vimeoId: "1060106406",
+    previewImage: "/projectImage/Celebrity Appearances.png",
+    mobilePreviewImage: "/projectImage/mobileImage/Celebrity Appearances_mob.png",
+    desktopMainCategory: "HYPE & MARKETING",
     desktopSubCategory: "Real Estate development",
-    mobileCategories: ["3D"],
+    mobileCategories: ["HYPE & MARKETING"],
     mobileBreakpoint: 450,
+    
   },
   {
     id: 3,
@@ -171,15 +172,15 @@ const videoData = [
     mobileBreakpoint: 450,
   },
   {
-    id: 12,
-    title: "CELEBRITY APPEARANCES",
-    description: "WE CAN BRING ANY STAR FOR YOU. MATTHEW MCCONAUGHEY, ADRIAN BRODY, NICOLAS CAGE, MILA JOVOVICH, VINCENT CASSEL, ZENDAYA, QUENTIN TARANTINO, KEANU REEVES, JASON MAMOA AND OTHERS.",
-    vimeoId: "1060106406",
-    previewImage: "/projectImage/Celebrity Appearances.png",
-    mobilePreviewImage: "/projectImage/mobileImage/Celebrity Appearances_mob.png",
-    desktopMainCategory: "HYPE & MARKETING",
+id: 12,
+    title: "VILLA DEL GAVI",
+    description: "WE CREATED AN EMOTIONAL SALES VIDEO THAT SHOWCASES THE CONCEPT OF THE HOUSE. THE STORY AND CHARACTER OF THE HOUSE WERE CREATED. 3D RENDERINGS.",
+    vimeoId: "1083958501",
+    previewImage: "/projectImage/VILLA DEL GAVI.png",
+    mobilePreviewImage: "/projectImage/mobileImage/VILLA DEL GAVI_mob.png",
+    desktopMainCategory: "3D", 
     desktopSubCategory: "Real Estate development",
-    mobileCategories: ["HYPE & MARKETING"],
+    mobileCategories: ["3D"],
     mobileBreakpoint: 450,
   },
   {
@@ -638,14 +639,14 @@ const ProjectsVideoSection = () => {
 
   // Функция для определения, нужно ли показывать кнопку для данного видео
   const shouldShowWatchButton = (videoId) => {
-    // Для блоков с ID 11 и 12 не показываем кнопку
-    return videoId !== 11 && videoId !== 12;
+    // Для блоков с ID 11 и 2 не показываем кнопку
+    return videoId !== 11 && videoId !== 2;
   };
 
   // Открытие попапа с Vimeo видео (только для блоков с кнопкой)
   const openVideoPopup = (video) => {
-    // Для блоков без кнопки (id 11 и 12) не открываем попап
-    if (video.id === 11 || video.id === 12) {
+    // Для блоков без кнопки (id 11 и 2) не открываем попап
+    if (video.id === 11 || video.id === 2) {
       return;
     }
     setSelectedVideo(video);
