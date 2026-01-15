@@ -17,6 +17,8 @@ const GlobalCursor = () => {
   const [isHovering, setIsHovering] = useState(false);
   const [circleSize, setCircleSize] = useState({ width: 60, height: 60, borderRadius: 30 });
   const [showCircle, setShowCircle] = useState(false);
+  const [isInsideButton, setIsInsideButton] = useState(false);
+  const [buttonHasBackground, setButtonHasBackground] = useState(false);
   
   const rafRef = useRef(null);
   const positionHistoryRef = useRef([]);
@@ -34,35 +36,91 @@ const GlobalCursor = () => {
     return Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
   };
 
+  // Функция для проверки есть ли у элемента фон
+  const hasBackground = (element) => {
+    if (!element) return false;
+    
+    const style = window.getComputedStyle(element);
+    const backgroundColor = style.backgroundColor;
+    const backgroundImage = style.backgroundImage;
+    
+    // Проверяем есть ли фон
+    const hasBgColor = backgroundColor && 
+                      backgroundColor !== 'rgba(0, 0, 0, 0)' && 
+                      backgroundColor !== 'transparent';
+    
+    const hasBgImage = backgroundImage && backgroundImage !== 'none';
+    
+    // Также проверяем есть ли градиент, тень и т.д.
+    const hasBoxShadow = style.boxShadow && style.boxShadow !== 'none';
+    const hasGradient = backgroundImage.includes('gradient');
+    
+    return hasBgColor || hasBgImage || hasBoxShadow || hasGradient;
+  };
+
   // Функция для получения точных размеров элемента
   const getElementMetrics = (element) => {
     const rect = element.getBoundingClientRect();
     
-    // Большие отступы для полного покрытия
-    const padding = {
-      horizontal: 14,
-      vertical: 12
-    };
+    // Проверяем есть ли у элемента фон
+    const hasBg = hasBackground(element);
+    setButtonHasBackground(hasBg);
     
-    const finalWidth = rect.width + (padding.horizontal * 2);
-    const finalHeight = rect.height + (padding.vertical * 2);
-    
-    // Большое скругление
-    const minSide = Math.min(finalWidth, finalHeight);
-    const finalBorderRadius = Math.min(30, minSide / 2);
-    
-    return {
-      x: rect.left - padding.horizontal,
-      y: rect.top - padding.vertical,
-      width: finalWidth,
-      height: finalHeight,
-      borderRadius: finalBorderRadius,
-      center: {
-        x: rect.left + rect.width / 2,
-        y: rect.top + rect.height / 2
-      },
-      originalRect: rect
-    };
+    // Для кнопок с фоном делаем круг ВНУТРИ (меньше)
+    if (hasBg) {
+      // Внутренние отступы - круг внутри кнопки
+      const padding = {
+        horizontal: 8,  // Меньше для внутреннего круга
+        vertical: 6
+      };
+      
+      const finalWidth = Math.max(rect.width - (padding.horizontal * 2), 40);
+      const finalHeight = Math.max(rect.height - (padding.vertical * 2), 20);
+      
+      // Большое скругление для внутреннего круга
+      const minSide = Math.min(finalWidth, finalHeight);
+      const finalBorderRadius = Math.min(30, minSide / 2);
+      
+      return {
+        x: rect.left + padding.horizontal,
+        y: rect.top + padding.vertical,
+        width: finalWidth,
+        height: finalHeight,
+        borderRadius: finalBorderRadius,
+        center: {
+          x: rect.left + rect.width / 2,
+          y: rect.top + rect.height / 2
+        },
+        originalRect: rect,
+        hasBackground: true
+      };
+    } else {
+      // Для кнопок без фона - обычный круг СНАРУЖИ (больше)
+      const padding = {
+        horizontal: 14,
+        vertical: 12
+      };
+      
+      const finalWidth = rect.width + (padding.horizontal * 2);
+      const finalHeight = rect.height + (padding.vertical * 2);
+      
+      const minSide = Math.min(finalWidth, finalHeight);
+      const finalBorderRadius = Math.min(30, minSide / 2);
+      
+      return {
+        x: rect.left - padding.horizontal,
+        y: rect.top - padding.vertical,
+        width: finalWidth,
+        height: finalHeight,
+        borderRadius: finalBorderRadius,
+        center: {
+          x: rect.left + rect.width / 2,
+          y: rect.top + rect.height / 2
+        },
+        originalRect: rect,
+        hasBackground: false
+      };
+    }
   };
 
   // ОЧЕНЬ быстрое изменение размера круга
@@ -70,7 +128,7 @@ const GlobalCursor = () => {
     const targetSize = targetSizeRef.current;
     
     // Очень быстрые факторы для анимации
-    const animationSpeed = isSticky ? 0.5 : 0.6; // Еще быстрее!
+    const animationSpeed = isSticky ? 0.5 : 0.6;
     const newWidth = lerp(circleSize.width, targetSize.width, animationSpeed);
     const newHeight = lerp(circleSize.height, targetSize.height, animationSpeed);
     const newBorderRadius = lerp(circleSize.borderRadius, targetSize.borderRadius, animationSpeed);
@@ -125,7 +183,7 @@ const GlobalCursor = () => {
 
     const handleMouseDown = () => {
       setIsClicked(true);
-      setTimeout(() => setIsClicked(false), 200); // Быстрее!
+      setTimeout(() => setIsClicked(false), 200);
     };
 
     window.addEventListener('mousemove', handleMouseMove);
@@ -155,7 +213,7 @@ const GlobalCursor = () => {
       setIsHovering(isOverInteractive);
     };
 
-    const interval = setInterval(checkHover, 40); // Чаще проверяем
+    const interval = setInterval(checkHover, 40);
     return () => clearInterval(interval);
   }, [position]);
 
@@ -192,7 +250,7 @@ const GlobalCursor = () => {
         setRotation(prev => {
           const diff = avgAngle - prev;
           const normalizedDiff = Math.atan2(Math.sin(diff), Math.cos(diff));
-          return prev + normalizedDiff * 0.4; // Быстрее вращение
+          return prev + normalizedDiff * 0.4;
         });
         
         const stretchAmount = 1 + speedRatio * 0.5;
@@ -206,11 +264,11 @@ const GlobalCursor = () => {
         setRotation(prev => {
           const diff = -prev;
           const normalizedDiff = Math.atan2(Math.sin(diff), Math.cos(diff));
-          return prev + normalizedDiff * 0.12; // Быстрее возврат
+          return prev + normalizedDiff * 0.12;
         });
         
         setScale({
-          x: lerp(scale.x, 1, 0.25), // Быстрее
+          x: lerp(scale.x, 1, 0.25),
           y: lerp(scale.y, 1, 0.25)
         });
       }
@@ -257,7 +315,7 @@ const GlobalCursor = () => {
         
         // Сразу устанавливаем почти целевой размер для мгновенного отклика
         targetSizeRef.current = {
-          width: metrics.width * 0.9, // Начинаем с 90% для быстрого эффекта
+          width: metrics.width * 0.9,
           height: metrics.height * 0.9,
           borderRadius: metrics.borderRadius
         };
@@ -371,7 +429,7 @@ const GlobalCursor = () => {
       
       {/* Круг для прилипания (быстрая анимация) */}
       <div 
-        className={`cursor-sticky-circle ${isClicked ? 'clicked' : ''}`}
+        className={`cursor-sticky-circle ${isClicked ? 'clicked' : ''} ${buttonHasBackground ? 'inside-button' : 'outside-button'}`}
         style={{
           left: `${svgPosition.x}px`,
           top: `${svgPosition.y}px`,

@@ -35,7 +35,7 @@
   mask-position: center;
   -webkit-mask-position: center;
   
-  transition: opacity 0.15s ease; /* Быстрое исчезновение */
+  transition: opacity 0.15s ease;
 }
 
 /* Круг для прилипания (ОЧЕНЬ быстрые анимации) */
@@ -46,9 +46,6 @@
   z-index: 2147483648;
   will-change: transform, opacity, width, height, border-radius;
   
-  backdrop-filter: invert(100%) hue-rotate(180deg) contrast(1.2);
-  -webkit-backdrop-filter: invert(100%) hue-rotate(180deg) contrast(1.2);
-  
   /* УБРАЛ ВСЕ ТЕНИ И БОРДЕРЫ */
   box-shadow: none !important;
   border: none !important;
@@ -56,10 +53,24 @@
   
   /* СУПЕР БЫСТРЫЕ анимации */
   transition: 
-    opacity 0.12s ease, /* Еще быстрее */
-    width 0.18s cubic-bezier(0.25, 1, 0.5, 1), /* Очень быстрая кривая */
+    opacity 0.12s ease,
+    width 0.18s cubic-bezier(0.25, 1, 0.5, 1),
     height 0.18s cubic-bezier(0.25, 1, 0.5, 1),
     border-radius 0.18s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* Стиль для кнопок БЕЗ фона (круг СНАРУЖИ) */
+.cursor-sticky-circle.outside-button {
+  backdrop-filter: invert(100%) hue-rotate(180deg) contrast(1.2);
+  -webkit-backdrop-filter: invert(100%) hue-rotate(180deg) contrast(1.2);
+}
+
+/* Стиль для кнопок С фоном (круг ВНУТРИ) */
+.cursor-sticky-circle.inside-button {
+  backdrop-filter: invert(100%) hue-rotate(180deg) contrast(1.2);
+  -webkit-backdrop-filter: invert(100%) hue-rotate(180deg) contrast(1.2);
+  /* Можно добавить легкий белый фон для лучшей видимости на темных кнопках */
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 /* Эффект при наведении для лого-курсора */
@@ -76,12 +87,12 @@
 
 /* Анимация клика для лого (быстрая) */
 .cursor-lens-backdrop.clicked {
-  animation: lensClick 0.2s ease-in-out; /* Быстрее */
+  animation: lensClick 0.2s ease-in-out;
 }
 
 /* Анимация клика для круга (очень быстрая) */
 .cursor-sticky-circle.clicked {
-  animation: circleClick 0.15s ease-in-out; /* Еще быстрее */
+  animation: circleClick 0.15s ease-in-out;
 }
 
 @keyframes lensClick {
@@ -89,7 +100,7 @@
     transform: translate(-50%, -50%) scale(1);
   }
   50% {
-    transform: translate(-50%, -50%) scale(0.85); /* Быстрее изменение */
+    transform: translate(-50%, -50%) scale(0.85);
   }
 }
 
@@ -98,7 +109,7 @@
     transform: translate(-50%, -50%) scale(1);
   }
   50% {
-    transform: translate(-50%, -50%) scale(0.92); /* Меньше изменение для скорости */
+    transform: translate(-50%, -50%) scale(0.92);
   }
 }
 
