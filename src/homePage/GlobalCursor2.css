@@ -36,7 +36,7 @@
   -webkit-mask-position: center;
   
   transition: 
-    opacity 0.15s cubic-bezier(0.34, 1.56, 0.64, 1),
+    opacity 0.15s ease,
     transform 0.2s ease;
 }
 
@@ -52,12 +52,15 @@
   border: none !important;
   outline: none !important;
   
+  backdrop-filter: invert(100%) hue-rotate(180deg) contrast(1.2);
+  -webkit-backdrop-filter: invert(100%) hue-rotate(180deg) contrast(1.2);
+  
   transition: 
-    opacity 0.15s cubic-bezier(0.34, 1.56, 0.64, 1),
+    opacity 0.15s ease,
     width 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
     height 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
     border-radius 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
-    transform 0.15s ease-out;
+    transform 0.15s ease;
 }
 
 /* Стиль для кнопок БЕЗ фона */
@@ -72,44 +75,31 @@
   -webkit-backdrop-filter: invert(100%) hue-rotate(180deg) contrast(1.2);
 }
 
-/* Особые стили для Mac */
-.cursor-sticky-circle.mac,
-.cursor-lens-backdrop.mac {
-  backdrop-filter: invert(100%) hue-rotate(180deg) contrast(1.1) brightness(1.05);
-  -webkit-backdrop-filter: invert(100%) hue-rotate(180deg) contrast(1.1) brightness(1.05);
-}
-
 /* Эффект при наведении */
 .cursor-lens-backdrop.hover {
-  backdrop-filter: invert(100%) hue-rotate(180deg) contrast(1.4) brightness(1.2);
-  -webkit-backdrop-filter: invert(100%) hue-rotate(180deg) contrast(1.4) brightness(1.2);
+  backdrop-filter: invert(100%) hue-rotate(180deg) contrast(1.4) brightness(1.15);
+  -webkit-backdrop-filter: invert(100%) hue-rotate(180deg) contrast(1.4) brightness(1.15);
 }
 
-/* Эффект прилипания */
-.cursor-sticky-circle.hover {
+/* Эффект растягивания */
+.cursor-sticky-circle.pulling {
   backdrop-filter: invert(100%) hue-rotate(180deg) contrast(1.3) brightness(1.1);
   -webkit-backdrop-filter: invert(100%) hue-rotate(180deg) contrast(1.3) brightness(1.1);
-}
-
-/* Эффект растягивания при оттягивании */
-.cursor-sticky-circle.pulling {
-  backdrop-filter: invert(100%) hue-rotate(180deg) contrast(1.2) brightness(1.15);
-  -webkit-backdrop-filter: invert(100%) hue-rotate(180deg) contrast(1.2) brightness(1.15);
   transition: 
     opacity 0.15s ease,
     width 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
     height 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
     border-radius 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
-    transform 0.1s ease-out; /* Быстрее при растягивании */
+    transform 0.1s ease;
 }
 
 /* Анимация клика */
 .cursor-lens-backdrop.clicked {
-  animation: lensClick 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  animation: lensClick 0.25s ease;
 }
 
 .cursor-sticky-circle.clicked {
-  animation: circleClick 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  animation: circleClick 0.2s ease;
 }
 
 @keyframes lensClick {
@@ -130,43 +120,16 @@
   }
 }
 
-/* Эффект растягивания в направлении курсора */
-@keyframes directionalStretch {
+/* Простое растягивание */
+@keyframes simpleStretch {
   0% {
     transform: translate(-50%, -50%) scale(1, 1);
   }
   50% {
-    transform: translate(-50%, -50%) scale(var(--stretch-x, 1.3), var(--stretch-y, 0.8));
+    transform: translate(-50%, -50%) scale(1.2, 0.9);
   }
   100% {
     transform: translate(-50%, -50%) scale(1, 1);
-  }
-}
-
-/* Плавное прилипание */
-@keyframes smoothAttach {
-  0% {
-    transform: translate(-50%, -50%) scale(0.8);
-    opacity: 0.7;
-  }
-  70% {
-    transform: translate(-50%, -50%) scale(1.03);
-  }
-  100% {
-    transform: translate(-50%, -50%) scale(1);
-    opacity: 1;
-  }
-}
-
-/* Плавное отлипание */
-@keyframes smoothDetach {
-  0% {
-    transform: translate(-50%, -50%) scale(1);
-    opacity: 1;
-  }
-  100% {
-    transform: translate(-50%, -50%) scale(0.9);
-    opacity: 0;
   }
 }
 
@@ -177,22 +140,10 @@
   }
 }
 
-/* Retina дисплеи */
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-  .cursor-lens-backdrop,
-  .cursor-sticky-circle {
-    image-rendering: -webkit-optimize-contrast;
-    image-rendering: crisp-edges;
-  }
-}
-
 /* Производительность */
 .cursor-container * {
   transform: translateZ(0);
   backface-visibility: hidden;
-  perspective: 1000;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
 /* Проверка поддержки backdrop-filter */
