@@ -20,14 +20,17 @@ const GlobalCursor = () => {
   const [buttonHasBackground, setButtonHasBackground] = useState(false);
   const [stretchEffect, setStretchEffect] = useState({ x: 1, y: 1 });
   const [isPulling, setIsPulling] = useState(false);
+  const [circleOffset, setCircleOffset] = useState({ x: 0, y: 0 }); // Постоянное смещение круга
+  const [circleSquash, setCircleSquash] = useState({ x: 1, y: 1 }); // Сплющивание круга
   
   const rafRef = useRef(null);
   const positionHistoryRef = useRef([]);
   const rotationHistoryRef = useRef([]);
   const stickyElementRef = useRef(null);
-  const lastStickyStateRef = useRef(false);
+  const offsetHistoryRef = useRef([]);
   const MAX_HISTORY = 5;
   const ROTATION_SMOOTH_HISTORY = 3;
+  const OFFSET_SMOOTH_HISTORY = 3;
 
   const lerp = (start, end, factor) => {
     return start + (end - start) * factor;
@@ -142,6 +145,63 @@ const GlobalCursor = () => {
       setIsPulling(false);
       return { x: 1, y: 1 };
     }
+  };
+
+  // Расчет смещения круга в сторону курсора
+  const calculateCircleOffset = (cursorPos, buttonCenter, elementRect) => {
+    if (!isSticky || !elementRect) return { x: 0, y: 0 };
+    
+    const dx = cursorPos.x - buttonCenter.x;
+    const dy = cursorPos.y - buttonCenter.y;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    
+    // Максимальное расстояние, при котором работает смещение
+    const maxOffsetDist = Math.max(elementRect.width, elementRect.height) * 0.8;
+    
+    if (dist < maxOffsetDist) {
+      // Сила смещения (0-1) в зависимости от расстояния
+      const offsetStrength = Math.min(dist / maxOffsetDist, 1);
+      
+      // Ограничиваем максимальное смещение (в пикселях)
+      const maxOffset = Math.min(elementRect.width, elementRect.height) * 0.3;
+      
+      // Плавная кривая для смещения
+      const smoothOffsetStrength = Math.pow(offsetStrength, 1.5);
+      
+      return {
+        x: dx * smoothOffsetStrength * maxOffset / maxOffsetDist,
+        y: dy * smoothOffsetStrength * maxOffset / maxOffsetDist
+      };
+    }
+    
+    return { x: 0, y: 0 };
+  };
+
+  // Расчет сплющивания круга
+  const calculateCircleSquash = (cursorPos, buttonCenter, elementRect) => {
+    if (!isSticky || !elementRect) return { x: 1, y: 1 };
+    
+    const dx = cursorPos.x - (buttonCenter.x + circleOffset.x);
+    const dy = cursorPos.y - (buttonCenter.y + circleOffset.y);
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    
+    const maxSquashDist = Math.max(elementRect.width, elementRect.height) * 0.5;
+    
+    if (dist > 0) {
+      const squashStrength = Math.min(dist / maxSquashDist, 0.3);
+      const angle = Math.atan2(dy, dx);
+      
+      // Сплющиваем перпендикулярно направлению к курсору
+      const squashX = 1 - Math.abs(Math.cos(angle)) * squashStrength * 0.2;
+      const squashY = 1 - Math.abs(Math.sin(angle)) * squashStrength * 0.2;
+      
+      return {
+        x: Math.max(0.8, squashX),
+        y: Math.max(0.8, squashY)
+      };
+    }
+    
+    return { x: 1, y: 1 };
   };
 
   useEffect(() => {
@@ -324,6 +384,10 @@ const GlobalCursor = () => {
           borderRadius: metrics.borderRadius
         });
         
+        // Сбрасываем смещение
+        setCircleOffset({ x: 0, y: 0 });
+        setCircleSquash({ x: 1, y: 1 });
+        
         // Показываем круг, скрываем лого
         setShowCircle(true);
         
@@ -341,16 +405,55 @@ const GlobalCursor = () => {
         smoothFactor = 0.1;
       } else if (isSticky && stickyElementRef.current) {
         const metrics = getElementMetrics(stickyElementRef.current);
-        targetX = metrics.center.x;
-        targetY = metrics.center.y;
         
-        // Обновляем растягивание
-        const stretch = calculateStretchEffect(
+        // Рассчитываем смещение круга в сторону курсора
+        const newOffset = calculateCircleOffset(
           position, 
           metrics.center, 
           metrics.originalRect
         );
+        
+        // Сглаживаем смещение
+        offsetHistoryRef.current.push(newOffset);
+        if (offsetHistoryRef.current.length > OFFSET_SMOOTH_HISTORY) {
+          offsetHistoryRef.current.shift();
+        }
+        
+        const smoothOffset = offsetHistoryRef.current.reduce(
+          (acc, offset) => ({ x: acc.x + offset.x, y: acc.y + offset.y }),
+          { x: 0, y: 0 }
+        );
+        const count = offsetHistoryRef.current.length;
+        
+        const finalOffset = {
+          x: smoothOffset.x / count,
+          y: smoothOffset.y / count
+        };
+        
+        setCircleOffset(finalOffset);
+        
+        // Рассчитываем сплющивание круга
+        const squash = calculateCircleSquash(
+          position,
+          metrics.center,
+          metrics.originalRect
+        );
+        setCircleSquash(squash);
+        
+        // Обновляем растягивание
+        const stretch = calculateStretchEffect(
+          position, 
+          { 
+            x: metrics.center.x + finalOffset.x, 
+            y: metrics.center.y + finalOffset.y 
+          }, 
+          metrics.originalRect
+        );
         setStretchEffect(stretch);
+        
+        // Позиция круга с учетом смещения
+        targetX = metrics.center.x + finalOffset.x;
+        targetY = metrics.center.y + finalOffset.y;
         
         setStickyTarget({
           x: metrics.center.x,
@@ -371,6 +474,11 @@ const GlobalCursor = () => {
           // МГНОВЕННО возвращаем размер лого для круга
           setCircleSize({ width: 60, height: 60, borderRadius: 30 });
           
+          // Сбрасываем смещение и сплющивание
+          setCircleOffset({ x: 0, y: 0 });
+          setCircleSquash({ x: 1, y: 1 });
+          offsetHistoryRef.current = [];
+          
           // Скрываем круг, показываем лого
           setShowCircle(false);
         }
@@ -378,6 +486,9 @@ const GlobalCursor = () => {
         // Если не прилипли, но круг еще виден - скрываем
         setShowCircle(false);
         setCircleSize({ width: 60, height: 60, borderRadius: 30 });
+        setCircleOffset({ x: 0, y: 0 });
+        setCircleSquash({ x: 1, y: 1 });
+        setStretchEffect({ x: 1, y: 1 });
       }
 
       const offsetX = 0;
@@ -401,7 +512,7 @@ const GlobalCursor = () => {
     return () => {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
-  }, [position, svgPosition, velocity, isSticky, scale, rotation, showCircle]);
+  }, [position, svgPosition, velocity, isSticky, scale, rotation, showCircle, circleOffset]);
 
   const supportsBackdropFilter = () => {
     return CSS.supports('backdrop-filter', 'invert(1)') || 
@@ -414,8 +525,12 @@ const GlobalCursor = () => {
     return null;
   }
 
-  // Трансформация растягивания
-  const stretchTransform = `scale(${stretchEffect.x}, ${stretchEffect.y})`;
+  // Комбинированная трансформация: смещение + сплющивание + растягивание
+  const combinedTransform = `
+    translate(${circleOffset.x}px, ${circleOffset.y}px)
+    scale(${circleSquash.x}, ${circleSquash.y})
+    scale(${stretchEffect.x}, ${stretchEffect.y})
+  `;
 
   return (
     <div className="cursor-container">
@@ -443,7 +558,7 @@ const GlobalCursor = () => {
             width: `${circleSize.width}px`,
             height: `${circleSize.height}px`,
             borderRadius: `${circleSize.borderRadius}px`,
-            transform: `translate(-50%, -50%) ${stretchTransform}`,
+            transform: `translate(-50%, -50%) ${combinedTransform}`,
             opacity: 1,
             transformOrigin: 'center'
           }}
