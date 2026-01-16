@@ -12,6 +12,10 @@ const ContactSection = () => {
   const [messageSent, setMessageSent] = useState(false);
   const [copiedEmail, setCopiedEmail] = useState("");
 
+  // Telegram bot credentials
+  const TELEGRAM_BOT_TOKEN = "7998150091:AAGe78Y2qZCdev2c6bFVKEumP5dPzK9sDkY";
+  const TELEGRAM_CHAT_ID = "1000103882";
+
   const copyEmailToClipboard = (email, type) => {
     navigator.clipboard.writeText(email)
       .then(() => {
@@ -31,10 +35,45 @@ const ContactSection = () => {
     }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
+  // Function to send to Telegram
+  const sendToTelegram = async () => {
+    const message = `
 
+*Name:* ${formData.name}
+*Phone:* ${formData.phone}
+*Email:* ${formData.email}
+*Project:* ${formData.project}
+
+*Date:* ${new Date().toLocaleString()}
+    `;
+
+    try {
+      const response = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          chat_id: TELEGRAM_CHAT_ID,
+          text: message,
+          parse_mode: 'Markdown'
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(`Telegram error: ${errorData.description || response.statusText}`);
+      }
+      
+      return { success: true, service: 'telegram' };
+    } catch (error) {
+      console.warn('Error sending to Telegram:', error);
+      return { success: false, service: 'telegram', error: error.message };
+    }
+  };
+
+  // Function to send to Formspree
+  const sendToFormspree = async () => {
     try {
       const response = await fetch('https://formspree.io/f/mpqqqzap', {
         method: 'POST',
@@ -46,34 +85,94 @@ const ContactSection = () => {
           phone: formData.phone,
           email: formData.email,
           message: formData.project,
-          _subject: `Новая заявка от ${formData.name}`,
+          _subject: `New application from ${formData.name}`,
         }),
       });
 
       if (response.ok) {
+        return { success: true, service: 'formspree' };
+      } else {
+        const errorText = await response.text();
+        throw new Error(`Formspree error: ${response.status} ${response.statusText} - ${errorText}`);
+      }
+    } catch (error) {
+      console.warn('Error sending to Formspree:', error);
+      return { success: false, service: 'formspree', error: error.message };
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setMessageSent(false);
+
+    try {
+      // Parallel sending to both services
+      const [telegramResult, formspreeResult] = await Promise.allSettled([
+        sendToTelegram(),
+        sendToFormspree()
+      ]);
+
+      // Extract values from promises
+      const telegramResponse = telegramResult.status === 'fulfilled' 
+        ? telegramResult.value 
+        : { success: false, service: 'telegram', error: telegramResult.reason?.message || 'Unknown error' };
+      
+      const formspreeResponse = formspreeResult.status === 'fulfilled' 
+        ? formspreeResult.value 
+        : { success: false, service: 'formspree', error: formspreeResult.reason?.message || 'Unknown error' };
+
+      const telegramSuccess = telegramResponse.success;
+      const formspreeSuccess = formspreeResponse.success;
+
+      // Log results for debugging
+      console.log('Telegram result:', telegramResponse);
+      console.log('Formspree result:', formspreeResponse);
+
+      // If at least one service succeeded
+      if (formspreeSuccess || telegramSuccess) {
         setMessageSent(true);
         setFormData({ name: "", phone: "", email: "", project: "" });
 
+        // Success message with information about where it was sent
+        const successMessages = [];
+        if (formspreeSuccess) successMessages.push('Formspree');
+        if (telegramSuccess) successMessages.push('Telegram');
+        
+        console.log(`✅ Message successfully sent to: ${successMessages.join(' and ')}`);
+        
         setTimeout(() => {
           setMessageSent(false);
         }, 5000);
       } else {
-        throw new Error('Sending error');
+        // If both services failed
+        const errorMessage = `
+          Failed to send the message.
+          Telegram: ${telegramResponse.error || 'unknown error'}
+          Formspree: ${formspreeResponse.error || 'unknown error'}
+          
+          Please try again or contact us directly at email: hello@movieparkpro.com
+        `.replace(/\s+/g, ' ').trim();
+        
+        alert(errorMessage);
+        throw new Error('Both sending methods failed');
       }
     } catch (error) {
-      alert('An error occurred while sending. Please try again or contact us directly at hello@movieparkpro.com');
-      console.error('Error:', error);
+      console.error('General sending error:', error);
+      
+      // Additional message only if not shown above
+      if (!error.message.includes('Both sending methods failed')) {
+        alert('An error occurred while sending. Please try again or contact us directly at email: hello@movieparkpro.com');
+      }
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  // ОБНОВЛЕНО: Добавлен id для навигации
   return (
     <section className="contact-section" id="contact-section">
-      {/* УДАЛЕНО: Разделительная полоса теперь находится ВНЕ этого компонента */}
       <div className="contact-container">
-        {/* ЛЕВАЯ КОЛОНКА */}
+        {/* LEFT COLUMN */}
         <div className="left-column">
           <div className="emails-section">
             <div className="email-row">
@@ -108,7 +207,7 @@ const ContactSection = () => {
           </div>
         </div>
 
-        {/* ПРАВАЯ КОЛОНКА */}
+        {/* RIGHT COLUMN */}
         <div className="right-column">
           <div className="text-section">
             <div className="contact-text">
@@ -192,7 +291,7 @@ const ContactSection = () => {
               {isSubmitting ? "Sending..." : "SEND"}
             </button>
 
-            {/* Мобильные email кнопки - ТОЛЬКО для мобильной версии */}
+            {/* Mobile email buttons - ONLY for mobile version */}
             <div className="mobile-emails-section">
               <div className="mobile-email-item">
                 <div className="mobile-email-label">WHAT TO BECOME OUR CLIENT?</div>
