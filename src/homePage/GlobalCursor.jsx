@@ -25,7 +25,6 @@ const GlobalCursor = () => {
   const positionHistoryRef = useRef([]);
   const rotationHistoryRef = useRef([]);
   const stickyElementRef = useRef(null);
-  const targetSizeRef = useRef({ width: 60, height: 60, borderRadius: 30 });
   const lastStickyStateRef = useRef(false);
   const MAX_HISTORY = 5;
   const ROTATION_SMOOTH_HISTORY = 3;
@@ -116,84 +115,33 @@ const GlobalCursor = () => {
     }
   };
 
-  // Простой эффект растягивания (старый вариант)
-  const calculateSimpleStretch = (cursorPos, buttonCenter, elementRect) => {
+  // Эффект растягивания
+  const calculateStretchEffect = (cursorPos, buttonCenter, elementRect) => {
     if (!isSticky || !elementRect) return { x: 1, y: 1 };
     
     const dx = cursorPos.x - buttonCenter.x;
     const dy = cursorPos.y - buttonCenter.y;
     const dist = Math.sqrt(dx * dx + dy * dy);
     
-    // Максимальное расстояние для эффекта растягивания
     const maxStretchDist = Math.max(elementRect.width, elementRect.height) * 0.4;
     
     if (dist > maxStretchDist * 0.3) {
       const stretchIntensity = Math.min(dist / maxStretchDist, 1.2);
-      
-      // Простое растягивание в направлении движения
       const angle = Math.atan2(dy, dx);
       
-      // Уменьшил интенсивность
       const stretchX = 1 + Math.abs(Math.cos(angle)) * stretchIntensity * 0.3;
       const stretchY = 1 + Math.abs(Math.sin(angle)) * stretchIntensity * 0.3;
-      
-      // Слегка сжимаем противоположную сторону
-      const compressX = 1 - Math.abs(Math.cos(Math.PI/2 - angle)) * stretchIntensity * 0.15;
-      const compressY = 1 - Math.abs(Math.sin(Math.PI/2 - angle)) * stretchIntensity * 0.15;
       
       setIsPulling(true);
       
       return {
-        x: stretchX * compressX,
-        y: stretchY * compressY
+        x: stretchX,
+        y: stretchY
       };
     } else {
       setIsPulling(false);
       return { x: 1, y: 1 };
     }
-  };
-
-  // Плавное изменение размера круга
-  const animateCircleSize = () => {
-    const targetSize = targetSizeRef.current;
-    
-    let animationSpeed = 0.25;
-    
-    if (!lastStickyStateRef.current && isSticky) {
-      animationSpeed = 0.35;
-    } else if (lastStickyStateRef.current && !isSticky) {
-      animationSpeed = 0.45;
-    }
-    
-    const newWidth = lerp(circleSize.width, targetSize.width, animationSpeed);
-    const newHeight = lerp(circleSize.height, targetSize.height, animationSpeed);
-    const newBorderRadius = lerp(circleSize.borderRadius, targetSize.borderRadius, animationSpeed);
-    
-    setCircleSize({
-      width: newWidth,
-      height: newHeight,
-      borderRadius: newBorderRadius
-    });
-    
-    // Эффект простого растягивания
-    if (isSticky && stickyElementRef.current) {
-      const metrics = getElementMetrics(stickyElementRef.current);
-      const stretch = calculateSimpleStretch(
-        position, 
-        metrics.center, 
-        metrics.originalRect
-      );
-      setStretchEffect(stretch);
-    } else {
-      setStretchEffect({ x: 1, y: 1 });
-      setIsPulling(false);
-    }
-    
-    // Показываем круг только при прилипании
-    const shouldShowCircle = isSticky || circleSize.width > 65;
-    setShowCircle(shouldShowCircle);
-    
-    lastStickyStateRef.current = isSticky;
   };
 
   useEffect(() => {
@@ -353,7 +301,6 @@ const GlobalCursor = () => {
           y: rect.top + rect.height / 2
         };
         
-        // Простое расстояние до центра
         const dist = distance(position.x, position.y, center.x, center.y);
         
         if (dist < closestDistance) {
@@ -363,25 +310,25 @@ const GlobalCursor = () => {
       });
 
       // Прилипаем когда близко к элементу
-      const STICKY_THRESHOLD = Math.max(50, closestDistance * 0.5);
+      const STICKY_THRESHOLD = 50;
       
       if (closestElement && closestDistance < STICKY_THRESHOLD && !isSticky) {
         setIsSticky(true);
+        stickyElementRef.current = closestElement;
+        
+        // МГНОВЕННО устанавливаем размер кнопки для круга
         const metrics = getElementMetrics(closestElement);
-        
-        targetSizeRef.current = {
-          width: metrics.width * 0.9,
-          height: metrics.height * 0.9,
+        setCircleSize({
+          width: metrics.width,
+          height: metrics.height,
           borderRadius: metrics.borderRadius
-        };
+        });
         
-        setTimeout(() => {
-          targetSizeRef.current = {
-            width: metrics.width,
-            height: metrics.height,
-            borderRadius: metrics.borderRadius
-          };
-        }, 50);
+        // Показываем круг, скрываем лого
+        setShowCircle(true);
+        
+        targetX = metrics.center.x;
+        targetY = metrics.center.y;
         
         setStickyTarget({
           x: metrics.center.x,
@@ -391,18 +338,19 @@ const GlobalCursor = () => {
           borderRadius: metrics.borderRadius
         });
         
-        stickyElementRef.current = closestElement;
-        smoothFactor = 0.08;
+        smoothFactor = 0.1;
       } else if (isSticky && stickyElementRef.current) {
         const metrics = getElementMetrics(stickyElementRef.current);
         targetX = metrics.center.x;
         targetY = metrics.center.y;
         
-        targetSizeRef.current = {
-          width: metrics.width,
-          height: metrics.height,
-          borderRadius: metrics.borderRadius
-        };
+        // Обновляем растягивание
+        const stretch = calculateStretchEffect(
+          position, 
+          metrics.center, 
+          metrics.originalRect
+        );
+        setStretchEffect(stretch);
         
         setStickyTarget({
           x: metrics.center.x,
@@ -420,13 +368,17 @@ const GlobalCursor = () => {
           setIsSticky(false);
           stickyElementRef.current = null;
           
-          targetSizeRef.current = { width: 60, height: 60, borderRadius: 30 };
+          // МГНОВЕННО возвращаем размер лого для круга
+          setCircleSize({ width: 60, height: 60, borderRadius: 30 });
+          
+          // Скрываем круг, показываем лого
+          setShowCircle(false);
         }
-      } else if (!isSticky) {
-        targetSizeRef.current = { width: 60, height: 60, borderRadius: 30 };
+      } else if (!isSticky && showCircle) {
+        // Если не прилипли, но круг еще виден - скрываем
+        setShowCircle(false);
+        setCircleSize({ width: 60, height: 60, borderRadius: 30 });
       }
-
-      animateCircleSize();
 
       const offsetX = 0;
       const offsetY = 0;
@@ -449,7 +401,7 @@ const GlobalCursor = () => {
     return () => {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
-  }, [position, svgPosition, velocity, isSticky, scale, rotation, circleSize]);
+  }, [position, svgPosition, velocity, isSticky, scale, rotation, showCircle]);
 
   const supportsBackdropFilter = () => {
     return CSS.supports('backdrop-filter', 'invert(1)') || 
@@ -462,12 +414,12 @@ const GlobalCursor = () => {
     return null;
   }
 
-  // Простая трансформация растягивания
+  // Трансформация растягивания
   const stretchTransform = `scale(${stretchEffect.x}, ${stretchEffect.y})`;
 
   return (
     <div className="cursor-container">
-      {/* Лого-курсор */}
+      {/* Лого-курсор (скрывается при прилипании) */}
       <div 
         className={`cursor-lens-backdrop ${isClicked ? 'clicked' : ''} ${isHovering ? 'hover' : ''}`}
         style={{
@@ -481,21 +433,22 @@ const GlobalCursor = () => {
         }}
       />
       
-      {/* Круг для прилипания */}
-      <div 
-        className={`cursor-sticky-circle ${isClicked ? 'clicked' : ''} ${buttonHasBackground ? 'inside-button' : 'outside-button'} ${isPulling ? 'pulling' : ''}`}
-        style={{
-          left: `${svgPosition.x}px`,
-          top: `${svgPosition.y}px`,
-          width: `${circleSize.width}px`,
-          height: `${circleSize.height}px`,
-          borderRadius: `${circleSize.borderRadius}px`,
-          transform: `translate(-50%, -50%) ${stretchTransform}`,
-          opacity: showCircle ? 1 : 0,
-          transformOrigin: 'center',
-          display: showCircle ? 'block' : 'none'
-        }}
-      />
+      {/* Круг для прилипания (показывается только при прилипании) */}
+      {showCircle && (
+        <div 
+          className={`cursor-sticky-circle ${isClicked ? 'clicked' : ''} ${buttonHasBackground ? 'inside-button' : 'outside-button'} ${isPulling ? 'pulling' : ''}`}
+          style={{
+            left: `${svgPosition.x}px`,
+            top: `${svgPosition.y}px`,
+            width: `${circleSize.width}px`,
+            height: `${circleSize.height}px`,
+            borderRadius: `${circleSize.borderRadius}px`,
+            transform: `translate(-50%, -50%) ${stretchTransform}`,
+            opacity: 1,
+            transformOrigin: 'center'
+          }}
+        />
+      )}
     </div>
   );
 };
