@@ -1,0 +1,198 @@
+/* BodyText.css */
+
+/* Сброс и базовые настройки */
+.privacy-policy-container {
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  color: #000000;
+  line-height: 1.5;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+/* Заголовок PRIVACY POLICY - обычное позиционирование */
+.privacy-policy-title {
+  font-family: 'Helvetica Neue';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 4em; /* 64px */
+  line-height: 1em; /* 64px */
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  color: #000000;
+  
+  /* Убираем position: absolute, используем обычные margin */
+  margin: 0 0 48px 88px; /* сверху 0, снизу 1.5em, слева 88px (5.5em) */
+  padding: 1em 0 0 0; /* отступ сверху 60px (3.75em) */
+  text-align: left;
+  box-sizing: border-box;
+  width: calc(100% - 5.5em);
+}
+
+/* Контейнер контента с отступом слева 88px */
+.privacy-policy-content {
+  padding: 0 0 0 5.5em; /* только слева 88px */
+  width: 100%;
+  box-sizing: border-box;
+  max-width: calc(100% - 5.5em);
+}
+
+/* Секции */
+.privacy-policy-section {
+  margin-bottom: 2.5em; /* 40px между секциями */
+  text-align: left;
+  max-width: 900px; /* ограничение ширины текста */
+}
+
+/* Текст последнего обновления - 16px */
+.last-updated {
+  font-family: 'Helvetica Neue';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 1em; /* 16px */
+  line-height: 1.5em; /* 24px */
+  margin-bottom: 1.5em;
+  color: #000000;
+}
+
+/* Вводный текст - 16px */
+.intro-text {
+  font-family: 'Helvetica Neue';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 1em; /* 16px */
+  line-height: 1.5em; /* 24px */
+  color: #000000;
+  margin-bottom: 1.5em;
+}
+
+/* Ссылка на сайт в первом параграфе */
+.intro-text a {
+  color: #000000;
+  text-decoration: none;
+  font-weight: 400;
+}
+
+.intro-text a:hover {
+  text-decoration: underline;
+}
+
+/* Заголовки секций - 24px */
+.section-title {
+  font-family: 'Helvetica Neue';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 1.5em; /* 24px */
+  line-height: 1.5em; /* 36px */
+  color: #000000;
+  margin: 0 0 0.5em 0;
+}
+
+/* Текст секций - 16px */
+.section-text {
+  font-family: 'Helvetica Neue';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 1em; /* 16px */
+  line-height: 1.5em; /* 24px */
+  color: #000000;
+  margin: 0 0 1em 0;
+}
+
+/* Списки */
+.privacy-list {
+  margin: 0.5em 0 1em 0;
+  padding-left: 1.5em;
+  list-style-type: disc; /* включаем стандартные точки */
+}
+
+/* Элементы списка - 16px */
+.list-item {
+  font-family: 'Helvetica Neue';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 1em; /* 16px */
+  line-height: 1.5em; /* 24px */
+  color: #000000;
+  margin-bottom: 0.5em;
+}
+
+/* Email текст - не копируемый, 16px */
+.email-text {
+  font-family: 'Helvetica Neue';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 1em; /* 16px */
+  line-height: 1.5em; /* 24px */
+  color: #000000;
+  user-select: none; /* предотвращает выделение */
+  -webkit-user-select: none; /* для Safari */
+  -moz-user-select: none; /* для Firefox */
+  -ms-user-select: none; /* для IE/Edge */
+}
+
+/* Адрес контактов - 16px */
+.contact-address {
+  font-family: 'Helvetica Neue';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 1em; /* 16px */
+  line-height: 1.5em; /* 24px */
+  color: #000000;
+  margin: 0;
+}
+
+/* Адаптивность для мобильных устройств */
+@media (max-width: 768px) {
+  .privacy-policy-title {
+    font-size: 2.5em;
+    margin: 2.5em 0 1.5em 2em;
+    padding-top: 2em;
+    width: calc(100% - 2em);
+  }
+  
+  .privacy-policy-content {
+    padding: 0 0 0 2em;
+    max-width: calc(100% - 2em);
+  }
+  
+  .privacy-policy-section {
+    margin-bottom: 1.5em;
+    max-width: 100%;
+  }
+  
+  .section-title {
+    font-size: 1.25em; /* уменьшаем до 20px на мобильных */
+  }
+}
+
+@media (max-width: 480px) {
+  .privacy-policy-title {
+    font-size: 2em;
+    margin: 2em 0 1em 1em;
+    padding-top: 1.5em;
+    width: calc(100% - 1em);
+  }
+  
+  .privacy-policy-content {
+    padding: 0 0 0 1em;
+    max-width: calc(100% - 1em);
+  }
+  
+  .privacy-list {
+    padding-left: 1em;
+  }
+  
+  .section-title {
+    font-size: 1.125em; /* уменьшаем до 18px на маленьких экранах */
+  }
+}
+
+/* Стили для предотвращения копирования email */
+.email-text::selection {
+  background-color: transparent;
+}
+
+.email-text::-moz-selection {
+  background-color: transparent;
+}

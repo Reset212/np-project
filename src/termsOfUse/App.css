@@ -1,0 +1,27 @@
+
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+ 
+}
+
+/* App.css - добавьте эти стили */
+
+.App {
+  position: relative;
+  width: 100%;
+  overflow-x: hidden; /* Только горизонтальное скрытие */
+}
+
+/* Убедитесь, что все секции имеют позицию relative */
+.App > * {
+  position: relative;
+  /* z-index: auto; */
+}
+
+/* Отладка - можно временно включить */
+.debug-border {
+  border: 1px solid red !important;
+}

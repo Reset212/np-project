@@ -1,5 +1,6 @@
 // Файл: Footer.jsx
 import React from "react";
+import { Link } from "react-router-dom";
 import "./Footer.css";
 import instagramIcon from "../image/instagram-icon.svg";
 import emailIcon from "../image/email-icon.svg";
@@ -15,9 +16,9 @@ const Footer = () => {
         </div>
         
         <div className="footer-links">
-          <a href="/privacy-policy">PRIVACY POLICY</a>
-          <a href="/terms-of-use">TERMS OF USE</a>
-          <a href="/accessibility-statement">ACCESSIBILITY STATEMENT</a>
+          <Link to="/privacy-policy">PRIVACY POLICY</Link>
+          <Link to="/terms-of-use">TERMS OF USE</Link>
+          <Link to="/accessibility-statement">ACCESSIBILITY STATEMENT</Link>
         </div>
         
         <div className="footer-social">
@@ -55,13 +56,13 @@ const Footer = () => {
           
           {/* 2 строка: PRIVACY POLICY TERMS OF USE */}
           <div className="footer-mobile-links-row1">
-            <a href="/privacy-policy">PRIVACY POLICY</a>
-            <a href="/terms-of-use">TERMS OF USE</a>
+            <Link to="/privacy-policy">PRIVACY POLICY</Link>
+            <Link to="/terms-of-use">TERMS OF USE</Link>
           </div>
           
           {/* 3 строка: ACCESSIBILITY STATEMENT */}
           <div className="footer-mobile-links-row2">
-            <a href="/accessibility-statement">ACCESSIBILITY STATEMENT</a>
+            <Link to="/accessibility-statement">ACCESSIBILITY STATEMENT</Link>
           </div>
           
           {/* 4 строка: © 2025 MOVIE PARK */}
@@ -72,6 +73,10 @@ const Footer = () => {
       </div>
     </footer>
   );
+
+
+
+
 };
 
 export default Footer;
