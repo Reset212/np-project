@@ -16,7 +16,7 @@ const BodyText = () => {
             These Terms of Use govern your access to and use of the website{" "}
             <a href="https://movieparkpro.com" target="_blank" rel="noopener noreferrer">
               movieparkpro.com
-            </a>{" "}
+            </a>{" "} <br />
             (the "Website"), operated by Movie Park Film Developing ("Company").
           </p>
           <p className="intro-text">
@@ -27,7 +27,7 @@ const BodyText = () => {
         <section className="privacy-policy-section">
           <h2 className="section-title">1. Website Use</h2>
           <p className="section-text">
-            You may use the Website solely for lawful purposes and in accordance with these Terms.
+            You may use the Website solely for lawful purposes and in accordance with these Terms. <br />
             You agree not to misuse the Website or attempt to gain unauthorized access to its systems.
           </p>
         </section>
@@ -35,7 +35,7 @@ const BodyText = () => {
         <section className="privacy-policy-section">
           <h2 className="section-title">2. Intellectual Property</h2>
           <p className="section-text">
-            All content on the Website, including but not limited to videos, visuals, text, graphics, logos, and concepts, is the 
+            All content on the Website, including but not limited to videos, visuals, text, graphics, logos, and concepts, is the  <br />
             intellectual property of Movie Park Film Developing or its licensors.
           </p>
           <p className="section-text">
@@ -46,7 +46,7 @@ const BodyText = () => {
         <section className="privacy-policy-section">
           <h2 className="section-title">3. Portfolio and Case Studies</h2>
           <p className="section-text">
-            Any examples, case studies, or project descriptions displayed on the Website are provided for informational 
+            Any examples, case studies, or project descriptions displayed on the Website are provided for informational <br />
             purposes only and do not constitute guarantees of specific results.
           </p>
         </section>
@@ -54,7 +54,7 @@ const BodyText = () => {
         <section className="privacy-policy-section">
           <h2 className="section-title">4. Disclaimer</h2>
           <p className="section-text">
-            The Website is provided on an "as is" and "as available" basis.
+            The Website is provided on an "as is" and "as available" basis. <br />
             We make no warranties regarding accuracy, completeness, or suitability of the information presented.
           </p>
         </section>
@@ -62,7 +62,7 @@ const BodyText = () => {
         <section className="privacy-policy-section">
           <h2 className="section-title">5. Limitation of Liability</h2>
           <p className="section-text">
-            To the maximum extent permitted by law, Movie Park Film Developing shall not be liable for 
+            To the maximum extent permitted by law, Movie Park Film Developing shall not be liable for  <br />
             any direct, indirect, incidental, or consequential damages arising from your use of the Website.
           </p>
         </section>
@@ -70,7 +70,7 @@ const BodyText = () => {
         <section className="privacy-policy-section">
           <h2 className="section-title">6. Third-Party Links</h2>
           <p className="section-text">
-            The Website may contain links to third-party websites. 
+            The Website may contain links to third-party websites.  <br />
             We are not responsible for the content, policies, or practices of such websites.
           </p>
         </section>
@@ -78,7 +78,7 @@ const BodyText = () => {
         <section className="privacy-policy-section">
           <h2 className="section-title">7. Governing Law</h2>
           <p className="section-text">
-            These Terms shall be governed by and construed in accordance with the laws of the United Arab Emirates.
+            These Terms shall be governed by and construed in accordance with the laws of the United Arab Emirates. <br />
             Any disputes shall be subject to the exclusive jurisdiction of the courts of Dubai, UAE.
           </p>
         </section>
@@ -86,7 +86,7 @@ const BodyText = () => {
         <section className="privacy-policy-section">
           <h2 className="section-title">8. Changes to Terms</h2>
           <p className="section-text">
-            We reserve the right to update or modify these Terms at any time. Continued use of the Website 
+            We reserve the right to update or modify these Terms at any time. Continued use of the Website <br />
             constitutes acceptance of the updated Terms.
           </p>
         </section>

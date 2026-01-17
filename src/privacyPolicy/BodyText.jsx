@@ -14,7 +14,9 @@ const BodyText = () => {
           </p>
           <p className="intro-text">
             Movie Park Film Developing ("Company", "we", "our", "us") respects your privacy and is committed to 
-            protecting the personal data of users who visit and interact with our website <strong>movieparkpro.com</strong> (the "Website").
+            protecting the personal data of users who visit and interact with our website <a href="https://movieparkpro.com" target="_blank" rel="noopener noreferrer">
+              movieparkpro.com
+            </a>{" "} (the "Website").
           </p>
           <p className="intro-text">
             This Privacy Policy explains how we collect, use, store, and protect your personal information.
@@ -62,7 +64,7 @@ const BodyText = () => {
             <li className="list-item">Our legitimate business interest in responding to inquiries</li>
           </ul>
           <p className="section-text">
-            For users located in the European Economic Area (EEA), data processing complies 
+            For users located in the European Economic Area (EEA), data processing <br /> complies 
             with the General Data Protection Regulation (GDPR).
           </p>
         </section>
@@ -70,7 +72,7 @@ const BodyText = () => {
         <section className="privacy-policy-section">
           <h2 className="section-title">4. Cookies and Analytics</h2>
           <p className="section-text">
-            Our Website uses Google Analytics to analyze website traffic and user behavior.
+            Our Website uses Google Analytics to analyze website traffic and user behavior <br />
             Google Analytics may collect anonymized data such as IP address, device type, 
             browser information, and pages visited.
           </p>
@@ -82,7 +84,7 @@ const BodyText = () => {
         <section className="privacy-policy-section">
           <h2 className="section-title">5. Data Storage and Security</h2>
           <p className="section-text">
-            We take reasonable technical and organizational measures to protect your personal data from 
+            We take reasonable technical and organizational measures to protect your personal data from <br />
             unauthorized access, loss, misuse, or disclosure.
           </p>
           <p className="section-text">
@@ -93,8 +95,8 @@ const BodyText = () => {
         <section className="privacy-policy-section">
           <h2 className="section-title">6. Data Sharing</h2>
           <p className="section-text">
-            We do not sell, rent, or trade your personal data. 
-            Data may be shared only with trusted service providers strictly for operational purposes 
+            We do not sell, rent, or trade your personal data. <br /> 
+            Data may be shared only with trusted service providers strictly for operational purposes <br />
             (e.g. hosting or analytics), under confidentiality obligations.
           </p>
         </section>
@@ -102,7 +104,7 @@ const BodyText = () => {
         <section className="privacy-policy-section">
           <h2 className="section-title">7. International Data Transfers</h2>
           <p className="section-text">
-            As we operate internationally, your data may be processed outside your country of residence. 
+            As we operate internationally, your data may be processed outside your country of residence. <br />
             We ensure appropriate safeguards are in place in accordance with applicable laws.
           </p>
         </section>
@@ -119,14 +121,14 @@ const BodyText = () => {
             <li className="list-item">Object to processing</li>
           </ul>
           <p className="section-text">
-            Requests can be submitted to: <span className="email-text">hello@movieparkpro.com</span>
+            Requests can be submitted to: <span className="email-text"> <strong>hello@movieparkpro.com</strong></span>
           </p>
         </section>
 
         <section className="privacy-policy-section">
           <h2 className="section-title">9. Children's Privacy</h2>
           <p className="section-text">
-            Our Website and services are not intended for individuals under the age of 16. 
+            Our Website and services are not intended for individuals under the age of 16. <br />
             We do not knowingly collect personal data from children.
           </p>
         </section>
@@ -137,8 +139,9 @@ const BodyText = () => {
             Movie Park Film Developing<br />
             Al Khabeesi Building, Plot 128-246-9<br />
             Dubai, United Arab Emirates<br />
-            <span className="email-text">Email: hello@movieparkpro.com</span>
-          </address>
+            </address>
+           Email: <span className="email-text"> hello@movieparkpro.com</span>
+          
         </section>
       </div>
     </div>

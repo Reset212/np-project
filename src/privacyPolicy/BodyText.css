@@ -39,7 +39,7 @@
 
 /* Секции */
 .privacy-policy-section {
-  margin-bottom: 2.5em; /* 40px между секциями */
+  margin-bottom: 63px; /* 40px между секциями */
   text-align: left;
   max-width: 900px; /* ограничение ширины текста */
 }
@@ -64,13 +64,14 @@
   line-height: 1.5em; /* 24px */
   color: #000000;
   margin-bottom: 1.5em;
+  white-space: nowrap;
 }
 
 /* Ссылка на сайт в первом параграфе */
 .intro-text a {
   color: #000000;
   text-decoration: none;
-  font-weight: 400;
+  font-weight: 500;
 }
 
 .intro-text a:hover {
@@ -85,7 +86,7 @@
   font-size: 1.5em; /* 24px */
   line-height: 1.5em; /* 36px */
   color: #000000;
-  margin: 0 0 0.5em 0;
+  margin: 0 0 0.7em 0;
 }
 
 /* Текст секций - 16px */
@@ -114,14 +115,14 @@
   font-size: 1em; /* 16px */
   line-height: 1.5em; /* 24px */
   color: #000000;
-  margin-bottom: 0.5em;
+
 }
 
 /* Email текст - не копируемый, 16px */
 .email-text {
   font-family: 'Helvetica Neue';
   font-style: normal;
-  font-weight: 400;
+  font-weight: 500;
   font-size: 1em; /* 16px */
   line-height: 1.5em; /* 24px */
   color: #000000;
@@ -140,6 +141,7 @@
   line-height: 1.5em; /* 24px */
   color: #000000;
   margin: 0;
+  margin-bottom: 1em;
 }
 
 /* Адаптивность для мобильных устройств */

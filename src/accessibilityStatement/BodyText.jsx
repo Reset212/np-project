@@ -37,7 +37,7 @@ const BodyText = () => {
         <section className="privacy-policy-section">
           <h2 className="section-title">2. Limitations</h2>
           <p className="section-text">
-            While we strive for accessibility, some content or features may not yet fully meet all accessibility standards. 
+            While we strive for accessibility, some content or features may not yet fully meet all accessibility standards.  <br />
             We are continuously working to improve.
           </p>
         </section>
@@ -45,7 +45,7 @@ const BodyText = () => {
         <section className="privacy-policy-section">
           <h2 className="section-title">3. Feedback</h2>
           <p className="section-text">
-            If you experience difficulty accessing any part of our 
+            If you experience difficulty accessing any part of our <br />
             Website or have suggestions for improvement, please contact us:
           </p>
           <address className="contact-address">
