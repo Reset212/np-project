@@ -83,6 +83,9 @@ const GlobalCursor = () => {
     const isRound = borderRadius >= rect.width * 0.4 || borderRadius >= rect.height * 0.4;
     const isSmallRoundButton = isSmallButton && isRound;
     
+    // Определяем, является ли кнопка маленькой (до 100px)
+    const isSmallElement = rect.width <= 100 && rect.height <= 100;
+    
     if (hasBg) {
       const finalWidth = rect.width;
       const finalHeight = rect.height;
@@ -102,7 +105,8 @@ const GlobalCursor = () => {
         },
         originalRect: rect,
         hasBackground: true,
-        isSmallRoundButton
+        isSmallRoundButton,
+        isSmallElement // Добавляем флаг маленькой кнопки
       };
     } else {
       const padding = {
@@ -128,7 +132,8 @@ const GlobalCursor = () => {
         },
         originalRect: rect,
         hasBackground: false,
-        isSmallRoundButton
+        isSmallRoundButton,
+        isSmallElement // Добавляем флаг маленькой кнопки
       };
     }
   };
@@ -204,7 +209,7 @@ const GlobalCursor = () => {
     }
     
     // Даже если курсор далеко, все равно смещаем пузырь немного
-    const maxAllowedOffset = maxOffset * 0.5;
+    const maxAllowedOffset = maxOffset * 0.3;
     const clampedOffset = {
       x: Math.max(-maxAllowedOffset, Math.min(maxAllowedOffset, dx * 0.3)),
       y: Math.max(-maxAllowedOffset, Math.min(maxAllowedOffset, dy * 0.3))
@@ -418,7 +423,8 @@ const GlobalCursor = () => {
       const { element: closestElement, distance: closestDistance } = findClosestInteractiveElement(position);
       
       const STICKY_THRESHOLD_IN = 50;
-      const STICKY_THRESHOLD_OUT = 120;
+      const STICKY_THRESHOLD_OUT_LARGE = 140; // Для больших кнопок
+      const STICKY_THRESHOLD_OUT_SMALL = 60; // Для маленьких кнопок (до 100px)
       
       // Проверяем, нужно ли прилипнуть
       if (closestElement && closestDistance < STICKY_THRESHOLD_IN && !isSticky) {
@@ -510,10 +516,19 @@ const GlobalCursor = () => {
         // Проверяем расстояние для отлипания
         const dist = distance(position.x, position.y, metrics.center.x, metrics.center.y);
         
-        // Динамический порог отрыва
-        let stickyThresholdOut = STICKY_THRESHOLD_OUT;
+        // Динамический порог отрыва в зависимости от размера кнопки
+        let stickyThresholdOut;
+        if (metrics.isSmallElement) {
+          // Маленькая кнопка (до 100px) - порог 100px
+          stickyThresholdOut = STICKY_THRESHOLD_OUT_SMALL;
+        } else {
+          // Большая кнопка - порог 140px
+          stickyThresholdOut = STICKY_THRESHOLD_OUT_LARGE;
+        }
+        
+        // Дополнительная проверка для кнопок без фона (увеличиваем порог)
         if (!metrics.hasBackground) {
-          stickyThresholdOut = 140; // Больший порог для кнопок без фона
+          stickyThresholdOut += 40; // Добавляем еще 40px для кнопок без фона
         }
         
         if (dist > stickyThresholdOut) {
