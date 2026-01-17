@@ -14,7 +14,7 @@ const BodyText = () => {
           </p>
           <p className="intro-text">
             Movie Park Film Developing ("Company", "we", "our", "us") respects your privacy and is committed to 
-            protecting the personal data of users who visit and interact with our website <a href="https://movieparkpro.com" target="_blank" rel="noopener noreferrer">
+            protecting <br /> the personal data of users who visit and interact with our website <a href="https://movieparkpro.com" target="_blank" rel="noopener noreferrer">
               movieparkpro.com
             </a>{" "} (the "Website").
           </p>
