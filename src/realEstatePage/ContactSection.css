@@ -963,3 +963,83 @@ _::-webkit-full-page-media, _:future, :root .submit-button {
     font-weight: 400 !important; /* Edge */
   }
 }
+/* Form Footer Container */
+.form-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 2em;
+  width: 100%;
+}
+
+/* Privacy Policy Notice - Текст слева */
+.privacy-notice {
+  font-family: var(--font-primary);
+  font-style: normal;
+  font-weight: 400;
+  font-size: 1em; /* 16px */
+  line-height: 1.5; /* 24px */
+  color: var(--color-gray);
+  width: auto;
+  text-align: left;
+}
+
+.privacy-link {
+ color: var(--color-gray);
+  text-decoration: none;
+  transition: opacity var(--transition-speed) ease;
+}
+
+.privacy-link:hover {
+  opacity: 0.7;
+}
+.mobile-break {
+  display: none;
+}
+/* Обновить кнопку - убрать выравнивание вправо */
+.submit-button {
+  font-family: var(--font-primary);
+  font-weight: 400; /* Windows/Android по умолчанию */
+  font-size: 0.875em; /* 14px */
+  color: var(--color-black);
+  text-transform: uppercase;
+  padding: 0 2.5em;
+  border: none;
+  background: rgba(230, 230, 230, 0.72);
+  cursor: pointer;
+  transition: all var(--transition-speed) ease;
+  border-radius: 2em;
+  min-width: 6.375em;
+  height: var(--button-height); /* 40px = 2.5em */
+  min-height: var(--button-height);
+  margin-top: 0; /* Убрать margin-top так как теперь в контейнере */
+  line-height: var(--button-height);
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  
+  /* Убрать align-self: flex-end */
+  align-self: auto;
+}@media (max-width: 65em) { /* 1040px */
+  .form-footer {
+    flex-direction: column-reverse; /* Колонка на телефоне */
+    gap: 3em; /* Отступ между текстом и кнопкой */
+    text-align: center;
+  }
+    .mobile-break {
+    display: inline;
+  }
+  .privacy-notice {
+    text-align: center;
+    order: 1; /* Текст сверху */
+    width: 100%;
+    max-width: 100%;
+  }
+  
+  .submit-button {
+    order: 2; /* Кнопка снизу */
+    align-self: center;
+    margin-top: 0;
+  }
+}
