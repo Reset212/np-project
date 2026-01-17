@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./ContactSection.css";
-
+import { Link } from "react-router-dom";
 const ContactSection = () => {
   const [formData, setFormData] = useState({
     name: "",
@@ -283,13 +283,18 @@ const ContactSection = () => {
               />
             </div>
 
-            <button
-              type="submit"
-              className="submit-button"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? "Sending..." : "SEND"}
-            </button>
+            <div className="form-footer">
+  <div className="privacy-notice">
+    By submitting this form, you agree    <span className="mobile-break"><br /></span> to our <Link to="/privacy-policy" className="privacy-link">Privacy Policy</Link>
+  </div>
+  <button
+    type="submit"
+    className="submit-button"
+    disabled={isSubmitting}
+  >
+    {isSubmitting ? "Sending..." : "SEND"}
+  </button>
+</div>
 
             {/* Mobile email buttons - ONLY for mobile version */}
             <div className="mobile-emails-section">
