@@ -28,8 +28,13 @@ const GlobalCursor = () => {
   const rotationHistoryRef = useRef([]);
   const stickyElementRef = useRef(null);
   const offsetHistoryRef = useRef([]);
-  const stickStartTimeRef = useRef(0); // Время начала прилипания
-  const isDetachingRef = useRef(false); // Флаг отлипания через ref
+  const stickStartTimeRef = useRef(0);
+  const isDetachingRef = useRef(false);
+  const lastStickyStateRef = useRef(false);
+  const lastElementRef = useRef(null);
+  const logoVelocityRef = useRef({ x: 0, y: 0 }); // Скорость для лого
+  const logoPositionRef = useRef({ x: 0, y: 0 }); // Позиция для лого
+  
   const MAX_HISTORY = 5;
   const ROTATION_SMOOTH_HISTORY = 3;
   const OFFSET_SMOOTH_HISTORY = 3;
@@ -165,10 +170,10 @@ const GlobalCursor = () => {
       const offsetStrength = Math.min(dist / maxOffsetDist, 1);
       
       // Ограничиваем максимальное смещение (в пикселях)
-      const maxOffset = Math.min(elementRect.width, elementRect.height) * 0.25; // Уменьшил с 0.3 до 0.25
+      const maxOffset = Math.min(elementRect.width, elementRect.height) * 0.25;
       
       // Плавная кривая для смещения
-      const smoothOffsetStrength = Math.pow(offsetStrength, 2); // Увеличил степень для более плавного начала
+      const smoothOffsetStrength = Math.pow(offsetStrength, 2);
       
       return {
         x: dx * smoothOffsetStrength * maxOffset / maxOffsetDist,
@@ -190,16 +195,16 @@ const GlobalCursor = () => {
     const maxSquashDist = Math.max(elementRect.width, elementRect.height) * 0.5;
     
     if (dist > 0) {
-      const squashStrength = Math.min(dist / maxSquashDist, 0.2); // Уменьшил с 0.3 до 0.2
+      const squashStrength = Math.min(dist / maxSquashDist, 0.2);
       const angle = Math.atan2(dy, dx);
       
       // Сплющиваем перпендикулярно направлению к курсору
-      const squashX = 1 - Math.abs(Math.cos(angle)) * squashStrength * 0.15; // Уменьшил с 0.2 до 0.15
-      const squashY = 1 - Math.abs(Math.sin(angle)) * squashStrength * 0.15; // Уменьшил с 0.2 до 0.15
+      const squashX = 1 - Math.abs(Math.cos(angle)) * squashStrength * 0.15;
+      const squashY = 1 - Math.abs(Math.sin(angle)) * squashStrength * 0.15;
       
       return {
-        x: Math.max(0.85, squashX), // Увеличил с 0.8 до 0.85
-        y: Math.max(0.85, squashY)  // Увеличил с 0.8 до 0.85
+        x: Math.max(0.85, squashX),
+        y: Math.max(0.85, squashY)
       };
     }
     
@@ -324,7 +329,7 @@ const GlobalCursor = () => {
       const maxSpeed = 50;
       const speedRatio = Math.min(speed / maxSpeed, 2);
       
-      // Логика вращения только когда не прилипли
+      // ВЕРНУЛИ: Логика вращения лого и его сплющивания от скорости
       if (!isSticky) {
         if (speed > 10) {
           const angle = Math.atan2(velocity.y, velocity.x);
@@ -351,6 +356,7 @@ const GlobalCursor = () => {
             return prev + normalizedDiff * 0.3;
           });
           
+          // ВЕРНУЛИ: Сплющивание лого от скорости (растягивание по X, сжатие по Y)
           const stretchAmount = 1 + speedRatio * 0.5;
           const squeezeAmount = 1 - speedRatio * 0.2;
           
@@ -359,6 +365,7 @@ const GlobalCursor = () => {
             y: squeezeAmount
           });
         } else {
+          // Плавный возврат к нормальному состоянию
           setRotation(prev => {
             const diff = -prev;
             const normalizedDiff = Math.atan2(Math.sin(diff), Math.cos(diff));
@@ -371,6 +378,7 @@ const GlobalCursor = () => {
           });
         }
       } else {
+        // Когда прилипли, лого не вращается и не деформируется
         setRotation(0);
         setScale({ x: 1, y: 1 });
       }
@@ -380,58 +388,44 @@ const GlobalCursor = () => {
       
       // Прилипаем когда близко к элементу
       const STICKY_THRESHOLD = 50;
-      const STICKY_HYSTERESIS = 10; // Гистерезис для предотвращения колебаний
       
       if (closestElement && closestDistance < STICKY_THRESHOLD && !isSticky) {
-        // Добавляем задержку перед прилипанием для мелких элементов
         const metrics = getElementMetrics(closestElement);
-        const elementSize = Math.min(metrics.originalRect.width, metrics.originalRect.height);
         
-        // Для маленьких элементов увеличиваем порог
-        const adjustedThreshold = elementSize < 40 ? STICKY_THRESHOLD * 1.5 : STICKY_THRESHOLD;
+        setIsSticky(true);
+        isDetachingRef.current = false;
+        stickyElementRef.current = closestElement;
         
-        if (closestDistance < adjustedThreshold) {
-          // Проверяем, что курсор действительно хочет прилипнуть
-          const timeSinceDetach = Date.now() - stickStartTimeRef.current;
-          
-          // Если недавно отлипли, добавляем дополнительную задержку
-          if (!isDetachingRef.current || timeSinceDetach > 200) {
-            setIsSticky(true);
-            isDetachingRef.current = false;
-            stickyElementRef.current = closestElement;
-            
-            // МГНОВЕННО устанавливаем размер кнопки для круга
-            setCircleSize({
-              width: metrics.width,
-              height: metrics.height,
-              borderRadius: metrics.borderRadius
-            });
-            
-            // Сбрасываем смещение
-            setCircleOffset({ x: 0, y: 0 });
-            setCircleSquash({ x: 1, y: 1 });
-            
-            // Показываем круг, скрываем лого
-            setShowCircle(true);
-            
-            targetX = metrics.center.x;
-            targetY = metrics.center.y;
-            
-            setStickyTarget({
-              x: metrics.center.x,
-              y: metrics.center.y,
-              width: metrics.width,
-              height: metrics.height,
-              borderRadius: metrics.borderRadius
-            });
-            
-            smoothFactor = 0.1;
-          }
-        }
+        // Устанавливаем размер пузыря
+        setCircleSize({
+          width: metrics.width,
+          height: metrics.height,
+          borderRadius: metrics.borderRadius
+        });
+        
+        // Сбрасываем смещение
+        setCircleOffset({ x: 0, y: 0 });
+        setCircleSquash({ x: 1, y: 1 });
+        
+        // Показываем пузырь, скрываем лого
+        setShowCircle(true);
+        
+        targetX = metrics.center.x;
+        targetY = metrics.center.y;
+        
+        setStickyTarget({
+          x: metrics.center.x,
+          y: metrics.center.y,
+          width: metrics.width,
+          height: metrics.height,
+          borderRadius: metrics.borderRadius
+        });
+        
+        smoothFactor = 0.1;
       } else if (isSticky && stickyElementRef.current) {
         const metrics = getElementMetrics(stickyElementRef.current);
         
-        // Рассчитываем смещение круга в сторону курсора
+        // Рассчитываем смещение пузыря в сторону курсора
         const newOffset = calculateCircleOffset(
           position, 
           metrics.center, 
@@ -457,7 +451,7 @@ const GlobalCursor = () => {
         
         setCircleOffset(finalOffset);
         
-        // Рассчитываем сплющивание круга
+        // Рассчитываем сплющивание пузыря
         const squash = calculateCircleSquash(
           position,
           metrics.center,
@@ -466,7 +460,7 @@ const GlobalCursor = () => {
         );
         setCircleSquash(squash);
         
-        // Обновляем растягивание
+        // Обновляем растягивание пузыря
         const stretch = calculateStretchEffect(
           position, 
           { 
@@ -477,69 +471,21 @@ const GlobalCursor = () => {
         );
         setStretchEffect(stretch);
         
-        // Позиция круга с учетом смещения
+        // Позиция пузыря с учетом смещения
         targetX = metrics.center.x + finalOffset.x;
         targetY = metrics.center.y + finalOffset.y;
         
-        setStickyTarget({
-          x: metrics.center.x,
-          y: metrics.center.y,
-          width: metrics.width,
-          height: metrics.height,
-          borderRadius: metrics.borderRadius
-        });
-        
-        // Отлипаем когда ушли далеко (с гистерезисом)
+        // Отлипаем когда ушли далеко
         const dist = distance(position.x, position.y, metrics.center.x, metrics.center.y);
         const maxDistance = Math.max(metrics.originalRect.width, metrics.originalRect.height) * 0.8;
         
-        // Для маленьких элементов увеличиваем дистанцию отлипания
-        const elementSize = Math.min(metrics.originalRect.width, metrics.originalRect.height);
-        const adjustedMaxDistance = elementSize < 40 ? maxDistance * 1.3 : maxDistance;
-        
-        if (dist > adjustedMaxDistance) {
+        if (dist > maxDistance) {
           setIsSticky(false);
           isDetachingRef.current = true;
           stickStartTimeRef.current = Date.now();
           stickyElementRef.current = null;
           
-          // МГНОВЕННО возвращаем размер лого для круга
-          setCircleSize({ width: 60, height: 60, borderRadius: 30 });
-          
-          // Плавно сбрасываем смещение и сплющивание
-          setCircleOffset(prev => ({ 
-            x: lerp(prev.x, 0, 0.3), 
-            y: lerp(prev.y, 0, 0.3) 
-          }));
-          setCircleSquash(prev => ({ 
-            x: lerp(prev.x, 1, 0.3), 
-            y: lerp(prev.y, 1, 0.3) 
-          }));
-          
-          // Через небольшое время скрываем круг
-          setTimeout(() => {
-            if (!isSticky) {
-              setShowCircle(false);
-              setCircleOffset({ x: 0, y: 0 });
-              setCircleSquash({ x: 1, y: 1 });
-              offsetHistoryRef.current = [];
-              setStretchEffect({ x: 1, y: 1 });
-            }
-          }, 150);
-        }
-      } else if (!isSticky && showCircle) {
-        // Если не прилипли, но круг еще виден - плавно скрываем
-        setCircleOffset(prev => ({ 
-          x: lerp(prev.x, 0, 0.2), 
-          y: lerp(prev.y, 0, 0.2) 
-        }));
-        setCircleSquash(prev => ({ 
-          x: lerp(prev.x, 1, 0.2), 
-          y: lerp(prev.y, 1, 0.2) 
-        }));
-        
-        // Через небольшое время полностью скрываем
-        if (Math.abs(circleOffset.x) < 0.1 && Math.abs(circleOffset.y) < 0.1) {
+          // Скрываем пузырь
           setShowCircle(false);
           setCircleSize({ width: 60, height: 60, borderRadius: 30 });
           setCircleOffset({ x: 0, y: 0 });
@@ -547,6 +493,50 @@ const GlobalCursor = () => {
           offsetHistoryRef.current = [];
           setStretchEffect({ x: 1, y: 1 });
         }
+      } else if (!isSticky && showCircle) {
+        // Если не прилипли, но пузырь еще виден - скрываем
+        setShowCircle(false);
+        setCircleSize({ width: 60, height: 60, borderRadius: 30 });
+        setCircleOffset({ x: 0, y: 0 });
+        setCircleSquash({ x: 1, y: 1 });
+        setStretchEffect({ x: 1, y: 1 });
+      }
+
+      // ВЕРНУЛИ: Плавное следование лого за курсором с отставанием
+      // Когда не прилипли, лого следует за курсором с физикой
+      if (!isSticky) {
+        // Сила притяжения к курсору
+        const attractionForce = 0.15;
+        
+        // Разница между текущей позицией лого и целевой позицией курсора
+        const dx = position.x - logoPositionRef.current.x;
+        const dy = position.y - logoPositionRef.current.y;
+        
+        // Увеличиваем скорость в зависимости от расстояния
+        logoVelocityRef.current.x += dx * attractionForce;
+        logoVelocityRef.current.y += dy * attractionForce;
+        
+        // Сопротивление для плавности
+        const damping = 0.85;
+        logoVelocityRef.current.x *= damping;
+        logoVelocityRef.current.y *= damping;
+        
+        // Обновляем позицию лого
+        logoPositionRef.current.x += logoVelocityRef.current.x;
+        logoPositionRef.current.y += logoVelocityRef.current.y;
+        
+        // Используем позицию лого для отрисовки
+        targetX = logoPositionRef.current.x;
+        targetY = logoPositionRef.current.y;
+        
+        // Меньший smoothFactor для более отзывчивого лого
+        smoothFactor = 0.08;
+      } else {
+        // Когда прилипли, лого следует за позицией пузыря
+        logoPositionRef.current.x = targetX;
+        logoPositionRef.current.y = targetY;
+        logoVelocityRef.current.x = 0;
+        logoVelocityRef.current.y = 0;
       }
 
       const offsetX = 0;
@@ -557,6 +547,7 @@ const GlobalCursor = () => {
       const speedFactor = Math.min(speed / 20, 1);
       const dynamicSmoothFactor = lerp(smoothFactor, 0.15, speedFactor);
       
+      // Плавное обновление позиции для отрисовки
       const newSvgX = lerp(svgPosition.x, targetSvgX, dynamicSmoothFactor);
       const newSvgY = lerp(svgPosition.y, targetSvgY, dynamicSmoothFactor);
       
@@ -583,7 +574,7 @@ const GlobalCursor = () => {
     return null;
   }
 
-  // Комбинированная трансформация: смещение + сплющивание + растягивание
+  // Комбинированная трансформация для пузыря
   const combinedTransform = `
     translate(${circleOffset.x}px, ${circleOffset.y}px)
     scale(${circleSquash.x}, ${circleSquash.y})
@@ -602,12 +593,11 @@ const GlobalCursor = () => {
                      rotate(${rotation}rad)
                      scale(${scale.x}, ${scale.y})`,
           opacity: showCircle ? 0 : 1,
-          display: showCircle ? 'none' : 'block',
-          transition: showCircle ? 'opacity 0.15s ease, transform 0.2s ease' : 'opacity 0.15s ease, transform 0.2s ease'
+          display: showCircle ? 'none' : 'block'
         }}
       />
       
-      {/* Круг для прилипания (показывается только при прилипании) */}
+      {/* Пузырь для прилипания (показывается только при прилипании) */}
       {showCircle && (
         <div 
           className={`cursor-sticky-circle ${isClicked ? 'clicked' : ''} ${buttonHasBackground ? 'inside-button' : 'outside-button'} ${isPulling ? 'pulling' : ''}`}
@@ -619,10 +609,7 @@ const GlobalCursor = () => {
             borderRadius: `${circleSize.borderRadius}px`,
             transform: `translate(-50%, -50%) ${combinedTransform}`,
             opacity: 1,
-            transformOrigin: 'center',
-            transition: isSticky 
-              ? 'opacity 0.15s ease, width 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), height 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), border-radius 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), transform 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94)'
-              : 'opacity 0.15s ease, width 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), height 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), border-radius 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+            transformOrigin: 'center'
           }}
         />
       )}
