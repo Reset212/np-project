@@ -137,10 +137,7 @@
   font-size: 1em; /* 16px */
   line-height: 1.5em; /* 24px */
   color: #000000;
-  user-select: none; /* предотвращает выделение */
-  -webkit-user-select: none; /* для Safari */
-  -moz-user-select: none; /* для Firefox */
-  -ms-user-select: none; /* для IE/Edge */
+ 
   overflow-wrap: break-word;
 }
 
@@ -158,14 +155,7 @@
   white-space: pre-line; /* Сохраняет разрывы строк, но позволяет переносу */
 }
 
-/* Стили для предотвращения копирования email */
-.email-text::selection {
-  background-color: transparent;
-}
 
-.email-text::-moz-selection {
-  background-color: transparent;
-}
 
 /* Адаптивность для мобильных устройств */
 @media (max-width: 768px) {
