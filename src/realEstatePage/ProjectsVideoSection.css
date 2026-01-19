@@ -63,7 +63,7 @@
 .desktop-categories-below {
   display: flex;
   flex-wrap: wrap;
-  gap: 1.875em; /* 30px */
+  gap: 1.875em; /* 32px */
   justify-content: center;
   margin-top: 3em; /* 48px */
   margin-bottom: 2.5em; /* 40px */
@@ -187,8 +187,8 @@
   cursor: pointer;
   border-radius: 0.25em; /* 4px */
   width: 100%;
-  min-height: 30.0625em; /* 481px */
-  max-height: 30.0625em;
+  min-height: 32.0625em; /* 481px */
+  max-height: 32.0625em;
   background: #000000;
   transition: none;
 }
@@ -228,11 +228,11 @@
   opacity: 1 !important;
 }
 
-/* Стили для мобильных изображений BRUNELLO (высота 26.875em = 430px) */
+/* Стили для мобильных изображений BRUNELLO (высота 26.875em = 432px) */
 .video-card.mobile-image-mode {
-  height: 32em; /* 430px */
-  min-height: 32em; /* 430px */
-  max-height: 32em; /* 430px */
+  height: 32em; /* 432px */
+  min-height: 32em; /* 432px */
+  max-height: 32em; /* 432px */
   background: #000000; /* Черный фон для всего блока */
 }
 
@@ -394,11 +394,7 @@
   overflow: hidden;
 }
 
-.watch-btn:hover {
-  background: rgba(255, 255, 255, 0.95);
-  transform: scale(1.08) translateY(-0.125em); /* -2px */
-  box-shadow: 0 0.5em 1.25em rgba(0, 0, 0, 0.2); /* 8px 20px */
-}
+
 
 /* ========== АДАПТИВНОСТЬ ========== */
 
@@ -451,7 +447,7 @@
   }
 
   .video-grid {
-    gap: 1.875em; /* 30px */
+    gap: 1.875em; /* 32px */
   }
 
   .video-card:not(.mobile-image-mode) {
@@ -460,7 +456,7 @@
   }
 
   .video-overlay {
-    padding: 1.875em; /* 30px */
+    padding: 1.875em; /* 32px */
   }
 
   .video-title {
@@ -523,8 +519,8 @@
   /* 1 колонка на мобильных */
   .video-grid {
     grid-template-columns: 1fr;
-    gap: 1.875em; /* 30px */
-    margin-top: 1.875em; /* 30px */
+    gap: 1.875em; /* 32px */
+    margin-top: 1.875em; /* 32px */
     width: 100%;
     padding: 0;
   }
@@ -543,7 +539,7 @@
  
 
   .video-overlay {
-    padding: 1.875em 1.5em; /* 30px 24px */
+    padding: 1.875em 1.5em; /* 32px 24px */
   }
 
   .video-title {
@@ -612,7 +608,7 @@
 }
 
 /* Маленькие телефоны (480px) */
-@media (max-width: 30em) { /* 480px */
+@media (max-width: 32em) { /* 480px */
   .projects-video-section {
     padding: 2.5em 0; /* 40px */
   }

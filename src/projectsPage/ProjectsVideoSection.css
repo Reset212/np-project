@@ -539,11 +539,6 @@
   overflow: hidden;
 }
 
-.watch-btn:hover {
-  background: rgba(255, 255, 255, 0.95);
-  transform: scale(1.08) translateY(-0.125em); /* -2px */
-  box-shadow: 0 0.5em 1.25em rgba(0, 0, 0, 0.2); /* 8px 20px */
-}
 
 /* iOS-специфичные стили для кнопки (font-weight: 500) */
 /* ТОЛЬКО для iOS Safari */

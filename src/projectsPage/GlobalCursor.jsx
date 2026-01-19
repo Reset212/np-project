@@ -15,7 +15,7 @@ const GlobalCursor = () => {
   const [rotation, setRotation] = useState(0);
   const [isClicked, setIsClicked] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
-  const [circleSize, setCircleSize] = useState({ width: 60, height: 60, borderRadius: 30 });
+  const [circleSize, setCircleSize] = useState({ width: 60, height: 60, borderRadius: 32 });
   const [showCircle, setShowCircle] = useState(false);
   const [buttonHasBackground, setButtonHasBackground] = useState(false);
   const [stretchEffect, setStretchEffect] = useState({ x: 1, y: 1 });
@@ -120,7 +120,7 @@ const GlobalCursor = () => {
       const finalHeight = rect.height + (padding.vertical * 2);
       
       const minSide = Math.min(finalWidth, finalHeight);
-      const finalBorderRadius = Math.min(30, minSide / 2);
+      const finalBorderRadius = Math.min(32, minSide / 2);
       
       return {
         x: rect.left - padding.horizontal,
@@ -541,7 +541,7 @@ const GlobalCursor = () => {
           stickyElementRef.current = null;
           
           // Сбрасываем параметры пузыря
-          setCircleSize({ width: 60, height: 60, borderRadius: 30 });
+          setCircleSize({ width: 60, height: 60, borderRadius: 32 });
           setCircleOffset({ x: 0, y: 0 });
           setCircleSquash({ x: 1, y: 1 });
           offsetHistoryRef.current = [];
@@ -551,7 +551,7 @@ const GlobalCursor = () => {
       } else if (!isSticky && showCircle) {
         // Дополнительная проверка: если не прилипли, но пузырь еще виден
         setShowCircle(false);
-        setCircleSize({ width: 60, height: 60, borderRadius: 30 });
+        setCircleSize({ width: 60, height: 60, borderRadius: 32 });
         setCircleOffset({ x: 0, y: 0 });
         setCircleSquash({ x: 1, y: 1 });
         setStretchEffect({ x: 1, y: 1 });
