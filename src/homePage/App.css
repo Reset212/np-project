@@ -78,6 +78,6 @@ _::-webkit-full-page-media, _:future, :root button,
 _::-webkit-full-page-media, _:future, :root .action-button-left,
 _::-webkit-full-page-media, _:future, :root .mens-button,
 _::-webkit-full-page-media, _:future, :root .read-more-button {
-  line-height: 40px !important;
+  /* line-height: 40px !important; */
 }
 
