@@ -179,13 +179,6 @@ html {
   background: none;
   border: none;
   padding: 0;
-  /* ДОБАВЛЕНО: Фикс для вертикального выравнивания */
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-/* Такая же высота как у кнопки chat */
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
 .nav-item:hover {
