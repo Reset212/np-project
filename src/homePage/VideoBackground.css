@@ -1215,7 +1215,6 @@ button,
     white-space: nowrap !important;
     transition: opacity 0.3s ease !important;
     margin-top: 4.2px !important;
-    margin-bottom: 4.2px !important;
     text-decoration: none !important;
     font-family: inherit !important;
     background: none !important;
@@ -1260,32 +1259,35 @@ button,
 }
 /* iOS-specific fix for vertical alignment */
 @supports (-webkit-touch-callout: none) {
-  /* Fix for navigation items */
+  .nav-item,
   .nav-left .nav-item,
   .nav-right .nav-item,
-  .chat-button {
-    display: -webkit-flex !important;
-    display: flex !important;
-    -webkit-align-items: center !important;
-    align-items: center !important;
-    -webkit-justify-content: center !important;
-    justify-content: center !important;
-    height: 100% !important;
-  }
-
-  /* Specific height for chat button */
-  .chat-button {
-    height: 3.625em !important;
-  }
-
-  /* Remove top padding that might be causing issues */
-  .nav-item, .chat-button {
+  a.nav-item,
+  button.nav-item {
+    color: white !important;
+    font-size: 1em !important;
+    cursor: none !important;
+    text-align: center !important;
+    white-space: nowrap !important;
+    transition: opacity 0.3s ease !important;
     margin-top: 4.2px !important;
-  }
-
-  /* Ensure line-height is consistent */
-  .nav-item {
+    text-decoration: none !important;
+    font-family: inherit !important;
+    background: none !important;
+    border: none !important;
+    padding: 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
     line-height: normal !important;
-    min-height: 1.5em;
+    vertical-align: middle !important;
+    height: auto !important;
+    -webkit-appearance: none !important;
+    appearance: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+    position: relative !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
   }
 }
