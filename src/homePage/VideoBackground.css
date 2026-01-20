@@ -1196,7 +1196,65 @@ button,
   .award-item > * {
     margin-bottom: 1.125em;
   }
-}.nav-item span {
-  display: inline-block;
-  vertical-align: middle;
+}/* iOS-specific fix for vertical alignment */
+@supports (-webkit-touch-callout: none) {
+  /* Fix for navigation items */
+  .nav-left .nav-item,
+  .nav-right .nav-item,
+  .chat-button {
+    display: -webkit-flex !important;
+    display: flex !important;
+    -webkit-align-items: center !important;
+    align-items: center !important;
+    -webkit-justify-content: center !important;
+    justify-content: center !important;
+    height: 100% !important;
+  }
+
+  /* Specific height for chat button */
+  .chat-button {
+    height: 3.625em !important;
+  }
+
+  /* Remove top padding that might be causing issues */
+  .nav-item, .chat-button {
+    padding-top: 0 !important;
+  }
+
+  /* Ensure line-height is consistent */
+  .nav-item {
+    line-height: normal !important;
+    min-height: 1.5em;
+  }
+}
+
+/* Alternative solution - use line-height for mobile */
+@media (max-width: 768px) {
+  @supports (-webkit-touch-callout: none) {
+    .nav-left .nav-item,
+    .nav-right .nav-item,
+    .chat-button {
+      line-height: 3.625em !important; /* Match button height */
+      display: inline-block !important;
+      vertical-align: middle;
+    }
+  }
+}
+
+/* Last resort - add explicit flex for iOS only */
+@media screen and (max-width: 768px) {
+  @supports (-webkit-touch-callout: none) {
+    .nav-left, .nav-right {
+      display: -webkit-flex;
+      display: flex;
+      -webkit-align-items: center;
+      align-items: center;
+    }
+
+    .nav-item {
+      -webkit-align-self: center;
+      align-self: center;
+      margin: auto 0;
+    }
+  }
 }
