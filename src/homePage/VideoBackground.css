@@ -1197,46 +1197,17 @@ button,
     margin-bottom: 1.125em;
   }
 }
-
 /* ============================================= */
-/* IOS-SPECIFIC FIXES FOR NAV ITEMS */
+/* IOS-SPECIFIC FIXES - ФИНАЛЬНЫЙ ВАРИАНТ */
 /* ============================================= */
 
 @supports (-webkit-touch-callout: none) {
-  /* Переопределение для нав-айтемов на iOS */
-  .nav-item {
-    color: white !important;
-    font-size: 1em !important;
-    cursor: none !important;
-    text-align: center !important;
-    white-space: nowrap !important;
-    transition: opacity 0.3s ease !important;
-    margin-top: 4.2px !important;
-    margin-bottom: 4.2px !important;
-    text-decoration: none !important;
-    font-family: inherit !important;
-    background: none !important;
-    border: none !important;
-    padding: 0 !important;
-    display: inline-flex !important;
-    align-items: center !important;
-    line-height: normal !important;
-    vertical-align: middle !important;
-    height: auto !important;
-    min-height: 44px !important;
-    -webkit-appearance: none !important;
-    appearance: none !important;
-    -webkit-tap-highlight-color: transparent !important;
-    box-sizing: border-box !important;
-  }
-
-  /* Убираем любые наследуемые стили */
+  /* СИЛЬНОЕ ПЕРЕОПРЕДЕЛЕНИЕ ДЛЯ iOS */
+  .nav-item,
   .nav-left .nav-item,
   .nav-right .nav-item,
-  .nav-item.directions,
-  .nav-item.about,
-  .nav-item.services,
-  .nav-item.contacts {
+  a.nav-item,
+  button.nav-item {
     color: white !important;
     font-size: 1em !important;
     cursor: none !important;
@@ -1255,21 +1226,35 @@ button,
     line-height: normal !important;
     vertical-align: middle !important;
     height: auto !important;
-    min-height: 44px !important;
     -webkit-appearance: none !important;
     appearance: none !important;
     -webkit-tap-highlight-color: transparent !important;
+    position: relative !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
   }
+  
+  /* Явное указание стилей для инспектора */
+  .nav-item::before {
+    content: '' !important;
+    display: none !important;
+  }
+}
 
-  /* Гарантируем, что стили работают во всех состояниях */
-  .nav-item:hover,
-  .nav-item:active,
-  .nav-item:focus {
-    color: white !important;
-    opacity: 0.8 !important;
-    background: none !important;
-    border: none !important;
-    outline: none !important;
-    -webkit-tap-highlight-color: transparent !important;
+/* Альтернативный способ - через медиа-запрос для iOS */
+@media screen and (max-width: 1024px) {
+  @supports (-webkit-touch-callout: none) {
+    /* Принудительная установка margin через content */
+    .nav-item {
+      margin: 4.2px 0 !important;
+    }
+    
+    /* Если все еще не работает, попробуйте transform */
+    .nav-left .nav-item,
+    .nav-right .nav-item {
+      transform: translateY(4.2px) !important;
+    }
   }
 }
