@@ -1279,4 +1279,10 @@ button,
   line-height: 1; /* Равен размеру шрифта */
   padding: 0 !important;
   margin: 0 !important;
+}/* Простое исправление - добавляем небольшой отступ для iOS */
+@supports (-webkit-touch-callout: none) {
+  .nav-item-text {
+    position: relative;
+    top: 1px !important; /* Сдвигаем текст вниз на 1px */
+  }
 }
