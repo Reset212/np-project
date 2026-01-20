@@ -988,6 +988,7 @@ _::-webkit-full-page-media, _:future, :root .submit-button {
  color: var(--color-gray);
   text-decoration: none;
   transition: opacity var(--transition-speed) ease;
+  white-space: nowrap; 
 }
 
 .privacy-link:hover {
