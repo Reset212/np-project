@@ -261,14 +261,6 @@ button,
   transition: opacity 0.3s ease 0.1s, transform 0.4s ease 0.1s;
 }
 
-.read-more-button:hover,
-.read-more-button:active {
-  -webkit-appearance: none !important;
-  background: rgba(118, 118, 118, 0.64) !important;
-  border: 0.09375em solid rgba(200, 200, 200, 0.4) !important; /* 1.5px = 0.09375em */
-  transform: translateY(-0.125em) scale(1.05); /* -2px = -0.125em */
-  box-shadow: 0 0.625em 1.875em rgba(0, 0, 0, 0.2) !important; /* 10px = 0.625em, 30px = 1.875em */
-}
 
 .read-more-button:focus {
   outline: 0.125em solid rgba(255, 255, 255, 0.5) !important; /* 2px = 0.125em */
@@ -393,12 +385,7 @@ button,
     background: rgba(155, 155, 155, 0.64) !important;
   }
   
-  .read-more-button:hover,
-  .read-more-button:active {
-    transform: translateY(-0.125em) scale(1.05) !important; /* -2px = -0.125em */
-    background: rgba(118, 118, 118, 0.64) !important;
-    border: 0.09375em solid rgba(200, 200, 200, 0.4) !important;
-  }
+
   
   .home-logo.animate-in {
     opacity: 1;

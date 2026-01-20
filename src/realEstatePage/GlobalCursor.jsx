@@ -112,8 +112,8 @@ const GlobalCursor = () => {
     } else {
       // Для кнопок без фона добавляем отступы
       const padding = {
-        horizontal: 10,
-        vertical: 8
+        horizontal: 15,
+        vertical: 15
       };
       
       const finalWidth = rect.width + (padding.horizontal * 2);
