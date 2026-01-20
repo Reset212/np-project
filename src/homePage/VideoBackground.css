@@ -1227,34 +1227,35 @@ button,
     min-height: 1.5em;
   }
 }
-
-/* Alternative solution - use line-height for mobile */
-@media (max-width: 768px) {
-  @supports (-webkit-touch-callout: none) {
-    .nav-left .nav-item,
-    .nav-right .nav-item,
-    .chat-button {
-      line-height: 3.625em !important; /* Match button height */
-      display: inline-block !important;
-      vertical-align: middle;
-    }
-  }
+/* В CSS добавьте */
+.nav-item-text {
+  display: inline-block;
+  vertical-align: middle;
+  line-height: normal;
+  position: relative;
+  top: 0;
 }
 
-/* Last resort - add explicit flex for iOS only */
-@media screen and (max-width: 768px) {
-  @supports (-webkit-touch-callout: none) {
-    .nav-left, .nav-right {
-      display: -webkit-flex;
-      display: flex;
-      -webkit-align-items: center;
-      align-items: center;
-    }
+/* Уберите все предыдущие исправления для .nav-item и оставьте только: */
+.nav-item {
+  display: inline-flex;
+  align-items: center;
+}/* Гарантируем что родительские контейнеры имеют правильное выравнивание */
+.nav-left, .nav-right {
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
 
-    .nav-item {
-      -webkit-align-self: center;
-      align-self: center;
-      margin: auto 0;
-    }
+/* Фиксируем высоту навигации для iOS */
+@supports (-webkit-touch-callout: none) {
+  .navigation {
+    min-height: 5em; /* Гарантированная минимальная высота */
+  }
+  
+  .nav-item {
+    height: 100%;
+    display: flex;
+    align-items: center;
   }
 }
