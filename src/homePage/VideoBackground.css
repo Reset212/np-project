@@ -174,8 +174,6 @@ html {
   text-align: center;
   white-space: nowrap;
   transition: opacity 0.3s ease;
-  padding-top: 2px !important;
-  margin-top: 2px;
   text-decoration: none;
   font-family: inherit;
   background: none;
@@ -1197,5 +1195,27 @@ button,
   /* Фиксируем отступы между элементами */
   .award-item > * {
     margin-bottom: 1.125em;
+  }
+}
+
+/* Фикс для выравнивания нав-айтемов на iOS */
+@supports (-webkit-touch-callout: none) {
+  /* Десктопная навигация на iOS */
+  .nav-item {
+  color: white;
+  font-size: 1em;
+  cursor: none;
+  text-align: center;
+  white-space: nowrap;
+  transition: opacity 0.3s ease;
+  margin-top: 4.2px !important;
+  text-decoration: none;
+  font-family: inherit;
+  background: none;
+  border: none;
+  padding: 0;
+   display: inline-flex !important; /* Эта строка исправляет iOS */
+  align-items: center !important; /* И эта */
+  line-height: normal !important; /* И эта */
   }
 }
