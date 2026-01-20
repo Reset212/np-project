@@ -1196,4 +1196,7 @@ button,
   .award-item > * {
     margin-bottom: 1.125em;
   }
+}.nav-item span {
+  display: inline-block;
+  vertical-align: middle;
 }
