@@ -1198,24 +1198,78 @@ button,
   }
 }
 
-/* Фикс для выравнивания нав-айтемов на iOS */
+/* ============================================= */
+/* IOS-SPECIFIC FIXES FOR NAV ITEMS */
+/* ============================================= */
+
 @supports (-webkit-touch-callout: none) {
-  /* Десктопная навигация на iOS */
+  /* Переопределение для нав-айтемов на iOS */
   .nav-item {
-  color: white;
-  font-size: 1em;
-  cursor: none;
-  text-align: center;
-  white-space: nowrap;
-  transition: opacity 0.3s ease;
-  margin-top: 4.2px !important;
-  text-decoration: none;
-  font-family: inherit;
-  background: none;
-  border: none;
-  padding: 0;
-   display: inline-flex !important; /* Эта строка исправляет iOS */
-  align-items: center !important; /* И эта */
-  line-height: normal !important; /* И эта */
+    color: white !important;
+    font-size: 1em !important;
+    cursor: none !important;
+    text-align: center !important;
+    white-space: nowrap !important;
+    transition: opacity 0.3s ease !important;
+    margin-top: 4.2px !important;
+    margin-bottom: 4.2px !important;
+    text-decoration: none !important;
+    font-family: inherit !important;
+    background: none !important;
+    border: none !important;
+    padding: 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    line-height: normal !important;
+    vertical-align: middle !important;
+    height: auto !important;
+    min-height: 44px !important;
+    -webkit-appearance: none !important;
+    appearance: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Убираем любые наследуемые стили */
+  .nav-left .nav-item,
+  .nav-right .nav-item,
+  .nav-item.directions,
+  .nav-item.about,
+  .nav-item.services,
+  .nav-item.contacts {
+    color: white !important;
+    font-size: 1em !important;
+    cursor: none !important;
+    text-align: center !important;
+    white-space: nowrap !important;
+    transition: opacity 0.3s ease !important;
+    margin-top: 4.2px !important;
+    margin-bottom: 4.2px !important;
+    text-decoration: none !important;
+    font-family: inherit !important;
+    background: none !important;
+    border: none !important;
+    padding: 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    line-height: normal !important;
+    vertical-align: middle !important;
+    height: auto !important;
+    min-height: 44px !important;
+    -webkit-appearance: none !important;
+    appearance: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+  }
+
+  /* Гарантируем, что стили работают во всех состояниях */
+  .nav-item:hover,
+  .nav-item:active,
+  .nav-item:focus {
+    color: white !important;
+    opacity: 0.8 !important;
+    background: none !important;
+    border: none !important;
+    outline: none !important;
+    -webkit-tap-highlight-color: transparent !important;
   }
 }
