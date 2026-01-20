@@ -170,9 +170,9 @@ const VideoBackground = () => {
             <Link
               className="nav-item about"
               onClick={scrollToMens}
-            ><span className="nav-item-text">
+            >
               ABOUT
-              </span>
+              
             </Link>
 
             {/* ИСПРАВЛЕННАЯ КНОПКА CHAT WITH US */}
