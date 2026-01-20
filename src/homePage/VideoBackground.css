@@ -179,6 +179,9 @@ html {
   background: none;
   border: none;
   padding: 0;
+   display: inline-flex !important; /* Эта строка исправляет iOS */
+  align-items: center !important; /* И эта */
+  line-height: normal !important; /* И эта */
 }
 
 .nav-item:hover {
