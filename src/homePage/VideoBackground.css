@@ -1258,3 +1258,34 @@ button,
     }
   }
 }
+/* iOS-specific fix for vertical alignment */
+@supports (-webkit-touch-callout: none) {
+  /* Fix for navigation items */
+  .nav-left .nav-item,
+  .nav-right .nav-item,
+  .chat-button {
+    display: -webkit-flex !important;
+    display: flex !important;
+    -webkit-align-items: center !important;
+    align-items: center !important;
+    -webkit-justify-content: center !important;
+    justify-content: center !important;
+    height: 100% !important;
+  }
+
+  /* Specific height for chat button */
+  .chat-button {
+    height: 3.625em !important;
+  }
+
+  /* Remove top padding that might be causing issues */
+  .nav-item, .chat-button {
+    margin-top: 4.2px !important;
+  }
+
+  /* Ensure line-height is consistent */
+  .nav-item {
+    line-height: normal !important;
+    min-height: 1.5em;
+  }
+}
