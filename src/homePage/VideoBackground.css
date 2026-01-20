@@ -1240,22 +1240,43 @@ button,
 .nav-item {
   display: inline-flex;
   align-items: center;
-}/* Гарантируем что родительские контейнеры имеют правильное выравнивание */
-.nav-left, .nav-right {
-  display: flex;
-  align-items: center;
-  height: 100%;
-}
-
-/* Фиксируем высоту навигации для iOS */
+}/* Исправление для iOS - центрирование текста */
 @supports (-webkit-touch-callout: none) {
-  .navigation {
-    min-height: 5em; /* Гарантированная минимальная высота */
+  .nav-item-text {
+    display: inline-block !important;
+    vertical-align: middle !important;
+    line-height: 1 !important; /* Важно: line-height = 1 */
+    height: auto !important;
+    position: relative !important;
+    top: 0 !important;
+  }
+  
+  /* Переопределяем стили для iOS */
+  .nav-left .nav-item,
+  .nav-right .nav-item,
+  .chat-button {
+    height: auto !important;
+    min-height: 1.5em !important;
   }
   
   .nav-item {
-    height: 100%;
-    display: flex;
-    align-items: center;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    height: 100% !important;
   }
+}
+
+/* Дополнительное исправление - гарантируем одинаковую высоту */
+.nav-item {
+  font-size: 16px !important; /* Явно указываем размер шрифта */
+  line-height: 1 !important; /* Убираем стандартный line-height */
+}
+
+/* Для текста внутри */
+.nav-item-text {
+  display: inline-block;
+  line-height: 1; /* Равен размеру шрифта */
+  padding: 0 !important;
+  margin: 0 !important;
 }
