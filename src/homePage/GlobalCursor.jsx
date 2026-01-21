@@ -55,6 +55,7 @@ const GlobalCursor = () => {
   const logoVelocityRef = useRef({ x: 0, y: 0 });
   const logoPositionRef = useRef({ x: 0, y: 0 });
   const isInsideButtonRef = useRef(false);
+  const isFirstRenderRef = useRef(true);
   
   const MAX_HISTORY = 5;
   const ROTATION_SMOOTH_HISTORY = 3;
@@ -455,6 +456,12 @@ const GlobalCursor = () => {
         setScale({ x: 1, y: 1 });
       }
 
+      // ИНИЦИАЛИЗАЦИЯ logoPositionRef.current при первом движении курсора
+      if (isFirstRenderRef.current && (position.x !== 0 || position.y !== 0)) {
+        logoPositionRef.current = { x: position.x, y: position.y };
+        isFirstRenderRef.current = false;
+      }
+
       // Находим ближайший интерактивный элемент
       const { element: closestElement, distance: closestDistance } = findClosestInteractiveElement(position);
       
@@ -801,8 +808,6 @@ const GlobalCursor = () => {
           }}
         />
       )}
-
-      
     </div>
   );
 };
