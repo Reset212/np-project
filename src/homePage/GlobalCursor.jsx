@@ -53,9 +53,13 @@ const GlobalCursor = () => {
   const lastStickyStateRef = useRef(false);
   const lastElementRef = useRef(null);
   const logoVelocityRef = useRef({ x: 0, y: 0 });
-  const logoPositionRef = useRef({ x: 0, y: 0 });
+  const logoPositionRef = useRef({ x: -1000, y: -1000 }); // Инициализируем вне экрана
   const isInsideButtonRef = useRef(false);
-  const isFirstRenderRef = useRef(true);
+  const hasInitializedRef = useRef(false);
+  const windowSizeRef = useRef({ 
+    width: window.innerWidth, 
+    height: window.innerHeight 
+  });
   
   const MAX_HISTORY = 5;
   const ROTATION_SMOOTH_HISTORY = 3;
@@ -322,15 +326,54 @@ const GlobalCursor = () => {
     return { element: closestElement, distance: closestDistance };
   };
 
+  // Функция для обрезки координат до границ окна
+  const clampToWindow = (x, y) => {
+    return {
+      x: Math.max(0, Math.min(x, windowSizeRef.current.width)),
+      y: Math.max(0, Math.min(y, windowSizeRef.current.height))
+    };
+  };
+
+  // Функция для проверки валидности координат
+  const isValidPosition = (x, y) => {
+    return !isNaN(x) && !isNaN(y) && 
+           isFinite(x) && isFinite(y) &&
+           x >= -100 && y >= -100 && // Допускаем небольшой выход за границы
+           x <= windowSizeRef.current.width + 100 && 
+           y <= windowSizeRef.current.height + 100;
+  };
+
+  useEffect(() => {
+    const updateWindowSize = () => {
+      windowSizeRef.current = {
+        width: window.innerWidth,
+        height: window.innerHeight
+      };
+    };
+
+    updateWindowSize();
+    window.addEventListener('resize', updateWindowSize);
+
+    return () => {
+      window.removeEventListener('resize', updateWindowSize);
+    };
+  }, []);
+
   useEffect(() => {
     const handleMouseMove = (e) => {
       const now = Date.now();
       const dt = Math.min(now - lastTime, 32);
       
+      // Проверяем валидность координат
+      const clampedPos = clampToWindow(e.clientX, e.clientY);
+      if (!isValidPosition(clampedPos.x, clampedPos.y)) {
+        return; // Пропускаем невалидные координаты
+      }
+      
       if (dt > 0) {
         const newVelocity = {
-          x: (e.clientX - lastPosition.x) / dt * 16,
-          y: (e.clientY - lastPosition.y) / dt * 16
+          x: (clampedPos.x - lastPosition.x) / dt * 16,
+          y: (clampedPos.y - lastPosition.y) / dt * 16
         };
         
         setVelocity(prev => ({
@@ -339,10 +382,10 @@ const GlobalCursor = () => {
         }));
         
         setLastTime(now);
-        setLastPosition({ x: e.clientX, y: e.clientY });
+        setLastPosition({ x: clampedPos.x, y: clampedPos.y });
       }
       
-      positionHistoryRef.current.push({ x: e.clientX, y: e.clientY });
+      positionHistoryRef.current.push({ x: clampedPos.x, y: clampedPos.y });
       if (positionHistoryRef.current.length > MAX_HISTORY) {
         positionHistoryRef.current.shift();
       }
@@ -353,10 +396,18 @@ const GlobalCursor = () => {
       );
       const count = positionHistoryRef.current.length;
       
-      setPosition({ 
-        x: avgPosition.x / count, 
-        y: avgPosition.y / count 
-      });
+      const newAvgPos = {
+        x: avgPosition.x / count,
+        y: avgPosition.y / count
+      };
+      
+      // Инициализация logoPositionRef при первом валидном движении
+      if (!hasInitializedRef.current && isValidPosition(newAvgPos.x, newAvgPos.y)) {
+        logoPositionRef.current = { x: newAvgPos.x, y: newAvgPos.y };
+        hasInitializedRef.current = true;
+      }
+      
+      setPosition(newAvgPos);
     };
 
     const handleMouseDown = () => {
@@ -456,14 +507,15 @@ const GlobalCursor = () => {
         setScale({ x: 1, y: 1 });
       }
 
-      // ИНИЦИАЛИЗАЦИЯ logoPositionRef.current при первом движении курсора
-      if (isFirstRenderRef.current && (position.x !== 0 || position.y !== 0)) {
-        logoPositionRef.current = { x: position.x, y: position.y };
-        isFirstRenderRef.current = false;
+      // Находим ближайший интерактивный элемент (если координаты валидны)
+      let closestElement = null;
+      let closestDistance = Infinity;
+      
+      if (isValidPosition(position.x, position.y)) {
+        const result = findClosestInteractiveElement(position);
+        closestElement = result.element;
+        closestDistance = result.distance;
       }
-
-      // Находим ближайший интерактивный элемент
-      const { element: closestElement, distance: closestDistance } = findClosestInteractiveElement(position);
       
       const STICKY_THRESHOLD_IN = 50;
       const STICKY_THRESHOLD_OUT_LARGE = 140;
@@ -700,31 +752,47 @@ const GlobalCursor = () => {
       }
 
       // Плавное следование лого за курсором с отставанием
-      if (!isSticky) {
-        const attractionForce = 0.15;
-        const dx = position.x - logoPositionRef.current.x;
-        const dy = position.y - logoPositionRef.current.y;
-        
-        logoVelocityRef.current.x += dx * attractionForce;
-        logoVelocityRef.current.y += dy * attractionForce;
-        
-        const damping = 0.85;
-        logoVelocityRef.current.x *= damping;
-        logoVelocityRef.current.y *= damping;
-        
-        logoPositionRef.current.x += logoVelocityRef.current.x;
-        logoPositionRef.current.y += logoVelocityRef.current.y;
-        
-        targetX = logoPositionRef.current.x;
-        targetY = logoPositionRef.current.y;
-        
-        smoothFactor = 0.08;
+      if (!isSticky && hasInitializedRef.current) {
+        // Проверяем валидность текущей позиции
+        if (!isValidPosition(position.x, position.y)) {
+          // Если текущая позиция невалидна, используем последнюю валидную позицию лого
+          targetX = logoPositionRef.current.x;
+          targetY = logoPositionRef.current.y;
+        } else {
+          const attractionForce = 0.15;
+          const dx = position.x - logoPositionRef.current.x;
+          const dy = position.y - logoPositionRef.current.y;
+          
+          logoVelocityRef.current.x += dx * attractionForce;
+          logoVelocityRef.current.y += dy * attractionForce;
+          
+          const damping = 0.85;
+          logoVelocityRef.current.x *= damping;
+          logoVelocityRef.current.y *= damping;
+          
+          logoPositionRef.current.x += logoVelocityRef.current.x;
+          logoPositionRef.current.y += logoVelocityRef.current.y;
+          
+          // Обрезаем позицию лого до границ окна
+          const clampedLogoPos = clampToWindow(logoPositionRef.current.x, logoPositionRef.current.y);
+          logoPositionRef.current = clampedLogoPos;
+          
+          targetX = logoPositionRef.current.x;
+          targetY = logoPositionRef.current.y;
+          
+          smoothFactor = 0.08;
+        }
       } else {
         logoPositionRef.current.x = targetX;
         logoPositionRef.current.y = targetY;
         logoVelocityRef.current.x = 0;
         logoVelocityRef.current.y = 0;
       }
+
+      // Обрезаем конечную позицию до границ окна
+      const finalTargetPos = clampToWindow(targetX, targetY);
+      targetX = finalTargetPos.x;
+      targetY = finalTargetPos.y;
 
       const offsetX = 0;
       const offsetY = 0;
@@ -737,7 +805,10 @@ const GlobalCursor = () => {
       const newSvgX = lerp(svgPosition.x, targetSvgX, dynamicSmoothFactor);
       const newSvgY = lerp(svgPosition.y, targetSvgY, dynamicSmoothFactor);
       
-      setSvgPosition({ x: newSvgX, y: newSvgY });
+      // Обрезаем SVG позицию до границ окна
+      const clampedSvgPos = clampToWindow(newSvgX, newSvgY);
+      
+      setSvgPosition({ x: clampedSvgPos.x, y: clampedSvgPos.y });
       
       rafRef.current = requestAnimationFrame(animate);
     };
