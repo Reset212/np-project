@@ -2,40 +2,43 @@ import React, { useState, useEffect, useRef } from 'react';
 import './GlobalCursor2.css';
 
 const GlobalCursor = () => {
-  const [position, setPosition] = useState({ x: 0, y: 0 });
   const [svgPosition, setSvgPosition] = useState({ x: 0, y: 0 });
-  const [velocity, setVelocity] = useState({ x: 0, y: 0 });
-  const [lastPosition, setLastPosition] = useState({ x: 0, y: 0 });
-  const [lastTime, setLastTime] = useState(Date.now());
-  const [isSticky, setIsSticky] = useState(false);
-  const [stickyTarget, setStickyTarget] = useState({ 
-    x: 0, y: 0, width: 0, height: 0, borderRadius: 0 
-  });
-  const [scale, setScale] = useState({ x: 1, y: 1 });
-  const [rotation, setRotation] = useState(0);
   const [isClicked, setIsClicked] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
-  const [circleSize, setCircleSize] = useState({ width: 60, height: 60, borderRadius: 30 });
   const [showCircle, setShowCircle] = useState(false);
-  const [buttonHasBackground, setButtonHasBackground] = useState(false);
-  const [stretchEffect, setStretchEffect] = useState({ x: 1, y: 1 });
-  const [isPulling, setIsPulling] = useState(false);
-  const [circleOffset, setCircleOffset] = useState({ x: 0, y: 0 });
-  const [circleSquash, setCircleSquash] = useState({ x: 1, y: 1 });
-  const [isInsideStickyArea, setIsInsideStickyArea] = useState(false);
   
+  // ВСЕ данные для анимации храним в refs
+  const positionRef = useRef({ x: 0, y: 0 });
+  const velocityRef = useRef({ x: 0, y: 0 });
+  const lastPositionRef = useRef({ x: 0, y: 0 });
+  const lastTimeRef = useRef(Date.now());
+  const isStickyRef = useRef(false);
+  const buttonHasBackgroundRef = useRef(false);
+  const isInsideStickyAreaRef = useRef(false);
+  
+  // Визуальные свойства для рендеринга
+  const [circleStyle, setCircleStyle] = useState({
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    offset: { x: 0, y: 0 },
+    squash: { x: 1, y: 1 },
+    stretch: { x: 1, y: 1 },
+    isPulling: false
+  });
+  
+  const [logoStyle, setLogoStyle] = useState({
+    rotation: 0,
+    scale: { x: 1, y: 1 }
+  });
+
   const rafRef = useRef(null);
   const positionHistoryRef = useRef([]);
   const rotationHistoryRef = useRef([]);
   const stickyElementRef = useRef(null);
   const offsetHistoryRef = useRef([]);
-  const stickStartTimeRef = useRef(0);
-  const isDetachingRef = useRef(false);
-  const lastStickyStateRef = useRef(false);
-  const lastElementRef = useRef(null);
   const logoVelocityRef = useRef({ x: 0, y: 0 });
   const logoPositionRef = useRef({ x: 0, y: 0 });
-  const isInsideButtonRef = useRef(false);
   
   const MAX_HISTORY = 5;
   const ROTATION_SMOOTH_HISTORY = 3;
@@ -56,16 +59,14 @@ const GlobalCursor = () => {
     try {
       const style = window.getComputedStyle(element);
       const backgroundColor = style.backgroundColor;
-      const backgroundImage = style.backgroundImage;
       
       const hasBgColor = backgroundColor && 
                         backgroundColor !== 'rgba(0, 0, 0, 0)' && 
                         backgroundColor !== 'transparent';
       
-      const hasBgImage = backgroundImage && backgroundImage !== 'none';
-      const hasBoxShadow = style.boxShadow && style.boxShadow !== 'none';
-      
-      return hasBgColor || hasBgImage || hasBoxShadow;
+      return hasBgColor || 
+             style.backgroundImage !== 'none' || 
+             style.boxShadow !== 'none';
     } catch (e) {
       return false;
     }
@@ -73,69 +74,44 @@ const GlobalCursor = () => {
 
   const getElementMetrics = (element) => {
     const rect = element.getBoundingClientRect();
-    
     const hasBg = hasBackground(element);
-    setButtonHasBackground(hasBg);
-    
-    const isSmallButton = rect.width < 80 && rect.height < 80;
-    const computedStyle = window.getComputedStyle(element);
-    const borderRadius = parseFloat(computedStyle.borderRadius);
-    const isRound = borderRadius >= rect.width * 0.4 || borderRadius >= rect.height * 0.4;
-    const isSmallRoundButton = isSmallButton && isRound;
-    
-    const isSmallElement = rect.width <= 100 && rect.height <= 100;
     
     if (hasBg) {
-      const finalWidth = rect.width;
-      const finalHeight = rect.height;
-      const finalBorderRadius = borderRadius;
+      const computedStyle = window.getComputedStyle(element);
+      const borderRadius = parseFloat(computedStyle.borderRadius);
       
       return {
         x: rect.left,
         y: rect.top,
-        width: finalWidth,
-        height: finalHeight,
-        borderRadius: finalBorderRadius,
+        width: rect.width,
+        height: rect.height,
+        borderRadius: borderRadius,
         center: {
           x: rect.left + rect.width / 2,
           y: rect.top + rect.height / 2
         },
         originalRect: rect,
         hasBackground: true,
-        isSmallRoundButton,
-        isSmallElement,
-        elementType: element.tagName.toLowerCase(),
-        elementWidth: rect.width,
-        elementHeight: rect.height,
-        elementBorderRadius: borderRadius
+        isSmallElement: rect.width <= 100 && rect.height <= 100
       };
     } else {
-      const padding = PADDING_NO_BG;
-      
-      const finalWidth = rect.width + (padding * 2);
-      const finalHeight = rect.height + (padding * 2);
-      
+      const finalWidth = rect.width + (PADDING_NO_BG * 2);
+      const finalHeight = rect.height + (PADDING_NO_BG * 2);
       const minSide = Math.min(finalWidth, finalHeight);
-      const finalBorderRadius = Math.min(30, minSide / 2);
       
       return {
-        x: rect.left - padding,
-        y: rect.top - padding,
+        x: rect.left - PADDING_NO_BG,
+        y: rect.top - PADDING_NO_BG,
         width: finalWidth,
         height: finalHeight,
-        borderRadius: finalBorderRadius,
+        borderRadius: Math.min(30, minSide / 2),
         center: {
           x: rect.left + rect.width / 2,
           y: rect.top + rect.height / 2
         },
         originalRect: rect,
         hasBackground: false,
-        isSmallRoundButton,
-        isSmallElement,
-        elementType: element.tagName.toLowerCase(),
-        elementWidth: rect.width,
-        elementHeight: rect.height,
-        elementBorderRadius: borderRadius
+        isSmallElement: rect.width <= 100 && rect.height <= 100
       };
     }
   };
@@ -156,106 +132,11 @@ const GlobalCursor = () => {
     }
   };
 
-  const calculateStretchEffect = (cursorPos, buttonCenter, elementRect, isSmallRoundButton, hasBackground, isInside) => {
-    if (!isSticky || !elementRect || hasBackground || isInside) {
-      setIsPulling(false);
-      return { x: 1, y: 1 };
-    }
-    
-    const dx = cursorPos.x - buttonCenter.x;
-    const dy = cursorPos.y - buttonCenter.y;
-    const dist = Math.sqrt(dx * dx + dy * dy);
-    
-    const maxDistForEffect = Math.max(elementRect.width, elementRect.height) * 1.5;
-    const normalizedDist = Math.min(dist / maxDistForEffect, 1);
-    
-    const stretchIntensity = normalizedDist * 0.5;
-    const angle = Math.atan2(dy, dx);
-    
-    const stretchX = 1 + Math.abs(Math.cos(angle)) * stretchIntensity;
-    const stretchY = 1 + Math.abs(Math.sin(angle)) * stretchIntensity;
-    
-    setIsPulling(dist > 20);
-    
-    return {
-      x: Math.min(stretchX, 2.0),
-      y: Math.min(stretchY, 2.0)
-    };
-  };
-
-  const calculateCircleOffset = (cursorPos, buttonCenter, elementRect, isSmallRoundButton, hasBackground, isInside) => {
-    if (!isSticky || !elementRect || hasBackground || isInside) {
-      return { x: 0, y: 0 };
-    }
-    
-    const dx = cursorPos.x - buttonCenter.x;
-    const dy = cursorPos.y - buttonCenter.y;
-    const dist = Math.sqrt(dx * dx + dy * dy);
-    
-    const maxOffsetDist = Math.max(elementRect.width, elementRect.height) * 1.8;
-    const maxOffset = Math.min(elementRect.width, elementRect.height) * 0.4;
-    
-    if (dist < maxOffsetDist) {
-      const offsetStrength = Math.min(dist / maxOffsetDist, 1);
-      const smoothOffsetStrength = Math.pow(offsetStrength, 1.5);
-      
-      return {
-        x: dx * smoothOffsetStrength * maxOffset / maxOffsetDist,
-        y: dy * smoothOffsetStrength * maxOffset / maxOffsetDist
-      };
-    }
-    
-    const maxAllowedOffset = maxOffset * 0.3;
-    const clampedOffset = {
-      x: Math.max(-maxAllowedOffset, Math.min(maxAllowedOffset, dx * 0.3)),
-      y: Math.max(-maxAllowedOffset, Math.min(maxAllowedOffset, dy * 0.3))
-    };
-    
-    return clampedOffset;
-  };
-
-  const calculateCircleSquash = (cursorPos, buttonCenter, elementRect, offset, isSmallRoundButton, hasBackground, isInside) => {
-    if (!isSticky || !elementRect || hasBackground || isInside) {
-      return { x: 1, y: 1 };
-    }
-    
-    const dx = cursorPos.x - (buttonCenter.x + offset.x);
-    const dy = cursorPos.y - (buttonCenter.y + offset.y);
-    const dist = Math.sqrt(dx * dx + dy * dy);
-    
-    const maxSquashDist = Math.max(elementRect.width, elementRect.height) * 1.0;
-    
-    if (dist > 0) {
-      const squashStrength = Math.min(dist / maxSquashDist, 0.2);
-      const angle = Math.atan2(dy, dx);
-      
-      const squashX = 1 - Math.abs(Math.cos(angle)) * squashStrength;
-      const squashY = 1 - Math.abs(Math.sin(angle)) * squashStrength;
-      
-      const minSquash = 0.7;
-      
-      return {
-        x: Math.max(minSquash, squashX),
-        y: Math.max(minSquash, squashY)
-      };
-    }
-    
-    return { x: 1, y: 1 };
-  };
-
   const findClosestInteractiveElement = (cursorPos) => {
-    const interactiveSelectors = [
-      'button',
-      'a[href]',
-      '[role="button"]',
-      'input[type="submit"]',
-      'input[type="button"]',
-      '.logo',
-      '.logo-image',
-      '[data-discover="true"]'
-    ];
+    const interactiveElements = document.querySelectorAll(
+      'button, a[href], [role="button"], input[type="submit"], input[type="button"], .logo'
+    );
     
-    const interactiveElements = document.querySelectorAll(interactiveSelectors.join(','));
     let closestElement = null;
     let closestDistance = Infinity;
     
@@ -277,26 +158,29 @@ const GlobalCursor = () => {
     return { element: closestElement, distance: closestDistance };
   };
 
+  // Обработчик движения мыши - оптимизированный
   useEffect(() => {
     const handleMouseMove = (e) => {
       const now = Date.now();
-      const dt = Math.min(now - lastTime, 32);
+      const dt = Math.min(now - lastTimeRef.current, 32);
       
       if (dt > 0) {
         const newVelocity = {
-          x: (e.clientX - lastPosition.x) / dt * 16,
-          y: (e.clientY - lastPosition.y) / dt * 16
+          x: (e.clientX - lastPositionRef.current.x) / dt * 16,
+          y: (e.clientY - lastPositionRef.current.y) / dt * 16
         };
         
-        setVelocity(prev => ({
-          x: lerp(prev.x, newVelocity.x, 0.5),
-          y: lerp(prev.y, newVelocity.y, 0.5)
-        }));
+        // Сглаживаем скорость
+        velocityRef.current = {
+          x: lerp(velocityRef.current.x, newVelocity.x, 0.5),
+          y: lerp(velocityRef.current.y, newVelocity.y, 0.5)
+        };
         
-        setLastTime(now);
-        setLastPosition({ x: e.clientX, y: e.clientY });
+        lastTimeRef.current = now;
+        lastPositionRef.current = { x: e.clientX, y: e.clientY };
       }
       
+      // Сглаживаем позицию с историей
       positionHistoryRef.current.push({ x: e.clientX, y: e.clientY });
       if (positionHistoryRef.current.length > MAX_HISTORY) {
         positionHistoryRef.current.shift();
@@ -308,10 +192,10 @@ const GlobalCursor = () => {
       );
       const count = positionHistoryRef.current.length;
       
-      setPosition({ 
+      positionRef.current = { 
         x: avgPosition.x / count, 
         y: avgPosition.y / count 
-      });
+      };
     };
 
     const handleMouseDown = () => {
@@ -327,44 +211,50 @@ const GlobalCursor = () => {
       window.removeEventListener('mousedown', handleMouseDown);
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
-  }, [lastPosition, lastTime]);
+  }, []); // Пустые зависимости - обработчик создается один раз
 
+  // Проверка ховера - оптимизированная
   useEffect(() => {
     const checkHover = () => {
-      const elements = document.elementsFromPoint(position.x, position.y);
+      const elements = document.elementsFromPoint(
+        positionRef.current.x, 
+        positionRef.current.y
+      );
+      
       const isOverInteractive = elements.some(el => 
         el.tagName === 'BUTTON' || 
         el.tagName === 'A' || 
         el.getAttribute('role') === 'button' ||
-        el.tagName === 'INPUT' ||
-        el.tagName === 'TEXTAREA' ||
-        el.tagName === 'SELECT' ||
-        el.closest('.logo') ||
-        el.classList?.contains('logo-image')
+        el.tagName === 'INPUT'
       );
       
-      setIsHovering(isOverInteractive);
+      // Обновляем state только если значение изменилось
+      setIsHovering(prev => prev !== isOverInteractive ? isOverInteractive : prev);
     };
 
     const interval = setInterval(checkHover, 40);
     return () => clearInterval(interval);
-  }, [position]);
+  }, []); // Пустые зависимости
 
+  // Основная анимация - оптимизированная версия
   useEffect(() => {
     const animate = () => {
+      const position = positionRef.current;
+      const velocity = velocityRef.current;
+      const isSticky = isStickyRef.current;
+      
       let targetX = position.x;
       let targetY = position.y;
       let smoothFactor = 0.15;
 
       const speed = Math.sqrt(velocity.x ** 2 + velocity.y ** 2);
-      const maxSpeed = 50;
-      const speedRatio = Math.min(speed / maxSpeed, 2);
       
+      // Анимация логотипа - обновляем state только при значительных изменениях
       if (!isSticky) {
         if (speed > 10) {
           const angle = Math.atan2(velocity.y, velocity.x);
-          
           rotationHistoryRef.current.push(angle);
+          
           if (rotationHistoryRef.current.length > ROTATION_SMOOTH_HISTORY) {
             rotationHistoryRef.current.shift();
           }
@@ -377,103 +267,114 @@ const GlobalCursor = () => {
             cosSum += Math.cos(a);
           });
           
-          const avgAngle = Math.atan2(sinSum / rotationHistoryRef.current.length, 
-                                     cosSum / rotationHistoryRef.current.length);
+          const avgAngle = Math.atan2(
+            sinSum / rotationHistoryRef.current.length, 
+            cosSum / rotationHistoryRef.current.length
+          );
           
-          setRotation(prev => {
-            const diff = avgAngle - prev;
+          setLogoStyle(prev => {
+            const diff = avgAngle - prev.rotation;
             const normalizedDiff = Math.atan2(Math.sin(diff), Math.cos(diff));
-            return prev + normalizedDiff * 0.3;
-          });
-          
-          const stretchAmount = 1 + speedRatio * 0.5;
-          const squeezeAmount = 1 - speedRatio * 0.2;
-          
-          setScale({
-            x: stretchAmount,
-            y: squeezeAmount
+            const newRotation = prev.rotation + normalizedDiff * 0.3;
+            
+            const speedRatio = Math.min(speed / 50, 2);
+            const newScale = {
+              x: 1 + speedRatio * 0.5,
+              y: 1 - speedRatio * 0.2
+            };
+            
+            return {
+              rotation: newRotation,
+              scale: newScale
+            };
           });
         } else {
-          setRotation(prev => {
-            const diff = -prev;
-            const normalizedDiff = Math.atan2(Math.sin(diff), Math.cos(diff));
-            return prev + normalizedDiff * 0.08;
-          });
-          
-          setScale({
-            x: lerp(scale.x, 1, 0.15),
-            y: lerp(scale.y, 1, 0.15)
-          });
+          setLogoStyle(prev => ({
+            rotation: lerp(prev.rotation, 0, 0.08),
+            scale: {
+              x: lerp(prev.scale.x, 1, 0.15),
+              y: lerp(prev.scale.y, 1, 0.15)
+            }
+          }));
         }
       } else {
-        setRotation(0);
-        setScale({ x: 1, y: 1 });
+        setLogoStyle({
+          rotation: 0,
+          scale: { x: 1, y: 1 }
+        });
       }
 
-      const { element: closestElement, distance: closestDistance } = findClosestInteractiveElement(position);
+      // Поиск интерактивных элементов и логика прилипания
+      const { element: closestElement, distance: closestDistance } = 
+        findClosestInteractiveElement(position);
       
       const STICKY_THRESHOLD_IN = 50;
-      const STICKY_THRESHOLD_OUT_LARGE = 140;
-      const STICKY_THRESHOLD_OUT_SMALL = 60;
+      const STICKY_THRESHOLD_OUT = 140;
       
+      // Логика прилипания
       if (closestElement && closestDistance < STICKY_THRESHOLD_IN && !isSticky) {
         const metrics = getElementMetrics(closestElement);
         const isInside = isCursorInsideStickyArea(position, metrics);
-        setIsInsideStickyArea(isInside);
-        isInsideButtonRef.current = isInside;
+        
+        isInsideStickyAreaRef.current = isInside;
+        isStickyRef.current = true;
+        buttonHasBackgroundRef.current = metrics.hasBackground;
+        stickyElementRef.current = closestElement;
         
         setShowCircle(true);
-        setCircleSize({
+        
+        // Обновляем стиль круга одним обновлением state
+        setCircleStyle({
           width: metrics.width,
           height: metrics.height,
-          borderRadius: metrics.borderRadius
+          borderRadius: metrics.borderRadius,
+          offset: { x: 0, y: 0 },
+          squash: { x: 1, y: 1 },
+          stretch: { x: 1, y: 1 },
+          isPulling: false
         });
-        
-        if (metrics.hasBackground) {
-          setCircleOffset({ x: 0, y: 0 });
-          setCircleSquash({ x: 1, y: 1 });
-          setStretchEffect({ x: 1, y: 1 });
-          setIsPulling(false);
-          offsetHistoryRef.current = [];
-        } else {
-          if (isInside) {
-            setCircleOffset({ x: 0, y: 0 });
-            setCircleSquash({ x: 1, y: 1 });
-            setStretchEffect({ x: 1, y: 1 });
-            setIsPulling(false);
-          }
-        }
         
         targetX = metrics.center.x;
         targetY = metrics.center.y;
-        
-        setIsSticky(true);
-        isDetachingRef.current = false;
-        stickyElementRef.current = closestElement;
-        setStickyTarget({
-          x: metrics.center.x,
-          y: metrics.center.y,
-          width: metrics.width,
-          height: metrics.height,
-          borderRadius: metrics.borderRadius
-        });
-        
         smoothFactor = 0.1;
+        
       } else if (isSticky && stickyElementRef.current) {
         const metrics = getElementMetrics(stickyElementRef.current);
         const isInside = isCursorInsideStickyArea(position, metrics);
-        setIsInsideStickyArea(isInside);
-        isInsideButtonRef.current = isInside;
         
+        isInsideStickyAreaRef.current = isInside;
+        buttonHasBackgroundRef.current = metrics.hasBackground;
+        
+        let newCircleStyle = { ...circleStyle };
+        let offsetChanged = false;
+        
+        // Для кнопок без фона и курсора снаружи - применяем эффекты
         if (!metrics.hasBackground && !isInside) {
-          const newOffset = calculateCircleOffset(
-            position, 
-            metrics.center, 
-            metrics.originalRect,
-            metrics.isSmallRoundButton,
-            metrics.hasBackground,
-            isInside
-          );
+          const dx = position.x - metrics.center.x;
+          const dy = position.y - metrics.center.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          
+          // Смещение
+          const maxOffsetDist = Math.max(metrics.originalRect.width, metrics.originalRect.height) * 1.8;
+          const maxOffset = Math.min(metrics.originalRect.width, metrics.originalRect.height) * 0.4;
+          
+          let newOffset = { x: 0, y: 0 };
+          
+          if (dist < maxOffsetDist) {
+            const offsetStrength = Math.min(dist / maxOffsetDist, 1);
+            const smoothOffsetStrength = Math.pow(offsetStrength, 1.5);
+            
+            newOffset = {
+              x: dx * smoothOffsetStrength * maxOffset / maxOffsetDist,
+              y: dy * smoothOffsetStrength * maxOffset / maxOffsetDist
+            };
+          } else {
+            const maxAllowedOffset = maxOffset * 0.3;
+            newOffset = {
+              x: Math.max(-maxAllowedOffset, Math.min(maxAllowedOffset, dx * 0.3)),
+              y: Math.max(-maxAllowedOffset, Math.min(maxAllowedOffset, dy * 0.3))
+            };
+          }
           
           offsetHistoryRef.current.push(newOffset);
           if (offsetHistoryRef.current.length > OFFSET_SMOOTH_HISTORY) {
@@ -491,83 +392,86 @@ const GlobalCursor = () => {
             y: smoothOffset.y / count
           };
           
-          setCircleOffset(finalOffset);
+          if (Math.abs(finalOffset.x - newCircleStyle.offset.x) > 0.1 || 
+              Math.abs(finalOffset.y - newCircleStyle.offset.y) > 0.1) {
+            newCircleStyle.offset = finalOffset;
+            offsetChanged = true;
+          }
           
-          const squash = calculateCircleSquash(
-            position,
-            metrics.center,
-            metrics.originalRect,
-            finalOffset,
-            metrics.isSmallRoundButton,
-            metrics.hasBackground,
-            isInside
-          );
-          setCircleSquash(squash);
+          // Сплющивание
+          const finalDx = position.x - (metrics.center.x + finalOffset.x);
+          const finalDy = position.y - (metrics.center.y + finalOffset.y);
+          const finalDist = Math.sqrt(finalDx * finalDy);
           
-          const stretch = calculateStretchEffect(
-            position, 
-            { 
-              x: metrics.center.x + finalOffset.x, 
-              y: metrics.center.y + finalOffset.y 
-            }, 
-            metrics.originalRect,
-            metrics.isSmallRoundButton,
-            metrics.hasBackground,
-            isInside
-          );
-          setStretchEffect(stretch);
+          if (finalDist > 0) {
+            const maxSquashDist = Math.max(metrics.originalRect.width, metrics.originalRect.height) * 1.0;
+            const squashStrength = Math.min(finalDist / maxSquashDist, 0.2);
+            const angle = Math.atan2(finalDy, finalDx);
+            
+            newCircleStyle.squash = {
+              x: Math.max(0.7, 1 - Math.abs(Math.cos(angle)) * squashStrength),
+              y: Math.max(0.7, 1 - Math.abs(Math.sin(angle)) * squashStrength)
+            };
+          }
+          
+          // Растяжение
+          const maxDistForEffect = Math.max(metrics.originalRect.width, metrics.originalRect.height) * 1.5;
+          const normalizedDist = Math.min(dist / maxDistForEffect, 1);
+          const stretchIntensity = normalizedDist * 0.5;
+          const angle = Math.atan2(dy, dx);
+          
+          newCircleStyle.stretch = {
+            x: Math.min(2.0, 1 + Math.abs(Math.cos(angle)) * stretchIntensity),
+            y: Math.min(2.0, 1 + Math.abs(Math.sin(angle)) * stretchIntensity)
+          };
+          
+          newCircleStyle.isPulling = dist > 20;
           
           targetX = metrics.center.x + finalOffset.x;
           targetY = metrics.center.y + finalOffset.y;
+          
         } else {
+          // Для кнопок с фоном или когда курсор внутри
+          newCircleStyle = {
+            ...newCircleStyle,
+            offset: { x: 0, y: 0 },
+            squash: { x: 1, y: 1 },
+            stretch: { x: 1, y: 1 },
+            isPulling: false
+          };
+          
           targetX = metrics.center.x;
           targetY = metrics.center.y;
-          setCircleOffset({ x: 0, y: 0 });
-          setCircleSquash({ x: 1, y: 1 });
-          setStretchEffect({ x: 1, y: 1 });
-          setIsPulling(false);
         }
         
+        // Проверка на отлипание
         const dist = distance(position.x, position.y, metrics.center.x, metrics.center.y);
+        const stickyThresholdOut = metrics.isSmallElement ? 60 : STICKY_THRESHOLD_OUT;
         
-        let stickyThresholdOut;
-        if (metrics.isSmallElement) {
-          stickyThresholdOut = STICKY_THRESHOLD_OUT_SMALL;
-        } else {
-          stickyThresholdOut = STICKY_THRESHOLD_OUT_LARGE;
-        }
-        
-        if (!metrics.hasBackground) {
-          stickyThresholdOut += 40;
-        }
-        
-        if (dist > stickyThresholdOut) {
+        if (dist > stickyThresholdOut + (metrics.hasBackground ? 0 : 40)) {
+          // Отлипаем
           setShowCircle(false);
-          setIsSticky(false);
-          setIsInsideStickyArea(false);
-          isInsideButtonRef.current = false;
-          isDetachingRef.current = true;
-          stickStartTimeRef.current = Date.now();
+          isStickyRef.current = false;
+          isInsideStickyAreaRef.current = false;
           stickyElementRef.current = null;
-          
-          setCircleSize({ width: 60, height: 60, borderRadius: 30 });
-          setCircleOffset({ x: 0, y: 0 });
-          setCircleSquash({ x: 1, y: 1 });
           offsetHistoryRef.current = [];
-          setStretchEffect({ x: 1, y: 1 });
-          setIsPulling(false);
+          
+          setCircleStyle({
+            width: 60,
+            height: 60,
+            borderRadius: 30,
+            offset: { x: 0, y: 0 },
+            squash: { x: 1, y: 1 },
+            stretch: { x: 1, y: 1 },
+            isPulling: false
+          });
+        } else if (offsetChanged) {
+          // Обновляем стиль круга только если есть изменения
+          setCircleStyle(newCircleStyle);
         }
-      } else if (!isSticky && showCircle) {
-        setShowCircle(false);
-        setIsInsideStickyArea(false);
-        isInsideButtonRef.current = false;
-        setCircleSize({ width: 60, height: 60, borderRadius: 30 });
-        setCircleOffset({ x: 0, y: 0 });
-        setCircleSquash({ x: 1, y: 1 });
-        setStretchEffect({ x: 1, y: 1 });
-        setIsPulling(false);
       }
 
+      // Движение логотипа
       if (!isSticky) {
         const attractionForce = 0.15;
         const dx = position.x - logoPositionRef.current.x;
@@ -585,7 +489,6 @@ const GlobalCursor = () => {
         
         targetX = logoPositionRef.current.x;
         targetY = logoPositionRef.current.y;
-        
         smoothFactor = 0.08;
       } else {
         logoPositionRef.current.x = targetX;
@@ -594,17 +497,14 @@ const GlobalCursor = () => {
         logoVelocityRef.current.y = 0;
       }
 
-      const offsetX = 0;
-      const offsetY = 0;
-      const targetSvgX = targetX + offsetX;
-      const targetSvgY = targetY + offsetY;
-      
+      // Сглаживание позиции SVG
       const speedFactor = Math.min(speed / 20, 1);
       const dynamicSmoothFactor = lerp(smoothFactor, 0.15, speedFactor);
       
-      const newSvgX = lerp(svgPosition.x, targetSvgX, dynamicSmoothFactor);
-      const newSvgY = lerp(svgPosition.y, targetSvgY, dynamicSmoothFactor);
+      const newSvgX = lerp(svgPosition.x, targetX, dynamicSmoothFactor);
+      const newSvgY = lerp(svgPosition.y, targetY, dynamicSmoothFactor);
       
+      // Батчинг обновления позиции
       setSvgPosition({ x: newSvgX, y: newSvgY });
       
       rafRef.current = requestAnimationFrame(animate);
@@ -615,7 +515,7 @@ const GlobalCursor = () => {
     return () => {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
-  }, [position, svgPosition, velocity, isSticky, scale, rotation, showCircle, circleOffset]);
+  }, [svgPosition, circleStyle]); // Минимальные зависимости
 
   const supportsBackdropFilter = () => {
     return CSS.supports('backdrop-filter', 'invert(1)') || 
@@ -628,11 +528,11 @@ const GlobalCursor = () => {
     return null;
   }
 
-  const shouldShowEffects = !buttonHasBackground && !isInsideStickyArea;
+  const shouldShowEffects = !buttonHasBackgroundRef.current && !isInsideStickyAreaRef.current;
   const combinedTransform = shouldShowEffects
-    ? `translate(${circleOffset.x}px, ${circleOffset.y}px)
-       scale(${circleSquash.x}, ${circleSquash.y})
-       scale(${stretchEffect.x}, ${stretchEffect.y})`
+    ? `translate(${circleStyle.offset.x}px, ${circleStyle.offset.y}px)
+       scale(${circleStyle.squash.x}, ${circleStyle.squash.y})
+       scale(${circleStyle.stretch.x}, ${circleStyle.stretch.y})`
     : 'translate(0px, 0px) scale(1, 1) scale(1, 1)';
 
   const logoOpacity = showCircle ? 0 : 1;
@@ -646,8 +546,8 @@ const GlobalCursor = () => {
           left: `${svgPosition.x}px`,
           top: `${svgPosition.y}px`,
           transform: `translate(-50%, -50%) 
-                     rotate(${rotation}rad)
-                     scale(${scale.x}, ${scale.y})`,
+                     rotate(${logoStyle.rotation}rad)
+                     scale(${logoStyle.scale.x}, ${logoStyle.scale.y})`,
           opacity: logoOpacity,
           display: logoDisplay,
           transition: 'opacity 0.1s ease-out, display 0.1s step-end'
@@ -656,13 +556,13 @@ const GlobalCursor = () => {
       
       {showCircle && (
         <div 
-          className={`cursor-sticky-circle ${isClicked ? 'clicked' : ''} ${buttonHasBackground ? 'inside-button' : 'outside-button'} ${isPulling ? 'pulling' : ''}`}
+          className={`cursor-sticky-circle ${isClicked ? 'clicked' : ''} ${buttonHasBackgroundRef.current ? 'inside-button' : 'outside-button'} ${circleStyle.isPulling ? 'pulling' : ''}`}
           style={{
             left: `${svgPosition.x}px`,
             top: `${svgPosition.y}px`,
-            width: `${circleSize.width}px`,
-            height: `${circleSize.height}px`,
-            borderRadius: `${circleSize.borderRadius}px`,
+            width: `${circleStyle.width}px`,
+            height: `${circleStyle.height}px`,
+            borderRadius: `${circleStyle.borderRadius}px`,
             transform: `translate(-50%, -50%) ${combinedTransform}`,
             opacity: 1,
             transformOrigin: 'center',
