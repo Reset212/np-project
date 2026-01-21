@@ -24,25 +24,6 @@ const GlobalCursor = () => {
   const [circleSquash, setCircleSquash] = useState({ x: 1, y: 1 });
   const [isInsideStickyArea, setIsInsideStickyArea] = useState(false);
   
-  // Состояние для отладки
-  const [debugInfo, setDebugInfo] = useState({
-    show: false,
-    x: 0,
-    y: 0,
-    circleWidth: 0,
-    circleHeight: 0,
-    borderRadius: 0,
-    isInsideButton: false,
-    buttonHasBackground: false,
-    stretchEffect: { x: 1, y: 1 },
-    offset: { x: 0, y: 0 },
-    squash: { x: 1, y: 1 },
-    elementType: '',
-    elementWidth: 0,
-    elementHeight: 0,
-    elementBorderRadius: 0
-  });
-  
   const rafRef = useRef(null);
   const positionHistoryRef = useRef([]);
   const rotationHistoryRef = useRef([]);
@@ -53,18 +34,13 @@ const GlobalCursor = () => {
   const lastStickyStateRef = useRef(false);
   const lastElementRef = useRef(null);
   const logoVelocityRef = useRef({ x: 0, y: 0 });
-  const logoPositionRef = useRef({ x: -1000, y: -1000 }); // Инициализируем вне экрана
+  const logoPositionRef = useRef({ x: 0, y: 0 });
   const isInsideButtonRef = useRef(false);
-  const hasInitializedRef = useRef(false);
-  const windowSizeRef = useRef({ 
-    width: window.innerWidth, 
-    height: window.innerHeight 
-  });
   
   const MAX_HISTORY = 5;
   const ROTATION_SMOOTH_HISTORY = 3;
   const OFFSET_SMOOTH_HISTORY = 3;
-  const PADDING_NO_BG = 15; // Единый padding для кнопок без фона
+  const PADDING_NO_BG = 15;
 
   const lerp = (start, end, factor) => {
     return start + (end - start) * factor;
@@ -74,7 +50,6 @@ const GlobalCursor = () => {
     return Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
   };
 
-  // Функция для проверки есть ли у элемента фон
   const hasBackground = (element) => {
     if (!element) return false;
     
@@ -96,29 +71,23 @@ const GlobalCursor = () => {
     }
   };
 
-  // Функция для получения точных размеров элемента
   const getElementMetrics = (element) => {
     const rect = element.getBoundingClientRect();
     
     const hasBg = hasBackground(element);
     setButtonHasBackground(hasBg);
     
-    // Определяем, маленькая ли круглая кнопка
     const isSmallButton = rect.width < 80 && rect.height < 80;
     const computedStyle = window.getComputedStyle(element);
     const borderRadius = parseFloat(computedStyle.borderRadius);
     const isRound = borderRadius >= rect.width * 0.4 || borderRadius >= rect.height * 0.4;
     const isSmallRoundButton = isSmallButton && isRound;
     
-    // Определяем, является ли кнопка маленькой (до 100px)
     const isSmallElement = rect.width <= 100 && rect.height <= 100;
     
     if (hasBg) {
-      // Для кнопок с фоном используем точные размеры кнопки
       const finalWidth = rect.width;
       const finalHeight = rect.height;
-      
-      // Для кнопок с фоном используем их собственный border-radius
       const finalBorderRadius = borderRadius;
       
       return {
@@ -141,7 +110,6 @@ const GlobalCursor = () => {
         elementBorderRadius: borderRadius
       };
     } else {
-      // Для кнопок без фона добавляем единый отступ PADDING_NO_BG
       const padding = PADDING_NO_BG;
       
       const finalWidth = rect.width + (padding * 2);
@@ -172,18 +140,15 @@ const GlobalCursor = () => {
     }
   };
 
-  // Проверка находится ли курсор внутри области прилипшей кнопки
   const isCursorInsideStickyArea = (cursorPos, metrics) => {
     if (!metrics) return false;
     
-    // Для кнопок с фоном используем точные границы кнопки
     if (metrics.hasBackground) {
       return cursorPos.x >= metrics.originalRect.left && 
              cursorPos.x <= metrics.originalRect.right && 
              cursorPos.y >= metrics.originalRect.top && 
              cursorPos.y <= metrics.originalRect.bottom;
     } else {
-      // Для кнопок без фона используем расширенную область с padding
       return cursorPos.x >= metrics.x && 
              cursorPos.x <= metrics.x + metrics.width && 
              cursorPos.y >= metrics.y && 
@@ -191,11 +156,8 @@ const GlobalCursor = () => {
     }
   };
 
-  // Эффект растягивания - ТОЛЬКО для кнопок без фона и только когда курсор за пределами кнопки
   const calculateStretchEffect = (cursorPos, buttonCenter, elementRect, isSmallRoundButton, hasBackground, isInside) => {
     if (!isSticky || !elementRect || hasBackground || isInside) {
-      // Для кнопок с фоном НЕТ растягивания
-      // Также НЕТ растягивания когда курсор внутри кнопки
       setIsPulling(false);
       return { x: 1, y: 1 };
     }
@@ -204,7 +166,6 @@ const GlobalCursor = () => {
     const dy = cursorPos.y - buttonCenter.y;
     const dist = Math.sqrt(dx * dx + dy * dy);
     
-    // Параметры только для кнопок без фона
     const maxDistForEffect = Math.max(elementRect.width, elementRect.height) * 1.5;
     const normalizedDist = Math.min(dist / maxDistForEffect, 1);
     
@@ -214,7 +175,6 @@ const GlobalCursor = () => {
     const stretchX = 1 + Math.abs(Math.cos(angle)) * stretchIntensity;
     const stretchY = 1 + Math.abs(Math.sin(angle)) * stretchIntensity;
     
-    // Порог для состояния "оттягивания"
     setIsPulling(dist > 20);
     
     return {
@@ -223,11 +183,8 @@ const GlobalCursor = () => {
     };
   };
 
-  // Расчет смещения круга в сторону курсора - ТОЛЬКО для кнопок без фона и только когда курсор за пределами кнопки
   const calculateCircleOffset = (cursorPos, buttonCenter, elementRect, isSmallRoundButton, hasBackground, isInside) => {
     if (!isSticky || !elementRect || hasBackground || isInside) {
-      // Для кнопок с фоном НЕТ смещения
-      // Также НЕТ смещения когда курсор внутри кнопки
       return { x: 0, y: 0 };
     }
     
@@ -235,7 +192,6 @@ const GlobalCursor = () => {
     const dy = cursorPos.y - buttonCenter.y;
     const dist = Math.sqrt(dx * dx + dy * dy);
     
-    // Параметры только для кнопок без фона
     const maxOffsetDist = Math.max(elementRect.width, elementRect.height) * 1.8;
     const maxOffset = Math.min(elementRect.width, elementRect.height) * 0.4;
     
@@ -249,7 +205,6 @@ const GlobalCursor = () => {
       };
     }
     
-    // Даже если курсор далеко, все равно смещаем пузырь немного
     const maxAllowedOffset = maxOffset * 0.3;
     const clampedOffset = {
       x: Math.max(-maxAllowedOffset, Math.min(maxAllowedOffset, dx * 0.3)),
@@ -259,11 +214,8 @@ const GlobalCursor = () => {
     return clampedOffset;
   };
 
-  // Расчет сплющивания круга - ТОЛЬКО для кнопок без фона и только когда курсор за пределами кнопки
   const calculateCircleSquash = (cursorPos, buttonCenter, elementRect, offset, isSmallRoundButton, hasBackground, isInside) => {
     if (!isSticky || !elementRect || hasBackground || isInside) {
-      // Для кнопок с фоном НЕТ сплющивания
-      // Также НЕТ сплющивания когда курсор внутри кнопки
       return { x: 1, y: 1 };
     }
     
@@ -291,7 +243,6 @@ const GlobalCursor = () => {
     return { x: 1, y: 1 };
   };
 
-  // Функция для поиска ближайшего интерактивного элемента
   const findClosestInteractiveElement = (cursorPos) => {
     const interactiveSelectors = [
       'button',
@@ -326,54 +277,15 @@ const GlobalCursor = () => {
     return { element: closestElement, distance: closestDistance };
   };
 
-  // Функция для обрезки координат до границ окна
-  const clampToWindow = (x, y) => {
-    return {
-      x: Math.max(0, Math.min(x, windowSizeRef.current.width)),
-      y: Math.max(0, Math.min(y, windowSizeRef.current.height))
-    };
-  };
-
-  // Функция для проверки валидности координат
-  const isValidPosition = (x, y) => {
-    return !isNaN(x) && !isNaN(y) && 
-           isFinite(x) && isFinite(y) &&
-           x >= -100 && y >= -100 && // Допускаем небольшой выход за границы
-           x <= windowSizeRef.current.width + 100 && 
-           y <= windowSizeRef.current.height + 100;
-  };
-
-  useEffect(() => {
-    const updateWindowSize = () => {
-      windowSizeRef.current = {
-        width: window.innerWidth,
-        height: window.innerHeight
-      };
-    };
-
-    updateWindowSize();
-    window.addEventListener('resize', updateWindowSize);
-
-    return () => {
-      window.removeEventListener('resize', updateWindowSize);
-    };
-  }, []);
-
   useEffect(() => {
     const handleMouseMove = (e) => {
       const now = Date.now();
       const dt = Math.min(now - lastTime, 32);
       
-      // Проверяем валидность координат
-      const clampedPos = clampToWindow(e.clientX, e.clientY);
-      if (!isValidPosition(clampedPos.x, clampedPos.y)) {
-        return; // Пропускаем невалидные координаты
-      }
-      
       if (dt > 0) {
         const newVelocity = {
-          x: (clampedPos.x - lastPosition.x) / dt * 16,
-          y: (clampedPos.y - lastPosition.y) / dt * 16
+          x: (e.clientX - lastPosition.x) / dt * 16,
+          y: (e.clientY - lastPosition.y) / dt * 16
         };
         
         setVelocity(prev => ({
@@ -382,10 +294,10 @@ const GlobalCursor = () => {
         }));
         
         setLastTime(now);
-        setLastPosition({ x: clampedPos.x, y: clampedPos.y });
+        setLastPosition({ x: e.clientX, y: e.clientY });
       }
       
-      positionHistoryRef.current.push({ x: clampedPos.x, y: clampedPos.y });
+      positionHistoryRef.current.push({ x: e.clientX, y: e.clientY });
       if (positionHistoryRef.current.length > MAX_HISTORY) {
         positionHistoryRef.current.shift();
       }
@@ -396,18 +308,10 @@ const GlobalCursor = () => {
       );
       const count = positionHistoryRef.current.length;
       
-      const newAvgPos = {
-        x: avgPosition.x / count,
-        y: avgPosition.y / count
-      };
-      
-      // Инициализация logoPositionRef при первом валидном движении
-      if (!hasInitializedRef.current && isValidPosition(newAvgPos.x, newAvgPos.y)) {
-        logoPositionRef.current = { x: newAvgPos.x, y: newAvgPos.y };
-        hasInitializedRef.current = true;
-      }
-      
-      setPosition(newAvgPos);
+      setPosition({ 
+        x: avgPosition.x / count, 
+        y: avgPosition.y / count 
+      });
     };
 
     const handleMouseDown = () => {
@@ -456,7 +360,6 @@ const GlobalCursor = () => {
       const maxSpeed = 50;
       const speedRatio = Math.min(speed / maxSpeed, 2);
       
-      // Логика вращения лого и его сплющивания от скорости
       if (!isSticky) {
         if (speed > 10) {
           const angle = Math.atan2(velocity.y, velocity.x);
@@ -507,21 +410,12 @@ const GlobalCursor = () => {
         setScale({ x: 1, y: 1 });
       }
 
-      // Находим ближайший интерактивный элемент (если координаты валидны)
-      let closestElement = null;
-      let closestDistance = Infinity;
-      
-      if (isValidPosition(position.x, position.y)) {
-        const result = findClosestInteractiveElement(position);
-        closestElement = result.element;
-        closestDistance = result.distance;
-      }
+      const { element: closestElement, distance: closestDistance } = findClosestInteractiveElement(position);
       
       const STICKY_THRESHOLD_IN = 50;
       const STICKY_THRESHOLD_OUT_LARGE = 140;
       const STICKY_THRESHOLD_OUT_SMALL = 60;
       
-      // Проверяем, нужно ли прилипнуть
       if (closestElement && closestDistance < STICKY_THRESHOLD_IN && !isSticky) {
         const metrics = getElementMetrics(closestElement);
         const isInside = isCursorInsideStickyArea(position, metrics);
@@ -535,34 +429,13 @@ const GlobalCursor = () => {
           borderRadius: metrics.borderRadius
         });
         
-        // Обновляем отладочную информацию
-        setDebugInfo({
-          show: true,
-          x: metrics.center.x,
-          y: metrics.center.y,
-          circleWidth: metrics.width,
-          circleHeight: metrics.height,
-          borderRadius: metrics.borderRadius,
-          isInsideButton: isInside,
-          buttonHasBackground: metrics.hasBackground,
-          stretchEffect: { x: 1, y: 1 },
-          offset: { x: 0, y: 0 },
-          squash: { x: 1, y: 1 },
-          elementType: metrics.elementType,
-          elementWidth: metrics.elementWidth,
-          elementHeight: metrics.elementHeight,
-          elementBorderRadius: metrics.elementBorderRadius
-        });
-        
-        // Для кнопок с фоном сразу отключаем все эффекты
         if (metrics.hasBackground) {
           setCircleOffset({ x: 0, y: 0 });
           setCircleSquash({ x: 1, y: 1 });
           setStretchEffect({ x: 1, y: 1 });
           setIsPulling(false);
-          offsetHistoryRef.current = []; // Очищаем историю смещений
+          offsetHistoryRef.current = [];
         } else {
-          // Для кнопок без фона: если курсор внутри кнопки, сбрасываем все эффекты
           if (isInside) {
             setCircleOffset({ x: 0, y: 0 });
             setCircleSquash({ x: 1, y: 1 });
@@ -592,9 +465,7 @@ const GlobalCursor = () => {
         setIsInsideStickyArea(isInside);
         isInsideButtonRef.current = isInside;
         
-        // ДЛЯ КНОПОК БЕЗ ФОНА: рассчитываем все эффекты ТОЛЬКО когда курсор вне кнопки
         if (!metrics.hasBackground && !isInside) {
-          // Рассчитываем смещение пузыря в сторону курсора
           const newOffset = calculateCircleOffset(
             position, 
             metrics.center, 
@@ -622,7 +493,6 @@ const GlobalCursor = () => {
           
           setCircleOffset(finalOffset);
           
-          // Рассчитываем сплющивание пузыря
           const squash = calculateCircleSquash(
             position,
             metrics.center,
@@ -634,7 +504,6 @@ const GlobalCursor = () => {
           );
           setCircleSquash(squash);
           
-          // Обновляем растягивание пузыря
           const stretch = calculateStretchEffect(
             position, 
             { 
@@ -648,62 +517,19 @@ const GlobalCursor = () => {
           );
           setStretchEffect(stretch);
           
-          // Обновляем отладочную информацию
-          setDebugInfo({
-            show: true,
-            x: metrics.center.x,
-            y: metrics.center.y,
-            circleWidth: metrics.width,
-            circleHeight: metrics.height,
-            borderRadius: metrics.borderRadius,
-            isInsideButton: isInside,
-            buttonHasBackground: metrics.hasBackground,
-            stretchEffect: stretch,
-            offset: finalOffset,
-            squash: squash,
-            elementType: metrics.elementType,
-            elementWidth: metrics.elementWidth,
-            elementHeight: metrics.elementHeight,
-            elementBorderRadius: metrics.elementBorderRadius
-          });
-          
-          // Позиция пузыря с учетом смещения
           targetX = metrics.center.x + finalOffset.x;
           targetY = metrics.center.y + finalOffset.y;
         } else {
-          // ДЛЯ КНОПОК С ФОНОМ: пузырь неподвижно привязан к центру кнопки
-          // ИЛИ для кнопок без фона, когда курсор внутри кнопки
           targetX = metrics.center.x;
           targetY = metrics.center.y;
           setCircleOffset({ x: 0, y: 0 });
           setCircleSquash({ x: 1, y: 1 });
           setStretchEffect({ x: 1, y: 1 });
           setIsPulling(false);
-
-          // Обновляем отладочную информацию
-          setDebugInfo({
-            show: true,
-            x: metrics.center.x,
-            y: metrics.center.y,
-            circleWidth: metrics.width,
-            circleHeight: metrics.height,
-            borderRadius: metrics.borderRadius,
-            isInsideButton: isInside,
-            buttonHasBackground: metrics.hasBackground,
-            stretchEffect: { x: 1, y: 1 },
-            offset: { x: 0, y: 0 },
-            squash: { x: 1, y: 1 },
-            elementType: metrics.elementType,
-            elementWidth: metrics.elementWidth,
-            elementHeight: metrics.elementHeight,
-            elementBorderRadius: metrics.elementBorderRadius
-          });
         }
         
-        // Проверяем расстояние для отлипания
         const dist = distance(position.x, position.y, metrics.center.x, metrics.center.y);
         
-        // Динамический порог отрыва в зависимости от размера кнопки
         let stickyThresholdOut;
         if (metrics.isSmallElement) {
           stickyThresholdOut = STICKY_THRESHOLD_OUT_SMALL;
@@ -711,7 +537,6 @@ const GlobalCursor = () => {
           stickyThresholdOut = STICKY_THRESHOLD_OUT_LARGE;
         }
         
-        // Дополнительная проверка для кнопок без фона (увеличиваем порог)
         if (!metrics.hasBackground) {
           stickyThresholdOut += 40;
         }
@@ -725,19 +550,14 @@ const GlobalCursor = () => {
           stickStartTimeRef.current = Date.now();
           stickyElementRef.current = null;
           
-          // Сбрасываем параметры пузыря
           setCircleSize({ width: 60, height: 60, borderRadius: 30 });
           setCircleOffset({ x: 0, y: 0 });
           setCircleSquash({ x: 1, y: 1 });
           offsetHistoryRef.current = [];
           setStretchEffect({ x: 1, y: 1 });
           setIsPulling(false);
-          
-          // Скрываем отладочную информацию
-          setDebugInfo(prev => ({ ...prev, show: false }));
         }
       } else if (!isSticky && showCircle) {
-        // Дополнительная проверка: если не прилипли, но пузырь еще виден
         setShowCircle(false);
         setIsInsideStickyArea(false);
         isInsideButtonRef.current = false;
@@ -746,53 +566,33 @@ const GlobalCursor = () => {
         setCircleSquash({ x: 1, y: 1 });
         setStretchEffect({ x: 1, y: 1 });
         setIsPulling(false);
-        
-        // Скрываем отладочную информацию
-        setDebugInfo(prev => ({ ...prev, show: false }));
       }
 
-      // Плавное следование лого за курсором с отставанием
-      if (!isSticky && hasInitializedRef.current) {
-        // Проверяем валидность текущей позиции
-        if (!isValidPosition(position.x, position.y)) {
-          // Если текущая позиция невалидна, используем последнюю валидную позицию лого
-          targetX = logoPositionRef.current.x;
-          targetY = logoPositionRef.current.y;
-        } else {
-          const attractionForce = 0.15;
-          const dx = position.x - logoPositionRef.current.x;
-          const dy = position.y - logoPositionRef.current.y;
-          
-          logoVelocityRef.current.x += dx * attractionForce;
-          logoVelocityRef.current.y += dy * attractionForce;
-          
-          const damping = 0.85;
-          logoVelocityRef.current.x *= damping;
-          logoVelocityRef.current.y *= damping;
-          
-          logoPositionRef.current.x += logoVelocityRef.current.x;
-          logoPositionRef.current.y += logoVelocityRef.current.y;
-          
-          // Обрезаем позицию лого до границ окна
-          const clampedLogoPos = clampToWindow(logoPositionRef.current.x, logoPositionRef.current.y);
-          logoPositionRef.current = clampedLogoPos;
-          
-          targetX = logoPositionRef.current.x;
-          targetY = logoPositionRef.current.y;
-          
-          smoothFactor = 0.08;
-        }
+      if (!isSticky) {
+        const attractionForce = 0.15;
+        const dx = position.x - logoPositionRef.current.x;
+        const dy = position.y - logoPositionRef.current.y;
+        
+        logoVelocityRef.current.x += dx * attractionForce;
+        logoVelocityRef.current.y += dy * attractionForce;
+        
+        const damping = 0.85;
+        logoVelocityRef.current.x *= damping;
+        logoVelocityRef.current.y *= damping;
+        
+        logoPositionRef.current.x += logoVelocityRef.current.x;
+        logoPositionRef.current.y += logoVelocityRef.current.y;
+        
+        targetX = logoPositionRef.current.x;
+        targetY = logoPositionRef.current.y;
+        
+        smoothFactor = 0.08;
       } else {
         logoPositionRef.current.x = targetX;
         logoPositionRef.current.y = targetY;
         logoVelocityRef.current.x = 0;
         logoVelocityRef.current.y = 0;
       }
-
-      // Обрезаем конечную позицию до границ окна
-      const finalTargetPos = clampToWindow(targetX, targetY);
-      targetX = finalTargetPos.x;
-      targetY = finalTargetPos.y;
 
       const offsetX = 0;
       const offsetY = 0;
@@ -805,10 +605,7 @@ const GlobalCursor = () => {
       const newSvgX = lerp(svgPosition.x, targetSvgX, dynamicSmoothFactor);
       const newSvgY = lerp(svgPosition.y, targetSvgY, dynamicSmoothFactor);
       
-      // Обрезаем SVG позицию до границ окна
-      const clampedSvgPos = clampToWindow(newSvgX, newSvgY);
-      
-      setSvgPosition({ x: clampedSvgPos.x, y: clampedSvgPos.y });
+      setSvgPosition({ x: newSvgX, y: newSvgY });
       
       rafRef.current = requestAnimationFrame(animate);
     };
@@ -831,8 +628,6 @@ const GlobalCursor = () => {
     return null;
   }
 
-  // Для кнопок с фоном или когда курсор внутри кнопки без фона - простая трансформация без смещений
-  // Для кнопок без фона и когда курсор снаружи - полная трансформация со всеми эффектами
   const shouldShowEffects = !buttonHasBackground && !isInsideStickyArea;
   const combinedTransform = shouldShowEffects
     ? `translate(${circleOffset.x}px, ${circleOffset.y}px)
@@ -845,7 +640,6 @@ const GlobalCursor = () => {
 
   return (
     <div className="cursor-container">
-      {/* Лого-курсор (скрывается при прилипании) */}
       <div 
         className={`cursor-lens-backdrop ${isClicked ? 'clicked' : ''} ${isHovering ? 'hover' : ''}`}
         style={{
@@ -860,7 +654,6 @@ const GlobalCursor = () => {
         }}
       />
       
-      {/* Пузырь для прилипания (показывается только при прилипании) */}
       {showCircle && (
         <div 
           className={`cursor-sticky-circle ${isClicked ? 'clicked' : ''} ${buttonHasBackground ? 'inside-button' : 'outside-button'} ${isPulling ? 'pulling' : ''}`}
