@@ -55,6 +55,8 @@ const GlobalCursor = () => {
   const logoVelocityRef = useRef({ x: 0, y: 0 });
   const logoPositionRef = useRef({ x: 0, y: 0 });
   const isInsideButtonRef = useRef(false);
+  const mousePositionRef = useRef({ x: 0, y: 0 });
+  const logoAnimationRef = useRef({ x: 0, y: 0 });
   
   const MAX_HISTORY = 5;
   const ROTATION_SMOOTH_HISTORY = 3;
@@ -341,6 +343,9 @@ const GlobalCursor = () => {
         setLastPosition({ x: e.clientX, y: e.clientY });
       }
       
+      // Обновляем текущую позицию мыши
+      mousePositionRef.current = { x: e.clientX, y: e.clientY };
+      
       positionHistoryRef.current.push({ x: e.clientX, y: e.clientY });
       if (positionHistoryRef.current.length > MAX_HISTORY) {
         positionHistoryRef.current.shift();
@@ -398,7 +403,7 @@ const GlobalCursor = () => {
     const animate = () => {
       let targetX = position.x;
       let targetY = position.y;
-      let smoothFactor = 0.15;
+      let smoothFactor = 0.1; // Единый smooth factor для всех состояний
 
       const speed = Math.sqrt(velocity.x ** 2 + velocity.y ** 2);
       const maxSpeed = 50;
@@ -526,7 +531,7 @@ const GlobalCursor = () => {
           borderRadius: metrics.borderRadius
         });
         
-        smoothFactor = 0.1;
+        smoothFactor = 0.2;
       } else if (isSticky && stickyElementRef.current) {
         const metrics = getElementMetrics(stickyElementRef.current);
         const isInside = isCursorInsideStickyArea(position, metrics);
@@ -677,6 +682,8 @@ const GlobalCursor = () => {
           // Скрываем отладочную информацию
           setDebugInfo(prev => ({ ...prev, show: false }));
         }
+        
+        smoothFactor = 0.2;
       } else if (!isSticky && showCircle) {
         // Дополнительная проверка: если не прилипли, но пузырь еще виден
         setShowCircle(false);
@@ -692,40 +699,49 @@ const GlobalCursor = () => {
         setDebugInfo(prev => ({ ...prev, show: false }));
       }
 
-      // Плавное следование лого за курсором с отставанием
+      // Плавное следование лого за курсором
       if (!isSticky) {
-        const attractionForce = 0.15;
-        const dx = position.x - logoPositionRef.current.x;
-        const dy = position.y - logoPositionRef.current.y;
+        // Используем физику пружины для плавного движения
+        const springStrength = 0.2;
+        const damping = 0.9;
         
-        logoVelocityRef.current.x += dx * attractionForce;
-        logoVelocityRef.current.y += dy * attractionForce;
+        // Разница между текущей позицией и позицией мыши
+        const dx = targetX - logoAnimationRef.current.x;
+        const dy = targetY - logoAnimationRef.current.y;
         
-        const damping = 0.85;
+        // Добавляем "силу" пружины
+        logoVelocityRef.current.x += dx * springStrength;
+        logoVelocityRef.current.y += dy * springStrength;
+        
+        // Демпфирование для плавного останова
         logoVelocityRef.current.x *= damping;
         logoVelocityRef.current.y *= damping;
         
-        logoPositionRef.current.x += logoVelocityRef.current.x;
-        logoPositionRef.current.y += logoVelocityRef.current.y;
+        // Обновляем позицию
+        logoAnimationRef.current.x += logoVelocityRef.current.x;
+        logoAnimationRef.current.y += logoVelocityRef.current.y;
         
-        targetX = logoPositionRef.current.x;
-        targetY = logoPositionRef.current.y;
+        // Используем позицию из физики пружины
+        targetX = logoAnimationRef.current.x;
+        targetY = logoAnimationRef.current.y;
         
-        smoothFactor = 0.08;
+        smoothFactor = 0.15;
       } else {
-        logoPositionRef.current.x = targetX;
-        logoPositionRef.current.y = targetY;
+        // Когда прилипли, сбрасываем физику пружины
+        logoAnimationRef.current.x = targetX;
+        logoAnimationRef.current.y = targetY;
         logoVelocityRef.current.x = 0;
         logoVelocityRef.current.y = 0;
       }
 
+      // Плавный переход к целевой позиции
       const offsetX = 0;
       const offsetY = 0;
       const targetSvgX = targetX + offsetX;
       const targetSvgY = targetY + offsetY;
       
       const speedFactor = Math.min(speed / 20, 1);
-      const dynamicSmoothFactor = lerp(smoothFactor, 0.15, speedFactor);
+      const dynamicSmoothFactor = lerp(smoothFactor, 0.25, speedFactor);
       
       const newSvgX = lerp(svgPosition.x, targetSvgX, dynamicSmoothFactor);
       const newSvgY = lerp(svgPosition.y, targetSvgY, dynamicSmoothFactor);
@@ -735,6 +751,10 @@ const GlobalCursor = () => {
       rafRef.current = requestAnimationFrame(animate);
     };
 
+    // Инициализация начальной позиции
+    logoAnimationRef.current.x = position.x;
+    logoAnimationRef.current.y = position.y;
+    
     rafRef.current = requestAnimationFrame(animate);
 
     return () => {
