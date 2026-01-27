@@ -1,2 +1,7 @@
 @import 'normalize.css';
 
+@font-face {
+  font-family: 'HelveticaNeue';
+  src: url('font.woff2') format('woff2');
+  font-display: swap;
+}
