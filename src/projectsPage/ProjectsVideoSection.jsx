@@ -838,6 +838,7 @@ const ProjectsVideoSection = () => {
                 <div className="preview-image-container">
                   {!isImageError ? (
                     <img
+                    loading="lazy"
                       src={imageUrl}
                       alt={video.title}
                       className={`preview-image ${useMobileImage ? 'mobile-image' : ''}`}
