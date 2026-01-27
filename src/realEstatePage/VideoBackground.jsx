@@ -125,6 +125,7 @@ const VideoBackground = () => {
         
         {/* Основное видео для десктопов */}
         <video 
+        preload="metadata"
           autoPlay 
           muted 
           loop 
@@ -137,6 +138,7 @@ const VideoBackground = () => {
         
         {/* Видео для мобильных устройств */}
         <video 
+        preload="metadata"
           autoPlay 
           muted 
           loop 
