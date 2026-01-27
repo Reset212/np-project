@@ -3,7 +3,40 @@
   padding: 0;
   box-sizing: border-box;
 }
+@font-face {
+    font-family: "Helvetica Neue";
+    font-weight: 100;
+    src: url("../../public/fonts/HelveticaNeue-Thin.woff") format("opentype");
+    font-display: swap;
+}
 
+@font-face {
+    font-family: "Helvetica Neue";
+    font-weight: 300;
+    src: url("../../public/fonts/HelveticaNeue-Light.woff") format("opentype");
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Helvetica Neue";
+    font-weight: 400;
+    src: url("../../public/fonts/HelveticaNeue-Roman.woff") format("opentype");
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Helvetica Neue";
+    font-weight: 500;
+    src: url("../../public/fonts/HelveticaNeue-Medium.woff") format("opentype");
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Helvetica Neue";
+    font-weight: 700;
+    src: url("../../public/fonts/HelveticaNeue-Bold.woff") format("opentype");
+    font-display: swap;
+}
 /* App.css - добавьте эти стили */
 
 .App {
