@@ -2,14 +2,16 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import "./VideoBackground.css";
-import videoSrc from "../video/hero-video.mp4";
-import mobileVideoSrc from "../video/gevi vert.mp4";
+
 import logoImg from "../image/logo.png";
 import taglineImg from "../image/tagline.png";
 import awardsImg from "../image/awards.png";
 import silverImg from "../image/silver.png";
 import designfestivalImg from "../image/designfestival.png";
-
+const videoPaths = {
+  desktop: "/video/hero-video.mp4",     // Файл из public/video/
+  mobile: "/video/gevi vert.mp4"        // Файл из public/video/
+};
 const VideoBackground = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
@@ -132,7 +134,7 @@ const VideoBackground = () => {
           className="video-background desktop-video"
           playsInline
         >
-          <source src={videoSrc} type="video/mp4" />
+          <source src={videoPaths.desktop} type="video/mp4" />
           Your browser does not support the video tag.
         </video>
         
@@ -145,7 +147,7 @@ const VideoBackground = () => {
           className="video-background mobile-video"
           playsInline
         >
-          <source src={mobileVideoSrc} type="video/mp4" />
+          <source src={videoPaths.mobile} type="video/mp4" />
           Your browser does not support the video tag.
         </video>
 
