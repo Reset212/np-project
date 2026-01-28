@@ -1,4 +1,17 @@
 {
+  "redirects": [
+    {
+      "source": "/",
+      "destination": "https://www.movieparkpro.com/#/home",
+      "permanent": true,
+      "has": [
+        {
+          "type": "host",
+          "value": "movieparkpro.com"
+        }
+      ]
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)\\.(js|css|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot|mp4|webp)",
