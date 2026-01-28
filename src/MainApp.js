@@ -8,16 +8,19 @@ import TermsOfUseApp from "./termsOfUse/App";
 import AccessibilityStatementApp from "./accessibilityStatement/App"; 
 import "./MainApp.css";
 import ScrollToTop from "./ScrollToTop";
+import React, { Suspense, lazy } from 'react';
 
+const RealEstate = lazy(() => import('./RealEstate/App'));
 function MainApp() {
   return (
+        <Suspense fallback={<LoadingSpinner />}>
     <Router>
       <ScrollToTop />
       <div className="MainApp">
         <Routes>
           <Route path="/" element={<HomePageApp />} />
           <Route path="/home" element={<HomePageApp />} />
-          <Route path="/real-estate" element={<RealEstatePageApp />} />
+          <Route path="/real-estate" element={<RealEstate />} />
           <Route path="/projects" element={<ProjectsPageApp />} /> 
           <Route path="/privacy-policy" element={<PrivacyPolicyApp />} /> 
            <Route path="/terms-of-use" element={<TermsOfUseApp />} />
@@ -25,6 +28,7 @@ function MainApp() {
         </Routes>
       </div>
     </Router>
+    </Suspense>
   );
 }
 
