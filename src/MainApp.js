@@ -8,6 +8,7 @@ import TermsOfUseApp from "./termsOfUse/App";
 import AccessibilityStatementApp from "./accessibilityStatement/App"; 
 import "./MainApp.css";
 import ScrollToTop from "./ScrollToTop";
+import ProjectAdmin from './admin/ProjectAdmin';
 
 function MainApp() {
   return (
@@ -20,8 +21,9 @@ function MainApp() {
           <Route path="/real-estate" element={<RealEstatePageApp />} />
           <Route path="/projects" element={<ProjectsPageApp />} /> 
           <Route path="/privacy-policy" element={<PrivacyPolicyApp />} /> 
-           <Route path="/terms-of-use" element={<TermsOfUseApp />} />
-            <Route path="/accessibility-statement" element={<AccessibilityStatementApp />} /> 
+          <Route path="/terms-of-use" element={<TermsOfUseApp />} />
+          <Route path="/accessibility-statement" element={<AccessibilityStatementApp />} /> 
+          <Route path="/admin" element={<ProjectAdmin />} /> {/* Исправлено здесь */}
         </Routes>
       </div>
     </Router>
