@@ -22,6 +22,7 @@ const GlobalCursor = () => {
   const [circleOffset, setCircleOffset] = useState({ x: 0, y: 0 });
   const [circleSquash, setCircleSquash] = useState({ x: 1, y: 1 });
   const [isInsideStickyArea, setIsInsideStickyArea] = useState(false);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
   
   // Состояние для отладки
   const [debugInfo, setDebugInfo] = useState({
@@ -56,6 +57,8 @@ const GlobalCursor = () => {
   const isInsideButtonRef = useRef(false);
   const mousePositionRef = useRef({ x: 0, y: 0 });
   const logoAnimationRef = useRef({ x: 0, y: 0 });
+  const hoveredElementRef = useRef(null);
+  const lastCircleSizeRef = useRef({ width: 60, height: 60, borderRadius: 30 });
   
   const MAX_HISTORY = 5;
   const ROTATION_SMOOTH_HISTORY = 3;
@@ -287,17 +290,76 @@ const GlobalCursor = () => {
     return { x: 1, y: 1 };
   };
 
+  // Функция для поиска интерактивного элемента под курсором
+  const findInteractiveElementUnderCursor = (cursorPos) => {
+    const interactiveSelectors = [
+      'button',
+      'a[href]',
+      '[role="button"]',
+      '.logo',
+      '.logo-image',
+      '[data-discover="true"]'
+      // ИСКЛЮЧАЕМ поля формы: input, textarea, select
+    ];
+    
+    // Используем document.elementsFromPoint для получения всех элементов под курсором
+    const elements = document.elementsFromPoint(cursorPos.x, cursorPos.y);
+    
+    // Ищем первый интерактивный элемент
+    for (const element of elements) {
+      // Проверяем сам элемент
+      const tagName = element.tagName.toLowerCase();
+      const role = element.getAttribute('role');
+      const className = element.className || '';
+      
+      // ИСКЛЮЧАЕМ поля формы
+      const isFormField = tagName === 'input' || 
+                         tagName === 'textarea' || 
+                         tagName === 'select';
+      
+      if (isFormField) {
+        // Для полей формы НЕ возвращаем элемент - не прилипаем к ним
+        continue;
+      }
+      
+      const isInteractive = (
+        tagName === 'button' ||
+        tagName === 'a' ||
+        role === 'button' ||
+        className.includes('logo') ||
+        element.hasAttribute('data-discover')
+      );
+      
+      if (isInteractive) {
+        return element;
+      }
+      
+      // Проверяем родителей на наличие интерактивных классов
+      let parent = element.parentElement;
+      while (parent && parent !== document.body) {
+        const parentClassName = parent.className || '';
+        const parentRole = parent.getAttribute('role');
+        
+        if (parentClassName.includes('logo') || parentRole === 'button') {
+          return parent;
+        }
+        parent = parent.parentElement;
+      }
+    }
+    
+    return null;
+  };
+
   // Функция для поиска ближайшего интерактивного элемента
   const findClosestInteractiveElement = (cursorPos) => {
     const interactiveSelectors = [
       'button',
       'a[href]',
       '[role="button"]',
-      'input[type="submit"]',
-      'input[type="button"]',
       '.logo',
       '.logo-image',
       '[data-discover="true"]'
+      // ИСКЛЮЧАЕМ поля формы: input, textarea, select
     ];
     
     const interactiveElements = document.querySelectorAll(interactiveSelectors.join(','));
@@ -305,6 +367,17 @@ const GlobalCursor = () => {
     let closestDistance = Infinity;
     
     interactiveElements.forEach(element => {
+      // Проверяем, не является ли элемент полем формы
+      const tagName = element.tagName.toLowerCase();
+      const isFormField = tagName === 'input' || 
+                         tagName === 'textarea' || 
+                         tagName === 'select';
+      
+      // ИСКЛЮЧАЕМ поля формы
+      if (isFormField) {
+        return;
+      }
+      
       const rect = element.getBoundingClientRect();
       const center = {
         x: rect.left + rect.width / 2,
@@ -320,6 +393,91 @@ const GlobalCursor = () => {
     });
     
     return { element: closestElement, distance: closestDistance };
+  };
+
+  // Функция для обновления размера круга
+  const updateCircleSize = (metrics) => {
+    // Сравниваем новые размеры с текущими
+    const currentWidth = lastCircleSizeRef.current.width;
+    const currentHeight = lastCircleSizeRef.current.height;
+    const newWidth = metrics.width;
+    const newHeight = metrics.height;
+    
+    // Обновляем только если размеры изменились более чем на 5%
+    const widthDiff = Math.abs(newWidth - currentWidth) / currentWidth;
+    const heightDiff = Math.abs(newHeight - currentHeight) / currentHeight;
+    
+    if (widthDiff > 0.05 || heightDiff > 0.05) {
+      setCircleSize({
+        width: metrics.width,
+        height: metrics.height,
+        borderRadius: metrics.borderRadius
+      });
+      
+      // Сохраняем новые размеры в ref
+      lastCircleSizeRef.current = {
+        width: metrics.width,
+        height: metrics.height,
+        borderRadius: metrics.borderRadius
+      };
+    }
+  };
+
+  // Функция для проверки открыт ли попап
+  const checkIfPopupIsOpen = () => {
+    // Проверяем различные типы попапов
+    const popupSelectors = [
+      '.video-popup-overlay',
+      '.popup-overlay',
+      '.modal-overlay',
+      '.modal-open',
+      '.popup-open'
+    ];
+    
+    // 1. Проверяем CSS классы на body
+    const body = document.body;
+    const bodyHasPopupClass = popupSelectors.some(selector => 
+      body.classList.contains(selector.replace('.', ''))
+    );
+    
+    // 2. Проверяем overflow hidden на body (часто при попапах)
+    const bodyOverflowHidden = body.style.overflow === 'hidden';
+    
+    // 3. Проверяем наличие попапов в DOM
+    let hasVisiblePopup = false;
+    
+    popupSelectors.forEach(selector => {
+      const elements = document.querySelectorAll(selector);
+      elements.forEach(element => {
+        if (element) {
+          const styles = window.getComputedStyle(element);
+          const isVisible = styles.display !== 'none' && 
+                           styles.visibility !== 'hidden' && 
+                           styles.opacity !== '0' &&
+                           styles.pointerEvents !== 'none';
+          
+          if (isVisible) {
+            hasVisiblePopup = true;
+          }
+        }
+      });
+    });
+    
+    // 4. Проверяем iframe (Vimeo/YouTube попапы)
+    const iframes = document.querySelectorAll('iframe');
+    const hasFullscreenIframe = Array.from(iframes).some(iframe => {
+      try {
+        // Проверяем, находится ли iframe в полноэкранном режиме
+        const rect = iframe.getBoundingClientRect();
+        const isLarge = rect.width > window.innerWidth * 0.8 && 
+                       rect.height > window.innerHeight * 0.8;
+        return isLarge;
+      } catch (e) {
+        return false;
+      }
+    });
+    
+    return bodyHasPopupClass || bodyOverflowHidden || hasVisiblePopup || hasFullscreenIframe;
   };
 
   useEffect(() => {
@@ -377,29 +535,73 @@ const GlobalCursor = () => {
     };
   }, [lastPosition, lastTime]);
 
+  // Эффект для проверки открытия/закрытия попапов
+  useEffect(() => {
+    const checkPopupStatus = () => {
+      const isOpen = checkIfPopupIsOpen();
+      if (isOpen !== isPopupOpen) {
+        setIsPopupOpen(isOpen);
+        
+        // Если попап открылся, сбрасываем все состояния курсора
+        if (isOpen) {
+          setIsSticky(false);
+          setShowCircle(false);
+          setIsInsideStickyArea(false);
+          isInsideButtonRef.current = false;
+          stickyElementRef.current = null;
+          setCircleOffset({ x: 0, y: 0 });
+          setCircleSquash({ x: 1, y: 1 });
+          setStretchEffect({ x: 1, y: 1 });
+          setIsPulling(false);
+          offsetHistoryRef.current = [];
+        }
+      }
+    };
+    
+    // Проверяем каждые 50мс для быстрого реагирования
+    const interval = setInterval(checkPopupStatus, 50);
+    
+    // Также проверяем при изменении размера окна
+    window.addEventListener('resize', checkPopupStatus);
+    
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener('resize', checkPopupStatus);
+    };
+  }, [isPopupOpen]);
+
   useEffect(() => {
     const checkHover = () => {
-      const elements = document.elementsFromPoint(position.x, position.y);
-      const isOverInteractive = elements.some(el => 
-        el.tagName === 'BUTTON' || 
-        el.tagName === 'A' || 
-        el.getAttribute('role') === 'button' ||
-        el.tagName === 'INPUT' ||
-        el.tagName === 'TEXTAREA' ||
-        el.tagName === 'SELECT' ||
-        el.closest('.logo') ||
-        el.classList?.contains('logo-image')
-      );
+      // Если попап открыт, не проверяем ховер
+      if (isPopupOpen) {
+        setIsHovering(false);
+        return;
+      }
+      
+      const elementUnderCursor = findInteractiveElementUnderCursor(position);
+      const isOverInteractive = !!elementUnderCursor;
       
       setIsHovering(isOverInteractive);
+      
+      // Сохраняем элемент под курсором для использования в анимации
+      if (elementUnderCursor) {
+        hoveredElementRef.current = elementUnderCursor;
+      }
     };
 
     const interval = setInterval(checkHover, 40);
     return () => clearInterval(interval);
-  }, [position]);
+  }, [position, isPopupOpen]);
 
   useEffect(() => {
     const animate = () => {
+      // ЕСЛИ ПОПАП ОТКРЫТ - ПРЕКРАЩАЕМ АНИМАЦИЮ КУРСОРА
+      if (isPopupOpen) {
+        // Продолжаем цикл анимации, но ничего не делаем
+        rafRef.current = requestAnimationFrame(animate);
+        return;
+      }
+
       let targetX = position.x;
       let targetY = position.y;
       let smoothFactor = 0.1; // Единый smooth factor для всех состояний
@@ -459,12 +661,32 @@ const GlobalCursor = () => {
         setScale({ x: 1, y: 1 });
       }
 
-      // Находим ближайший интерактивный элемент
-      const { element: closestElement, distance: closestDistance } = findClosestInteractiveElement(position);
+      // ВАЖНОЕ ИЗМЕНЕНИЕ: сначала проверяем элемент ПОД курсором
+      const elementUnderCursor = findInteractiveElementUnderCursor(position);
+      let closestElement = null;
+      let closestDistance = Infinity;
       
       const STICKY_THRESHOLD_IN = 50;
       const STICKY_THRESHOLD_OUT_LARGE = 140;
       const STICKY_THRESHOLD_OUT_SMALL = 60;
+      
+      // Если есть элемент под курсором, используем его
+      if (elementUnderCursor) {
+        const rect = elementUnderCursor.getBoundingClientRect();
+        const center = {
+          x: rect.left + rect.width / 2,
+          y: rect.top + rect.height / 2
+        };
+        
+        const dist = distance(position.x, position.y, center.x, center.y);
+        closestElement = elementUnderCursor;
+        closestDistance = dist;
+      } else {
+        // Если под курсором нет интерактивного элемента, ищем ближайший
+        const { element: nearestElement, distance: nearestDistance } = findClosestInteractiveElement(position);
+        closestElement = nearestElement;
+        closestDistance = nearestDistance;
+      }
       
       // Проверяем, нужно ли прилипнуть
       if (closestElement && closestDistance < STICKY_THRESHOLD_IN && !isSticky) {
@@ -474,11 +696,9 @@ const GlobalCursor = () => {
         isInsideButtonRef.current = isInside;
         
         setShowCircle(true);
-        setCircleSize({
-          width: metrics.width,
-          height: metrics.height,
-          borderRadius: metrics.borderRadius
-        });
+        
+        // Обновляем размер круга с помощью новой функции
+        updateCircleSize(metrics);
         
         // Обновляем отладочную информацию
         setDebugInfo({
@@ -532,10 +752,47 @@ const GlobalCursor = () => {
         
         smoothFactor = 0.2;
       } else if (isSticky && stickyElementRef.current) {
-        const metrics = getElementMetrics(stickyElementRef.current);
+        // ПРОВЕРКА: если курсор находится над другим элементом, переключаемся на него
+        let currentStickyElement = stickyElementRef.current;
+        let switchedElement = false;
+        
+        if (elementUnderCursor && elementUnderCursor !== stickyElementRef.current) {
+          // Проверяем расстояние до текущего и нового элемента
+          const currentRect = stickyElementRef.current.getBoundingClientRect();
+          const currentCenter = {
+            x: currentRect.left + currentRect.width / 2,
+            y: currentRect.top + currentRect.height / 2
+          };
+          
+          const newRect = elementUnderCursor.getBoundingClientRect();
+          const newCenter = {
+            x: newRect.left + newRect.width / 2,
+            y: newRect.top + newRect.height / 2
+          };
+          
+          const distToCurrent = distance(position.x, position.y, currentCenter.x, currentCenter.y);
+          const distToNew = distance(position.x, position.y, newCenter.x, newCenter.y);
+          
+          // Переключаемся на новый элемент только если он значительно ближе
+          if (distToNew < distToCurrent * 0.8) {
+            currentStickyElement = elementUnderCursor;
+            stickyElementRef.current = elementUnderCursor;
+            switchedElement = true;
+            
+            // Очищаем историю смещений при переключении элемента
+            offsetHistoryRef.current = [];
+          }
+        }
+        
+        const metrics = getElementMetrics(currentStickyElement);
         const isInside = isCursorInsideStickyArea(position, metrics);
         setIsInsideStickyArea(isInside);
         isInsideButtonRef.current = isInside;
+        
+        // ОБНОВЛЯЕМ РАЗМЕР КРУГА ПРИ ПЕРЕКЛЮЧЕНИИ ЭЛЕМЕНТА
+        if (switchedElement) {
+          updateCircleSize(metrics);
+        }
         
         // ДЛЯ КНОПОК БЕЗ ФОНА: рассчитываем все эффекты ТОЛЬКО когда курсор вне кнопки
         if (!metrics.hasBackground && !isInside) {
@@ -672,6 +929,7 @@ const GlobalCursor = () => {
           
           // Сбрасываем параметры пузыря
           setCircleSize({ width: 60, height: 60, borderRadius: 30 });
+          lastCircleSizeRef.current = { width: 60, height: 60, borderRadius: 30 };
           setCircleOffset({ x: 0, y: 0 });
           setCircleSquash({ x: 1, y: 1 });
           offsetHistoryRef.current = [];
@@ -689,6 +947,7 @@ const GlobalCursor = () => {
         setIsInsideStickyArea(false);
         isInsideButtonRef.current = false;
         setCircleSize({ width: 60, height: 60, borderRadius: 30 });
+        lastCircleSizeRef.current = { width: 60, height: 60, borderRadius: 30 };
         setCircleOffset({ x: 0, y: 0 });
         setCircleSquash({ x: 1, y: 1 });
         setStretchEffect({ x: 1, y: 1 });
@@ -753,13 +1012,14 @@ const GlobalCursor = () => {
     // Инициализация начальной позиции
     logoAnimationRef.current.x = position.x;
     logoAnimationRef.current.y = position.y;
+    lastCircleSizeRef.current = { width: 60, height: 60, borderRadius: 30 };
     
     rafRef.current = requestAnimationFrame(animate);
 
     return () => {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
-  }, [position, svgPosition, velocity, isSticky, scale, rotation, showCircle, circleOffset]);
+  }, [position, svgPosition, velocity, isSticky, scale, rotation, showCircle, circleOffset, isPopupOpen]);
 
   const supportsBackdropFilter = () => {
     return CSS.supports('backdrop-filter', 'invert(1)') || 
@@ -768,7 +1028,8 @@ const GlobalCursor = () => {
 
   const isFirefox = navigator.userAgent.toLowerCase().includes('firefox');
 
-  if (!supportsBackdropFilter() || isFirefox) {
+  // ЕСЛИ ПОПАП ОТКРЫТ ИЛИ БРАУЗЕР НЕ ПОДДЕРЖИВАЕТ - НЕ РЕНДЕРИМ КУРСОР
+  if (isPopupOpen || !supportsBackdropFilter() || isFirefox) {
     return null;
   }
 
