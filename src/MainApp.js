@@ -6,7 +6,6 @@ import ProjectsPageApp from "./projectsPage/App";
 import PrivacyPolicyApp from "./privacyPolicy/App"; 
 import TermsOfUseApp from "./termsOfUse/App"; 
 import AccessibilityStatementApp from "./accessibilityStatement/App"; 
-import AdminApp from "./admin/AdminApp";
 import "./MainApp.css";
 import ScrollToTop from "./ScrollToTop";
 
@@ -17,13 +16,12 @@ function MainApp() {
       <div className="MainApp">
         <Routes>
           <Route path="/" element={<HomePageApp />} />
-          <Route path="/home/*" element={<HomePageApp />} />
-          <Route path="/real-estate/*" element={<RealEstatePageApp />} />
-          <Route path="/projects/*" element={<ProjectsPageApp />} /> 
-          <Route path="/privacy-policy/*" element={<PrivacyPolicyApp />} /> 
-          <Route path="/terms-of-use/*" element={<TermsOfUseApp />} />
-          <Route path="/accessibility-statement/*" element={<AccessibilityStatementApp />} /> 
-          <Route path="/mpadmin/*" element={<AdminApp />} />
+          <Route path="/home" element={<HomePageApp />} />
+          <Route path="/real-estate" element={<RealEstatePageApp />} />
+          <Route path="/projects" element={<ProjectsPageApp />} /> 
+          <Route path="/privacy-policy" element={<PrivacyPolicyApp />} /> 
+           <Route path="/terms-of-use" element={<TermsOfUseApp />} />
+            <Route path="/accessibility-statement" element={<AccessibilityStatementApp />} /> 
         </Routes>
       </div>
     </Router>
