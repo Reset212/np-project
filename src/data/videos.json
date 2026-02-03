@@ -1,0 +1,24 @@
+{
+  "videos": [
+    {
+      "id": 1,
+      "title": "Пример видео 1",
+      "category": "real-estate",
+      "sortOrder": 1,
+      "filename": "hero-video.mp4",
+      "thumbnail": "",
+      "description": "Описание видео 1",
+      "createdAt": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "id": 2,
+      "title": "Пример видео 2",
+      "category": "projects",
+      "sortOrder": 2,
+      "filename": "brun-vert.mp4",
+      "thumbnail": "",
+      "description": "Описание видео 2",
+      "createdAt": "2024-01-02T00:00:00.000Z"
+    }
+  ]
+}
