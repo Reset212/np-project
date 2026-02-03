@@ -2,14 +2,17 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import "./VideoBackground.css";
-import videoSrc from "../video/Brunello.mp4";
-import mobileVideoSrc from "../video/brun vert.mp4";
+
 import logoImg from "../image/logo.png";
 import taglineImg from "../image/tagline.png";
 import awardsImg from "../image/awards.png";
 import silverImg from "../image/silver.png";
 import designfestivalImg from "../image/designfestival.png";
-
+const CLOUD_NAME = "dqlxoijyx"; // Ваш cloud_name из Cloudinary
+const DESKTOP_VIDEO_ID = "Brunello_kmrmoo"; // Public ID десктоп видео
+const MOBILE_VIDEO_ID = "brun_vert_tb5e9h"; // Public ID мобильного видео
+const desktopVideoUrl = `https://res.cloudinary.com/${CLOUD_NAME}/video/upload/${DESKTOP_VIDEO_ID}`;
+const mobileVideoUrl = `https://res.cloudinary.com/${CLOUD_NAME}/video/upload/${MOBILE_VIDEO_ID}`;
 const VideoBackground = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
@@ -132,7 +135,7 @@ const VideoBackground = () => {
           className="video-background desktop-video"
           playsInline
         >
-          <source src={videoSrc} type="video/mp4" />
+          <source src={desktopVideoUrl} type="video/mp4" />
           Your browser does not support the video tag.
         </video>
         
@@ -145,7 +148,7 @@ const VideoBackground = () => {
           className="video-background mobile-video"
           playsInline
         >
-          <source src={mobileVideoSrc} type="video/mp4" />
+          <source src={mobileVideoUrl} type="video/mp4" />
           Your browser does not support the video tag.
         </video>
 
