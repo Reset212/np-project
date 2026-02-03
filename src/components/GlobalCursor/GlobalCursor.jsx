@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-
+import './GlobalCursor.css';
 const GlobalCursor = () => {
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [svgPosition, setSvgPosition] = useState({ x: 0, y: 0 });

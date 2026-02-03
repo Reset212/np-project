@@ -1,6 +1,6 @@
 import React from "react";
 import VideoBackground from "./VideoBackground";
-import GlobalCursor from './GlobalCursor';
+import GlobalCursor from '../components/GlobalCursor/GlobalCursor.jsx';
 import ScrollTextAnimation from "./ScrollTextAnimation";
 import ThirdScrollBlock from "./ThirdScrollBlock";
 import FourthScrollBlock from "./FourthScrollBlock";

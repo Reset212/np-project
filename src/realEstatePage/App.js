@@ -1,10 +1,10 @@
 // App.js - обновленная версия
 import React from "react";
-import GlobalCursor from './GlobalCursor';
+import GlobalCursor from '../components/GlobalCursor/GlobalCursor.jsx';
 import VideoBackground from "./VideoBackground";
 import ScrollTextAnimation from "./ScrollTextAnimation";
 import ThirdScrollBlock from "./ThirdScrollBlock";
-import FourthScrollBlock from "./FourthScrollBlock";
+
 import ContactSection from "./ContactSection";
 import ProjectsVideoSection from "./ProjectsVideoSection"; // Импортируем новый компонент
 import MensSection from "./MensSection";
