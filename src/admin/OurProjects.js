@@ -14,7 +14,8 @@ const OurProjects = () => {
   const [deleteConfirm, setDeleteConfirm] = useState(null);
   const [imageErrors, setImageErrors] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(7);
+  const [itemsPerPage] = useState(5);
+  const [deleting, setDeleting] = useState(false);
 
   // Загрузка проектов при изменении выбранной таблицы
   useEffect(() => {
@@ -43,8 +44,67 @@ const OurProjects = () => {
     }
   };
 
+  // Функция для удаления файлов из Supabase Storage
+  const deleteImageFromStorage = async (imageUrl) => {
+    if (!imageUrl) return;
+    
+    try {
+      // Извлекаем путь к файлу из URL
+      const url = new URL(imageUrl);
+      const pathMatch = url.pathname.match(/\/storage\/v1\/object\/public\/project-images\/(.+)/);
+      
+      if (!pathMatch) {
+        console.warn('Cannot extract file path from URL:', imageUrl);
+        return;
+      }
+      
+      const filePath = pathMatch[1];
+      console.log('Deleting file from storage:', filePath);
+      
+      const { error } = await supabase.storage
+        .from('project-images')
+        .remove([filePath]);
+      
+      if (error) {
+        console.error('Error deleting image from storage:', error);
+        throw error;
+      }
+      
+      console.log('Successfully deleted image:', filePath);
+    } catch (err) {
+      console.error('Error in deleteImageFromStorage:', err);
+      // Не выбрасываем ошибку дальше, чтобы удаление проекта продолжалось
+    }
+  };
+
   const handleDelete = async (id) => {
     try {
+      setDeleting(true);
+      
+      // Находим проект для удаления
+      const projectToDelete = projects.find(project => project.id === id);
+      if (!projectToDelete) {
+        throw new Error('Project not found');
+      }
+      
+      console.log('Deleting project:', projectToDelete.title);
+      
+      // Удаляем изображения из storage если они есть
+      const deletePromises = [];
+      
+      if (projectToDelete.preview_image) {
+        deletePromises.push(deleteImageFromStorage(projectToDelete.preview_image));
+      }
+      
+      if (projectToDelete.mobile_preview_image) {
+        deletePromises.push(deleteImageFromStorage(projectToDelete.mobile_preview_image));
+      }
+      
+      // Ожидаем удаления всех изображений
+      await Promise.all(deletePromises);
+      console.log('All images deleted successfully');
+      
+      // Удаляем проект из базы данных
       const { error } = await supabase
         .from(selectedTable)
         .delete()
@@ -52,11 +112,15 @@ const OurProjects = () => {
       
       if (error) throw error;
       
+      // Обновляем состояние
       setProjects(projects.filter(project => project.id !== id));
       setDeleteConfirm(null);
+      
     } catch (err) {
       console.error('Deletion error:', err);
-      alert('Error deleting project');
+      alert('Error deleting project: ' + err.message);
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -497,17 +561,45 @@ const OurProjects = () => {
       backgroundColor: 'rgba(255, 107, 107, 0.2)',
     },
     
-    // Loading styles
+    // Loading and deleting styles
     loadingContainer: {
       display: 'flex',
+      flexDirection: 'column',
       justifyContent: 'center',
       alignItems: 'center',
       height: '200px',
+      gap: '20px',
     },
     
     loadingText: {
       fontSize: '18px',
       color: '#c5c3c3',
+    },
+    
+    deleteLoadingText: {
+      fontSize: '16px',
+      color: '#ff6b6b',
+      marginBottom: '15px',
+    },
+    
+    // Spinner styles
+    spinner: {
+      width: '30px',
+      height: '30px',
+      border: '3px solid rgba(255, 255, 255, 0.1)',
+      borderTop: '3px solid #3176FF',
+      borderRadius: '50%',
+      animation: 'spin 1s linear infinite',
+    },
+    
+    deleteSpinner: {
+      width: '24px',
+      height: '24px',
+      border: '2px solid rgba(255, 255, 255, 0.1)',
+      borderTop: '2px solid #ff6b6b',
+      borderRadius: '50%',
+      animation: 'spin 1s linear infinite',
+      marginRight: '10px',
     },
   };
 
@@ -586,6 +678,7 @@ const OurProjects = () => {
     return (
       <div style={styles.pageContainer}>
         <div style={styles.loadingContainer}>
+          <div style={styles.spinner}></div>
           <div style={styles.loadingText}>Loading projects...</div>
         </div>
       </div>
@@ -764,14 +857,27 @@ const OurProjects = () => {
           <div style={styles.modalContent}>
             <h3 style={styles.modalTitle}>Confirm Deletion</h3>
             <p style={styles.modalText}>
-              Are you sure you want to delete this project from {selectedTable}? This action cannot be undone.
+              Are you sure you want to delete this project from {selectedTable}? 
+              <br /><br />
+              <strong>This will also delete all associated images from storage.</strong> 
+              <br />
+              This action cannot be undone.
             </p>
+            
+            {deleting && (
+              <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
+                <div style={styles.deleteSpinner}></div>
+                <div style={styles.deleteLoadingText}>Deleting project and images...</div>
+              </div>
+            )}
+            
             <div style={styles.modalActions}>
               <button
                 onClick={() => setDeleteConfirm(null)}
                 style={styles.cancelButton}
                 onMouseEnter={(e) => handleMouseEnter(e, 'cancel')}
                 onMouseLeave={(e) => handleMouseLeave(e, 'cancel')}
+                disabled={deleting}
               >
                 Cancel
               </button>
@@ -780,13 +886,26 @@ const OurProjects = () => {
                 style={styles.confirmDeleteButton}
                 onMouseEnter={(e) => handleMouseEnter(e, 'confirmDelete')}
                 onMouseLeave={(e) => handleMouseLeave(e, 'confirmDelete')}
+                disabled={deleting}
               >
-                Delete
+                {deleting ? 'Deleting...' : 'Delete'}
               </button>
             </div>
           </div>
         </div>
       )}
+      
+      <style>{`
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+        
+        button:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+        }
+      `}</style>
     </div>
   );
 };
