@@ -1,5 +1,5 @@
 import React from "react";
-import { HashRouter as Router, Routes, Route } from "react-router-dom";
+import { HashRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import HomePageApp from "./homePage/App";
 import RealEstatePageApp from "./realEstatePage/App";
 import ProjectsPageApp from "./projectsPage/App"; 
@@ -8,7 +8,21 @@ import TermsOfUseApp from "./termsOfUse/App";
 import AccessibilityStatementApp from "./accessibilityStatement/App"; 
 import "./MainApp.css";
 import ScrollToTop from "./ScrollToTop";
-import ProjectAdmin from './admin/ProjectAdmin';
+import AdminLogin from './admin/AdminLogin';
+import AdminLayout from './admin/AdminLayout';
+import NewProject from './admin/NewProject';
+import OurProjects from './admin/OurProjects';
+
+// Protected Route компонент
+const ProtectedRoute = ({ children }) => {
+  const isAuthenticated = localStorage.getItem('admin_auth') === 'authenticated';
+  
+  if (!isAuthenticated) {
+    return <Navigate to="/admin/login" replace />;
+  }
+  
+  return children;
+};
 
 function MainApp() {
   return (
@@ -23,7 +37,26 @@ function MainApp() {
           <Route path="/privacy-policy" element={<PrivacyPolicyApp />} /> 
           <Route path="/terms-of-use" element={<TermsOfUseApp />} />
           <Route path="/accessibility-statement" element={<AccessibilityStatementApp />} /> 
-          <Route path="/admin" element={<ProjectAdmin />} /> {/* Исправлено здесь */}
+          
+          {/* Admin Routes */}
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route 
+            path="/admin" 
+            element={
+              <ProtectedRoute>
+                <AdminLayout />
+              </ProtectedRoute>
+            }
+          >
+            {/* Вложенные маршруты */}
+            <Route index element={<NewProject />} />
+            <Route path="new-project" element={<NewProject />} />
+            <Route path="new-project/:id" element={<NewProject />} />
+            <Route path="our-projects" element={<OurProjects />} />
+          </Route>
+          
+          {/* Перенаправление старых маршрутов */}
+          <Route path="/admin/*" element={<Navigate to="/admin" replace />} />
         </Routes>
       </div>
     </Router>
