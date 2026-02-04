@@ -107,7 +107,7 @@ const AdminLayout = () => {
       width: '177px',
       height: '60px',
       padding: '0',
-      background: '#000',
+      background: '#00000000',
       border: '1px solid #333',
       color: 'white',
       fontSize: '14px',
@@ -138,7 +138,7 @@ const AdminLayout = () => {
     },
     
     adminFooter: {
-      background: '#161719',
+      background: '#07070700',
       borderTop: '1px solid #333',
       padding: '20px 30px',
       display: 'flex',
