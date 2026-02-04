@@ -4,7 +4,7 @@ import { supabase } from '../lib/supabaseClient';
 // Импортируем SVG иконки
 import editIcon from "../image/Vector-1.svg";
 import deleteIcon from "../image/Vector.svg";
-
+import "./font.css";
 const OurProjects = () => {
   const navigate = useNavigate();
   const [selectedTable, setSelectedTable] = useState('realestate_videos'); // Состояние для выбора таблицы

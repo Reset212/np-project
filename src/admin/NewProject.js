@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
 import { supabase } from '../lib/supabaseClient';
-
+import "./font.css";
 const NewProject = () => {
   const { id } = useParams();
   const location = useLocation();

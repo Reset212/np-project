@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabaseClient';
 import './ProjectAdmin.css';
-
+import "./font.css";
 const ProjectAdmin = () => {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);

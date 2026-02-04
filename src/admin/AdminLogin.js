@@ -4,7 +4,7 @@ import logoImg from "../image/logo.png";
 import instagramIcon from "../image/instagram-icon.svg";
 import emailIcon from "../image/email-icon.svg";
 import vimeoIcon from "../image/vimeo-icon.svg";
-
+import "./font.css";
 const AdminLogin = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');

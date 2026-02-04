@@ -4,7 +4,7 @@ import logoImg from "../image/logo.png";
 import instagramIcon from "../image/instagram-icon.svg";
 import emailIcon from "../image/email-icon.svg";
 import vimeoIcon from "../image/vimeo-icon.svg";
-
+import "./font.css";
 const AdminLayout = () => {
   const navigate = useNavigate();
   const location = useLocation();
