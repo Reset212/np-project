@@ -7,6 +7,9 @@ const NewProject = () => {
   const location = useLocation();
   const isEditing = !!id;
   
+  // Состояние для выбора таблицы
+  const [selectedTable, setSelectedTable] = useState('realestate_videos');
+  
   const [loading, setLoading] = useState(false);
   const [loadingData, setLoadingData] = useState(false);
   const [uploadingDesktop, setUploadingDesktop] = useState(false);
@@ -23,7 +26,19 @@ const NewProject = () => {
     mobile: ''
   });
   
-  const [formData, setFormData] = useState({
+  // Форма для realestate_videos
+  const [realestateFormData, setRealestateFormData] = useState({
+    title: '',
+    description: '',
+    vimeo_id: '',
+    preview_image: '',
+    mobile_preview_image: '',
+    category: '',
+    mobile_breakpoint: 450,
+  });
+  
+  // Форма для projects_videos
+  const [projectsFormData, setProjectsFormData] = useState({
     title: '',
     description: '',
     vimeo_id: '',
@@ -37,7 +52,15 @@ const NewProject = () => {
   
   const [categoryPairs, setCategoryPairs] = useState([{ main: '', sub: '' }]);
   
-  // Available categories
+  // Категории для realestate_videos
+  const realestateCategories = [
+    "VIDEO | 3D",
+    "EVENTS | LAUNCHES", 
+    "HYPE CAMPAIGN",
+    "CELEBRITY APPEARANCES"
+  ];
+  
+  // Категории для projects_videos
   const availableMainCategories = [
     "VIDEO",
     "HYPE & MARKETING", 
@@ -52,7 +75,7 @@ const NewProject = () => {
     "Betting"
   ];
 
-  // Load data when ID changes
+  // При изменении ID загружаем данные
   useEffect(() => {
     console.log('Editing ID changed:', id);
     
@@ -63,28 +86,72 @@ const NewProject = () => {
     }
   }, [id]);
 
+  // При изменении таблицы сбрасываем форму
+  useEffect(() => {
+    if (!isEditing) {
+      resetForm();
+    }
+  }, [selectedTable]);
+
   const loadProjectData = async (projectId) => {
     try {
       console.log('Loading project data for ID:', projectId);
       setLoadingData(true);
       
+      // Пытаемся загрузить из выбранной таблицы
       const { data, error } = await supabase
-        .from('projects_videos')
+        .from(selectedTable)
         .select('*')
         .eq('id', projectId)
         .single();
       
-      if (error) throw error;
+      if (error) {
+        // Если ошибка, пробуем загрузить из другой таблицы
+        console.log('Trying to load from other table...');
+        const otherTable = selectedTable === 'realestate_videos' ? 'projects_videos' : 'realestate_videos';
+        const { data: otherData, error: otherError } = await supabase
+          .from(otherTable)
+          .select('*')
+          .eq('id', projectId)
+          .single();
+          
+        if (otherError) throw otherError;
+        
+        // Переключаемся на таблицу, где найден проект
+        setSelectedTable(otherTable);
+        processLoadedData(otherData, otherTable);
+      } else {
+        processLoadedData(data, selectedTable);
+      }
       
-      console.log('Loaded data:', data);
-      
-      if (data) {
-        // Create category pairs from arrays
+    } catch (err) {
+      console.error('Loading error:', err);
+      setError('Error loading project data');
+    } finally {
+      setLoadingData(false);
+    }
+  };
+
+  const processLoadedData = (data, tableName) => {
+    console.log('Processing data for table:', tableName, data);
+    
+    if (data) {
+      if (tableName === 'realestate_videos') {
+        setRealestateFormData({
+          title: data.title || '',
+          description: data.description || '',
+          vimeo_id: data.vimeo_id || '',
+          preview_image: data.preview_image || '',
+          mobile_preview_image: data.mobile_preview_image || '',
+          category: data.category || '',
+          mobile_breakpoint: data.mobile_breakpoint || 450,
+        });
+      } else {
+        // Для projects_videos
         const pairs = [];
         const mainCats = data.desktop_main_categories || [];
         const subCats = data.desktop_sub_categories || [];
         
-        // Create pairs from category arrays
         for (let i = 0; i < Math.max(mainCats.length, subCats.length); i++) {
           pairs.push({
             main: mainCats[i] || '',
@@ -92,7 +159,6 @@ const NewProject = () => {
           });
         }
         
-        // If arrays are empty, use old fields
         if (pairs.length === 0 && (data.desktop_main_category || data.desktop_sub_category)) {
           pairs.push({ 
             main: data.desktop_main_category || '', 
@@ -100,14 +166,12 @@ const NewProject = () => {
           });
         }
         
-        // If still empty, create one empty pair
         if (pairs.length === 0) {
           pairs.push({ main: '', sub: '' });
         }
         
         setCategoryPairs(pairs);
-        
-        setFormData({
+        setProjectsFormData({
           title: data.title || '',
           description: data.description || '',
           vimeo_id: data.vimeo_id || '',
@@ -118,66 +182,67 @@ const NewProject = () => {
           mobile_categories: data.mobile_categories || [],
           mobile_breakpoint: data.mobile_breakpoint || 450,
         });
-        
-        // Устанавливаем имена файлов как пустые строки, так как мы не знаем оригинальных имен
-        setFileNames({
-          desktop: data.preview_image ? 'Uploaded image' : '',
-          mobile: data.mobile_preview_image ? 'Uploaded image' : ''
-        });
       }
-    } catch (err) {
-      console.error('Loading error:', err);
-      setError('Error loading project data');
-    } finally {
-      setLoadingData(false);
+      
+      // Устанавливаем имена файлов
+      setFileNames({
+        desktop: data.preview_image ? 'Uploaded image' : '',
+        mobile: data.mobile_preview_image ? 'Uploaded image' : ''
+      });
     }
   };
 
   const resetForm = () => {
     console.log('Resetting form');
-    setFormData({
-      title: '',
-      description: '',
-      vimeo_id: '',
-      preview_image: '',
-      mobile_preview_image: '',
-      desktop_main_categories: [],
-      desktop_sub_categories: [],
-      mobile_categories: [],
-      mobile_breakpoint: 450,
-    });
-    setCategoryPairs([{ main: '', sub: '' }]);
+    if (selectedTable === 'realestate_videos') {
+      setRealestateFormData({
+        title: '',
+        description: '',
+        vimeo_id: '',
+        preview_image: '',
+        mobile_preview_image: '',
+        category: '',
+        mobile_breakpoint: 450,
+      });
+    } else {
+      setProjectsFormData({
+        title: '',
+        description: '',
+        vimeo_id: '',
+        preview_image: '',
+        mobile_preview_image: '',
+        desktop_main_categories: [],
+        desktop_sub_categories: [],
+        mobile_categories: [],
+        mobile_breakpoint: 450,
+      });
+      setCategoryPairs([{ main: '', sub: '' }]);
+    }
     setFileNames({
       desktop: '',
       mobile: ''
     });
   };
 
-  // Function to upload image to Supabase Storage
   const uploadImageToSupabase = async (file, folder = 'desktop') => {
     try {
-      // File validation
       const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif'];
       if (!validTypes.includes(file.type.toLowerCase())) {
         throw new Error('Only images are supported (JPEG, PNG, WEBP, GIF)');
       }
       
-      const maxSize = 5 * 1024 * 1024; // 5MB
+      const maxSize = 5 * 1024 * 1024;
       if (file.size > maxSize) {
         throw new Error(`File size should not exceed 5MB. Your file: ${(file.size / 1024 / 1024).toFixed(2)}MB`);
       }
       
-      // Сохраняем оригинальное имя файла
       const originalFileName = file.name;
-      
-      // Generate unique filename
       const fileExt = file.name.split('.').pop();
       const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 15)}.${fileExt}`;
       const filePath = `${folder}/${fileName}`;
       
       console.log('Uploading image:', filePath);
       
-      // Upload to Supabase Storage
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from('project-images')
         .upload(filePath, file, {
@@ -188,14 +253,12 @@ const NewProject = () => {
       
       if (uploadError) throw uploadError;
       
-      // Get public URL
       const { data: { publicUrl } } = supabase.storage
         .from('project-images')
         .getPublicUrl(filePath);
       
       console.log('Image uploaded:', publicUrl);
       
-      // Возвращаем и URL, и оригинальное имя файла
       return { url: publicUrl, fileName: originalFileName };
       
     } catch (err) {
@@ -204,7 +267,6 @@ const NewProject = () => {
     }
   };
 
-  // Desktop image upload handler
   const handleDesktopImageUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -215,10 +277,17 @@ const NewProject = () => {
       
       const result = await uploadImageToSupabase(file, 'desktop');
       
-      setFormData(prev => ({
-        ...prev,
-        preview_image: result.url
-      }));
+      if (selectedTable === 'realestate_videos') {
+        setRealestateFormData(prev => ({
+          ...prev,
+          preview_image: result.url
+        }));
+      } else {
+        setProjectsFormData(prev => ({
+          ...prev,
+          preview_image: result.url
+        }));
+      }
       
       setFileNames(prev => ({
         ...prev,
@@ -230,11 +299,10 @@ const NewProject = () => {
       setError(`Image upload error: ${err.message}`);
     } finally {
       setUploadingDesktop(false);
-      e.target.value = ''; // Reset input
+      e.target.value = '';
     }
   };
 
-  // Mobile image upload handler
   const handleMobileImageUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -245,10 +313,17 @@ const NewProject = () => {
       
       const result = await uploadImageToSupabase(file, 'mobile');
       
-      setFormData(prev => ({
-        ...prev,
-        mobile_preview_image: result.url
-      }));
+      if (selectedTable === 'realestate_videos') {
+        setRealestateFormData(prev => ({
+          ...prev,
+          mobile_preview_image: result.url
+        }));
+      } else {
+        setProjectsFormData(prev => ({
+          ...prev,
+          mobile_preview_image: result.url
+        }));
+      }
       
       setFileNames(prev => ({
         ...prev,
@@ -260,44 +335,55 @@ const NewProject = () => {
       setError(`Image upload error: ${err.message}`);
     } finally {
       setUploadingMobile(false);
-      e.target.value = ''; // Reset input
+      e.target.value = '';
     }
   };
 
-  // Remove image
   const handleRemoveImage = (imageType) => {
-    if (imageType === 'desktop') {
-      setFormData(prev => ({
+    if (selectedTable === 'realestate_videos') {
+      setRealestateFormData(prev => ({
         ...prev,
-        preview_image: ''
+        [imageType === 'desktop' ? 'preview_image' : 'mobile_preview_image']: ''
       }));
-      setFileNames(prev => ({
-        ...prev,
-        desktop: ''
-      }));
-      if (desktopFileInputRef.current) {
-        desktopFileInputRef.current.value = '';
-      }
     } else {
-      setFormData(prev => ({
+      setProjectsFormData(prev => ({
         ...prev,
-        mobile_preview_image: ''
+        [imageType === 'desktop' ? 'preview_image' : 'mobile_preview_image']: ''
       }));
-      setFileNames(prev => ({
-        ...prev,
-        mobile: ''
-      }));
-      if (mobileFileInputRef.current) {
-        mobileFileInputRef.current.value = '';
-      }
+    }
+    
+    setFileNames(prev => ({
+      ...prev,
+      [imageType]: ''
+    }));
+    
+    if (imageType === 'desktop' && desktopFileInputRef.current) {
+      desktopFileInputRef.current.value = '';
+    } else if (mobileFileInputRef.current) {
+      mobileFileInputRef.current.value = '';
     }
   };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    
+    if (selectedTable === 'realestate_videos') {
+      setRealestateFormData(prev => ({
+        ...prev,
+        [name]: value
+      }));
+    } else {
+      setProjectsFormData(prev => ({
+        ...prev,
+        [name]: value
+      }));
+    }
+  };
+
+  const handleRealestateCategoryChange = (e) => {
+    setRealestateFormData(prev => ({
       ...prev,
-      [name]: value
+      category: e.target.value
     }));
   };
 
@@ -325,68 +411,109 @@ const NewProject = () => {
     setSuccess('');
     
     try {
-      // Validation
-      if (!formData.title.trim()) {
-        throw new Error('Enter project name');
-      }
-      
-      if (!formData.vimeo_id.trim()) {
-        throw new Error('Enter Vimeo ID');
-      }
-      
-      if (!formData.preview_image) {
-        throw new Error('Upload desktop preview');
-      }
-      
-      // Check categories
-      const validPairs = categoryPairs.filter(pair => pair.main && pair.sub);
-      if (validPairs.length === 0) {
-        throw new Error('Add at least one category pair');
-      }
-      
-      // Create category arrays from pairs
-      const mainCategories = validPairs.map(pair => pair.main);
-      const subCategories = validPairs.map(pair => pair.sub);
-      
-      // For backward compatibility
-      const desktop_main_category = mainCategories[0] || '';
-      const desktop_sub_category = subCategories[0] || '';
-      
-      const projectData = {
-        ...formData,
-        desktop_main_categories: mainCategories,
-        desktop_sub_categories: subCategories,
-        desktop_main_category,
-        desktop_sub_category,
-        updated_at: new Date().toISOString(),
-      };
-      
-      console.log('Saving project data:', projectData);
-      
-      if (isEditing && id) {
-        // Update existing project
-        const { data, error } = await supabase
-          .from('projects_videos')
-          .update(projectData)
-          .eq('id', id)
-          .select();
+      if (selectedTable === 'realestate_videos') {
+        // Валидация для realestate_videos
+        if (!realestateFormData.title.trim()) {
+          throw new Error('Enter project name');
+        }
         
-        if (error) throw error;
-        setSuccess('Project successfully updated!');
+        if (!realestateFormData.vimeo_id.trim()) {
+          throw new Error('Enter Vimeo ID');
+        }
+        
+        if (!realestateFormData.preview_image) {
+          throw new Error('Upload desktop preview');
+        }
+        
+        if (!realestateFormData.category) {
+          throw new Error('Select category');
+        }
+        
+        const projectData = {
+          ...realestateFormData,
+          updated_at: new Date().toISOString(),
+        };
+        
+        console.log('Saving to realestate_videos:', projectData);
+        
+        if (isEditing && id) {
+          const { data, error } = await supabase
+            .from('realestate_videos')
+            .update(projectData)
+            .eq('id', id)
+            .select();
+          
+          if (error) throw error;
+          setSuccess('Project successfully updated!');
+        } else {
+          projectData.created_at = new Date().toISOString();
+          
+          const { data, error } = await supabase
+            .from('realestate_videos')
+            .insert([projectData])
+            .select();
+          
+          if (error) throw error;
+          setSuccess('Project successfully created!');
+          resetForm();
+        }
       } else {
-        // Create new project
-        projectData.created_at = new Date().toISOString();
+        // Валидация для projects_videos
+        if (!projectsFormData.title.trim()) {
+          throw new Error('Enter project name');
+        }
         
-        const { data, error } = await supabase
-          .from('projects_videos')
-          .insert([projectData])
-          .select();
+        if (!projectsFormData.vimeo_id.trim()) {
+          throw new Error('Enter Vimeo ID');
+        }
         
-        if (error) throw error;
-        setSuccess('Project successfully created!');
+        if (!projectsFormData.preview_image) {
+          throw new Error('Upload desktop preview');
+        }
         
-        // Reset form
-        resetForm();
+        const validPairs = categoryPairs.filter(pair => pair.main && pair.sub);
+        if (validPairs.length === 0) {
+          throw new Error('Add at least one category pair');
+        }
+        
+        const mainCategories = validPairs.map(pair => pair.main);
+        const subCategories = validPairs.map(pair => pair.sub);
+        
+        const desktop_main_category = mainCategories[0] || '';
+        const desktop_sub_category = subCategories[0] || '';
+        
+        const projectData = {
+          ...projectsFormData,
+          desktop_main_categories: mainCategories,
+          desktop_sub_categories: subCategories,
+          desktop_main_category,
+          desktop_sub_category,
+          updated_at: new Date().toISOString(),
+        };
+        
+        console.log('Saving to projects_videos:', projectData);
+        
+        if (isEditing && id) {
+          const { data, error } = await supabase
+            .from('projects_videos')
+            .update(projectData)
+            .eq('id', id)
+            .select();
+          
+          if (error) throw error;
+          setSuccess('Project successfully updated!');
+        } else {
+          projectData.created_at = new Date().toISOString();
+          
+          const { data, error } = await supabase
+            .from('projects_videos')
+            .insert([projectData])
+            .select();
+          
+          if (error) throw error;
+          setSuccess('Project successfully created!');
+          resetForm();
+        }
       }
       
     } catch (err) {
@@ -398,7 +525,6 @@ const NewProject = () => {
   };
 
   const styles = {
-    // Основные стили
     container: {
       maxWidth: '80%',
       margin: '0 40px ',
@@ -413,7 +539,49 @@ const NewProject = () => {
       color: '#ffffff',
     },
     
-    // Секция
+    // Стили для переключателя таблиц
+    tableSelector: {
+      marginBottom: '40px',
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '15px',
+    },
+    
+    selectorLabel: {
+      fontSize: '14px',
+      color: '#c4c4c4',
+      fontWeight: '500',
+    },
+    
+    tableSwitch: {
+      display: 'flex',
+      backgroundColor: '#242527',
+      borderRadius: '8px',
+      padding: '4px',
+      width: 'fit-content',
+    },
+    
+    tableOption: {
+      padding: '10px 20px',
+      borderRadius: '6px',
+      cursor: 'pointer',
+      fontSize: '14px',
+      fontWeight: '500',
+      transition: 'all 0.2s',
+      textAlign: 'center',
+      minWidth: '200px',
+    },
+    
+    tableOptionActive: {
+      backgroundColor: '#3176FF',
+      color: '#fff',
+    },
+    
+    tableOptionInactive: {
+      backgroundColor: 'transparent',
+      color: '#c5c3c3',
+    },
+    
     section: {
       marginBottom: '40px',
     },
@@ -445,14 +613,12 @@ const NewProject = () => {
       color: '#ffffff',
     },
     
-    // Двухколоночный контейнер для секций 1-2 и 3-4
     twoColumnContainer: {
       display: 'grid',
       gridTemplateColumns: '1fr 1fr',
       gap: '40px',
     },
     
-    // Стили для формы
     formGroup: {
       marginBottom: '25px',
     },
@@ -481,6 +647,24 @@ const NewProject = () => {
       transition: 'border-color 0.2s',
     },
     
+    select: {
+      width: '100%',
+      padding: '12px 15px',
+      fontSize: '14px',
+      border: 'none',
+      borderBottom: '1px solid #5e5e5e',
+      color: '#dfdede',
+      backgroundColor: '#161719',
+      cursor: 'pointer',
+      appearance: 'none',
+      backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23dfdede' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")`,
+      backgroundRepeat: 'no-repeat',
+      backgroundPosition: 'right 10px center',
+      backgroundSize: '16px',
+      outline: 'none',
+      borderRadius: '0',
+    },
+    
     textarea: {
       display: 'unset !important',
       width: '100%',
@@ -498,20 +682,19 @@ const NewProject = () => {
       fontFamily: 'inherit',
     },
     
-    // Счетчик символов
     charCounter: {
-      // borderTop: '1px solid #5e5e5e',
       textAlign: 'right',
       fontSize: '13px',
       color: '#666',
     },
-        charCounter1: {
+    
+    charCounter1: {
       borderTop: '1px solid #5e5e5e',
       textAlign: 'right',
       fontSize: '13px',
       color: '#666',
     },
-    // КОНТЕЙНЕР ДЛЯ ФОТО В РЯД (СЛЕВА-НАПРАВО)
+    
     photoRowContainer: {
       display: 'flex',
       gap: '40px',
@@ -519,7 +702,6 @@ const NewProject = () => {
       width: '100%',
     },
     
-    // Каждое фото поле
     photoField: {
       flex: 1,
       display: 'flex',
@@ -527,7 +709,6 @@ const NewProject = () => {
       gap: '15px',
     },
     
-    // Контейнер для названия файла и кнопки
     photoHeader: {
       display: 'flex',
       justifyContent: 'space-between',
@@ -550,7 +731,6 @@ const NewProject = () => {
       fontWeight: '500',
     },
     
-    // Стиль для названия файла
     fileName: {
       fontSize: '13px',
       color: '#8a8a8a',
@@ -577,7 +757,6 @@ const NewProject = () => {
       transition: 'background-color 0.2s',
     },
     
-    // Превью фотографии 100x100
     previewBox: {
       width: '100px',
       height: '100px',
@@ -604,7 +783,6 @@ const NewProject = () => {
       padding: '10px',
     },
     
-    // Секция категорий - КОЛОНКОЙ
     categorySection: {
       display: 'flex',
       flexDirection: 'column',
@@ -617,7 +795,6 @@ const NewProject = () => {
       gap: '25px',
     },
     
-    // Категория пара в колонку
     categoryPairColumn: {
       display: 'flex',
       flexDirection: 'column',
@@ -631,7 +808,7 @@ const NewProject = () => {
       border: 'none',
       borderBottom: '1px solid #5e5e5e',
       color: '#dfdede',
-      backgroundColor: '#161719', // Темный фон как основной контейнер
+      backgroundColor: '#161719',
       cursor: 'pointer',
       appearance: 'none',
       backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23dfdede' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")`,
@@ -642,7 +819,6 @@ const NewProject = () => {
       borderRadius: '0',
     },
     
-    // Контейнер для кнопки добавления категории
     addCategoryContainer: {
       marginTop: '20px',
     },
@@ -664,7 +840,6 @@ const NewProject = () => {
       gap: '8px',
     },
     
-    // Кнопка удаления категории
     removeCategoryButton: {
       padding: '10px 15px',
       backgroundColor: 'transparent',
@@ -678,7 +853,6 @@ const NewProject = () => {
       marginTop: '10px',
     },
     
-    // Кнопки действий внизу
     formActions: {
       display: 'flex',
       gap: '20px',
@@ -708,7 +882,6 @@ const NewProject = () => {
       transition: 'all 0.2s',
     },
     
-    // Уведомления
     errorMessage: {
       backgroundColor: 'rgba(255, 0, 0, 0.1)',
       color: '#ff6b6b',
@@ -729,7 +902,6 @@ const NewProject = () => {
       border: '1px solid rgba(81, 207, 102, 0.3)',
     },
     
-    // Загрузка
     loadingOverlay: {
       position: 'fixed',
       top: 0,
@@ -752,7 +924,6 @@ const NewProject = () => {
       animation: 'spin 1s linear infinite',
     },
     
-    // Индикатор загрузки файла
     uploadingIndicator: {
       display: 'flex',
       alignItems: 'center',
@@ -771,7 +942,6 @@ const NewProject = () => {
       animation: 'spin 1s linear infinite',
     },
     
-    // Стиль для удаления фото
     removeButton: {
       marginTop: '10px',
       padding: '6px 12px',
@@ -783,25 +953,44 @@ const NewProject = () => {
       cursor: 'pointer',
       transition: 'all 0.2s',
     },
-    
-    // Стиль для выпадающих списков
-    selectDark: {
-      backgroundColor: '#161719',
-      color: '#dfdede',
-    },
-    
-    optionDark: {
-      backgroundColor: '#161719',
-      color: '#dfdede',
-    },
   };
+
+  // Получаем текущие данные формы
+  const currentFormData = selectedTable === 'realestate_videos' ? realestateFormData : projectsFormData;
 
   return (
     <div style={styles.container}>
-      <h1 style={styles.header}>Create Project</h1>
+      <h1 style={styles.header}>
+        {isEditing ? 'Edit Project' : 'Create Project'}
+      </h1>
       
       {error && <div style={styles.errorMessage}>{error}</div>}
       {success && <div style={styles.successMessage}>{success}</div>}
+      
+      {/* Переключатель таблиц */}
+      <div style={styles.tableSelector}>
+        <div style={styles.selectorLabel}>Select table for project:</div>
+        <div style={styles.tableSwitch}>
+          <div
+            style={{
+              ...styles.tableOption,
+              ...(selectedTable === 'realestate_videos' ? styles.tableOptionActive : styles.tableOptionInactive)
+            }}
+            onClick={() => setSelectedTable('realestate_videos')}
+          >
+            Real Estate
+          </div>
+          <div
+            style={{
+              ...styles.tableOption,
+              ...(selectedTable === 'projects_videos' ? styles.tableOptionActive : styles.tableOptionInactive)
+            }}
+            onClick={() => setSelectedTable('projects_videos')}
+          >
+            Projects
+          </div>
+        </div>
+      </div>
       
       <form onSubmit={handleSubmit}>
         {/* Секции 1 и 2 в двухколоночном макете */}
@@ -817,22 +1006,22 @@ const NewProject = () => {
               <input
                 type="text"
                 name="title"
-                value={formData.title}
+                value={currentFormData.title}
                 onChange={handleInputChange}
                 placeholder="Name"
                 required
                 style={styles.input}
                 disabled={loadingData}
               />
-              <div style={ styles.charCounter1 }>
-                {formData.title.length} / 40
+              <div style={styles.charCounter1}>
+                {currentFormData.title.length} / 40
               </div>
             </div>
             
             <div style={styles.formGroup}>
               <textarea
                 name="description"
-                value={formData.description}
+                value={currentFormData.description}
                 onChange={handleInputChange}
                 placeholder="Description"
                 required
@@ -840,7 +1029,7 @@ const NewProject = () => {
                 disabled={loadingData}
               />
               <div style={styles.charCounter}>
-                {formData.description.length} / 200
+                {currentFormData.description.length} / 200
               </div>
             </div>
           </div>
@@ -852,9 +1041,7 @@ const NewProject = () => {
               <div style={styles.sectionTitle}>Photo Preloader</div>
             </div>
             
-            {/* РЯД С ФОТО СЛЕВА-НАПРАВО */}
             <div style={styles.photoRowContainer}>
-              {/* Desktop Photo Field */}
               <div style={styles.photoField}>
                 <div style={styles.photoHeader}>
                   <div style={styles.photoTitleContainer}>
@@ -880,14 +1067,14 @@ const NewProject = () => {
                   >
                     {uploadingDesktop ? (
                       <div style={styles.smallSpinner}></div>
-                    ) : formData.preview_image ? '✓' : '+'}
+                    ) : currentFormData.preview_image ? '✓' : '+'}
                   </label>
                 </div>
                 
                 <div style={styles.previewBox}>
-                  {formData.preview_image ? (
+                  {currentFormData.preview_image ? (
                     <img 
-                      src={formData.preview_image} 
+                      src={currentFormData.preview_image} 
                       alt="Desktop preview" 
                       style={styles.previewImage}
                       onError={(e) => {
@@ -902,7 +1089,7 @@ const NewProject = () => {
                   )}
                 </div>
                 
-                {formData.preview_image && (
+                {currentFormData.preview_image && (
                   <button
                     type="button"
                     onClick={() => handleRemoveImage('desktop')}
@@ -914,7 +1101,6 @@ const NewProject = () => {
                 )}
               </div>
               
-              {/* Mobile Photo Field */}
               <div style={styles.photoField}>
                 <div style={styles.photoHeader}>
                   <div style={styles.photoTitleContainer}>
@@ -940,14 +1126,14 @@ const NewProject = () => {
                   >
                     {uploadingMobile ? (
                       <div style={styles.smallSpinner}></div>
-                    ) : formData.mobile_preview_image ? '✓' : '+'}
+                    ) : currentFormData.mobile_preview_image ? '✓' : '+'}
                   </label>
                 </div>
                 
                 <div style={styles.previewBox}>
-                  {formData.mobile_preview_image ? (
+                  {currentFormData.mobile_preview_image ? (
                     <img 
-                      src={formData.mobile_preview_image} 
+                      src={currentFormData.mobile_preview_image} 
                       alt="Mobile preview" 
                       style={styles.previewImage}
                       onError={(e) => {
@@ -962,7 +1148,7 @@ const NewProject = () => {
                   )}
                 </div>
                 
-                {formData.mobile_preview_image && (
+                {currentFormData.mobile_preview_image && (
                   <button
                     type="button"
                     onClick={() => handleRemoveImage('mobile')}
@@ -990,7 +1176,7 @@ const NewProject = () => {
               <input
                 type="text"
                 name="vimeo_id"
-                value={formData.vimeo_id}
+                value={currentFormData.vimeo_id}
                 onChange={handleInputChange}
                 placeholder="Enter Vimeo ID (numeric)"
                 required
@@ -1004,67 +1190,86 @@ const NewProject = () => {
             </div>
           </div>
 
-          {/* Секция 4: Group */}
+          {/* Секция 4: Group - разная для каждой таблицы */}
           <div style={styles.section}>
             <div style={styles.sectionHeader}>
               <div style={styles.sectionNumber}>4</div>
               <div style={styles.sectionTitle}>Group</div>
             </div>
             
-            <div style={styles.categorySection}>
-              {categoryPairs.map((pair, index) => (
-                <div key={index} style={styles.categoryPairColumn}>
-                  <div style={styles.box}>
-                    <select
-                      value={pair.main}
-                      onChange={(e) => handleCategoryPairChange(index, 'main', e.target.value)}
-                      style={styles.categorySelect}
-                      disabled={loadingData}
-                      required
-                    >
-                      <option value="" style={styles.optionDark}>Select main category</option>
-                      {availableMainCategories.map(cat => (
-                        <option key={cat} value={cat} style={styles.optionDark}>{cat}</option>
-                      ))}
-                    </select>
-                    
-                    <select
-                      value={pair.sub}
-                      onChange={(e) => handleCategoryPairChange(index, 'sub', e.target.value)}
-                      style={styles.categorySelect}
-                      disabled={loadingData}
-                      required
-                    >
-                      <option value="" style={styles.optionDark}>Select subcategory</option>
-                      {availableSubCategories.map(sub => (
-                        <option key={sub} value={sub} style={styles.optionDark}>{sub}</option>
-                      ))}
-                    </select>
-                  </div>
-                  {categoryPairs.length > 1 && (
-                    <button
-                      type="button"
-                      onClick={() => removeCategoryPair(index)}
-                      style={styles.removeCategoryButton}
-                      disabled={loadingData}
-                    >
-                      Remove this pair
-                    </button>
-                  )}
-                </div>
-              ))}
-              
-              <div style={styles.addCategoryContainer}>
-                <button
-                  type="button"
-                  onClick={addCategoryPair}
-                  style={styles.addCategoryButton}
+            {selectedTable === 'realestate_videos' ? (
+              // Форма для realestate_videos - одна категория
+              <div style={styles.formGroup}>
+                <select
+                  value={realestateFormData.category}
+                  onChange={handleRealestateCategoryChange}
+                  style={styles.select}
                   disabled={loadingData}
+                  required
                 >
-                  + Add Another Category Pair
-                </button>
+                  <option value="">Select category</option>
+                  {realestateCategories.map(cat => (
+                    <option key={cat} value={cat}>{cat}</option>
+                  ))}
+                </select>
               </div>
-            </div>
+            ) : (
+              // Форма для projects_videos - пары категорий
+              <div style={styles.categorySection}>
+                {categoryPairs.map((pair, index) => (
+                  <div key={index} style={styles.categoryPairColumn}>
+                    <div style={styles.box}>
+                      <select
+                        value={pair.main}
+                        onChange={(e) => handleCategoryPairChange(index, 'main', e.target.value)}
+                        style={styles.categorySelect}
+                        disabled={loadingData}
+                        required
+                      >
+                        <option value="">Select main category</option>
+                        {availableMainCategories.map(cat => (
+                          <option key={cat} value={cat}>{cat}</option>
+                        ))}
+                      </select>
+                      
+                      <select
+                        value={pair.sub}
+                        onChange={(e) => handleCategoryPairChange(index, 'sub', e.target.value)}
+                        style={styles.categorySelect}
+                        disabled={loadingData}
+                        required
+                      >
+                        <option value="">Select subcategory</option>
+                        {availableSubCategories.map(sub => (
+                          <option key={sub} value={sub}>{sub}</option>
+                        ))}
+                      </select>
+                    </div>
+                    {categoryPairs.length > 1 && (
+                      <button
+                        type="button"
+                        onClick={() => removeCategoryPair(index)}
+                        style={styles.removeCategoryButton}
+                        disabled={loadingData}
+                      >
+                        Remove this pair
+                      </button>
+                    )}
+                  </div>
+                ))}
+                
+                <div style={styles.addCategoryContainer}>
+                  <button
+                    type="button"
+                    onClick={addCategoryPair}
+                    style={styles.addCategoryButton}
+                    disabled={loadingData}
+                  >
+                    + Add Another Category Pair
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
@@ -1085,7 +1290,7 @@ const NewProject = () => {
               }
             }}
           >
-            {loading ? 'Saving...' : 'Save Project'}
+            {loading ? 'Saving...' : isEditing ? 'Update Project' : 'Save Project'}
           </button>
           
           <button
@@ -1111,7 +1316,6 @@ const NewProject = () => {
         </div>
       </form>
       
-      {/* Оверлей загрузки */}
       {(loading || loadingData || uploadingDesktop || uploadingMobile) && (
         <div style={styles.loadingOverlay}>
           <div style={styles.spinner}></div>
@@ -1142,7 +1346,6 @@ const NewProject = () => {
           color: #3176FF;
         }
         
-        /* Стили для выпадающих списков */
         select {
           background-color: #161719 !important;
           color: #dfdede !important;
@@ -1153,14 +1356,12 @@ const NewProject = () => {
           color: #dfdede !important;
         }
         
-        /* Стили для всех option в select */
         select option {
           background-color: #161719 !important;
           color: #dfdede !important;
           padding: 10px !important;
         }
         
-        /* Стили для hover состояния option */
         select option:hover,
         select option:focus,
         select option:checked {
@@ -1168,12 +1369,10 @@ const NewProject = () => {
           color: #ffffff !important;
         }
         
-        /* Стили для выпадающего списка в разных браузерах */
         select::-ms-expand {
           display: none;
         }
         
-        /* Для темной темы в Firefox */
         @-moz-document url-prefix() {
           select {
             background-color: #161719 !important;
@@ -1205,24 +1404,14 @@ const NewProject = () => {
           .save-button, .reset-button {
             width: 100% !important;
           }
-        }
-        
-        @media (max-width: 480px) {
-          .container {
-            padding: 20px 15px !important;
+          
+          .table-switch {
+            flex-direction: column !important;
+            width: 100% !important;
           }
           
-          .header {
-            font-size: 24px !important;
-            margin-bottom: 30px !important;
-          }
-          
-          .section-header {
-            margin-bottom: 20px !important;
-          }
-          
-          .section-title {
-            font-size: 16px !important;
+          .table-option {
+            min-width: 100% !important;
           }
         }
       `}</style>

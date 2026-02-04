@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { supabase } from '../lib/supabaseClient';
 import './ProjectsVideoSection.css';
 
 // Главные категории для десктопа
@@ -17,131 +18,8 @@ const mobileMainCategories = [
   "CELEBRITY APPEARANCES",
 ];
 
-// Данные для видео с поддержкой мобильных изображений ТОЛЬКО для указанных видео
-const videoData = [
-  {
-    id: 1,
-    title: "BRUNELLO",
-    description: "WE COMBINE FILM AND REAL ESTATE ADVERTISING. REAL ESTATE IS SOLD THROUGH EMOTION, THROUGH STORYTELLING, AND THROUGH THE EXPERIENCE OF BEING IN IT.",
-    vimeoId: "1135673984",
-    previewImage: "/projectImage/BRUNELLO.png",
-    mobilePreviewImage: "/projectImage/mobileImage/BRUNELLO_mob.png",
-    mobileBreakpoint: 450,
-    category: "VIDEO | 3D",
-  },
-  {
-      id: 2,
-    title: "CELEBRITY APPEARANCES",
-    description: "WE CAN BRING ANY STAR FOR YOU. MATTHEW MCCONAUGHEY, ADRIAN BRODY, NICOLAS CAGE, MILA JOVOVICH, VINCENT CASSEL, ZENDAYA, QUENTIN TARANTINO, KEANU REEVES, JASON MAMOA AND OTHERS.",
-    vimeoId: "1060106406",
-    previewImage: "/projectImage/Celebrity Appearances.png",
-    mobilePreviewImage: "/projectImage/mobileImage/Celebrity Appearances_mob.png",
-    mobileBreakpoint: 450,
-    category: "CELEBRITY APPEARANCES",
-  },
-  {
-    id: 3,
-    title: "EYWA WAY OF WATER",
-    description: "THEY CREATED A MAGICAL WORLD IN WHICH THE MAIN CHARACTERS ARE A FATHER AND SON.",
-    vimeoId: "1135702706",
-    previewImage: "/projectImage/EYWA WAY OF WATER.png",
-    mobilePreviewImage: "/projectImage/mobileImage/EYWA WAY OF WATER_mob.png",
-    mobileBreakpoint: 450,
-    category: "VIDEO | 3D",
-  },
-  {
-    id: 4,
-    title: "ELITE MERIT",
-    description: "WE MAKE VIDEOS AND MARKETING THAT NO ONE ELSE DOES.",
-    vimeoId: "1102229342",
-    previewImage: "/projectImage/ELITE MERIT.png",
-    mobilePreviewImage: "/projectImage/mobileImage/ELITE MERIT_mob.png",
-    mobileBreakpoint: 450,
-    category: "VIDEO | 3D",
-  },
-  {
-    id: 5,
-    title: "INTERSTELLAR",
-    description: "WE COMBINED FILMING IN A STUDIO AND 3D GRAPHICS TO CONVEY THE FUTURE HOME AND ITS PHILOSOPHY AS ACCURATELY AS POSSIBLE.",
-    vimeoId: "1021703237",
-    previewImage: "/projectImage/Interstellar.png",
-    mobilePreviewImage: "/projectImage/mobileImage/Interstellar_mob.png",
-    mobileBreakpoint: 450,
-    category: "VIDEO | 3D",
-  },
-  {
-    id: 6,
-    title: "VILLA DEL DIVOS",
-    description: "PARTICULAR ATTENTION IS PAID TO THE PHILOSOPHY BEHIND THE PROJECT AND ITS KEY ADVANTAGES: AN ATMOSPHERE OF COMFORT, AESTHETICS, AND SERVICE.",
-    vimeoId: "1055145071",
-    previewImage: "/projectImage/Villa del Divos.png",
-    mobilePreviewImage: "/projectImage/mobileImage/Villa del Divos_mob.png",
-    mobileBreakpoint: 450,
-    category: "VIDEO | 3D",
-  },
-  {
-    id: 7,
-    title: "MR.EIGHT | BRAND VIDEO",
-    description: "«FOLLOW YOUR DREAM WHATEVER IT TAKES» - THIS THESIS REFLECTS THE COMPANY'S DETERMINATION AND UNWAVERING COMMITMENT TO WHICH IT MOVES FORWARD IN THE IMPLEMENTATION OF ITS PROJECTS.",
-    vimeoId: "1055261671",
-    previewImage: "/projectImage/Mr.Eight  Brand video.png",
-    mobilePreviewImage: "/projectImage/mobileImage/Mr.Eight  Brand video_mob.png",
-    mobileBreakpoint: 450,
-    category: "VIDEO | 3D",
-  },
-  {
-    id: 8,
-    title: "LAUNCH OF THE VILLA DEL GAVI",
-    description: "1400 PEOPLE TURNKEY EVENT ORGANIZATION POWERFUL PR CAMPAIGN HOLLYWOOD STARS OSCAR WINNER ADRIEN BRODY",
-    vimeoId: "1099296047",
-    previewImage: "/projectImage/Launch of the Villa del Gavi.png",
-    mobilePreviewImage: "/projectImage/mobileImage/Launch of the Villa del Gavi_mob.png",
-    mobileBreakpoint: 450,
-    category: "EVENTS | LAUNCHES",
-  },
-  {
-    id: 9,
-    title: "LAUNCH OF THE EYWA",
-    description: "700 PEOPLE TURNKEY EVENT ORGANIZATION POWERFUL PR CAMPAIGN CONTENT",
-    vimeoId: "1148259441",
-    previewImage: "/projectImage/Launch of the EYWA.png",
-    mobilePreviewImage: "/projectImage/mobileImage/Launch of the EYWA_mob.png",
-    mobileBreakpoint: 450,
-    category: "EVENTS | LAUNCHES",
-  },
-  {
-    id: 10,
-    title: "LAUNCH OF THE DIVOS",
-    description: "900 PEOPLE TURNKEY EVENT ORGANIZATION POWERFUL PR CAMPAIGN CONTENT",
-    vimeoId: "1060106406",
-    previewImage: "/projectImage/Launch of the DIVOS.png",
-    mobilePreviewImage: "/projectImage/mobileImage/Launch of the DIVOS_mob.png",
-    mobileBreakpoint: 450,
-    category: "EVENTS | LAUNCHES",
-  },
-  {
-    id: 11,
-    title: "PR OF THE VILLA DEL GAVI",
-    description: "PR CAMPAIGN WITH BRAND AMBASSADORS MR. THANK YOU & MR.GOODLUCK. A SERIES OF 98 REELS WAS PRODUCED, REACHING 195,000,000 VIEWS. AND 127 STORIES WERE PRODUCED, REACHING 48,500,000 VIEWS.",
-    vimeoId: "1060106406",
-    previewImage: "/projectImage/PR of the Villa del Gavi.png",
-    mobilePreviewImage: "/projectImage/mobileImage/PR of the Villa del Gavi_mob.png",
-    mobileBreakpoint: 450,
-    category: "HYPE CAMPAIGN",
-  },
-  {
-    id: 12,
-    title: "VILLA DEL GAVI",
-    description: "WE CREATED AN EMOTIONAL SALES VIDEO THAT SHOWCASES THE CONCEPT OF THE HOUSE. THE STORY AND CHARACTER OF THE HOUSE WERE CREATED. 3D RENDERINGS.",
-    vimeoId: "1083958501",
-    previewImage: "/projectImage/VILLA DEL GAVI.png",
-    mobilePreviewImage: "/projectImage/mobileImage/VILLA DEL GAVI_mob.png",
-    mobileBreakpoint: 450,
-    category: "VIDEO | 3D", 
-  }
-];
-
 const ProjectsVideoSection = () => {
+  const [videoData, setVideoData] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -150,24 +28,64 @@ const ProjectsVideoSection = () => {
   const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1024);
   const [imageLoadError, setImageLoadError] = useState({});
   const [cursorHidden, setCursorHidden] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   
   const videoRefs = useRef({});
   const popupTimeoutRef = useRef(null);
 
-  // Отслеживаем изменение ширины окна
+  // Загрузка данных из Supabase при монтировании
   useEffect(() => {
+    loadVideoData();
+    
     const handleResize = () => {
       const width = window.innerWidth;
       setWindowWidth(width);
       setIsMobile(width <= 768);
     };
     
-    // Инициализируем начальное значение
     handleResize();
-    
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  // Функция загрузки данных из Supabase
+  const loadVideoData = async () => {
+    try {
+      setLoading(true);
+      console.log('Загружаю данные из таблицы realestate_videos...');
+      
+      const { data, error: supabaseError } = await supabase
+        .from('realestate_videos')
+        .select('*')
+        .order('id', { ascending: true });
+
+      if (supabaseError) {
+        throw supabaseError;
+      }
+
+      // Преобразуем данные в нужный формат
+      const formattedData = (data || []).map(item => ({
+        id: item.id,
+        title: item.title,
+        description: item.description,
+        vimeoId: item.vimeo_id,
+        previewImage: item.preview_image,
+        mobilePreviewImage: item.mobile_preview_image,
+        mobileBreakpoint: item.mobile_breakpoint || 450,
+        category: item.category,
+      }));
+
+      setVideoData(formattedData);
+      console.log(`Загружено ${formattedData.length} видео`);
+      
+    } catch (err) {
+      console.error('Ошибка загрузки данных:', err);
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Очистка таймера при размонтировании
   useEffect(() => {
@@ -275,6 +193,32 @@ const ProjectsVideoSection = () => {
     return videoId !== 11 && videoId !== 2;
   };
 
+  // Показываем состояние загрузки
+  if (loading) {
+    return (
+      <div className="projects-video-section">
+        <div className="loading-container">
+          <div className="loading-spinner"></div>
+          <p>Loading projects...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Показываем ошибку если есть
+  if (error) {
+    return (
+      <div className="projects-video-section">
+        <div className="error-container">
+          <p>Error loading videos: {error}</p>
+          <button onClick={loadVideoData} className="retry-btn">
+            Retry
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="projects-video-section">
       <div className="projects-video-container">
@@ -346,7 +290,7 @@ const ProjectsVideoSection = () => {
                 <div className="preview-image-container">
                   {!isImageError ? (
                     <img
-                    loading="lazy"
+                      loading="lazy"
                       src={imageUrl}
                       alt={video.title}
                       className={`preview-image ${useMobileImage ? 'mobile-image' : ''}`}
@@ -363,7 +307,7 @@ const ProjectsVideoSection = () => {
                   <div className="video-content">
                     <h2 className="video-title">{video.title}</h2>
                     <p className="video-description">{video.description}</p>
-                    {/* Убираем кнопку для блоков 11 и 12 */}
+                    {/* Убираем кнопку для блоков 11 и 2 */}
                     {shouldShowWatchButton(video.id) && (
                       <button
                         className="watch-btn"

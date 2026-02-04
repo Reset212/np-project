@@ -7,6 +7,7 @@ import deleteIcon from "../image/Vector.svg";
 
 const OurProjects = () => {
   const navigate = useNavigate();
+  const [selectedTable, setSelectedTable] = useState('realestate_videos'); // Состояние для выбора таблицы
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -15,33 +16,37 @@ const OurProjects = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(7);
 
+  // Загрузка проектов при изменении выбранной таблицы
+  useEffect(() => {
+    loadProjects();
+  }, [selectedTable]);
+
   const loadProjects = async () => {
     try {
       setLoading(true);
+      setError('');
+      
       const { data, error } = await supabase
-        .from('projects_videos')
+        .from(selectedTable)
         .select('*')
         .order('created_at', { ascending: false });
       
       if (error) throw error;
       
       setProjects(data || []);
+      setCurrentPage(1); // Сбрасываем на первую страницу при смене таблицы
     } catch (err) {
       console.error('Loading error:', err);
-      setError('Error loading projects');
+      setError(`Error loading projects from ${selectedTable}`);
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => {
-    loadProjects();
-  }, []);
-
   const handleDelete = async (id) => {
     try {
       const { error } = await supabase
-        .from('projects_videos')
+        .from(selectedTable)
         .delete()
         .eq('id', id);
       
@@ -66,11 +71,28 @@ const OurProjects = () => {
     }));
   };
 
+  // Форматирование категорий в зависимости от таблицы
   const formatCategories = (project) => {
-    if (project.desktop_main_categories && project.desktop_main_categories.length > 0) {
-      return project.desktop_main_categories.join(', ');
+    if (selectedTable === 'realestate_videos') {
+      return project.category || '-';
+    } else {
+      if (project.desktop_main_categories && project.desktop_main_categories.length > 0) {
+        return project.desktop_main_categories.join(', ');
+      }
+      return project.desktop_main_category || '-';
     }
-    return project.desktop_main_category || '-';
+  };
+
+  // Форматирование подкатегорий в зависимости от таблицы
+  const formatSubCategories = (project) => {
+    if (selectedTable === 'realestate_videos') {
+      return '-'; // В realestate_videos нет подкатегорий
+    } else {
+      if (project.desktop_sub_categories && project.desktop_sub_categories.length > 0) {
+        return project.desktop_sub_categories.join(', ');
+      }
+      return project.desktop_sub_category || '-';
+    }
   };
 
   const formatDate = (dateString) => {
@@ -124,6 +146,49 @@ const OurProjects = () => {
       fontWeight: '600',
       color: '#ffffff',
       margin: 0,
+    },
+    
+    // Стили для переключателя таблиц
+    tableSelectorContainer: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '15px',
+      marginBottom: '30px',
+    },
+    
+    selectorLabel: {
+      fontSize: '14px',
+      color: '#c4c4c4',
+      fontWeight: '500',
+    },
+    
+    tableSwitch: {
+      display: 'flex',
+      backgroundColor: '#242527',
+      borderRadius: '8px',
+      padding: '4px',
+      width: 'fit-content',
+    },
+    
+    tableOption: {
+      padding: '10px 20px',
+      borderRadius: '6px',
+      cursor: 'pointer',
+      fontSize: '14px',
+      fontWeight: '500',
+      transition: 'all 0.2s',
+      textAlign: 'center',
+      minWidth: '180px',
+    },
+    
+    tableOptionActive: {
+      backgroundColor: '#3176FF',
+      color: '#fff',
+    },
+    
+    tableOptionInactive: {
+      backgroundColor: 'transparent',
+      color: '#c5c3c3',
     },
     
     stats: {
@@ -183,7 +248,7 @@ const OurProjects = () => {
     
     tableHeader: {
       display: 'grid',
-      gridTemplateColumns: '100px 2fr 2fr 1fr 1fr 120px',
+      gridTemplateColumns: selectedTable === 'realestate_videos' ? '100px 2fr 1fr 120px 120px' : '100px 2fr 1fr 1fr 120px 120px',
       gap: '20px',
       padding: '15px 0',
       borderBottom: '1px solid #333',
@@ -201,7 +266,7 @@ const OurProjects = () => {
     
     projectRow: {
       display: 'grid',
-      gridTemplateColumns: '100px 2fr 2fr 1fr 1fr 120px',
+      gridTemplateColumns: selectedTable === 'realestate_videos' ? '100px 2fr 1fr 120px 120px' : '100px 2fr 1fr 1fr 120px 120px',
       gap: '20px',
       padding: '20px 0',
       alignItems: 'center',
@@ -245,12 +310,12 @@ const OurProjects = () => {
       color: '#ffffff',
     },
     
-    groupCell: {
+    categoryCell: {
       fontSize: '14px',
       color: '#c5c3c3',
     },
     
-    filterCell: {
+    subCategoryCell: {
       fontSize: '14px',
       color: '#c5c3c3',
     },
@@ -474,6 +539,11 @@ const OurProjects = () => {
       e.target.style.backgroundColor = styles.cancelButtonHover.backgroundColor;
     } else if (buttonType === 'confirmDelete') {
       e.target.style.backgroundColor = styles.confirmDeleteButtonHover.backgroundColor;
+    } else if (buttonType === 'tableOption') {
+      if (e.target.getAttribute('data-active') !== 'true') {
+        e.target.style.backgroundColor = 'rgba(94, 94, 94, 0.2)';
+        e.target.style.color = '#ffffff';
+      }
     }
   };
 
@@ -504,6 +574,11 @@ const OurProjects = () => {
       e.target.style.backgroundColor = styles.cancelButton.backgroundColor;
     } else if (buttonType === 'confirmDelete') {
       e.target.style.backgroundColor = styles.confirmDeleteButton.backgroundColor;
+    } else if (buttonType === 'tableOption') {
+      if (e.target.getAttribute('data-active') !== 'true') {
+        e.target.style.backgroundColor = styles.tableOptionInactive.backgroundColor;
+        e.target.style.color = styles.tableOptionInactive.color;
+      }
     }
   };
 
@@ -526,6 +601,37 @@ const OurProjects = () => {
         </div>
       </div>
 
+      {/* Переключатель таблиц */}
+      <div style={styles.tableSelectorContainer}>
+        <div style={styles.selectorLabel}>Select table:</div>
+        <div style={styles.tableSwitch}>
+          <div
+            style={{
+              ...styles.tableOption,
+              ...(selectedTable === 'realestate_videos' ? styles.tableOptionActive : styles.tableOptionInactive)
+            }}
+            onClick={() => setSelectedTable('realestate_videos')}
+            onMouseEnter={(e) => handleMouseEnter(e, 'tableOption')}
+            onMouseLeave={(e) => handleMouseLeave(e, 'tableOption')}
+            data-active={selectedTable === 'realestate_videos' ? 'true' : 'false'}
+          >
+            Real Estate
+          </div>
+          <div
+            style={{
+              ...styles.tableOption,
+              ...(selectedTable === 'projects_videos' ? styles.tableOptionActive : styles.tableOptionInactive)
+            }}
+            onClick={() => setSelectedTable('projects_videos')}
+            onMouseEnter={(e) => handleMouseEnter(e, 'tableOption')}
+            onMouseLeave={(e) => handleMouseLeave(e, 'tableOption')}
+            data-active={selectedTable === 'projects_videos' ? 'true' : 'false'}
+          >
+            Projects
+          </div>
+        </div>
+      </div>
+
       {error && <div style={styles.alert}>{error}</div>}
 
       {projects.length === 0 ? (
@@ -544,8 +650,10 @@ const OurProjects = () => {
             <div style={styles.tableHeader}>
               <div style={styles.tableHeaderCell}>PHOTO</div>
               <div style={styles.tableHeaderCell}>NAME</div>
-              <div style={styles.tableHeaderCell}>GROUP</div>
-              <div style={styles.tableHeaderCell}>FILTER</div>
+              <div style={styles.tableHeaderCell}>CATEGORY</div>
+              {selectedTable === 'projects_videos' && (
+                <div style={styles.tableHeaderCell}>SUBCATEGORY</div>
+              )}
               <div style={styles.tableHeaderCell}>DATE</div>
               <div style={styles.tableHeaderCell}>ACTIONS</div>
             </div>
@@ -577,17 +685,17 @@ const OurProjects = () => {
                   {project.title}
                 </div>
 
-                {/* Group */}
-                <div style={styles.groupCell}>
+                {/* Category */}
+                <div style={styles.categoryCell}>
                   {formatCategories(project)}
                 </div>
 
-                {/* Filter (subcategories) */}
-                <div style={styles.filterCell}>
-                  {project.desktop_sub_categories && project.desktop_sub_categories.length > 0 
-                    ? project.desktop_sub_categories.join(', ')
-                    : project.desktop_sub_category || '-'}
-                </div>
+                {/* Subcategory - только для projects_videos */}
+                {selectedTable === 'projects_videos' && (
+                  <div style={styles.subCategoryCell}>
+                    {formatSubCategories(project)}
+                  </div>
+                )}
 
                 {/* Date */}
                 <div style={styles.dateCell}>
@@ -656,7 +764,7 @@ const OurProjects = () => {
           <div style={styles.modalContent}>
             <h3 style={styles.modalTitle}>Confirm Deletion</h3>
             <p style={styles.modalText}>
-              Are you sure you want to delete this project? This action cannot be undone.
+              Are you sure you want to delete this project from {selectedTable}? This action cannot be undone.
             </p>
             <div style={styles.modalActions}>
               <button
