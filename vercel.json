@@ -1,1 +1,35 @@
-{}
+{
+  "redirects": [
+    {
+      "source": "/",
+      "destination": "https://www.movieparkpro.com/#/home",
+      "permanent": true,
+      "has": [
+        {
+          "type": "host",
+          "value": "movieparkpro.com"
+        }
+      ]
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)\\.(js|css|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot|mp4|webp)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/index.html",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache"
+        }
+      ]
+    }
+  ]
+}
