@@ -12,9 +12,19 @@
       ]
     }
   ],
+  "rewrites": [
+    {
+      "source": "/static/:path*",
+      "destination": "/static/:path*"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ],
   "headers": [
     {
-      "source": "/(.*)\\.(js|css|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot|mp4|webp)",
+      "source": "/static/(.*)",
       "headers": [
         {
           "key": "Cache-Control",
