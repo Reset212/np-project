@@ -2,8 +2,8 @@
 import { createClient } from '@supabase/supabase-js';
 
 // ВАШИ РЕАЛЬНЫЕ КЛЮЧИ (замените если нужно)
-const SUPABASE_URL = 'https://waswpdrikgranshvtgiq.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_HILhj83kZHb9TExshnf5BQ_pgbqz0zs';
+const SUPABASE_URL = 'https://umvqpgiekgvthdqgidyx.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_hNARqA6zE7DOCaZQSUuBaw_kv7WcA9_';
 
 // Проверка ключей
 console.log('🔧 Инициализация Supabase с URL:', SUPABASE_URL);
