@@ -77,7 +77,7 @@ const NewProject = () => {
 
   // При изменении ID загружаем данные
   useEffect(() => {
-    console.log('Editing ID changed:', id);
+    // console.log('Editing ID changed:', id);
     
     if (id) {
       loadProjectData(id);
@@ -95,7 +95,7 @@ const NewProject = () => {
 
   const loadProjectData = async (projectId) => {
     try {
-      console.log('Loading project data for ID:', projectId);
+      // console.log('Loading project data for ID:', projectId);
       setLoadingData(true);
       
       // Пытаемся загрузить из выбранной таблицы
@@ -107,7 +107,7 @@ const NewProject = () => {
       
       if (error) {
         // Если ошибка, пробуем загрузить из другой таблицы
-        console.log('Trying to load from other table...');
+        // console.log('Trying to load from other table...');
         const otherTable = selectedTable === 'realestate_videos' ? 'projects_videos' : 'realestate_videos';
         const { data: otherData, error: otherError } = await supabase
           .from(otherTable)
@@ -133,7 +133,7 @@ const NewProject = () => {
   };
 
   const processLoadedData = (data, tableName) => {
-    console.log('Processing data for table:', tableName, data);
+    // console.log('Processing data for table:', tableName, data);
     
     if (data) {
       if (tableName === 'realestate_videos') {
@@ -193,7 +193,7 @@ const NewProject = () => {
   };
 
   const resetForm = () => {
-    console.log('Resetting form');
+    // console.log('Resetting form');
     if (selectedTable === 'realestate_videos') {
       setRealestateFormData({
         title: '',
@@ -241,7 +241,7 @@ const NewProject = () => {
       const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 15)}.${fileExt}`;
       const filePath = `${folder}/${fileName}`;
       
-      console.log('Uploading image:', filePath);
+      // console.log('Uploading image:', filePath);
       
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from('project-images')
@@ -257,7 +257,7 @@ const NewProject = () => {
         .from('project-images')
         .getPublicUrl(filePath);
       
-      console.log('Image uploaded:', publicUrl);
+      // console.log('Image uploaded:', publicUrl);
       
       return { url: publicUrl, fileName: originalFileName };
       
@@ -434,7 +434,7 @@ const NewProject = () => {
           updated_at: new Date().toISOString(),
         };
         
-        console.log('Saving to realestate_videos:', projectData);
+        // console.log('Saving to realestate_videos:', projectData);
         
         if (isEditing && id) {
           const { data, error } = await supabase
@@ -491,7 +491,7 @@ const NewProject = () => {
           updated_at: new Date().toISOString(),
         };
         
-        console.log('Saving to projects_videos:', projectData);
+        // console.log('Saving to projects_videos:', projectData);
         
         if (isEditing && id) {
           const { data, error } = await supabase

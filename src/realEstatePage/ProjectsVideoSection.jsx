@@ -53,7 +53,7 @@ const ProjectsVideoSection = () => {
   const loadVideoData = async () => {
     try {
       setLoading(true);
-      console.log('Загружаю данные из таблицы realestate_videos...');
+      // console.log('Загружаю данные из таблицы realestate_videos...');
       
       const { data, error: supabaseError } = await supabase
         .from('realestate_videos')
@@ -77,7 +77,7 @@ const ProjectsVideoSection = () => {
       }));
 
       setVideoData(formattedData);
-      console.log(`Загружено ${formattedData.length} видео`);
+      // console.log(`Загружено ${formattedData.length} видео`);
       
     } catch (err) {
       console.error('Ошибка загрузки данных:', err);
