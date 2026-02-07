@@ -1,10 +1,38 @@
-// Файл: Footer.jsx
 import React from "react";
 import { Link } from "react-router-dom";
 import "./Footer.css";
 import instagramIcon from "../image/instagram-icon.svg";
 import emailIcon from "../image/email-icon.svg";
 import vimeoIcon from "../image/vimeo-icon.svg";
+
+// Мемоизированные константы для социальных ссылок
+const SOCIAL_LINKS = [
+  {
+    href: "https://www.instagram.com/movie_park/",
+    icon: instagramIcon,
+    alt: "Instagram",
+    label: "Instagram"
+  },
+  {
+    href: "https://vimeo.com/movieparkco",
+    icon: vimeoIcon,
+    alt: "Vimeo", 
+    label: "Vimeo"
+  },
+  {
+    href: "mailto:hello@movieparkpro.com",
+    icon: emailIcon,
+    alt: "Email",
+    label: "Email"
+  }
+];
+
+// Текстовые ссылки
+const TEXT_LINKS = [
+  { to: "/privacy-policy", text: "PRIVACY POLICY" },
+  { to: "/terms-of-use", text: "TERMS OF USE" },
+  { to: "/accessibility-statement", text: "ACCESSIBILITY STATEMENT" }
+];
 
 const Footer = () => {
   return (
@@ -16,42 +44,52 @@ const Footer = () => {
         </div>
         
         <div className="footer-links">
-          <Link to="/privacy-policy">PRIVACY POLICY</Link>
-          <Link to="/terms-of-use">TERMS OF USE</Link>
-          <Link to="/accessibility-statement">ACCESSIBILITY STATEMENT</Link>
+          {TEXT_LINKS.map(({ to, text }) => (
+            <Link key={to} to={to}>{text}</Link>
+          ))}
         </div>
         
         <div className="footer-social">
-          <a href="https://www.instagram.com/movie_park/"  target="_blank"
-            rel="noopener noreferrer" aria-label="Instagram">
-            <img src={instagramIcon} alt="Instagram" />
-          </a>
-          <a href="https://vimeo.com/movieparkco"  target="_blank"
-            rel="noopener noreferrer" aria-label="Vimeo">
-            <img src={vimeoIcon} alt="Vimeo" />
-          </a>
-          <a href="mailto:hello@movieparkpro.com"  target="_blank"
-            rel="noopener noreferrer" aria-label="Email">
-            <img src={emailIcon} alt="Email" />
-          </a>
+          {SOCIAL_LINKS.map(({ href, icon, alt, label }) => (
+            <a 
+              key={href}
+              href={href} 
+              target="_blank"
+              rel="noopener noreferrer" 
+              aria-label={label}
+            >
+              <img 
+                src={icon} 
+                alt={alt}
+                loading="lazy"
+                width="20"
+                height="20"
+              />
+            </a>
+          ))}
         </div>
         
         {/* Мобильная версия */}
         <div className="footer-mobile">
           {/* 1 строка: SVG иконки */}
           <div className="footer-mobile-social">
-            <a href="https://www.instagram.com/movie_park/"  target="_blank"
-            rel="noopener noreferrer" aria-label="Instagram">
-              <img src={instagramIcon} alt="Instagram" />
-            </a>
-            <a href="https://vimeo.com/movieparkco"  target="_blank"
-            rel="noopener noreferrer" aria-label="Vimeo">
-              <img src={vimeoIcon} alt="Vimeo" />
-            </a>
-            <a href="mailto:hello@movieparkpro.com"  target="_blank"
-            rel="noopener noreferrer" aria-label="Email">
-              <img src={emailIcon} alt="Email" />
-            </a>
+            {SOCIAL_LINKS.map(({ href, icon, alt, label }) => (
+              <a 
+                key={`mobile-${href}`}
+                href={href} 
+                target="_blank"
+                rel="noopener noreferrer" 
+                aria-label={label}
+              >
+                <img 
+                  src={icon} 
+                  alt={alt}
+                  loading="lazy"
+                  width="20"
+                  height="20"
+                />
+              </a>
+            ))}
           </div>
           
           {/* 2 строка: PRIVACY POLICY TERMS OF USE */}
@@ -73,10 +111,7 @@ const Footer = () => {
       </div>
     </footer>
   );
-
-
-
-
 };
 
-export default Footer;
+// Оптимизируем с помощью React.memo при экспорте
+export default React.memo(Footer);

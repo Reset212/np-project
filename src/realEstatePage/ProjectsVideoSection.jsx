@@ -1,8 +1,7 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { supabase } from '../lib/supabaseClient';
 import './ProjectsVideoSection.css';
 
-// Главные категории для десктопа
 const desktopMainCategories = [
   "VIDEO | 3D",
   "EVENTS | LAUNCHES", 
@@ -10,7 +9,6 @@ const desktopMainCategories = [
   "CELEBRITY APPEARANCES",
 ];
 
-// Главные категории для мобильной версии
 const mobileMainCategories = [
   "VIDEO | 3D",
   "EVENTS | LAUNCHES",
@@ -25,7 +23,9 @@ const ProjectsVideoSection = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [hoveredCard, setHoveredCard] = useState(null);
   const [isMobile, setIsMobile] = useState(false);
-  const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1024);
+  const [windowWidth, setWindowWidth] = useState(
+    typeof window !== 'undefined' ? window.innerWidth : 1024
+  );
   const [imageLoadError, setImageLoadError] = useState({});
   const [cursorHidden, setCursorHidden] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -33,38 +33,41 @@ const ProjectsVideoSection = () => {
   
   const videoRefs = useRef({});
   const popupTimeoutRef = useRef(null);
+  const resizeTimeoutRef = useRef(null);
 
-  // Загрузка данных из Supabase при монтировании
-  useEffect(() => {
-    loadVideoData();
-    
-    const handleResize = () => {
-      const width = window.innerWidth;
-      setWindowWidth(width);
-      setIsMobile(width <= 768);
-    };
-    
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+  // Мемоизированные обработчики
+  const handleCategoryClick = useCallback((category) => {
+    setSelectedCategory(prev => prev === category ? null : category);
   }, []);
 
-  // Функция загрузки данных из Supabase
-  const loadVideoData = async () => {
+  const shouldUseMobileImage = useCallback((video) => {
+    if (!video.mobilePreviewImage) return false;
+    
+    if (video.mobileBreakpoint) {
+      return windowWidth <= video.mobileBreakpoint;
+    }
+    
+    return isMobile;
+  }, [windowWidth, isMobile]);
+
+  const shouldShowWatchButton = useCallback((videoId) => {
+    return videoId !== 11 && videoId !== 2;
+  }, []);
+
+  // Оптимизированная загрузка данных
+  const loadVideoData = useCallback(async () => {
     try {
       setLoading(true);
-      // console.log('Загружаю данные из таблицы realestate_videos...');
+      setError(null);
       
       const { data, error: supabaseError } = await supabase
         .from('realestate_videos')
         .select('*')
         .order('id', { ascending: true });
 
-      if (supabaseError) {
-        throw supabaseError;
-      }
+      if (supabaseError) throw supabaseError;
 
-      // Преобразуем данные в нужный формат
+      // Минимизируем преобразования данных
       const formattedData = (data || []).map(item => ({
         id: item.id,
         title: item.title,
@@ -77,60 +80,31 @@ const ProjectsVideoSection = () => {
       }));
 
       setVideoData(formattedData);
-      // console.log(`Загружено ${formattedData.length} видео`);
-      
     } catch (err) {
       console.error('Ошибка загрузки данных:', err);
       setError(err.message);
     } finally {
       setLoading(false);
     }
-  };
-
-  // Очистка таймера при размонтировании
-  useEffect(() => {
-    return () => {
-      if (popupTimeoutRef.current) {
-        clearTimeout(popupTimeoutRef.current);
-      }
-    };
   }, []);
 
-  // Фильтрация видео
-  const filteredVideos = selectedCategory 
-    ? videoData.filter(video => video.category === selectedCategory)
-    : videoData;
+  // Мемоизированное значение filteredVideos
+  const filteredVideos = useMemo(() => {
+    return selectedCategory 
+      ? videoData.filter(video => video.category === selectedCategory)
+      : videoData;
+  }, [videoData, selectedCategory]);
 
-  // Обработчик выбора категории
-  const handleCategoryClick = (category) => {
-    setSelectedCategory(selectedCategory === category ? null : category);
-  };
-
-  // Функция для определения, нужно ли использовать мобильное изображение
-  const shouldUseMobileImage = (video) => {
-    if (!video.mobilePreviewImage) return false;
+  // Открытие попапа
+  const openVideoPopup = useCallback((video) => {
+    if (video.id === 11 || video.id === 2) return;
     
-    // Если задан конкретный breakpoint, используем его
-    if (video.mobileBreakpoint) {
-      return windowWidth <= video.mobileBreakpoint;
-    }
-    
-    // Иначе используем общее правило для мобильных
-    return isMobile;
-  };
-
-  // Открытие попапа с Vimeo видео
-  const openVideoPopup = (video) => {
-    // Для блоков без кнопки (id 11 и 2) не открываем попап
-    if (video.id === 11 || video.id === 2) {
-      return;
-    }
     setSelectedVideo(video);
     setIsPopupOpen(true);
     setCursorHidden(true);
     document.body.style.overflow = 'hidden';
     
-    // Останавливаем все локальные видео на карточках
+    // Пауза всех видео
     Object.values(videoRefs.current).forEach(videoElement => {
       if (videoElement) {
         videoElement.pause();
@@ -138,7 +112,6 @@ const ProjectsVideoSection = () => {
       }
     });
     
-    // Показываем курсор через 2 секунды
     if (popupTimeoutRef.current) {
       clearTimeout(popupTimeoutRef.current);
     }
@@ -146,54 +119,67 @@ const ProjectsVideoSection = () => {
     popupTimeoutRef.current = setTimeout(() => {
       setCursorHidden(false);
     }, 2000);
-  };
+  }, []);
 
   // Закрытие попапа
-  const closeVideoPopup = () => {
-    if (popupTimeoutRef.current) {
-      clearTimeout(popupTimeoutRef.current);
-    }
+  const closeVideoPopup = useCallback(() => {
+    popupTimeoutRef.current && clearTimeout(popupTimeoutRef.current);
     
     setIsPopupOpen(false);
     setSelectedVideo(null);
     setCursorHidden(false);
     document.body.style.overflow = 'auto';
-  };
+  }, []);
 
-  // Наведение на карточку видео (только для десктопа)
-  const handleMouseEnter = (videoId) => {
-    if (isMobile) return;
-    setHoveredCard(videoId);
-  };
+  // Оптимизированный обработчик ресайза
+  const handleResize = useCallback(() => {
+    if (resizeTimeoutRef.current) {
+      clearTimeout(resizeTimeoutRef.current);
+    }
+    
+    resizeTimeoutRef.current = setTimeout(() => {
+      const width = window.innerWidth;
+      setWindowWidth(width);
+      setIsMobile(width <= 768);
+    }, 100); // Дебаунс 100мс
+  }, []);
 
-  // Уход с карточки видео (только для десктопа)
-  const handleMouseLeave = (videoId) => {
-    if (isMobile) return;
-    setHoveredCard(null);
-  };
+  // Основные эффекты
+  useEffect(() => {
+    loadVideoData();
+    return () => {
+      popupTimeoutRef.current && clearTimeout(popupTimeoutRef.current);
+      resizeTimeoutRef.current && clearTimeout(resizeTimeoutRef.current);
+    };
+  }, [loadVideoData]);
 
-  // Обработчик ошибки загрузки изображения
-  const handleImageError = (videoId, imageType) => {
+  useEffect(() => {
+    handleResize(); // Инициализация
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [handleResize]);
+
+  // Обработчики событий
+  const handleMouseEnter = useCallback((videoId) => {
+    if (!isMobile) setHoveredCard(videoId);
+  }, [isMobile]);
+
+  const handleMouseLeave = useCallback(() => {
+    if (!isMobile) setHoveredCard(null);
+  }, [isMobile]);
+
+  const handleImageError = useCallback((videoId, imageType) => {
     setImageLoadError(prev => ({
       ...prev,
       [`${videoId}_${imageType}`]: true
     }));
-  };
+  }, []);
 
-  // Обработчик движения мыши в попапе
-  const handlePopupMouseMove = () => {
-    if (cursorHidden) {
-      setCursorHidden(false);
-    }
-  };
+  const handlePopupMouseMove = useCallback(() => {
+    if (cursorHidden) setCursorHidden(false);
+  }, [cursorHidden]);
 
-  // Функция для определения, нужно ли показывать кнопку для данного видео
-  const shouldShowWatchButton = (videoId) => {
-    // Для блоков с ID 11 и 2 не показываем кнопку
-    return videoId !== 11 && videoId !== 2;
-  };
-
-  // Показываем состояние загрузки
+  // Компоненты состояний
   if (loading) {
     return (
       <div className="projects-video-section">
@@ -205,7 +191,6 @@ const ProjectsVideoSection = () => {
     );
   }
 
-  // Показываем ошибку если есть
   if (error) {
     return (
       <div className="projects-video-section">
@@ -222,13 +207,11 @@ const ProjectsVideoSection = () => {
   return (
     <div className="projects-video-section">
       <div className="projects-video-container">
-        {/* Разделительная черта (только для мобильной версии, над ALL PROJECTS) */}
         {isMobile && <div className="mobile-section-divider-top"></div>}
         
         <div className="projects-header">
           <h1>ALL PROJECTS</h1>
           
-          {/* Десктопная фильтрация - ПОД чертой */}
           {!isMobile && (
             <>
               <div className="section-divider"></div>
@@ -249,7 +232,6 @@ const ProjectsVideoSection = () => {
           )}
         </div>
 
-        {/* Мобильная фильтрация - ПОД ALL PROJECTS */}
         {isMobile && (
           <div className="mobile-category-filter">
             <div className="mobile-main-categories">
@@ -269,7 +251,6 @@ const ProjectsVideoSection = () => {
           </div>
         )}
 
-        {/* Сетка видео карточек */}
         <div className="video-grid">
           {filteredVideos.map(video => {
             const useMobileImage = shouldUseMobileImage(video);
@@ -277,6 +258,7 @@ const ProjectsVideoSection = () => {
             const imageType = useMobileImage ? 'mobile' : 'desktop';
             const imageErrorKey = `${video.id}_${imageType}`;
             const isImageError = imageLoadError[imageErrorKey];
+            const showWatchButton = shouldShowWatchButton(video.id);
             
             return (
               <div
@@ -284,9 +266,8 @@ const ProjectsVideoSection = () => {
                 className={`video-card ${useMobileImage ? 'mobile-image-mode' : ''}`}
                 onClick={() => openVideoPopup(video)}
                 onMouseEnter={() => handleMouseEnter(video.id)}
-                onMouseLeave={() => handleMouseLeave(video.id)}
+                onMouseLeave={handleMouseLeave}
               >
-                {/* Превью изображение */}
                 <div className="preview-image-container">
                   {!isImageError ? (
                     <img
@@ -307,8 +288,7 @@ const ProjectsVideoSection = () => {
                   <div className="video-content">
                     <h2 className="video-title">{video.title}</h2>
                     <p className="video-description">{video.description}</p>
-                    {/* Убираем кнопку для блоков 11 и 2 */}
-                    {shouldShowWatchButton(video.id) && (
+                    {showWatchButton && (
                       <button
                         className="watch-btn"
                         onClick={(e) => {
@@ -327,7 +307,6 @@ const ProjectsVideoSection = () => {
         </div>
       </div>
 
-      {/* Попап с Vimeo видео */}
       {isPopupOpen && selectedVideo && (
         <div 
           className={`video-popup-overlay ${cursorHidden ? 'cursor-hidden' : ''}`} 
@@ -345,6 +324,7 @@ const ProjectsVideoSection = () => {
                   allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
                   allowFullScreen
                   title={selectedVideo.title}
+                  loading="lazy"
                 ></iframe>
               </div>
             </div>
@@ -355,4 +335,4 @@ const ProjectsVideoSection = () => {
   );
 };
 
-export default ProjectsVideoSection;
+export default React.memo(ProjectsVideoSection);

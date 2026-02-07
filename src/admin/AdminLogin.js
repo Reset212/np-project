@@ -1,10 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import logoImg from "../image/logo.png";
 import instagramIcon from "../image/instagram-icon.svg";
 import emailIcon from "../image/email-icon.svg";
 import vimeoIcon from "../image/vimeo-icon.svg";
 import "./font.css";
+
+// Константы для проверки (вынесены из компонента для избежания пересоздания)
+const ADMIN_USERNAME = 'admin';
+const ADMIN_PASSWORD = '1234';
+const TWELVE_HOURS_MS = 12 * 60 * 60 * 1000;
+
 const AdminLogin = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -12,63 +18,8 @@ const AdminLogin = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  // Константы для проверки
-  const ADMIN_USERNAME = 'admin';
-  const ADMIN_PASSWORD = '1234';
-
-  useEffect(() => {
-    // Проверяем авторизацию при загрузке
-    const isAuthenticated = localStorage.getItem('admin_auth') === 'authenticated';
-    const timestamp = localStorage.getItem('admin_timestamp');
-    
-    if (isAuthenticated && timestamp) {
-      const twelveHours = 12 * 60 * 60 * 1000;
-      const timeDiff = Date.now() - parseInt(timestamp);
-      
-      if (timeDiff < twelveHours) {
-        navigate('/admin');
-      } else {
-        localStorage.removeItem('admin_auth');
-        localStorage.removeItem('admin_timestamp');
-      }
-    }
-  }, [navigate]);
-
-  const handleLogin = (e) => {
-    e.preventDefault();
-    setError('');
-    setLoading(true);
-
-    try {
-      // Проверка логина и пароля
-      if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
-        // Сохраняем статус авторизации
-        localStorage.setItem('admin_auth', 'authenticated');
-        localStorage.setItem('admin_timestamp', Date.now().toString());
-        
-        // Перенаправляем на главную страницу админки
-        setTimeout(() => {
-          navigate('/admin');
-        }, 100);
-      } else {
-        setError('Invalid username or password');
-      }
-    } catch (err) {
-      setError('Authentication error');
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleKeyPress = (e) => {
-    if (e.key === 'Enter') {
-      handleLogin(e);
-    }
-  };
-
-  // Стили
-  const styles = {
+  // Мемоизированные стили для улучшения производительности
+  const styles = useMemo(() => ({
     container: {
       minHeight: '100vh',
       display: 'flex',
@@ -145,13 +96,6 @@ const AdminLogin = () => {
     formGroup: {
       marginBottom: '0',
     },
-    label: {
-      display: 'block',
-      marginBottom: '8px',
-      color: '#C5C5C5',
-      fontSize: '14px',
-      fontWeight: '500',
-    },
     input: {
       width: '100%',
       padding: '14px 16px',
@@ -171,6 +115,7 @@ const AdminLogin = () => {
       textAlign: 'center',
       fontSize: '14px',
       border: '1px solid rgba(220, 53, 69, 0.3)',
+      animation: 'fadeIn 0.3s ease-in',
     },
     loginButton: {
       background: '#C5C5C5',
@@ -185,14 +130,6 @@ const AdminLogin = () => {
       textTransform: 'uppercase',
       letterSpacing: '1px',
       marginTop: '10px',
-    },
-    loginInfo: {
-      marginTop: '25px',
-      paddingTop: '25px',
-      borderTop: '1px solid #333',
-      textAlign: 'center',
-      color: '#666',
-      fontSize: '12px',
     },
     footer: {
       background: '#161719',
@@ -219,14 +156,144 @@ const AdminLogin = () => {
       opacity: '0.7',
       transition: 'opacity 0.3s',
     },
-  };
+  }), []);
+
+  // Проверка авторизации
+  useEffect(() => {
+    const isAuthenticated = localStorage.getItem('admin_auth') === 'authenticated';
+    const timestamp = localStorage.getItem('admin_timestamp');
+    
+    if (isAuthenticated && timestamp) {
+      const timeDiff = Date.now() - parseInt(timestamp, 10);
+      
+      if (timeDiff < TWELVE_HOURS_MS) {
+        navigate('/admin');
+      } else {
+        localStorage.removeItem('admin_auth');
+        localStorage.removeItem('admin_timestamp');
+      }
+    }
+  }, [navigate]);
+
+  // Мемоизированные обработчики
+  const handleInputFocus = useCallback((e) => {
+    e.target.style.outline = 'none';
+    e.target.style.borderColor = '#C5C5C5';
+    e.target.style.background = '#1a1b1c';
+    e.target.style.boxShadow = '0 0 0 2px rgba(197, 197, 197, 0.1)';
+  }, []);
+
+  const handleInputBlur = useCallback((e) => {
+    e.target.style.borderColor = '#333';
+    e.target.style.background = '#161719';
+    e.target.style.boxShadow = 'none';
+  }, []);
+
+  const handleButtonMouseEnter = useCallback((e) => {
+    if (!loading && username.trim() && password.trim()) {
+      e.currentTarget.style.background = '#d0d0d0';
+      e.currentTarget.style.transform = 'translateY(-2px)';
+      e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.2)';
+    }
+  }, [loading, username, password]);
+
+  const handleButtonMouseLeave = useCallback((e) => {
+    if (!loading && username.trim() && password.trim()) {
+      e.currentTarget.style.background = '#C5C5C5';
+      e.currentTarget.style.transform = 'translateY(0)';
+      e.currentTarget.style.boxShadow = 'none';
+    }
+  }, [loading, username, password]);
+
+  const handleSocialMouseEnter = useCallback((e) => {
+    e.currentTarget.style.opacity = '1';
+  }, []);
+
+  const handleSocialMouseLeave = useCallback((e) => {
+    e.currentTarget.style.opacity = '0.7';
+  }, []);
+
+  const handleLogin = useCallback((e) => {
+    e.preventDefault();
+    setError('');
+    
+    // Быстрая валидация
+    if (!username.trim() || !password.trim()) {
+      setError('Please enter both username and password');
+      return;
+    }
+    
+    setLoading(true);
+
+    // Имитация асинхронной операции с requestAnimationFrame
+    requestAnimationFrame(() => {
+      try {
+        if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+          localStorage.setItem('admin_auth', 'authenticated');
+          localStorage.setItem('admin_timestamp', Date.now().toString());
+          
+          setTimeout(() => {
+            navigate('/admin');
+          }, 100);
+        } else {
+          setError('Invalid username or password');
+        }
+      } catch (err) {
+        setError('Authentication error');
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    });
+  }, [username, password, navigate]);
+
+  const handleKeyPress = useCallback((e) => {
+    if (e.key === 'Enter') {
+      handleLogin(e);
+    }
+  }, [handleLogin]);
+
+  // Вычисляем состояние кнопки
+  const isButtonDisabled = loading || !username.trim() || !password.trim();
+  const buttonStyle = useMemo(() => ({
+    ...styles.loginButton,
+    opacity: isButtonDisabled ? 0.5 : 1,
+    cursor: isButtonDisabled ? 'not-allowed' : 'pointer',
+  }), [styles.loginButton, isButtonDisabled]);
+
+  // Рендер социальных иконок
+  const renderSocialIcons = useMemo(() => [
+    {
+      href: "https://www.instagram.com/movie_park/",
+      icon: instagramIcon,
+      alt: "Instagram",
+      label: "Instagram"
+    },
+    {
+      href: "https://vimeo.com/movieparkco",
+      icon: vimeoIcon,
+      alt: "Vimeo",
+      label: "Vimeo"
+    },
+    {
+      href: "mailto:hello@movieparkpro.com",
+      icon: emailIcon,
+      alt: "Email",
+      label: "Email"
+    }
+  ], []);
 
   return (
     <div style={styles.container}>
       <div style={styles.header}>
         <div style={styles.logo}>
           <Link to="/home">
-            <img src={logoImg} alt="Logo" style={styles.logoImage} />
+            <img 
+              src={logoImg} 
+              alt="Logo" 
+              style={styles.logoImage}
+              loading="lazy"
+            />
           </Link>
         </div>
         <div style={styles.titleContainer}>
@@ -252,17 +319,8 @@ const AdminLogin = () => {
               autoComplete="username"
               style={styles.input}
               autoFocus
-              onFocus={(e) => {
-                e.target.style.outline = 'none';
-                e.target.style.borderColor = '#C5C5C5';
-                e.target.style.background = '#1a1b1c';
-                e.target.style.boxShadow = '0 0 0 2px rgba(197, 197, 197, 0.1)';
-              }}
-              onBlur={(e) => {
-                e.target.style.borderColor = '#333';
-                e.target.style.background = '#161719';
-                e.target.style.boxShadow = 'none';
-              }}
+              onFocus={handleInputFocus}
+              onBlur={handleInputBlur}
             />
           </div>
           
@@ -276,17 +334,8 @@ const AdminLogin = () => {
               placeholder="Password"
               autoComplete="current-password"
               style={styles.input}
-              onFocus={(e) => {
-                e.target.style.outline = 'none';
-                e.target.style.borderColor = '#C5C5C5';
-                e.target.style.background = '#1a1b1c';
-                e.target.style.boxShadow = '0 0 0 2px rgba(197, 197, 197, 0.1)';
-              }}
-              onBlur={(e) => {
-                e.target.style.borderColor = '#333';
-                e.target.style.background = '#161719';
-                e.target.style.boxShadow = 'none';
-              }}
+              onFocus={handleInputFocus}
+              onBlur={handleInputBlur}
             />
           </div>
           
@@ -294,31 +343,13 @@ const AdminLogin = () => {
           
           <button 
             type="submit" 
-            style={{
-              ...styles.loginButton,
-              opacity: (loading || !username.trim() || !password.trim()) ? 0.5 : 1,
-              cursor: (loading || !username.trim() || !password.trim()) ? 'not-allowed' : 'pointer',
-            }}
-            disabled={loading || !username.trim() || !password.trim()}
-            onMouseEnter={(e) => {
-              if (!loading && username.trim() && password.trim()) {
-                e.currentTarget.style.background = '#d0d0d0';
-                e.currentTarget.style.transform = 'translateY(-2px)';
-                e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.2)';
-              }
-            }}
-            onMouseLeave={(e) => {
-              if (!loading && username.trim() && password.trim()) {
-                e.currentTarget.style.background = '#C5C5C5';
-                e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.boxShadow = 'none';
-              }
-            }}
+            style={buttonStyle}
+            disabled={isButtonDisabled}
+            onMouseEnter={handleButtonMouseEnter}
+            onMouseLeave={handleButtonMouseLeave}
           >
             {loading ? 'Logging in...' : 'Login'}
           </button>
-          
-   
         </form>
       </div>
       
@@ -327,42 +358,30 @@ const AdminLogin = () => {
           <span>© 2025 MOVIE PARK</span>
         </div>
         <div style={styles.footerSocial}>
-          <a href="https://www.instagram.com/movie_park/" target="_blank"
-            rel="noopener noreferrer" aria-label="Instagram">
-            <img 
-              src={instagramIcon} 
-              alt="Instagram" 
-              style={styles.socialIcon}
-              onMouseEnter={(e) => e.currentTarget.style.opacity = '1'}
-              onMouseLeave={(e) => e.currentTarget.style.opacity = '0.7'}
-            />
-          </a>
-          <a href="https://vimeo.com/movieparkco" target="_blank"
-            rel="noopener noreferrer" aria-label="Vimeo">
-            <img 
-              src={vimeoIcon} 
-              alt="Vimeo" 
-              style={styles.socialIcon}
-              onMouseEnter={(e) => e.currentTarget.style.opacity = '1'}
-              onMouseLeave={(e) => e.currentTarget.style.opacity = '0.7'}
-            />
-          </a>
-          <a href="mailto:hello@movieparkpro.com" target="_blank"
-            rel="noopener noreferrer" aria-label="Email">
-            <img 
-              src={emailIcon} 
-              alt="Email" 
-              style={styles.socialIcon}
-              onMouseEnter={(e) => e.currentTarget.style.opacity = '1'}
-              onMouseLeave={(e) => e.currentTarget.style.opacity = '0.7'}
-            />
-          </a>
+          {renderSocialIcons.map(({ href, icon, alt, label }) => (
+            <a 
+              key={href}
+              href={href} 
+              target="_blank"
+              rel="noopener noreferrer" 
+              aria-label={label}
+            >
+              <img 
+                src={icon} 
+                alt={alt} 
+                style={styles.socialIcon}
+                onMouseEnter={handleSocialMouseEnter}
+                onMouseLeave={handleSocialMouseLeave}
+                loading="lazy"
+              />
+            </a>
+          ))}
         </div>
       </footer>
 
-      <style jsx>{`
+      <style>{`
         @media (max-width: 768px) {
-          .login-box {
+          [data-mobile] {
             padding: 30px 20px !important;
             margin: 0 20px 30px !important;
           }
@@ -406,7 +425,7 @@ const AdminLogin = () => {
         }
         
         @media (max-width: 480px) {
-          .login-box {
+          [data-mobile] {
             padding: 25px 15px !important;
             margin: 0 15px 25px !important;
           }
@@ -430,16 +449,28 @@ const AdminLogin = () => {
         }
         
         @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(-10px); }
-          to { opacity: 1; transform: translateY(0); }
+          from { 
+            opacity: 0; 
+            transform: translateY(-10px); 
+          }
+          to { 
+            opacity: 1; 
+            transform: translateY(0); 
+          }
         }
         
-        .error-message {
-          animation: fadeIn 0.3s ease-in !important;
+        input:focus {
+          outline: none;
+        }
+        
+        a {
+          text-decoration: none;
+          color: inherit;
         }
       `}</style>
     </div>
   );
 };
 
-export default AdminLogin;
+// Оптимизируем с помощью React.memo
+export default React.memo(AdminLogin);

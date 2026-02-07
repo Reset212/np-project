@@ -1,5 +1,4 @@
-// VideoBackground.jsx - ИСПРАВЛЕННАЯ ВЕРСИЯ
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import "./VideoBackground.css";
 
@@ -8,26 +7,89 @@ import taglineImg from "../image/tagline.png";
 import awardsImg from "../image/awards.png";
 import silverImg from "../image/silver.png";
 import designfestivalImg from "../image/designfestival.png";
-const CLOUD_NAME = "dqlxoijyx"; // Ваш cloud_name из Cloudinary
-const DESKTOP_VIDEO_ID = "Brunello_kmrmoo"; // Public ID десктоп видео
-const MOBILE_VIDEO_ID = "brun_vert_tb5e9h"; // Public ID мобильного видео
+import instagramIcon from "../image/instagram-icon.svg";
+import vimeoIcon from "../image/vimeo-icon.svg";
+import emailIcon from "../image/email-icon.svg";
+
+// Константы вынесены для производительности
+const CLOUD_NAME = "dqlxoijyx";
+const DESKTOP_VIDEO_ID = "Brunello_kmrmoo";
+const MOBILE_VIDEO_ID = "brun_vert_tb5e9h";
+
+// Предзагрузка URL видео
 const desktopVideoUrl = `https://res.cloudinary.com/${CLOUD_NAME}/video/upload/${DESKTOP_VIDEO_ID}`;
 const mobileVideoUrl = `https://res.cloudinary.com/${CLOUD_NAME}/video/upload/${MOBILE_VIDEO_ID}`;
+
+// Данные наград
+const AWARDS_DATA = [
+  {
+    icon: taglineImg,
+    alt: "Tagline",
+    count: "1X GOLD",
+    description: "Best video",
+    className: "icon-1"
+  },
+  {
+    icon: awardsImg,
+    alt: "Awards",
+    count: "3X SILVER",
+    description: "Efficiency in business",
+    className: "icon-2"
+  },
+  {
+    icon: silverImg,
+    alt: "Mercury",
+    count: "2X BRONZE",
+    description: "Situational marketing",
+    className: "icon-3"
+  },
+  {
+    icon: designfestivalImg,
+    alt: "Festival",
+    count: "3X SHORTLIST",
+    description: "Visual solutions in video advertising",
+    className: "icon-4"
+  }
+];
+
+// Данные социальных иконок
+const SOCIAL_ICONS = [
+  {
+    icon: instagramIcon,
+    alt: "Instagram",
+    onClick: () => window.open('https://www.instagram.com/movie_park/', '_blank'),
+    label: "Instagram"
+  },
+  {
+    icon: vimeoIcon,
+    alt: "Vimeo",
+    onClick: () => window.open('https://vimeo.com/movieparkco', '_blank'),
+    label: "Vimeo"
+  },
+  {
+    icon: emailIcon,
+    alt: "Email",
+    onClick: () => window.location.href = 'mailto:hello@movieparkpro.com',
+    label: "Email"
+  }
+];
+
 const VideoBackground = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
+  // Мемоизированные обработчики
+  const toggleMenu = useCallback(() => {
+    setIsMenuOpen(prev => !prev);
+  }, []);
 
-  const closeMenu = () => {
+  const closeMenu = useCallback(() => {
     setIsMenuOpen(false);
-  };
+  }, []);
 
   // ИСПРАВЛЕННАЯ ФУНКЦИЯ: скролл к секции About/Mens
-  const scrollToMens = () => {
+  const scrollToMens = useCallback(() => {
     closeMenu();
     
     // Если мы на home странице, ищем секцию на текущей странице
@@ -54,10 +116,10 @@ const VideoBackground = () => {
         navigate('/home#mens-section');
       }
     }
-  };
+  }, [closeMenu, location.pathname, navigate]);
 
   // ИСПРАВЛЕННАЯ ФУНКЦИЯ: скролл к контактной форме
-  const scrollToContact = () => {
+  const scrollToContact = useCallback(() => {
     closeMenu();
     
     // Ищем контактную форму на ТЕКУЩЕЙ странице
@@ -72,20 +134,7 @@ const VideoBackground = () => {
       // переходим на home
       navigate('/home#contact-section');
     }
-  };
-
-  // Функции для соцсетей
-  const handleInstagramClick = () => {
-    window.open('https://www.instagram.com/movie_park/', '_blank');
-  };
-
-  const handleVimeoClick = () => {
-    window.open('https://vimeo.com/movieparkco', '_blank');
-  };
-
-  const handleEmailClick = () => {
-    window.location.href = 'mailto:hello@movieparkpro.com';
-  };
+  }, [closeMenu, navigate]);
 
   // Хэш-скроллинг при загрузке страницы
   useEffect(() => {
@@ -119,7 +168,49 @@ const VideoBackground = () => {
       document.body.style.overflow = 'unset';
       document.removeEventListener('keydown', handleEscape);
     };
-  }, [isMenuOpen]);
+  }, [isMenuOpen, closeMenu]);
+
+  // Рендер иконок наград
+  const renderAwards = () => (
+    AWARDS_DATA.map((award, index) => (
+      <div className="award-item" key={index}>
+        <div className={`award-icon-container ${award.className}`}>
+          <img 
+            src={award.icon} 
+            alt={award.alt} 
+            className="award-icon" 
+            loading="lazy"
+            width="24"
+            height="24"
+          />
+        </div>
+        <p className="award-text">
+          <span className="award-count">{award.count}</span>
+          <span className="award-description">{award.description}</span>
+        </p>
+      </div>
+    ))
+  );
+
+  // Рендер социальных иконок
+  const renderSocialIcons = () => (
+    SOCIAL_ICONS.map((social, index) => (
+      <button 
+        key={index}
+        className="social-icon"
+        onClick={social.onClick}
+        aria-label={social.label}
+      >
+        <img 
+          src={social.icon} 
+          alt={social.alt} 
+          loading="lazy"
+          width="26"
+          height="26"
+        />
+      </button>
+    ))
+  );
 
   return (
     <>
@@ -128,12 +219,14 @@ const VideoBackground = () => {
         
         {/* Основное видео для десктопов */}
         <video 
-        preload="metadata"
+          preload="metadata"
           autoPlay 
           muted 
           loop 
           className="video-background desktop-video"
           playsInline
+          disablePictureInPicture
+          disableRemotePlayback
         >
           <source src={desktopVideoUrl} type="video/mp4" />
           Your browser does not support the video tag.
@@ -141,12 +234,14 @@ const VideoBackground = () => {
         
         {/* Видео для мобильных устройств */}
         <video 
-        preload="metadata"
+          preload="metadata"
           autoPlay 
           muted 
           loop 
           className="video-background mobile-video"
           playsInline
+          disablePictureInPicture
+          disableRemotePlayback
         >
           <source src={mobileVideoUrl} type="video/mp4" />
           Your browser does not support the video tag.
@@ -165,7 +260,14 @@ const VideoBackground = () => {
           
           <div className="logo">
             <Link to="/home">
-              <img src={logoImg} alt="Logo" className="logo-image" />
+              <img 
+                src={logoImg} 
+                alt="Logo" 
+                className="logo-image" 
+                loading="eager"
+                width="120"
+                height="40"
+              />
             </Link>
           </div>
           
@@ -175,9 +277,11 @@ const VideoBackground = () => {
             <Link
               className="nav-item about"
               onClick={scrollToMens}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => e.key === 'Enter' && scrollToMens()}
             >
               ABOUT
-              
             </Link>
 
             {/* ИСПРАВЛЕННАЯ КНОПКА CHAT WITH US */}
@@ -248,43 +352,10 @@ const VideoBackground = () => {
                 <div className="mobile-dropdown-bottom">
                   {/* Иконки соцсетей */}
                   <div className="social-icons-container">
-                    <button 
-                      className="social-icon"
-                      onClick={handleInstagramClick}
-                      aria-label="Instagram"
-                    >
-                      <img 
-                        src={require("../image/instagram-icon.svg").default} 
-                        alt="Instagram" 
-                        style={{ width: '26px', height: '26px' }}
-                      />
-                    </button>
-                    <button 
-                      className="social-icon"
-                      onClick={handleVimeoClick}
-                      aria-label="Vimeo"
-                    >
-                      <img 
-                        src={require("../image/vimeo-icon.svg").default} 
-                        alt="Vimeo" 
-                        style={{ width: '26px', height: '26px' }}
-                      />
-                    </button>
-                    <button 
-                      className="social-icon"
-                      onClick={handleEmailClick}
-                      aria-label="Email"
-                    >
-                      <img 
-                        src={require("../image/email-icon.svg").default} 
-                        alt="Email" 
-                        style={{ width: '26px', height: '26px' }}
-                      />
-                    </button>
+                    {renderSocialIcons()}
                   </div>
                   
                   {/* Кнопка CHAT WITH US */}
- 
                 </div>
               </>
             )}
@@ -293,45 +364,7 @@ const VideoBackground = () => {
 
         <div className="content-wrapper">
           <div className="awards-row">
-            <div className="award-item">
-              <div className="award-icon-container icon-1">
-                <img src={taglineImg} alt="Tagline" className="award-icon" />
-              </div>
-              <p className="award-text">
-                <span className="award-count">1X GOLD</span>
-                <span className="award-description">Best video</span>
-              </p>
-            </div>
-            
-            <div className="award-item">
-              <div className="award-icon-container icon-2">
-                <img src={awardsImg} alt="Awards" className="award-icon" />
-              </div>
-              <p className="award-text">
-                <span className="award-count">3X SILVER</span>
-                <span className="award-description">Efficiency in business</span>
-              </p>
-            </div>
-            
-            <div className="award-item">
-              <div className="award-icon-container icon-3">
-                <img src={silverImg} alt="Mercury" className="award-icon" />
-              </div>
-              <p className="award-text">
-                <span className="award-count">2X BRONZE</span>
-                <span className="award-description">Situational marketing</span>
-              </p>
-            </div>
-            
-            <div className="award-item">
-              <div className="award-icon-container icon-4">
-                <img src={designfestivalImg} alt="Festival" className="award-icon" />
-              </div>
-              <p className="award-text">
-                <span className="award-count">3X SHORTLIST</span>
-                <span className="award-description">Visual solutions in video advertising</span>
-              </p>
-            </div>
+            {renderAwards()}
           </div>
 
           {/* <button 
@@ -346,4 +379,5 @@ const VideoBackground = () => {
   );
 };
 
-export default VideoBackground;
+// Используем React.memo для предотвращения лишних перерисовок
+export default React.memo(VideoBackground);
