@@ -77,7 +77,7 @@ const ProjectsVideoSection = () => {
   // Функция загрузки данных из Supabase
   const loadVideoData = async () => {
     try {
-      console.log('🔄 Загружаю данные из Supabase в фоне...');
+      // console.log('🔄 Загружаю данные из Supabase в фоне...');
       
       const { data, error: supabaseError } = await supabase
         .from('projects_videos')
@@ -145,7 +145,7 @@ const ProjectsVideoSection = () => {
 
       setVideoData(formattedData);
       setHasData(true);
-      console.log(`✅ Загружено ${formattedData.length} видео из Supabase`);
+      // console.log(`✅ Загружено ${formattedData.length} видео из Supabase`);
       
     } catch (err) {
       console.error('❌ Ошибка загрузки данных:', err);
@@ -383,7 +383,7 @@ const ProjectsVideoSection = () => {
       if (playPromise !== undefined) {
         playPromise.catch(error => {
           if (error.name !== 'AbortError') {
-            console.log('Автовоспроизведение при наведении заблокировано');
+            // console.log('Автовоспроизведение при наведении заблокировано');
           }
         });
       }
