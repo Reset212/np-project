@@ -1,14 +1,12 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { supabase } from '../lib/supabaseClient';
 import logoImg from "../image/logo.png";
 import instagramIcon from "../image/instagram-icon.svg";
 import emailIcon from "../image/email-icon.svg";
 import vimeoIcon from "../image/vimeo-icon.svg";
 import "./font.css";
 
-// Константы для проверки (вынесены из компонента для избежания пересоздания)
-const ADMIN_USERNAME = 'admin';
-const ADMIN_PASSWORD = '1234';
 const TWELVE_HOURS_MS = 12 * 60 * 60 * 1000;
 
 const AdminLogin = () => {
@@ -160,19 +158,38 @@ const AdminLogin = () => {
 
   // Проверка авторизации
   useEffect(() => {
-    const isAuthenticated = localStorage.getItem('admin_auth') === 'authenticated';
-    const timestamp = localStorage.getItem('admin_timestamp');
-    
-    if (isAuthenticated && timestamp) {
-      const timeDiff = Date.now() - parseInt(timestamp, 10);
+    const checkAuth = async () => {
+      const isAuthenticated = localStorage.getItem('admin_auth') === 'authenticated';
+      const timestamp = localStorage.getItem('admin_timestamp');
+      const adminId = localStorage.getItem('admin_id');
       
-      if (timeDiff < TWELVE_HOURS_MS) {
-        navigate('/admin');
-      } else {
+      if (isAuthenticated && timestamp && adminId) {
+        const timeDiff = Date.now() - parseInt(timestamp, 10);
+        
+        if (timeDiff < TWELVE_HOURS_MS) {
+          // Проверяем, существует ли админ в базе
+          const { data, error } = await supabase
+            .from('admin_users')
+            .select('id, is_active')
+            .eq('id', adminId)
+            .eq('is_active', true)
+            .single();
+          
+          if (data && !error) {
+            navigate('/admin');
+            return;
+          }
+        }
+        
+        // Очищаем localStorage если админ неактивен или время истекло
         localStorage.removeItem('admin_auth');
         localStorage.removeItem('admin_timestamp');
+        localStorage.removeItem('admin_id');
+        localStorage.removeItem('admin_username');
       }
-    }
+    };
+    
+    checkAuth();
   }, [navigate]);
 
   // Мемоизированные обработчики
@@ -213,11 +230,10 @@ const AdminLogin = () => {
     e.currentTarget.style.opacity = '0.7';
   }, []);
 
-  const handleLogin = useCallback((e) => {
+  const handleLogin = useCallback(async (e) => {
     e.preventDefault();
     setError('');
     
-    // Быстрая валидация
     if (!username.trim() || !password.trim()) {
       setError('Please enter both username and password');
       return;
@@ -225,26 +241,42 @@ const AdminLogin = () => {
     
     setLoading(true);
 
-    // Имитация асинхронной операции с requestAnimationFrame
-    requestAnimationFrame(() => {
-      try {
-        if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
-          localStorage.setItem('admin_auth', 'authenticated');
-          localStorage.setItem('admin_timestamp', Date.now().toString());
-          
-          setTimeout(() => {
-            navigate('/admin');
-          }, 100);
-        } else {
-          setError('Invalid username or password');
-        }
-      } catch (err) {
-        setError('Authentication error');
-        console.error(err);
-      } finally {
-        setLoading(false);
+    try {
+      // Простой запрос к Supabase без хеширования
+      const { data, error } = await supabase
+        .from('admin_users')
+        .select('id, username, is_active')
+        .eq('username', username.trim())
+        .eq('password', password)
+        .eq('is_active', true)
+        .maybeSingle();
+      
+      if (error) throw error;
+      
+      if (data) {
+        // Обновляем last_login
+        await supabase
+          .from('admin_users')
+          .update({ last_login: new Date().toISOString() })
+          .eq('id', data.id);
+        
+        // Сохраняем в localStorage
+        localStorage.setItem('admin_auth', 'authenticated');
+        localStorage.setItem('admin_timestamp', Date.now().toString());
+        localStorage.setItem('admin_id', data.id);
+        localStorage.setItem('admin_username', data.username);
+        
+        // Перенаправляем в админку
+        navigate('/admin');
+      } else {
+        setError('Invalid username or password');
       }
-    });
+    } catch (err) {
+      console.error('Login error:', err);
+      setError('Authentication error. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   }, [username, password, navigate]);
 
   const handleKeyPress = useCallback((e) => {

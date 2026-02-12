@@ -77,8 +77,6 @@ const NewProject = () => {
 
   // При изменении ID загружаем данные
   useEffect(() => {
-    // console.log('Editing ID changed:', id);
-    
     if (id) {
       loadProjectData(id);
     } else {
@@ -95,7 +93,6 @@ const NewProject = () => {
 
   const loadProjectData = async (projectId) => {
     try {
-      // console.log('Loading project data for ID:', projectId);
       setLoadingData(true);
       
       // Пытаемся загрузить из выбранной таблицы
@@ -107,7 +104,6 @@ const NewProject = () => {
       
       if (error) {
         // Если ошибка, пробуем загрузить из другой таблицы
-        // console.log('Trying to load from other table...');
         const otherTable = selectedTable === 'realestate_videos' ? 'projects_videos' : 'realestate_videos';
         const { data: otherData, error: otherError } = await supabase
           .from(otherTable)
@@ -133,8 +129,6 @@ const NewProject = () => {
   };
 
   const processLoadedData = (data, tableName) => {
-    // console.log('Processing data for table:', tableName, data);
-    
     if (data) {
       if (tableName === 'realestate_videos') {
         setRealestateFormData({
@@ -193,7 +187,6 @@ const NewProject = () => {
   };
 
   const resetForm = () => {
-    // console.log('Resetting form');
     if (selectedTable === 'realestate_videos') {
       setRealestateFormData({
         title: '',
@@ -241,8 +234,6 @@ const NewProject = () => {
       const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 15)}.${fileExt}`;
       const filePath = `${folder}/${fileName}`;
       
-      // console.log('Uploading image:', filePath);
-      
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from('project-images')
         .upload(filePath, file, {
@@ -256,8 +247,6 @@ const NewProject = () => {
       const { data: { publicUrl } } = supabase.storage
         .from('project-images')
         .getPublicUrl(filePath);
-      
-      // console.log('Image uploaded:', publicUrl);
       
       return { url: publicUrl, fileName: originalFileName };
       
@@ -414,27 +403,25 @@ const NewProject = () => {
       if (selectedTable === 'realestate_videos') {
         // Валидация для realestate_videos
         if (!realestateFormData.title.trim()) {
-          throw new Error('Enter project name');
+          throw new Error('Project name is required');
         }
         
         if (!realestateFormData.vimeo_id.trim()) {
-          throw new Error('Enter Vimeo ID');
+          throw new Error('Vimeo ID is required');
         }
         
         if (!realestateFormData.preview_image) {
-          throw new Error('Upload desktop preview');
+          throw new Error('Desktop preview image is required');
         }
         
         if (!realestateFormData.category) {
-          throw new Error('Select category');
+          throw new Error('Category is required');
         }
         
         const projectData = {
           ...realestateFormData,
           updated_at: new Date().toISOString(),
         };
-        
-        // console.log('Saving to realestate_videos:', projectData);
         
         if (isEditing && id) {
           const { data, error } = await supabase
@@ -460,20 +447,20 @@ const NewProject = () => {
       } else {
         // Валидация для projects_videos
         if (!projectsFormData.title.trim()) {
-          throw new Error('Enter project name');
+          throw new Error('Project name is required');
         }
         
         if (!projectsFormData.vimeo_id.trim()) {
-          throw new Error('Enter Vimeo ID');
+          throw new Error('Vimeo ID is required');
         }
         
         if (!projectsFormData.preview_image) {
-          throw new Error('Upload desktop preview');
+          throw new Error('Desktop preview image is required');
         }
         
         const validPairs = categoryPairs.filter(pair => pair.main && pair.sub);
         if (validPairs.length === 0) {
-          throw new Error('Add at least one category pair');
+          throw new Error('At least one category pair is required');
         }
         
         const mainCategories = validPairs.map(pair => pair.main);
@@ -490,8 +477,6 @@ const NewProject = () => {
           desktop_sub_category,
           updated_at: new Date().toISOString(),
         };
-        
-        // console.log('Saving to projects_videos:', projectData);
         
         if (isEditing && id) {
           const { data, error } = await supabase
@@ -518,7 +503,7 @@ const NewProject = () => {
       
     } catch (err) {
       console.error('Save error:', err);
-      setError('Project save error: ' + err.message);
+      setError('Error: ' + err.message);
     } finally {
       setLoading(false);
     }
@@ -539,7 +524,6 @@ const NewProject = () => {
       color: '#ffffff',
     },
     
-    // Стили для переключателя таблиц
     tableSelector: {
       marginBottom: '40px',
       display: 'flex',
@@ -665,6 +649,7 @@ const NewProject = () => {
       borderRadius: '0',
     },
     
+    // Исправление для Safari - убираем display: unset и используем стандартные свойства
     textarea: {
       display: 'unset !important',
       width: '100%',
@@ -680,6 +665,9 @@ const NewProject = () => {
       minHeight: '60px',
       resize: 'vertical',
       fontFamily: 'inherit',
+      margin: '0',
+      WebkitAppearance: 'none',
+      borderRadius: '0',
     },
     
     charCounter: {
@@ -1008,7 +996,7 @@ const NewProject = () => {
                 name="title"
                 value={currentFormData.title}
                 onChange={handleInputChange}
-                placeholder="Name"
+                placeholder="Enter project name"
                 required
                 style={styles.input}
                 disabled={loadingData}
@@ -1023,8 +1011,7 @@ const NewProject = () => {
                 name="description"
                 value={currentFormData.description}
                 onChange={handleInputChange}
-                placeholder="Description"
-                required
+                placeholder="Enter project description"
                 style={styles.textarea}
                 disabled={loadingData}
               />
@@ -1371,6 +1358,13 @@ const NewProject = () => {
         
         select::-ms-expand {
           display: none;
+        }
+        
+        /* Safari specific fixes */
+        textarea {
+          display: unset !important;
+          -webkit-appearance: none !important;
+          appearance: none !important;
         }
         
         @-moz-document url-prefix() {

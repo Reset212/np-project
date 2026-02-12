@@ -5,9 +5,10 @@ import { supabase } from '../lib/supabaseClient';
 import editIcon from "../image/Vector-1.svg";
 import deleteIcon from "../image/Vector.svg";
 import "./font.css";
+
 const OurProjects = () => {
   const navigate = useNavigate();
-  const [selectedTable, setSelectedTable] = useState('realestate_videos'); // Состояние для выбора таблицы
+  const [selectedTable, setSelectedTable] = useState('realestate_videos');
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -16,8 +17,9 @@ const OurProjects = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(5);
   const [deleting, setDeleting] = useState(false);
+  const [updatingOrder, setUpdatingOrder] = useState(false);
 
-  // Загрузка проектов при изменении выбранной таблицы
+  // Загрузка проектов с сортировкой по ID
   useEffect(() => {
     loadProjects();
   }, [selectedTable]);
@@ -30,12 +32,12 @@ const OurProjects = () => {
       const { data, error } = await supabase
         .from(selectedTable)
         .select('*')
-        .order('created_at', { ascending: false });
+        .order('id', { ascending: true });
       
       if (error) throw error;
       
       setProjects(data || []);
-      setCurrentPage(1); // Сбрасываем на первую страницу при смене таблицы
+      setCurrentPage(1);
     } catch (err) {
       console.error('Loading error:', err);
       setError(`Error loading projects from ${selectedTable}`);
@@ -44,12 +46,122 @@ const OurProjects = () => {
     }
   };
 
-  // Функция для удаления файлов из Supabase Storage
+  // Функция для обновления порядка проектов
+  const swapProjectIds = async (projectA, projectB) => {
+    try {
+      // Временно присваиваем отрицательный ID первому проекту
+      const { error: error1 } = await supabase
+        .from(selectedTable)
+        .update({ 
+          id: -projectA.id,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', projectA.id);
+      
+      if (error1) throw error1;
+      
+      // Присваиваем ID проекта A проекту B
+      const { error: error2 } = await supabase
+        .from(selectedTable)
+        .update({ 
+          id: projectA.id,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', projectB.id);
+      
+      if (error2) throw error2;
+      
+      // Присваиваем ID проекта B временному отрицательному ID
+      const { error: error3 } = await supabase
+        .from(selectedTable)
+        .update({ 
+          id: projectB.id,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', -projectA.id);
+      
+      if (error3) throw error3;
+      
+      console.log(`Swapped IDs: ${projectA.id} <-> ${projectB.id}`);
+      
+    } catch (err) {
+      console.error('Error swapping project IDs:', err);
+      throw err;
+    }
+  };
+
+  // Функция для перемещения проекта вверх
+  const moveProjectUp = async (index) => {
+    if (index === 0 || updatingOrder) return;
+    
+    try {
+      setUpdatingOrder(true);
+      
+      const projectA = projects[index];
+      const projectB = projects[index - 1];
+      
+      // Меняем ID в базе данных
+      await swapProjectIds(projectA, projectB);
+      
+      // Обновляем UI
+      const reorderedProjects = [...projects];
+      reorderedProjects[index] = projectB;
+      reorderedProjects[index - 1] = projectA;
+      
+      // Обновляем ID в объектах
+      const tempId = projectA.id;
+      projectA.id = projectB.id;
+      projectB.id = tempId;
+      
+      setProjects(reorderedProjects);
+      
+    } catch (err) {
+      console.error('Error moving project up:', err);
+      setError('Error moving project up. Please try again.');
+      await loadProjects();
+    } finally {
+      setUpdatingOrder(false);
+    }
+  };
+
+  // Функция для перемещения проекта вниз
+  const moveProjectDown = async (index) => {
+    if (index === projects.length - 1 || updatingOrder) return;
+    
+    try {
+      setUpdatingOrder(true);
+      
+      const projectA = projects[index];
+      const projectB = projects[index + 1];
+      
+      // Меняем ID в базе данных
+      await swapProjectIds(projectA, projectB);
+      
+      // Обновляем UI
+      const reorderedProjects = [...projects];
+      reorderedProjects[index] = projectB;
+      reorderedProjects[index + 1] = projectA;
+      
+      // Обновляем ID в объектах
+      const tempId = projectA.id;
+      projectA.id = projectB.id;
+      projectB.id = tempId;
+      
+      setProjects(reorderedProjects);
+      
+    } catch (err) {
+      console.error('Error moving project down:', err);
+      setError('Error moving project down. Please try again.');
+      await loadProjects();
+    } finally {
+      setUpdatingOrder(false);
+    }
+  };
+
   const deleteImageFromStorage = async (imageUrl) => {
     if (!imageUrl) return;
     
     try {
-      // Извлекаем путь к файлу из URL
       const url = new URL(imageUrl);
       const pathMatch = url.pathname.match(/\/storage\/v1\/object\/public\/project-images\/(.+)/);
       
@@ -59,7 +171,6 @@ const OurProjects = () => {
       }
       
       const filePath = pathMatch[1];
-      console.log('Deleting file from storage:', filePath);
       
       const { error } = await supabase.storage
         .from('project-images')
@@ -67,13 +178,10 @@ const OurProjects = () => {
       
       if (error) {
         console.error('Error deleting image from storage:', error);
-        throw error;
       }
       
-      console.log('Successfully deleted image:', filePath);
     } catch (err) {
       console.error('Error in deleteImageFromStorage:', err);
-      // Не выбрасываем ошибку дальше, чтобы удаление проекта продолжалось
     }
   };
 
@@ -81,30 +189,21 @@ const OurProjects = () => {
     try {
       setDeleting(true);
       
-      // Находим проект для удаления
       const projectToDelete = projects.find(project => project.id === id);
       if (!projectToDelete) {
         throw new Error('Project not found');
       }
       
-      console.log('Deleting project:', projectToDelete.title);
-      
-      // Удаляем изображения из storage если они есть
-      const deletePromises = [];
-      
+      // Удаляем изображения
       if (projectToDelete.preview_image) {
-        deletePromises.push(deleteImageFromStorage(projectToDelete.preview_image));
+        await deleteImageFromStorage(projectToDelete.preview_image);
       }
       
       if (projectToDelete.mobile_preview_image) {
-        deletePromises.push(deleteImageFromStorage(projectToDelete.mobile_preview_image));
+        await deleteImageFromStorage(projectToDelete.mobile_preview_image);
       }
       
-      // Ожидаем удаления всех изображений
-      await Promise.all(deletePromises);
-      console.log('All images deleted successfully');
-      
-      // Удаляем проект из базы данных
+      // Удаляем проект
       const { error } = await supabase
         .from(selectedTable)
         .delete()
@@ -112,8 +211,8 @@ const OurProjects = () => {
       
       if (error) throw error;
       
-      // Обновляем состояние
-      setProjects(projects.filter(project => project.id !== id));
+      // Перезагружаем проекты
+      await loadProjects();
       setDeleteConfirm(null);
       
     } catch (err) {
@@ -135,7 +234,6 @@ const OurProjects = () => {
     }));
   };
 
-  // Форматирование категорий в зависимости от таблицы
   const formatCategories = (project) => {
     if (selectedTable === 'realestate_videos') {
       return project.category || '-';
@@ -147,10 +245,9 @@ const OurProjects = () => {
     }
   };
 
-  // Форматирование подкатегорий в зависимости от таблицы
   const formatSubCategories = (project) => {
     if (selectedTable === 'realestate_videos') {
-      return '-'; // В realestate_videos нет подкатегорий
+      return '-';
     } else {
       if (project.desktop_sub_categories && project.desktop_sub_categories.length > 0) {
         return project.desktop_sub_categories.join(', ');
@@ -173,18 +270,6 @@ const OurProjects = () => {
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentProjects = projects.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(projects.length / itemsPerPage);
-
-  const nextPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
-
-  const prevPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
 
   const goToPage = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -212,7 +297,6 @@ const OurProjects = () => {
       margin: 0,
     },
     
-    // Стили для переключателя таблиц
     tableSelectorContainer: {
       display: 'flex',
       flexDirection: 'column',
@@ -243,6 +327,7 @@ const OurProjects = () => {
       transition: 'all 0.2s',
       textAlign: 'center',
       minWidth: '180px',
+      border: 'none',
     },
     
     tableOptionActive: {
@@ -267,6 +352,19 @@ const OurProjects = () => {
       borderRadius: '6px',
       fontSize: '14px',
       fontWeight: '500',
+    },
+    
+    orderInfo: {
+      backgroundColor: 'rgba(49, 118, 255, 0.1)',
+      color: '#3176FF',
+      padding: '12px 20px',
+      borderRadius: '8px',
+      marginBottom: '20px',
+      fontSize: '14px',
+      border: '1px solid rgba(49, 118, 255, 0.3)',
+      display: 'flex',
+      alignItems: 'center',
+      gap: '10px',
     },
     
     alert: {
@@ -303,7 +401,6 @@ const OurProjects = () => {
       fontSize: '16px',
     },
     
-    // Table styles
     projectsTable: {
       width: '100%',
       backgroundColor: '#161719',
@@ -312,7 +409,9 @@ const OurProjects = () => {
     
     tableHeader: {
       display: 'grid',
-      gridTemplateColumns: selectedTable === 'realestate_videos' ? '100px 2fr 1fr 120px 120px' : '100px 2fr 1fr 1fr 120px 120px',
+      gridTemplateColumns: selectedTable === 'realestate_videos' 
+        ? '80px 80px 2fr 1fr 1fr 120px 120px' 
+        : '80px 80px 2fr 1fr 1fr 1fr 120px 120px',
       gap: '20px',
       padding: '15px 0',
       borderBottom: '1px solid #333',
@@ -330,17 +429,54 @@ const OurProjects = () => {
     
     projectRow: {
       display: 'grid',
-      gridTemplateColumns: selectedTable === 'realestate_videos' ? '100px 2fr 1fr 120px 120px' : '100px 2fr 1fr 1fr 120px 120px',
+      gridTemplateColumns: selectedTable === 'realestate_videos' 
+        ? '80px 80px 2fr 1fr 1fr 120px 120px' 
+        : '80px 80px 2fr 1fr 1fr 1fr 120px 120px',
       gap: '20px',
-      padding: '20px 0',
+      padding: '15px 0',
       alignItems: 'center',
       borderBottom: '1px solid #333',
+      transition: 'all 0.2s',
+      backgroundColor: '#161719',
     },
     
-    // Cell styles
+    orderCell: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '4px',
+      alignItems: 'center',
+    },
+    
+    orderButton: {
+      width: '24px',
+      height: '24px',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: 'transparent',
+      border: '1px solid #5e5e5e',
+      borderRadius: '4px',
+      color: '#c5c3c3',
+      cursor: 'pointer',
+      fontSize: '14px',
+      padding: 0,
+      transition: 'all 0.2s',
+    },
+    
+    orderButtonDisabled: {
+      opacity: 0.3,
+      cursor: 'not-allowed',
+    },
+    
+    idCell: {
+      fontSize: '14px',
+      color: '#c5c3c3',
+      fontWeight: '500',
+    },
+    
     photoCell: {
       display: 'flex',
-      justifyContent: 'center',
+      // justifyContent: 'center',
     },
     
     imageContainer: {
@@ -389,10 +525,10 @@ const OurProjects = () => {
       color: '#c5c3c3',
     },
     
-    // Button styles
     buttonsCell: {
       display: 'flex',
       gap: '10px',
+      justifyContent: 'flex-start',
     },
     
     actionButton: {
@@ -415,44 +551,24 @@ const OurProjects = () => {
       border: '1px solid #5e5e5e',
     },
     
-    editButtonHover: {
-      backgroundColor: 'rgba(94, 94, 94, 0.1)',
-      borderColor: '#c5c3c3',
-    },
-    
     deleteButton: {
       border: '1px solid #ff6b6b',
     },
     
-    deleteButtonHover: {
-      backgroundColor: 'rgba(255, 107, 107, 0.1)',
-      borderColor: '#ff6b6b',
-    },
-    
-    // Icon styles
     iconImage: {
       width: '16px',
       height: '16px',
-      filter: 'brightness(0) invert(0.8)', // Делаем иконки серыми
+      filter: 'brightness(0) invert(0.8)',
       transition: 'filter 0.2s',
     },
     
     deleteIconImage: {
       width: '16px',
       height: '16px',
-      filter: 'brightness(0) saturate(100%) invert(52%) sepia(85%) saturate(2931%) hue-rotate(333deg) brightness(103%) contrast(101%)', // Делаем иконки красными
+      filter: 'brightness(0) saturate(100%) invert(52%) sepia(85%) saturate(2931%) hue-rotate(333deg) brightness(103%) contrast(101%)',
       transition: 'filter 0.2s',
     },
     
-    iconHover: {
-      filter: 'brightness(0) invert(1)', // Белые иконки при наведении
-    },
-    
-    deleteIconHover: {
-      filter: 'brightness(0) saturate(100%) invert(52%) sepia(85%) saturate(3931%) hue-rotate(333deg) brightness(113%) contrast(101%)', // Более яркие красные иконки при наведении
-    },
-    
-    // Pagination styles
     pagination: {
       display: 'flex',
       justifyContent: 'flex-start',
@@ -465,7 +581,7 @@ const OurProjects = () => {
       padding: '6px 12px',
       backgroundColor: 'transparent',
       color: '#c5c3c3',
-      border: '1px solid #a8020200',
+      border: '1px solid transparent',
       borderRadius: '6px',
       cursor: 'pointer',
       fontSize: '14px',
@@ -476,16 +592,9 @@ const OurProjects = () => {
     
     currentPageButton: {
       backgroundColor: '#242527',
-      color: '#c5c3c3',
-      borderColor: '#5e5e5e',
+      border: '1px solid #5e5e5e',
     },
     
-    pageNumberButtonHover: {
-      backgroundColor: 'rgba(94, 94, 94, 0.1)',
-      borderColor: '#c5c3c3',
-    },
-    
-    // Delete modal styles
     deleteModal: {
       position: 'fixed',
       top: 0,
@@ -540,11 +649,6 @@ const OurProjects = () => {
       transition: 'all 0.2s',
     },
     
-    cancelButtonHover: {
-      borderColor: '#ffffff',
-      backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    },
-    
     confirmDeleteButton: {
       padding: '12px 24px',
       backgroundColor: 'rgba(255, 107, 107, 0.1)',
@@ -557,11 +661,6 @@ const OurProjects = () => {
       transition: 'all 0.2s',
     },
     
-    confirmDeleteButtonHover: {
-      backgroundColor: 'rgba(255, 107, 107, 0.2)',
-    },
-    
-    // Loading and deleting styles
     loadingContainer: {
       display: 'flex',
       flexDirection: 'column',
@@ -582,7 +681,6 @@ const OurProjects = () => {
       marginBottom: '15px',
     },
     
-    // Spinner styles
     spinner: {
       width: '30px',
       height: '30px',
@@ -603,73 +701,51 @@ const OurProjects = () => {
     },
   };
 
-  // Functions for handling hover effects
+  // Обработчики hover эффектов
   const handleMouseEnter = (e, buttonType) => {
     if (buttonType === 'edit') {
-      e.target.style.backgroundColor = styles.editButtonHover.backgroundColor;
-      e.target.style.borderColor = styles.editButtonHover.borderColor;
-      // Меняем цвет иконки при наведении
+      e.target.style.backgroundColor = 'rgba(94, 94, 94, 0.1)';
+      e.target.style.borderColor = '#c5c3c3';
       const icon = e.target.querySelector('img');
-      if (icon) {
-        icon.style.filter = styles.iconHover.filter;
-      }
+      if (icon) icon.style.filter = 'brightness(0) invert(1)';
     } else if (buttonType === 'delete') {
-      e.target.style.backgroundColor = styles.deleteButtonHover.backgroundColor;
-      e.target.style.borderColor = styles.deleteButtonHover.borderColor;
-      // Меняем цвет иконки при наведении
+      e.target.style.backgroundColor = 'rgba(255, 107, 107, 0.1)';
+      e.target.style.borderColor = '#ff6b6b';
       const icon = e.target.querySelector('img');
-      if (icon) {
-        icon.style.filter = styles.deleteIconHover.filter;
+      if (icon) icon.style.filter = 'brightness(0) saturate(100%) invert(52%) sepia(85%) saturate(3931%) hue-rotate(333deg) brightness(113%) contrast(101%)';
+    } else if (buttonType === 'orderUp' || buttonType === 'orderDown') {
+      if (!e.target.disabled) {
+        e.target.style.backgroundColor = 'rgba(94, 94, 94, 0.2)';
+        e.target.style.borderColor = '#c5c3c3';
+        e.target.style.color = '#ffffff';
       }
-    } else if (buttonType === 'pageNumber') {
-      if (e.target.getAttribute('data-current') !== 'true') {
-        e.target.style.backgroundColor = styles.pageNumberButtonHover.backgroundColor;
-        e.target.style.borderColor = styles.pageNumberButtonHover.borderColor;
-      }
-    } else if (buttonType === 'cancel') {
-      e.target.style.borderColor = styles.cancelButtonHover.borderColor;
-      e.target.style.backgroundColor = styles.cancelButtonHover.backgroundColor;
-    } else if (buttonType === 'confirmDelete') {
-      e.target.style.backgroundColor = styles.confirmDeleteButtonHover.backgroundColor;
     } else if (buttonType === 'tableOption') {
       if (e.target.getAttribute('data-active') !== 'true') {
         e.target.style.backgroundColor = 'rgba(94, 94, 94, 0.2)';
-        e.target.style.color = '#ffffff';
       }
     }
   };
 
   const handleMouseLeave = (e, buttonType) => {
     if (buttonType === 'edit') {
-      e.target.style.backgroundColor = styles.editButton.backgroundColor;
-      e.target.style.borderColor = styles.editButton.border;
-      // Возвращаем исходный цвет иконки
+      e.target.style.backgroundColor = 'transparent';
+      e.target.style.borderColor = '#5e5e5e';
       const icon = e.target.querySelector('img');
-      if (icon) {
-        icon.style.filter = styles.iconImage.filter;
-      }
+      if (icon) icon.style.filter = 'brightness(0) invert(0.8)';
     } else if (buttonType === 'delete') {
-      e.target.style.backgroundColor = styles.deleteButton.backgroundColor;
-      e.target.style.borderColor = styles.deleteButton.border;
-      // Возвращаем исходный цвет иконки
+      e.target.style.backgroundColor = 'transparent';
+      e.target.style.borderColor = '#ff6b6b';
       const icon = e.target.querySelector('img');
-      if (icon) {
-        icon.style.filter = styles.deleteIconImage.filter;
+      if (icon) icon.style.filter = 'brightness(0) saturate(100%) invert(52%) sepia(85%) saturate(2931%) hue-rotate(333deg) brightness(103%) contrast(101%)';
+    } else if (buttonType === 'orderUp' || buttonType === 'orderDown') {
+      if (!e.target.disabled) {
+        e.target.style.backgroundColor = 'transparent';
+        e.target.style.borderColor = '#5e5e5e';
+        e.target.style.color = '#c5c3c3';
       }
-    } else if (buttonType === 'pageNumber') {
-      if (e.target.getAttribute('data-current') !== 'true') {
-        e.target.style.backgroundColor = styles.pageNumberButton.backgroundColor;
-        e.target.style.borderColor = styles.pageNumberButton.border;
-      }
-    } else if (buttonType === 'cancel') {
-      e.target.style.borderColor = styles.cancelButton.border;
-      e.target.style.backgroundColor = styles.cancelButton.backgroundColor;
-    } else if (buttonType === 'confirmDelete') {
-      e.target.style.backgroundColor = styles.confirmDeleteButton.backgroundColor;
     } else if (buttonType === 'tableOption') {
       if (e.target.getAttribute('data-active') !== 'true') {
-        e.target.style.backgroundColor = styles.tableOptionInactive.backgroundColor;
-        e.target.style.color = styles.tableOptionInactive.color;
+        e.target.style.backgroundColor = 'transparent';
       }
     }
   };
@@ -725,6 +801,8 @@ const OurProjects = () => {
         </div>
       </div>
 
+ 
+
       {error && <div style={styles.alert}>{error}</div>}
 
       {projects.length === 0 ? (
@@ -737,10 +815,11 @@ const OurProjects = () => {
         </div>
       ) : (
         <>
-          {/* Projects table */}
           <div style={styles.projectsTable}>
             {/* Table headers */}
             <div style={styles.tableHeader}>
+              <div style={styles.tableHeaderCell}>ORDER</div>
+              <div style={styles.tableHeaderCell}>ID</div>
               <div style={styles.tableHeaderCell}>PHOTO</div>
               <div style={styles.tableHeaderCell}>NAME</div>
               <div style={styles.tableHeaderCell}>CATEGORY</div>
@@ -752,83 +831,120 @@ const OurProjects = () => {
             </div>
 
             {/* Table rows */}
-            {currentProjects.map(project => (
-              <div key={project.id} style={styles.projectRow}>
-                {/* Photo */}
-                <div style={styles.photoCell}>
-                  <div style={styles.imageContainer}>
-                    {project.preview_image && !imageErrors[project.id] ? (
-                      <img
-                        src={project.preview_image}
-                        alt={project.title}
-                        style={styles.projectImage}
-                        onError={() => handleImageError(project.id)}
-                        loading="lazy"
-                      />
-                    ) : (
-                      <div style={styles.imagePlaceholder}>
-                        No image
-                      </div>
-                    )}
+            {currentProjects.map((project) => {
+              const globalIndex = projects.findIndex(p => p.id === project.id);
+              
+              return (
+                <div
+                  key={project.id}
+                  className="project-row"
+                  style={styles.projectRow}
+                >
+                  {/* Order buttons */}
+                  <div style={styles.orderCell}>
+                    <button
+                      onClick={() => moveProjectUp(globalIndex)}
+                      style={{
+                        ...styles.orderButton,
+                        ...((globalIndex === 0 || updatingOrder) ? styles.orderButtonDisabled : {})
+                      }}
+                      onMouseEnter={(e) => handleMouseEnter(e, 'orderUp')}
+                      onMouseLeave={(e) => handleMouseLeave(e, 'orderUp')}
+                      disabled={globalIndex === 0 || updatingOrder}
+                      title="Move up"
+                    >
+                      ▲
+                    </button>
+                    <button
+                      onClick={() => moveProjectDown(globalIndex)}
+                      style={{
+                        ...styles.orderButton,
+                        ...((globalIndex === projects.length - 1 || updatingOrder) ? styles.orderButtonDisabled : {})
+                      }}
+                      onMouseEnter={(e) => handleMouseEnter(e, 'orderDown')}
+                      onMouseLeave={(e) => handleMouseLeave(e, 'orderDown')}
+                      disabled={globalIndex === projects.length - 1 || updatingOrder}
+                      title="Move down"
+                    >
+                      ▼
+                    </button>
+                  </div>
+
+                  {/* ID */}
+                  <div style={styles.idCell}>
+                    #{project.id}
+                  </div>
+
+                  {/* Photo */}
+                  <div style={styles.photoCell}>
+                    <div style={styles.imageContainer}>
+                      {project.preview_image && !imageErrors[project.id] ? (
+                        <img
+                          src={project.preview_image}
+                          alt={project.title}
+                          style={styles.projectImage}
+                          onError={() => handleImageError(project.id)}
+                          loading="lazy"
+                        />
+                      ) : (
+                        <div style={styles.imagePlaceholder}>
+                          No image
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Name */}
+                  <div style={styles.nameCell}>
+                    {project.title}
+                  </div>
+
+                  {/* Category */}
+                  <div style={styles.categoryCell}>
+                    {formatCategories(project)}
+                  </div>
+
+                  {/* Subcategory - только для projects_videos */}
+                  {selectedTable === 'projects_videos' && (
+                    <div style={styles.subCategoryCell}>
+                      {formatSubCategories(project)}
+                    </div>
+                  )}
+
+                  {/* Date */}
+                  <div style={styles.dateCell}>
+                    {formatDate(project.created_at)}
+                  </div>
+
+                  {/* Buttons - ACTIONS в конце строки */}
+                  <div style={styles.buttonsCell}>
+                    <button
+                      onClick={() => handleEdit(project.id)}
+                      style={{...styles.actionButton, ...styles.editButton}}
+                      onMouseEnter={(e) => handleMouseEnter(e, 'edit')}
+                      onMouseLeave={(e) => handleMouseLeave(e, 'edit')}
+                      title="Edit"
+                      disabled={updatingOrder}
+                    >
+                      <img src={editIcon} alt="Edit" style={styles.iconImage} />
+                    </button>
+                    <button
+                      onClick={() => setDeleteConfirm(project.id)}
+                      style={{...styles.actionButton, ...styles.deleteButton}}
+                      onMouseEnter={(e) => handleMouseEnter(e, 'delete')}
+                      onMouseLeave={(e) => handleMouseLeave(e, 'delete')}
+                      title="Delete"
+                      disabled={updatingOrder}
+                    >
+                      <img src={deleteIcon} alt="Delete" style={styles.deleteIconImage} />
+                    </button>
                   </div>
                 </div>
-
-                {/* Name */}
-                <div style={styles.nameCell}>
-                  {project.title}
-                </div>
-
-                {/* Category */}
-                <div style={styles.categoryCell}>
-                  {formatCategories(project)}
-                </div>
-
-                {/* Subcategory - только для projects_videos */}
-                {selectedTable === 'projects_videos' && (
-                  <div style={styles.subCategoryCell}>
-                    {formatSubCategories(project)}
-                  </div>
-                )}
-
-                {/* Date */}
-                <div style={styles.dateCell}>
-                  {formatDate(project.created_at)}
-                </div>
-
-                {/* Buttons with SVG icons */}
-                <div style={styles.buttonsCell}>
-                  <button
-                    onClick={() => handleEdit(project.id)}
-                    style={{...styles.actionButton, ...styles.editButton}}
-                    onMouseEnter={(e) => handleMouseEnter(e, 'edit')}
-                    onMouseLeave={(e) => handleMouseLeave(e, 'edit')}
-                    title="Edit"
-                  >
-                    <img 
-                      src={editIcon} 
-                      alt="Edit" 
-                      style={styles.iconImage}
-                    />
-                  </button>
-                  <button
-                    onClick={() => setDeleteConfirm(project.id)}
-                    style={{...styles.actionButton, ...styles.deleteButton}}
-                    onMouseEnter={(e) => handleMouseEnter(e, 'delete')}
-                    onMouseLeave={(e) => handleMouseLeave(e, 'delete')}
-                    title="Delete"
-                  >
-                    <img 
-                      src={deleteIcon} 
-                      alt="Delete" 
-                      style={styles.deleteIconImage}
-                    />
-                  </button>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
-          {/* Pagination - только номера страниц слева */}
+          {/* Pagination */}
           {totalPages > 1 && (
             <div style={styles.pagination}>
               {Array.from({ length: totalPages }, (_, i) => i + 1).map(pageNumber => (
@@ -840,8 +956,17 @@ const OurProjects = () => {
                     ...(pageNumber === currentPage ? styles.currentPageButton : {})
                   }}
                   data-current={pageNumber === currentPage ? 'true' : 'false'}
-                  onMouseEnter={(e) => pageNumber !== currentPage && handleMouseEnter(e, 'pageNumber')}
-                  onMouseLeave={(e) => pageNumber !== currentPage && handleMouseLeave(e, 'pageNumber')}
+                  onMouseEnter={(e) => {
+                    if (pageNumber !== currentPage) {
+                      e.target.style.backgroundColor = 'rgba(94, 94, 94, 0.1)';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (pageNumber !== currentPage) {
+                      e.target.style.backgroundColor = 'transparent';
+                    }
+                  }}
+                  disabled={updatingOrder}
                 >
                   {pageNumber}
                 </button>
@@ -875,18 +1000,28 @@ const OurProjects = () => {
               <button
                 onClick={() => setDeleteConfirm(null)}
                 style={styles.cancelButton}
-                onMouseEnter={(e) => handleMouseEnter(e, 'cancel')}
-                onMouseLeave={(e) => handleMouseLeave(e, 'cancel')}
-                disabled={deleting}
+                onMouseEnter={(e) => {
+                  e.target.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+                  e.target.style.borderColor = '#ffffff';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.backgroundColor = 'transparent';
+                  e.target.style.borderColor = '#5e5e5e';
+                }}
+                disabled={deleting || updatingOrder}
               >
                 Cancel
               </button>
               <button
                 onClick={() => handleDelete(deleteConfirm)}
                 style={styles.confirmDeleteButton}
-                onMouseEnter={(e) => handleMouseEnter(e, 'confirmDelete')}
-                onMouseLeave={(e) => handleMouseLeave(e, 'confirmDelete')}
-                disabled={deleting}
+                onMouseEnter={(e) => {
+                  e.target.style.backgroundColor = 'rgba(255, 107, 107, 0.2)';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.backgroundColor = 'rgba(255, 107, 107, 0.1)';
+                }}
+                disabled={deleting || updatingOrder}
               >
                 {deleting ? 'Deleting...' : 'Delete'}
               </button>
@@ -904,6 +1039,24 @@ const OurProjects = () => {
         button:disabled {
           opacity: 0.5;
           cursor: not-allowed;
+        }
+        
+        ::-webkit-scrollbar {
+          width: 8px;
+          height: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+          background: #242527;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+          background: #5e5e5e;
+          border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+          background: #7a7a7a;
         }
       `}</style>
     </div>
