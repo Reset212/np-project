@@ -250,7 +250,7 @@ const AdminLayout = () => {
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
           >
-            Выйти
+            Log out
           </button>
           <div style={styles.adminTitle}>
             <h1 style={styles.adminTitleH1}>ADMIN PANEL</h1>

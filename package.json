@@ -15,7 +15,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "CI=false react-scripts build",
+    "build": "react-scripts build",
     "build:prod": "NODE_ENV=production react-scripts build",
     "test": "react-scripts test",
     "analyze": "source-map-explorer 'build/static/js/*.js'",
