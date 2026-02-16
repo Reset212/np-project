@@ -14,7 +14,7 @@ const ContactSection = () => {
 
   // Telegram bot credentials
   const TELEGRAM_BOT_TOKEN = "7998150091:AAGe78Y2qZCdev2c6bFVKEumP5dPzK9sDkY";
-  const TELEGRAM_CHAT_ID = "1000103882";
+  const TELEGRAM_CHAT_ID = "-1001644600527";
 
   const copyEmailToClipboard = (email, type) => {
     navigator.clipboard.writeText(email)

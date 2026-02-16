@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 // Константы вынесены из компонента для избежания пересоздания
 const TELEGRAM_BOT_TOKEN = "7998150091:AAGe78Y2qZCdev2c6bFVKEumP5dPzK9sDkY";
-const TELEGRAM_CHAT_ID = "1000103882";
+const TELEGRAM_CHAT_ID = "-1001644600527";
 const FORMSPREE_ENDPOINT = "https://formspree.io/f/mpqqqzap";
 const EMAILS = {
   client: "hello@movieparkpro.com",
