@@ -56,7 +56,8 @@ const ContactSection = () => {
         body: JSON.stringify({
           chat_id: TELEGRAM_CHAT_ID,
           text: message,
-          parse_mode: 'Markdown'
+          parse_mode: 'Markdown',
+          message_thread_id: 1527
         }),
       });
 
