@@ -262,22 +262,39 @@ const ContactSection = () => {
             </div>
 
             <div className="form-row">
-              <div className="form-group form-group-half">
-                <label htmlFor="phone" className="form-label">PHONE NUMBER:*</label>
-                <input
-                  type="tel"
-                  id="phone"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleInputChange}
-                  className="form-input"
-                  required
-                  aria-required="true"
-                  pattern="[0-9+\-\s()]{10,}"
-                  title="Enter the correct phone number"
-                  autoComplete="tel"
-                />
-              </div>
+             <div className="form-group form-group-half">
+  <label htmlFor="phone" className="form-label">PHONE NUMBER:*</label>
+  <input
+    type="tel"
+    id="phone"
+    name="phone"
+    value={formData.phone}
+    onChange={handleInputChange}
+    onKeyPress={(e) => {
+      const charCode = e.which ? e.which : e.keyCode;
+      const char = String.fromCharCode(charCode);
+      
+      // Разрешаем цифры
+      if (charCode >= 48 && charCode <= 57) {
+        return; // разрешаем цифры
+      }
+      
+      // Разрешаем знак + только если это первый символ
+      if (char === '+' && e.target.value.length === 0) {
+        return; // разрешаем + в начале
+      }
+      
+      // Все остальные символы запрещаем
+      e.preventDefault();
+    }}
+    className="form-input"
+    required
+    aria-required="true"
+    pattern="[0-9+]{10,}"
+    title="Enter digits only (optionally starting with +)"
+    autoComplete="tel"
+  />
+</div>
 
               <div className="form-group form-group-half">
                 <label htmlFor="email" className="form-label">EMAIL ADDRESS:*</label>
