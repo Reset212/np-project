@@ -1,16 +1,6 @@
-import React, { useState, useCallback, useMemo } from "react";
+import React, { useState } from "react";
 import "./ContactSection.css";
 import { Link } from "react-router-dom";
-
-// Константы вынесены из компонента для избежания пересоздания
-const TELEGRAM_BOT_TOKEN = "7998150091:AAGe78Y2qZCdev2c6bFVKEumP5dPzK9sDkY";
-const TELEGRAM_CHAT_ID = "-1001644600527";
-const FORMSPREE_ENDPOINT = "https://formspree.io/f/mpqqqzap";
-const EMAILS = {
-  client: "hello@movieparkpro.com",
-  work: "job@movieparkpro.com"
-};
-
 const ContactSection = () => {
   const [formData, setFormData] = useState({
     name: "",
@@ -22,32 +12,37 @@ const ContactSection = () => {
   const [messageSent, setMessageSent] = useState(false);
   const [copiedEmail, setCopiedEmail] = useState("");
 
-  // Мемоизированные обработчики
-  const copyEmailToClipboard = useCallback(async (email, type) => {
-    try {
-      await navigator.clipboard.writeText(email);
-      setCopiedEmail(type);
-      setTimeout(() => setCopiedEmail(""), 2000);
-    } catch (err) {
-      console.error('Copy error: ', err);
-    }
-  }, []);
+  // Telegram bot credentials
+  const TELEGRAM_BOT_TOKEN = "7998150091:AAGe78Y2qZCdev2c6bFVKEumP5dPzK9sDkY";
+  const TELEGRAM_CHAT_ID = "-1001644600527";
 
-  const handleInputChange = useCallback((e) => {
+  const copyEmailToClipboard = (email, type) => {
+    navigator.clipboard.writeText(email)
+      .then(() => {
+        setCopiedEmail(type);
+        setTimeout(() => setCopiedEmail(""), 2000);
+      })
+      .catch(err => {
+        console.error('Copy error: ', err);
+      });
+  };
+
+  const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
       [name]: value
     }));
-  }, []);
+  };
 
-  // Функция для отправки в Telegram (мемоизирована)
-  const sendToTelegram = useCallback(async (data) => {
+  // Function to send to Telegram
+  const sendToTelegram = async () => {
     const message = `
-*Name:* ${data.name}
-*Phone:* ${data.phone}
-*Email:* ${data.email}
-*Project:* ${data.project}
+
+*Name:* ${formData.name}
+*Phone:* ${formData.phone}
+*Email:* ${formData.email}
+*Project:* ${formData.project}
 
 *Date:* ${new Date().toLocaleString()}
     `;
@@ -76,22 +71,22 @@ const ContactSection = () => {
       console.warn('Error sending to Telegram:', error);
       return { success: false, service: 'telegram', error: error.message };
     }
-  }, []);
+  };
 
-  // Функция для отправки в Formspree (мемоизирована)
-  const sendToFormspree = useCallback(async (data) => {
+  // Function to send to Formspree
+  const sendToFormspree = async () => {
     try {
-      const response = await fetch(FORMSPREE_ENDPOINT, {
+      const response = await fetch('https://formspree.io/f/mpqqqzap', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          name: data.name,
-          phone: data.phone,
-          email: data.email,
-          message: data.project,
-          _subject: `New application from ${data.name}`,
+          name: formData.name,
+          phone: formData.phone,
+          email: formData.email,
+          message: formData.project,
+          _subject: `New application from ${formData.name}`,
         }),
       });
 
@@ -105,28 +100,21 @@ const ContactSection = () => {
       console.warn('Error sending to Formspree:', error);
       return { success: false, service: 'formspree', error: error.message };
     }
-  }, []);
+  };
 
-  const handleSubmit = useCallback(async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    // Быстрая валидация
-    if (!formData.name.trim() || !formData.phone.trim() || !formData.email.trim()) {
-      alert('Please fill in all required fields');
-      return;
-    }
-
     setIsSubmitting(true);
     setMessageSent(false);
 
     try {
-      // Параллельная отправка в оба сервиса
+      // Parallel sending to both services
       const [telegramResult, formspreeResult] = await Promise.allSettled([
-        sendToTelegram(formData),
-        sendToFormspree(formData)
+        sendToTelegram(),
+        sendToFormspree()
       ]);
 
-      // Обработка результатов
+      // Extract values from promises
       const telegramResponse = telegramResult.status === 'fulfilled' 
         ? telegramResult.value 
         : { success: false, service: 'telegram', error: telegramResult.reason?.message || 'Unknown error' };
@@ -138,80 +126,49 @@ const ContactSection = () => {
       const telegramSuccess = telegramResponse.success;
       const formspreeSuccess = formspreeResponse.success;
 
-      // Если хотя бы один сервис успешен
+      // Log results for debugging
+      console.log('Telegram result:', telegramResponse);
+      console.log('Formspree result:', formspreeResponse);
+
+      // If at least one service succeeded
       if (formspreeSuccess || telegramSuccess) {
         setMessageSent(true);
         setFormData({ name: "", phone: "", email: "", project: "" });
 
-        // Автоматическое скрытие успешного сообщения
+        // Success message with information about where it was sent
+        const successMessages = [];
+        if (formspreeSuccess) successMessages.push('Formspree');
+        if (telegramSuccess) successMessages.push('Telegram');
+        
+        console.log(`✅ Message successfully sent to: ${successMessages.join(' and ')}`);
+        
         setTimeout(() => {
           setMessageSent(false);
         }, 5000);
       } else {
-        // Если оба сервиса не сработали
-        const errorMessage = `Failed to send the message. Please try again or contact us directly at email: ${EMAILS.client}`;
+        // If both services failed
+        const errorMessage = `
+          Failed to send the message.
+          Telegram: ${telegramResponse.error || 'unknown error'}
+          Formspree: ${formspreeResponse.error || 'unknown error'}
+          
+          Please try again or contact us directly at email: hello@movieparkpro.com
+        `.replace(/\s+/g, ' ').trim();
+        
         alert(errorMessage);
+        throw new Error('Both sending methods failed');
       }
     } catch (error) {
       console.error('General sending error:', error);
-      alert('An error occurred while sending. Please try again or contact us directly.');
+      
+      // Additional message only if not shown above
+      if (!error.message.includes('Both sending methods failed')) {
+        alert('An error occurred while sending. Please try again or contact us directly at email: hello@movieparkpro.com');
+      }
     } finally {
       setIsSubmitting(false);
     }
-  }, [formData, sendToTelegram, sendToFormspree]);
-
-  // Мемоизированный рендер email строк
-  const renderEmailRow = useCallback((type, label, email) => {
-    const copyType = type === 'client' ? 'client' : 'work';
-    const mobileCopyType = type === 'client' ? 'client-mobile' : 'work-mobile';
-    const isCopied = copiedEmail === copyType || copiedEmail === mobileCopyType;
-    
-    return (
-      <div className="email-item" key={type}>
-        <div className="email-label">{label}</div>
-        <div
-          className="email-value"
-          onClick={() => copyEmailToClipboard(email, copyType)}
-          title="Click to copy"
-          role="button"
-          tabIndex={0}
-          onKeyPress={(e) => e.key === 'Enter' && copyEmailToClipboard(email, copyType)}
-        >
-          {email}
-          {isCopied && <span className="copy-notification">copied!</span>}
-        </div>
-      </div>
-    );
-  }, [copiedEmail, copyEmailToClipboard]);
-
-  // Мемоизированный рендер мобильных email строк
-  const renderMobileEmailRow = useCallback((type, label, email) => {
-    const copyType = type === 'client' ? 'client-mobile' : 'work-mobile';
-    const isCopied = copiedEmail === copyType;
-    
-    return (
-      <div className="mobile-email-item" key={type}>
-        <div className="mobile-email-label">{label}</div>
-        <div
-          className="mobile-email-value"
-          onClick={() => copyEmailToClipboard(email, copyType)}
-          title="Click to copy"
-          role="button"
-          tabIndex={0}
-          onKeyPress={(e) => e.key === 'Enter' && copyEmailToClipboard(email, copyType)}
-        >
-          {email}
-          {isCopied && <span className="mobile-copy-notification">copied!</span>}
-        </div>
-      </div>
-    );
-  }, [copiedEmail, copyEmailToClipboard]);
-
-  // Мемоизированный массив email данных
-  const emailData = useMemo(() => [
-    { type: 'client', label: 'WHAT TO BECOME OUR CLIENT?', email: EMAILS.client },
-    { type: 'work', label: 'WHAT TO WORK FOR US?', email: EMAILS.work }
-  ], []);
+  };
 
   return (
     <section className="contact-section" id="contact-section">
@@ -220,9 +177,29 @@ const ContactSection = () => {
         <div className="left-column">
           <div className="emails-section">
             <div className="email-row">
-              {emailData.map(({ type, label, email }) => 
-                renderEmailRow(type, label, email)
-              )}
+              <div className="email-item">
+                <div className="email-label">WHAT TO BECOME OUR CLIENT?</div>
+                <div
+                  className="email-value"
+                  onClick={() => copyEmailToClipboard("hello@movieparkpro.com", "client")}
+                  title="Click to copy"
+                >
+                  hello@movieparkpro.com
+                  {copiedEmail === "client" && <span className="copy-notification">copied!</span>}
+                </div>
+              </div>
+
+              <div className="email-item">
+                <div className="email-label">WHAT TO WORK FOR US?</div>
+                <div
+                  className="email-value"
+                  onClick={() => copyEmailToClipboard("job@movieparkpro.com", "work")}
+                  title="Click to copy"
+                >
+                  job@movieparkpro.com
+                  {copiedEmail === "work" && <span className="copy-notification">copied!</span>}
+                </div>
+              </div>
             </div>
           </div>
 
@@ -240,7 +217,7 @@ const ContactSection = () => {
             </div>
           </div>
 
-          <form className="contact-form" onSubmit={handleSubmit} noValidate>
+          <form className="contact-form" onSubmit={handleSubmit}>
             {messageSent && (
               <div className="success-message">
                 ✓ The message has been successfully sent! We will contact you shortly.
@@ -257,13 +234,12 @@ const ContactSection = () => {
                 onChange={handleInputChange}
                 className="form-input"
                 required
-                aria-required="true"
-                autoComplete="name"
+                placeholder=""
               />
             </div>
 
             <div className="form-row">
-             <div className="form-group form-group-half">
+            <div className="form-group form-group-half">
   <label htmlFor="phone" className="form-label">PHONE NUMBER:*</label>
   <input
     type="tel"
@@ -307,8 +283,7 @@ const ContactSection = () => {
                   onChange={handleInputChange}
                   className="form-input"
                   required
-                  aria-required="true"
-                  autoComplete="email"
+                  placeholder=""
                 />
               </div>
             </div>
@@ -321,32 +296,49 @@ const ContactSection = () => {
                 value={formData.project}
                 onChange={handleInputChange}
                 className="form-input"
-                autoComplete="off"
+                rows="1"
+                placeholder=""
                 required
               />
             </div>
 
             <div className="form-footer">
-              <div className="privacy-notice">
-                By submitting this form, you agree    
-                <span className="mobile-break"><br /></span> 
-                to our <Link to="/privacy-policy" className="privacy-link">Privacy Policy</Link>
-              </div>
-              <button
-                type="submit"
-                className="submit-button"
-                disabled={isSubmitting}
-                aria-busy={isSubmitting}
-              >
-                {isSubmitting ? "Sending..." : "SEND"}
-              </button>
-            </div>
+  <div className="privacy-notice">
+    By submitting this form, you agree    <span className="mobile-break"><br /></span> to our <Link to="/privacy-policy" className="privacy-link">Privacy Policy</Link>
+  </div>
+  <button
+    type="submit"
+    className="submit-button"
+    disabled={isSubmitting}
+  >
+    {isSubmitting ? "Sending..." : "SEND"}
+  </button>
+</div>
 
             {/* Mobile email buttons - ONLY for mobile version */}
             <div className="mobile-emails-section">
-              {emailData.map(({ type, label, email }) => 
-                renderMobileEmailRow(type, label, email)
-              )}
+              <div className="mobile-email-item">
+                <div className="mobile-email-label">WHAT TO BECOME OUR CLIENT?</div>
+                <div
+                  className="mobile-email-value"
+                  onClick={() => copyEmailToClipboard("hello@movieparkpro.com", "client-mobile")}
+                  title="Click to copy"
+                >
+                  hello@movieparkpro.com
+                  {copiedEmail === "client-mobile" && <span className="mobile-copy-notification">copied!</span>}
+                </div>
+              </div>
+              <div className="mobile-email-item">
+                <div className="mobile-email-label">WHAT TO WORK FOR US?</div>
+                <div
+                  className="mobile-email-value"
+                  onClick={() => copyEmailToClipboard("job@movieparkpro.com", "work-mobile")}
+                  title="Click to copy"
+                >
+                  job@movieparkpro.com
+                  {copiedEmail === "work-mobile" && <span className="mobile-copy-notification">copied!</span>}
+                </div>
+              </div>
             </div>
           </form>
         </div>
@@ -355,5 +347,4 @@ const ContactSection = () => {
   );
 };
 
-// Используем React.memo при экспорте, а не при определении
-export default React.memo(ContactSection);
+export default ContactSection;
